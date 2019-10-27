@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import Collapsible from 'react-collapsible';
 import '../Styles/StudentDashboard.css';
+import { Link } from 'react-router-dom';
 
 export class StudentDashboard extends Component {
 	render() {
 		return (
 			<div className="background">
 				<div className="studentDashboard">
-					<div className="welcomeDiv">
+					<div className="welcomeStudentDiv">
 						<h3>Welcome Student!</h3>
-						<h5>Account Setting</h5>
+						<Link to="/AccountSetting">
+							<h5>Change Account Setting</h5>
+						</Link>
 					</div>
 					<div className="studentDashboardContents">
 						<div className="studentRecentLesson">

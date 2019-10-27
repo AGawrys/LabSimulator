@@ -157,3 +157,14 @@
 .recentDrinkBottom .Collapsible li {
 	border: none;
 }
+
+.oddDiv {
+	background-color: rgb(250, 242, 242);
+}
+
+.welcomeTeacherDiv {
+	text-align: left;
+	margin-left: 2%;
+	margin-right: 2%;
+	padding: 1%;
+}

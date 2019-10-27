@@ -2,12 +2,19 @@ import React, { Component } from 'react';
 import SearchBar from 'react-js-search';
 import Collapsible from 'react-collapsible';
 import '../Styles/TeacherDashboard.css';
+import { Link } from 'react-router-dom';
 
 export class TeacherDashboard extends Component {
 	render() {
 		return (
 			<div className="background">
 				<div className="teacherDashboard">
+					<div className="welcomeTeacherDiv">
+						<h3>Welcome Teacher!</h3>
+						<Link to="/AccountSetting">
+							<h5>Change Account Setting</h5>
+						</Link>
+					</div>
 					<div className="searchBarDiv">
 						<SearchBar placeHolderText={'Search for Lesson'} />
 					</div>
@@ -29,7 +36,7 @@ export class TeacherDashboard extends Component {
 											</ol>
 										</Collapsible>
 									</li>
-									<li>
+									<li className="oddDiv">
 										Strawberry Green Tea
 										<Collapsible triggerWhenOpen="Collapse" trigger="Expand">
 											<ol>

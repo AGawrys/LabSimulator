@@ -1,0 +1,12 @@
+.background {
+	background-color: rgb(243, 243, 243);
+	height: 100vh;
+}
+
+.changePasswordDiv {
+	padding-top: 3%;
+}
+
+.passwordForm .btn {
+	margin-top: 1%;
+}
