@@ -1,0 +1,99 @@
+.teacherDashboard {
+	max-width: 1080px;
+	margin: auto;
+}
+
+.searchBarDiv input {
+	border: 2px solid blue;
+	width: 30%;
+	color: skyblue;
+}
+
+.teacherDashboardContents {
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: center;
+	margin: 3%;
+}
+
+.recentDrinksDiv {
+	border: 2px solid orange;
+	border-radius: 10px;
+	flex-grow: 1;
+	max-width: 30%;
+	margin-right: 5%;
+	align-self: flex-start;
+}
+
+.recentDrinkTop {
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	padding: 2%;
+	border-bottom: 1px solid gray;
+}
+
+.recentDrinkBottom ol {
+	text-align: left;
+	padding: 0;
+}
+
+.recentDrinkBottom li {
+	list-style-type: none;
+	border-bottom: 1px solid gray;
+	padding: 2%;
+}
+
+.allCreationButton {
+	margin-bottom: 10px;
+}
+
+.recentLessonsDiv {
+	border: 2px solid green;
+	flex-grow: 2;
+	border-radius: 10px;
+	align-self: flex-start;
+}
+
+.recentLessonsTop {
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	padding: 1%;
+	border-bottom: 1px solid gray;
+}
+
+.training1 {
+	border-bottom: 1px solid gray;
+}
+
+.Collapsible {
+	text-align: right;
+	padding: 0 1%;
+	color: blue;
+}
+
+.training1Header {
+	text-align: left;
+	padding: 1% 1% 0 1%;
+}
+
+.training1Header h4 {
+	font-weight: 350;
+}
+
+.recentLessonsBottom ol {
+	color: black;
+	text-align: left;
+	padding: 0;
+}
+
+.recentLessonsBottom li {
+	list-style-type: none;
+	padding: 1% 0;
+	font-weight: 300;
+}
+
+.allLessonsButton {
+	margin: 10px;
+}
