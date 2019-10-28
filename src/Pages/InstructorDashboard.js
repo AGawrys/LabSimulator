@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import SearchBar from 'react-js-search';
 import Collapsible from 'react-collapsible';
-import '../Styles/TeacherDashboard.css';
+import '../Styles/InstructorDashboard.css';
 import { Link } from 'react-router-dom';
 
-export class TeacherDashboard extends Component {
+export class InstructorDashboard extends Component {
 	render() {
 		return (
 			<div className="background">
@@ -89,4 +89,4 @@ export class TeacherDashboard extends Component {
 	}
 }
 
-export default TeacherDashboard;
+export default InstructorDashboard;
