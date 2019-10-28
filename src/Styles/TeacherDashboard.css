@@ -1,6 +1,4 @@
 .background {
-	background-color: rgb(243, 243, 243);
-	height: 100vh;
 }
 
 .buttonRound {
@@ -11,8 +9,7 @@
 }
 
 .teacherDashboard {
-	max-width: 1080px;
-	margin: auto;
+	margin: auto 10%;
 }
 
 .searchBarDiv {
