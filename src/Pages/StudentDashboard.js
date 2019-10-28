@@ -21,6 +21,7 @@ export class StudentDashboard extends Component {
 								<ol>
 									<li className="courseListing">
 										<h5>Training1</h5>
+										<h6>Instructor: John Smith</h6>
 										<h6>Completed</h6>
 										<Collapsible triggerWhenOpen="Collapse" trigger="Expand">
 											<ol>
@@ -32,6 +33,7 @@ export class StudentDashboard extends Component {
 									</li>
 									<li className="courseListing oddDiv">
 										<h5>Fall Seasonals 2019</h5>
+										<h6>Instructor: John Smith</h6>
 										<h6>2/3 Labs</h6>
 										<Collapsible triggerWhenOpen="Collapse" trigger="Expand">
 											<ol>
@@ -43,6 +45,7 @@ export class StudentDashboard extends Component {
 									</li>
 									<li className="courseListing">
 										<h5>Zombie Frappuccino</h5>
+										<h6>Instructor: John Smith</h6>
 										<h6>Completed</h6>
 										<Collapsible triggerWhenOpen="Collapse" trigger="Expand">
 											<ol>
