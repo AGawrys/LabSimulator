@@ -24,56 +24,90 @@ export class OrganizationDashboard extends Component {
 									<input className="submitButton btn btn-primary" type="submit" value="Submit" />
 								</form>
 								<ul>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
-									<li>John Smith</li>
-									<li>Pocahontas</li>
+									<li>
+										John Smith{' '}
+										<button type="button" class="deleteInstructorButton btn btn-danger">
+											Delete
+										</button>
+									</li>
+									<li className="oddDiv">
+										Pocahontas{' '}
+										<button type="button" class="deleteInstructorButton btn btn-danger">
+											Delete
+										</button>
+									</li>
+									<li>
+										John Smith{' '}
+										<button type="button" class="deleteInstructorButton btn btn-danger">
+											Delete
+										</button>
+									</li>
+									<li className="oddDiv">
+										Pocahontas{' '}
+										<button type="button" class="deleteInstructorButton btn btn-danger">
+											Delete
+										</button>
+									</li>
+									<li>
+										John Smith{' '}
+										<button type="button" class="deleteInstructorButton btn btn-danger">
+											Delete
+										</button>
+									</li>
+									<li className="oddDiv">
+										Pocahontas{' '}
+										<button type="button" class="deleteInstructorButton btn btn-danger">
+											Delete
+										</button>
+									</li>
+									<li>
+										John Smith{' '}
+										<button type="button" class="deleteInstructorButton btn btn-danger">
+											Delete
+										</button>
+									</li>
+									<li className="oddDiv">
+										Pocahontas{' '}
+										<button type="button" class="deleteInstructorButton btn btn-danger">
+											Delete
+										</button>
+									</li>
+									<li>
+										John Smith{' '}
+										<button type="button" class="deleteInstructorButton btn btn-danger">
+											Delete
+										</button>
+									</li>
+									<li className="oddDiv">
+										Pocahontas{' '}
+										<button type="button" class="deleteInstructorButton btn btn-danger">
+											Delete
+										</button>
+									</li>
+									<li>
+										John Smith{' '}
+										<button type="button" class="deleteInstructorButton btn btn-danger">
+											Delete
+										</button>
+									</li>
+									<li className="oddDiv">
+										Pocahontas{' '}
+										<button type="button" class="deleteInstructorButton btn btn-danger">
+											Delete
+										</button>
+									</li>
+									<li>
+										John Smith{' '}
+										<button type="button" class="deleteInstructorButton btn btn-danger">
+											Delete
+										</button>
+									</li>
+									<li className="oddDiv">
+										Pocahontas{' '}
+										<button type="button" class="deleteInstructorButton btn btn-danger">
+											Delete
+										</button>
+									</li>
 								</ul>
 							</div>
 						</div>
