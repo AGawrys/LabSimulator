@@ -25,85 +25,85 @@ export class OrganizationDashboard extends Component {
 								</form>
 								<ul>
 									<li>
-										John Smith{' '}
+										John Smith (123@123.com){' '}
 										<button type="button" class="deleteInstructorButton btn btn-danger">
 											Delete
 										</button>
 									</li>
 									<li className="oddDiv">
-										Pocahontas{' '}
+										Pocahontas (123@123.com){' '}
 										<button type="button" class="deleteInstructorButton btn btn-danger">
 											Delete
 										</button>
 									</li>
 									<li>
-										John Smith{' '}
+										John Smith (123@123.com){' '}
 										<button type="button" class="deleteInstructorButton btn btn-danger">
 											Delete
 										</button>
 									</li>
 									<li className="oddDiv">
-										Pocahontas{' '}
+										Pocahontas (123@123.com){' '}
 										<button type="button" class="deleteInstructorButton btn btn-danger">
 											Delete
 										</button>
 									</li>
 									<li>
-										John Smith{' '}
+										John Smith (123@123.com){' '}
 										<button type="button" class="deleteInstructorButton btn btn-danger">
 											Delete
 										</button>
 									</li>
 									<li className="oddDiv">
-										Pocahontas{' '}
+										Pocahontas (123@123.com){' '}
 										<button type="button" class="deleteInstructorButton btn btn-danger">
 											Delete
 										</button>
 									</li>
 									<li>
-										John Smith{' '}
+										John Smith (123@123.com){' '}
 										<button type="button" class="deleteInstructorButton btn btn-danger">
 											Delete
 										</button>
 									</li>
 									<li className="oddDiv">
-										Pocahontas{' '}
+										Pocahontas (123@123.com){' '}
 										<button type="button" class="deleteInstructorButton btn btn-danger">
 											Delete
 										</button>
 									</li>
 									<li>
-										John Smith{' '}
+										John Smith (123@123.com){' '}
 										<button type="button" class="deleteInstructorButton btn btn-danger">
 											Delete
 										</button>
 									</li>
 									<li className="oddDiv">
-										Pocahontas{' '}
+										Pocahontas (123@123.com){' '}
 										<button type="button" class="deleteInstructorButton btn btn-danger">
 											Delete
 										</button>
 									</li>
 									<li>
-										John Smith{' '}
+										John Smith (123@123.com){' '}
 										<button type="button" class="deleteInstructorButton btn btn-danger">
 											Delete
 										</button>
 									</li>
 									<li className="oddDiv">
-										Pocahontas{' '}
+										Pocahontas (123@123.com){' '}
 										<button type="button" class="deleteInstructorButton btn btn-danger">
 											Delete
 										</button>
 									</li>
 									<li>
-										John Smith{' '}
+										John Smith (123@123.com){' '}
 										<button type="button" class="deleteInstructorButton btn btn-danger">
 											Delete
 										</button>
 									</li>
 									<li className="oddDiv">
-										Pocahontas{' '}
+										Pocahontas (123@123.com){' '}
 										<button type="button" class="deleteInstructorButton btn btn-danger">
 											Delete
 										</button>
