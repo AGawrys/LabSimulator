@@ -26,85 +26,85 @@ export class OrganizationDashboard extends Component {
 								<ul>
 									<li>
 										<div className="listRow">
-											<p>John Smith (123@123.com){' '}</p>
+											<p>John Smith (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li className="oddDiv">
 										<div className="listRow">
-											<p>Pocahontas (123@123.com){' '}</p>
+											<p>Pocahontas (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li>
 										<div className="listRow">
-											<p>John Smith (123@123.com){' '}</p>
+											<p>John Smith (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li className="oddDiv">
 										<div className="listRow">
-											<p>Pocahontas (123@123.com){' '}</p>
+											<p>Pocahontas (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li>
 										<div className="listRow">
-											<p>John Smith (123@123.com){' '}</p>
+											<p>John Smith (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li className="oddDiv">
 										<div className="listRow">
-											<p>Pocahontas (123@123.com){' '}</p>
+											<p>Pocahontas (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li>
 										<div className="listRow">
-											<p>John Smith (123@123.com){' '}</p>
+											<p>John Smith (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li className="oddDiv">
 										<div className="listRow">
-											<p>Pocahontas (123@123.com){' '}</p>
+											<p>Pocahontas (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li>
 										<div className="listRow">
-											<p>John Smith (123@123.com){' '}</p>
+											<p>John Smith (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li className="oddDiv">
 										<div className="listRow">
-											<p>Pocahontas (123@123.com){' '}</p>
+											<p>Pocahontas (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li>
 										<div className="listRow">
-											<p>John Smith (123@123.com){' '}</p>
+											<p>John Smith (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li className="oddDiv">
 										<div className="listRow">
-											<p>Pocahontas (123@123.com){' '}</p>
+											<p>Pocahontas (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li>
 										<div className="listRow">
-											<p>John Smith (123@123.com){' '}</p>
+											<p>John Smith (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li className="oddDiv">
 										<div className="listRow">
-											<p>Pocahontas (123@123.com){' '}</p>
+											<p>Pocahontas (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
@@ -112,7 +112,7 @@ export class OrganizationDashboard extends Component {
 							</div>
 						</div>
 						<div className="organizationLabDiv">
-							<h4>All Labs</h4>
+							<h4>All Lessons</h4>
 							<ul className="listofOrganizationLabs">
 								<li className="organizationCourseListing">
 									<h5>Caramel Latte</h5>

@@ -34,7 +34,7 @@ export class StudentDashboard extends Component {
 									<li className="courseListing oddDiv">
 										<h5>Fall Seasonals 2019</h5>
 										<h6>Instructor: John Smith</h6>
-										<h6>2/3 Labs</h6>
+										<h6>2/3 Lessons</h6>
 										<Collapsible triggerWhenOpen="Collapse" trigger="Expand">
 											<ol>
 												<li>Pumpkin Spice Latte (Completed)</li>

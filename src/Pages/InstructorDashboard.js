@@ -21,7 +21,7 @@ export class InstructorDashboard extends Component {
 					<div className="teacherDashboardContents">
 						<div className="recentDrinksDiv">
 							<div className="recentDrinkTop">
-								<h4>Recent Labs</h4>
+								<h4>Recent Lessons</h4>
 								<button className="buttonRound btn-primary">+</button>
 							</div>
 							<div className="recentDrinkBottom">
