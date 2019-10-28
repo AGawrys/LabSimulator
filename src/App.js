@@ -8,6 +8,7 @@ import StudentDashboard from './Pages/StudentDashboard.js';
 import NotFound from './Pages/NotFound';
 import AccountSetting from './Pages/AccountSetting.js';
 import OrganizationDashboard from './Pages/OrganizationDashboard.js';
+import CoursePage from './Pages/CoursePage.jsx';
 
 function App() {
 	return (
@@ -19,7 +20,8 @@ function App() {
 					<Route exact path="/InstructorDashboard" component={InstructorDashboard} />
 					<Route exact path="/StudentDashboard" component={StudentDashboard} />
 					<Route exact path="/AccountSetting" component={AccountSetting} />
-					<Route exact path="/OrganizationDashboard" component={OrganizationDashboard} />
+					<Route exact path="/OrganizationDashboard" component={OrganizationDashboard}/>
+					<Route exact path="/course/" component={CoursePage}/>
 					<Route component={NotFound} />
 				</Switch>
 			</div>

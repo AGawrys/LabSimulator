@@ -64,3 +64,9 @@
 .oddDiv {
 	background-color: rgb(250, 242, 242);
 }
+
+.deleteButton {
+	color:red;
+	background-color: transparent;
+	border: none;
+}
