@@ -1,6 +1,6 @@
 import React from 'react';  
 import '../Styles/popupStyle.css';  
-import { Button, FormGroup, FormControl, FormLabel, ControlLabel } from 'react-bootstrap';
+import { Button, FormGroup, FormControl } from 'react-bootstrap';
 
 class Popup extends React.Component {  
   render() {  

@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
 import 'react-sticky-header/styles.css';
 import StickyHeader from 'react-sticky-header';
-import title from '../Styles/Images/brü.svg';
 import coffeeProcess from '../Styles/Images/coffeeProcess.gif';
+import { Redirect, Link } from 'react-router-dom';
 import Popup from '../Components/Popup.js';
+import HeaderBru from '../Components/Header.js';
 import '../App.css';
 import '../Styles/HomeStyle.css';
 
@@ -18,7 +19,7 @@ class Home extends Component {
     }
 
     handleLogin() {
-
+       return <Redirect exact to="/Editor" />;
     }
 
     togglePopup() {  
@@ -35,23 +36,31 @@ class Home extends Component {
       return (
         <StickyHeader
           header={
-            <div className="Header-root">
-            <div className="Home-navbar">
-              <img src={title} className="Home-header-logo" style={{ height: '50px', }} alt="logo" />
-              <div className="Home-header-txt">
-                Home
-              </div>
-              <div className="Home-header-txt">
-              About
-              </div>
-              <div className="Home-header-txt">
-                Contact
-              </div>
-              <Button style={{ backgroundColor: 'black', width: '90px', height: '40px'}} onClick={this.togglePopup.bind(this)} block bsSize="small" type="button">
-                    {this.state.loginbtn}
-                  </Button>
-            </div>
-            </div>
+            <HeaderBru
+              first='Home'
+              second='About'
+              third='Contact'
+              btn={this.state.loginbtn}
+              clickHeaderbtn={this.togglePopup.bind(this)}
+            />
+
+            // <div className="Header-root">
+            // <div className="Home-navbar">
+            //   <img src={title} className="Home-header-logo" style={{ height: '50px', }} alt="logo" />
+            //   <div className="Home-header-txt">
+            //     Home
+            //   </div>
+            //   <div className="Home-header-txt">
+            //   About
+            //   </div>
+            //   <div className="Home-header-txt">
+            //     Contact
+            //   </div>
+            //   <Button style={{ backgroundColor: 'black', width: '90px', height: '40px'}} onClick={this.togglePopup.bind(this)} block bsSize="small" type="button">
+            //         {this.state.loginbtn}
+            //       </Button>
+            // </div>
+            // </div>
           }
         >
         <section>
@@ -76,8 +85,9 @@ class Home extends Component {
             <p className="Home-main-items">
             Lorem ipsum dolor sit amet, sapien etiam, nunc amet dolor ac odio mauris justo. Luctus arcu, urna praesent at id quisque ac. Arcu es massa vestibulum malesuada, integer vivamus elit eu mauris eus, cum eros quis aliquam wisi..
             </p>
+            
             <p className="Home-main-items">
-              Don't have an account? <code>Sign up!</code>
+              Don't have an account? <Link to="/Home" className="link"><code> Sign up!</code></Link>
             </p>
             </div>
             <img src={coffeeProcess} className="App-logo" alt="logo" />

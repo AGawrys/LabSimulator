@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Button, Dropdown, DropdownButton, Card, ListGroup , FormGroup, FormControl, FormLabel} from 'react-bootstrap';
+import { Button, Dropdown, DropdownButton, Card, ListGroup} from 'react-bootstrap';
 import { Container, Row, Col } from 'react-grid-system';
 import 'react-sticky-header/styles.css';
 import StickyHeader from 'react-sticky-header';
-import title from '../Styles/Images/brü.svg';
-import coffeeProcess from '../Styles/Images/coffeeProcess.gif';
-import Popup from '../Components/Popup.js';
+import SearchField from "react-search-field";
 import HeaderBru from '../Components/Header.js';
 import tool1 from '../Styles/Images/jar.svg';
 import tool2 from '../Styles/Images/measuredPitcher.svg';
@@ -19,50 +17,27 @@ class Editor extends Component {
     constructor(props) {
 		super(props);
 		this.state = {
-      loginPopup: false,
-      loginbtn: 'Exit',
       CourseName: 'Seasonal Training',
-      Steps: ['Pour water into the pitcher', 'Shake the cup'],
-      Actions: [{Type: 'Pour', To: 'cup', From: 'pitcher'}, {Type: 'Shake', Item: 'cp'}],
       currentStep: 1
 		};
     }
 
-    handleLogin() {
-
-    }
-
-    togglePopup() {  
-      let login = "Login";
-      if(!this.state.showPopup) { login = "Cancel"; }
-      this.setState({  
-           showPopup: !this.state.showPopup, 
-           loginbtn: login,
-           errorLogin: "Invalid Credentials",
-           actionType: "POUR",
-           step: "Pour the milk into the cup using the pitcher"
-      });  
-    } 
+    handleNext() {}
+    handleSimulate() {}
     
     render() {
       return (
         <StickyHeader
           header={
             <HeaderBru
-              first=''
-              second=''
-              third=''
+              first='   '
+              second='Dashboard'
+              third='Home'
+              link3="/Home"
               btn='Exit'
-              clickHeaderBtn={this.handleLogin.bind(this)}
+              color= '#01AFD8'
+              clickHeaderBtn={this.handleNext.bind(this)}
             />
-            // <div className="Header-root">
-            // <div className="Home-navbar">
-            //   <img src={title} className="Home-header-logo" style={{ height: '50px', }} alt="logo" />
-            //   <Button style={{ backgroundColor: 'black', width: '90px', height: '40px'}} onClick={this.togglePopup.bind(this)} block bsSize="small" type="button">
-            //         {this.state.loginbtn}
-            //       </Button>
-            // </div>
-            // </div>
           }
         >
         <section>
@@ -72,7 +47,7 @@ class Editor extends Component {
             <Col col-sm={2}>
               <Row>
                   <Card style={{ height: '35vh' }}>
-                  <Card.Header>Step: {this.state.currentIndex}</Card.Header>
+                  <Card.Header>Step {this.state.currentStep}:</Card.Header>
                   <Card.Body style={{ height: '10vh' }}>.
                   Pour the milk into the cup using the pitcher.
                   </Card.Body>
@@ -80,29 +55,36 @@ class Editor extends Component {
               </Row>
               <div className="divider" />
               <Row>
-                  <Card style={{ height: '35vh' }}>
-                  <Card.Header>Add Tool {this.state.currentIndex}</Card.Header>
-                  <Card.Body style={{ height: '10vh' }}>.
+                  <Col className="tool-column" style={{margin: 0, padding: 0}}>
+                    <SearchField
+                      style={{ width: '20vh'}}
+                      placeholder="Search..."
+                      onChange={this.handleLogin}
+                      searchText="Search"
+                      classNames="test-class"
+                    />
                   <img src={tool1} style={{ height: '40px', }}/>
                   <img src={tool2} style={{ height: '40px', }}/>
                   <img src={tool3} style={{ height: '40px', }}/>
                   <img src={tool4} style={{ height: '40px', }}/>
-                  </Card.Body>
-                </Card>
+                  </Col>
               </Row>
               <div className="divider" />
-              <Button style={{ backgroundColor: 'black'}} onClick={this.togglePopup.bind(this)} block bsSize="small" type="button">
-                     SIMULATE
-                   </Button>
             </Col>
             <Col sm={8}>
             <Card>
               <Card.Header>Course: {this.state.CourseName} </Card.Header>
               <Card.Body style={{ height: '65vh' }}>This is where the canvas will be.</Card.Body>
               </Card>
-              <Button style={{ backgroundColor: 'black'}} onClick={this.togglePopup.bind(this)} block bsSize="small" type="button">
+              <Row>
+              <Button style={{ backgroundColor: 'black', width: '20vh'}} onClick={this.handleSimulate.bind(this)} block bsSize="small" type="button">
+                     SIMULATE
+                   </Button>
+              <div className="divider" />
+              <Button style={{ backgroundColor: 'black', width: '20vh'}} onClick={this.handleNext.bind(this)} block bsSize="small" type="button">
                      NEXT STEP
                    </Button>
+              </Row>
             </Col>
           <Col sm={2}>
             <Row>
@@ -133,16 +115,14 @@ class Editor extends Component {
                 <Card style={{ width: '14rem' }}>
                   <Card.Header>All Steps</Card.Header>
                   <ListGroup variant="flush">
-                    <ListGroup.Item>Step 1</ListGroup.Item>
-                    <ListGroup.Item>Step 2</ListGroup.Item>
-                    <ListGroup.Item>Step 3</ListGroup.Item>
+                    <ListGroup.Item>Pour milk into cup using pitcher </ListGroup.Item>
+                    <ListGroup.Item>Add caramel syrup</ListGroup.Item>
+                    <ListGroup.Item>Add espresso shot</ListGroup.Item>
                   </ListGroup>
                 </Card>
                 </Row>
                 <div className="divider" />
-                   <Button style={{ backgroundColor: 'black'}} onClick={this.togglePopup.bind(this)} block bsSize="small" type="button">
-                     FINISH
-                   </Button>
+                   
             </Col>
             </Row>
           </Container> 
