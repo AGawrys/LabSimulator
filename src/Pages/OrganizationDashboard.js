@@ -25,88 +25,88 @@ export class OrganizationDashboard extends Component {
 								</form>
 								<ul>
 									<li>
-										John Smith (123@123.com){' '}
-										<button type="button" class="deleteInstructorButton btn btn-danger">
-											Delete
-										</button>
+										<div className="listRow">
+											<p>John Smith (123@123.com){' '}</p>
+											<button className="small-round-button">-</button>
+										</div>
 									</li>
 									<li className="oddDiv">
-										Pocahontas (123@123.com){' '}
-										<button type="button" class="deleteInstructorButton btn btn-danger">
-											Delete
-										</button>
+										<div className="listRow">
+											<p>Pocahontas (123@123.com){' '}</p>
+											<button className="small-round-button">-</button>
+										</div>
 									</li>
 									<li>
-										John Smith (123@123.com){' '}
-										<button type="button" class="deleteInstructorButton btn btn-danger">
-											Delete
-										</button>
+										<div className="listRow">
+											<p>John Smith (123@123.com){' '}</p>
+											<button className="small-round-button">-</button>
+										</div>
 									</li>
 									<li className="oddDiv">
-										Pocahontas (123@123.com){' '}
-										<button type="button" class="deleteInstructorButton btn btn-danger">
-											Delete
-										</button>
+										<div className="listRow">
+											<p>Pocahontas (123@123.com){' '}</p>
+											<button className="small-round-button">-</button>
+										</div>
 									</li>
 									<li>
-										John Smith (123@123.com){' '}
-										<button type="button" class="deleteInstructorButton btn btn-danger">
-											Delete
-										</button>
+										<div className="listRow">
+											<p>John Smith (123@123.com){' '}</p>
+											<button className="small-round-button">-</button>
+										</div>
 									</li>
 									<li className="oddDiv">
-										Pocahontas (123@123.com){' '}
-										<button type="button" class="deleteInstructorButton btn btn-danger">
-											Delete
-										</button>
+										<div className="listRow">
+											<p>Pocahontas (123@123.com){' '}</p>
+											<button className="small-round-button">-</button>
+										</div>
 									</li>
 									<li>
-										John Smith (123@123.com){' '}
-										<button type="button" class="deleteInstructorButton btn btn-danger">
-											Delete
-										</button>
+										<div className="listRow">
+											<p>John Smith (123@123.com){' '}</p>
+											<button className="small-round-button">-</button>
+										</div>
 									</li>
 									<li className="oddDiv">
-										Pocahontas (123@123.com){' '}
-										<button type="button" class="deleteInstructorButton btn btn-danger">
-											Delete
-										</button>
+										<div className="listRow">
+											<p>Pocahontas (123@123.com){' '}</p>
+											<button className="small-round-button">-</button>
+										</div>
 									</li>
 									<li>
-										John Smith (123@123.com){' '}
-										<button type="button" class="deleteInstructorButton btn btn-danger">
-											Delete
-										</button>
+										<div className="listRow">
+											<p>John Smith (123@123.com){' '}</p>
+											<button className="small-round-button">-</button>
+										</div>
 									</li>
 									<li className="oddDiv">
-										Pocahontas (123@123.com){' '}
-										<button type="button" class="deleteInstructorButton btn btn-danger">
-											Delete
-										</button>
+										<div className="listRow">
+											<p>Pocahontas (123@123.com){' '}</p>
+											<button className="small-round-button">-</button>
+										</div>
 									</li>
 									<li>
-										John Smith (123@123.com){' '}
-										<button type="button" class="deleteInstructorButton btn btn-danger">
-											Delete
-										</button>
+										<div className="listRow">
+											<p>John Smith (123@123.com){' '}</p>
+											<button className="small-round-button">-</button>
+										</div>
 									</li>
 									<li className="oddDiv">
-										Pocahontas (123@123.com){' '}
-										<button type="button" class="deleteInstructorButton btn btn-danger">
-											Delete
-										</button>
+										<div className="listRow">
+											<p>Pocahontas (123@123.com){' '}</p>
+											<button className="small-round-button">-</button>
+										</div>
 									</li>
 									<li>
-										John Smith (123@123.com){' '}
-										<button type="button" class="deleteInstructorButton btn btn-danger">
-											Delete
-										</button>
+										<div className="listRow">
+											<p>John Smith (123@123.com){' '}</p>
+											<button className="small-round-button">-</button>
+										</div>
 									</li>
 									<li className="oddDiv">
-										Pocahontas (123@123.com){' '}
-										<button type="button" class="deleteInstructorButton btn btn-danger">
-											Delete
-										</button>
+										<div className="listRow">
+											<p>Pocahontas (123@123.com){' '}</p>
+											<button className="small-round-button">-</button>
+										</div>
 									</li>
 								</ul>
 							</div>
@@ -124,7 +124,7 @@ export class OrganizationDashboard extends Component {
 										</ul>
 									</Collapsible>
 								</li>
-								<li className="organizationCourseListing oddDiv">
+								<li className="organizationCourseListing">
 									<h5>Strawberry Green Tea</h5>
 									<Collapsible triggerWhenOpen="Collapse" trigger="Expand">
 										<ul>

@@ -8,6 +8,17 @@
 	width: 35px;
 }
 
+.small-round-button {
+	outline: none !important;
+	height: 25px;
+	width: 25px;
+	border:none;
+	background-color:transparent;
+	text-align: center;
+	color: red;
+	font-size: 25px;
+}
+
 .teacherDashboard {
 	margin: auto 10%;
 }
