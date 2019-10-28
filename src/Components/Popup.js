@@ -11,7 +11,6 @@ class Popup extends React.Component {
             <FormGroup controlId="formBasicText" bsSize="large">
                 <FormControl
                     style={{ backgroundColor: "rgba(0, 0, 0, 0.904)", }}
-                    autoFocus
                     type="text"
                     placeholder="Username"
                     onChange={(e) => this.handleCredentialChange(e, 'username')} /* NO METHOD YET */
