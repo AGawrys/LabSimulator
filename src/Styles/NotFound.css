@@ -1,0 +1,11 @@
+.errorDiv {
+	flex: 3;
+	flex-direction: column;
+	margin-right: 10% auto auto auto;
+	margin-left: 10% auto auto auto;
+	background-color: white;
+	height: '100vh';
+}
+.element {
+	height: 33%;
+}

@@ -3,7 +3,7 @@ import { Button, Dropdown, DropdownButton, Card, ListGroup} from 'react-bootstra
 import { Container, Row, Col } from 'react-grid-system';
 import 'react-sticky-header/styles.css';
 import StickyHeader from 'react-sticky-header';
-import SearchField from "react-search-field";
+import SimpleInput from 'react-simple-input';
 import HeaderBru from '../Components/Header.js';
 import tool1 from '../Styles/Images/jar.svg';
 import tool2 from '../Styles/Images/measuredPitcher.svg';
@@ -32,8 +32,10 @@ class Editor extends Component {
             <HeaderBru
               first='   '
               second='Dashboard'
+              link2='/InstructorDashboard'
               third='Home'
               link3="/Home"
+              link4="/InstructorDashboard"
               btn='Exit'
               color= '#01AFD8'
               clickHeaderBtn={this.handleNext.bind(this)}
@@ -44,9 +46,9 @@ class Editor extends Component {
           <div className="editor"> 
         <Container className="page-grid">
             <Row>
-            <Col col-sm={2}>
+            <Col col-sm={4}>
               <Row>
-                  <Card style={{ height: '35vh' }}>
+                  <Card style={{ height: '35vh'}}>
                   <Card.Header>Step {this.state.currentStep}:</Card.Header>
                   <Card.Body style={{ height: '10vh' }}>.
                   Pour the milk into the cup using the pitcher.
@@ -56,13 +58,9 @@ class Editor extends Component {
               <div className="divider" />
               <Row>
                   <Col className="tool-column" style={{margin: 0, padding: 0}}>
-                    <SearchField
-                      style={{ width: '20vh'}}
-                      placeholder="Search..."
-                      onChange={this.handleLogin}
-                      searchText="Search"
-                      classNames="test-class"
-                    />
+                    <div style={{width: '20vh', flex: 1, flexDirection: 'row'}}>
+                    <SimpleInput style={{width:'10vh'}} placeholder='search' />
+                    </div>
                   <img src={tool1} style={{ height: '40px', }}/>
                   <img src={tool2} style={{ height: '40px', }}/>
                   <img src={tool3} style={{ height: '40px', }}/>

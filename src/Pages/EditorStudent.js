@@ -23,8 +23,10 @@ class EditorStudent extends Component {
             <HeaderBru
               first=''
               second='Dashboard'
+              link2="/StudentDashboard"
               third='Home'
               link3="/Home"
+              link4="/StudentDashboard"
               btn='Exit'
               color= '#01AFD8'
             />

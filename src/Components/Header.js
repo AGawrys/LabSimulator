@@ -25,9 +25,11 @@ class HeaderBru extends React.Component {
               {this.props.third}
               </div>
               </Link>
+              <Link to={this.props.link4} className="link">
               <Button style={{ backgroundColor: 'black', width: '90px', height: '40px'}} onClick={this.props.clickHeaderBtn} block bsSize="small" type="button">
                     {this.props.btn}
                   </Button>
+                  </Link>
             </div>
             </div>
         );

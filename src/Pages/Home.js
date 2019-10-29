@@ -10,13 +10,13 @@ import '../App.css';
 import '../Styles/HomeStyle.css';
 
 class Home extends Component {
-    constructor(props) {
+	constructor(props) {
 		super(props);
 		this.state = {
-      loginPopup: false,
-      loginbtn: 'Login'
+			loginPopup: false,
+			loginbtn: 'Login'
 		};
-    }
+	}
 
     handleLogin() {
        return <Redirect exact to="/Editor" />;
@@ -40,6 +40,7 @@ class Home extends Component {
               first='Home'
               second='About'
               third='Contact'
+              link4="/InstructorDashboard"
               btn={this.state.loginbtn}
               clickHeaderbtn={this.togglePopup.bind(this)}
             />
@@ -85,10 +86,11 @@ class Home extends Component {
             <p className="Home-main-items">
             Lorem ipsum dolor sit amet, sapien etiam, nunc amet dolor ac odio mauris justo. Luctus arcu, urna praesent at id quisque ac. Arcu es massa vestibulum malesuada, integer vivamus elit eu mauris eus, cum eros quis aliquam wisi..
             </p>
-            
-            <p className="Home-main-items">
-              Don't have an account? <Link to="/Home" className="link"><code> Sign up!</code></Link>
-            </p>
+            <Link to="/Signup" className="link">
+            <div className="Home-main-items">
+              Don't have an account? <code> Sign up!</code>
+            </div>
+            </Link>
             </div>
             <img src={coffeeProcess} className="App-logo" alt="logo" />
           </header>
