@@ -1,12 +1,46 @@
 import React, { Component } from 'react';
-import SearchBar from 'react-js-search';
+import ReactModal from "react-modal";
 import Collapsible from 'react-collapsible';
 import '../Styles/StudentDashboard.css';
 import { Link } from 'react-router-dom';
 import HeaderBru from '../Components/Header.js';
 
+const dummyStudents = [
+	{id: "jason.dong@stonybrook.edu", value: "Jason Dong"},
+	{id: "james.angeles@stonybrook.edu", value: "James Angeles"},
+	{id: "agnieszka.gawrys@stonybrook.edu", value: "Agnieszka Gawrys"},
+	{id: "steven.kuang@stonybrook.edu", value: "Steven Kuang"}
+]
+
+ReactModal.setAppElement("#root");
 
 class CoursePage extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			showAddStudentsModal : false
+		};
+
+		this.handleOpenAddStudents = this.handleOpenAddStudents.bind(this);
+		this.handleCloseAddStudents = this.handleCloseAddStudents.bind(this);
+	}
+
+	handleOpenAddStudents() {
+		this.setState({
+			showAddStudentsModal : true
+		});
+	}
+
+	handleCloseAddStudents() {
+		this.setState({
+			showAddStudentsModal : false
+		});
+	}
+
+	displayNewStudents(items) {
+		console.log(items)
+	}
+
 	handleNext() {}
 	render() {
 		return (
@@ -30,6 +64,13 @@ class CoursePage extends Component {
 					</div>
 				</div>
 				<div className="studentDashboardContents">
+
+					<ReactModal isOpen={this.state.showAddStudentsModal}
+								contentLabel={"Add Students"}
+					>
+						<button onClick={this.handleCloseAddStudents}>Cancel</button>
+					</ReactModal>
+
 					<div className="studentRecentLesson">
 						<h4> Lessons </h4>
 						<div className="studentAllLesson">
@@ -109,7 +150,7 @@ class CoursePage extends Component {
 						<div className="recentLessonsDiv">
 							<div className="recentLessonsTop">
 								<h4>Students</h4>
-								<button className="buttonRound btn-primary">+</button>
+								<button onClick={this.handleOpenAddStudents} className="buttonRound btn-primary">+</button>
 							</div>
 							<div className="recentDrinkBottom">
 								<ol>
