@@ -4,7 +4,7 @@ import 'react-sticky-header/styles.css';
 import StickyHeader from 'react-sticky-header';
 import title from '../Styles/Images/brü.svg';
 import coffeeProcess from '../Styles/Images/coffeeProcess.gif';
-import Popup from '../Components/Popup.js';
+import Popup from '../Components/Popup.jsx';
 import '../App.css';
 import '../Styles/HomeStyle.css';
 
