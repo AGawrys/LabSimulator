@@ -1,16 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
-import Home from './Pages/Home.js';
-import Editor from './Pages/Editor.js';
-import EditorStudent from './Pages/EditorStudent.js';
-import InstructorDashboard from './Pages/InstructorDashboard.js';
-import StudentDashboard from './Pages/StudentDashboard.js';
-import NotFound from './Pages/NotFound';
-import AccountSetting from './Pages/AccountSetting.js';
-import OrganizationDashboard from './Pages/OrganizationDashboard.js';
+import Home from './Pages/Home.jsx';
+import Editor from './Pages/Editor.jsx';
+import InstructorDashboard from './Pages/InstructorDashboard.jsx';
+import StudentDashboard from './Pages/StudentDashboard.jsx';
+import NotFound from './Pages/NotFound.jsx';
+import AccountSetting from './Pages/AccountSetting.jsx';
+import OrganizationDashboard from './Pages/OrganizationDashboard.jsx';
 import CoursePage from './Pages/CoursePage.jsx';
-import Signup from './Pages/Signup.js';
+import Signup from './Pages/Signup.jsx';
+import EditorStudent from './Pages/EditorStudent.jsx';
 
 function App() {
   return (

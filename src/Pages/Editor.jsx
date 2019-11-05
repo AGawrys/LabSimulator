@@ -4,7 +4,7 @@ import { Container, Row, Col } from 'react-grid-system';
 import 'react-sticky-header/styles.css';
 import StickyHeader from 'react-sticky-header';
 import SimpleInput from 'react-simple-input';
-import HeaderBru from '../Components/Header.js';
+import HeaderBru from '../Components/Header.jsx';
 import tool1 from '../Styles/Images/jar.svg';
 import tool2 from '../Styles/Images/measuredPitcher.svg';
 import tool3 from '../Styles/Images/coffee-machine.svg';
