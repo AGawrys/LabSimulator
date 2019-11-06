@@ -8,10 +8,8 @@ export class NotFound extends Component {
 	render() {
 		return (
 			<div className="errorDiv">
-				
-				
 				<img src={sparkle} style={{ height: '70vh' }}alt="sparkle" />
-				<h1 style={{paddingBottom: '5vh'}}>Opps! Not Found</h1>
+				<h1 style={{paddingBottom: '5vh'}}>Oops! Not Found</h1>
 				<Link to="/">
 					<button type="button" style={{ backgroundColor: '#4F3E31', }} class="btn btn-dark">
 						Homepage

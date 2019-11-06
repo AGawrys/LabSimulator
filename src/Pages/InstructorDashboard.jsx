@@ -3,26 +3,35 @@ import SearchBar from 'react-js-search';
 import Collapsible from 'react-collapsible';
 import '../Styles/InstructorDashboard.css';
 import { Link } from 'react-router-dom';
+import HeaderBru from '../Components/Header.jsx';
+import Routes from '../utils/RouteConstants.js';
+
+const links = {
+	Account: "/account",
+}
 
 export class InstructorDashboard extends Component {
+
+	handleNext(){}
 	render() {
 		return (
 			<div className="background">
+				<HeaderBru 
+          			home={Routes.INSTRUCTOR_DASHBOARD} 
+          			isLoggedIn={true} 
+          			links={links}
+        		/>
 				<div className="teacherDashboard">
-					<div className="welcomeTeacherDiv">
-						<h3>Welcome Teacher!</h3>
-						<Link to="/AccountSetting">
-							<h5>Change Account Setting</h5>
-						</Link>
-					</div>
 					<div className="searchBarDiv">
 						<SearchBar placeHolderText={'Search for Lesson'} />
 					</div>
 					<div className="teacherDashboardContents">
 						<div className="recentDrinksDiv">
 							<div className="recentDrinkTop">
-								<h4>Recent Labs</h4>
+								<h4>Recent Lessons</h4>
+								<Link to="/Editor" className="link">
 								<button className="buttonRound btn-primary">+</button>
+								</Link>
 							</div>
 							<div className="recentDrinkBottom">
 								<ol>
@@ -63,7 +72,9 @@ export class InstructorDashboard extends Component {
 						<div className="recentLessonsDiv">
 							<div className="recentLessonsTop">
 								<h4>Recent Courses</h4>
+								<Link to="/course" className="link">
 								<button className="buttonRound btn-primary">+</button>
+								</Link>
 							</div>
 							<div className="recentLessonsBottom">
 								<div className="training1">

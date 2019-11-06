@@ -2,18 +2,26 @@ import React, { Component } from 'react';
 import Collapsible from 'react-collapsible';
 import '../Styles/StudentDashboard.css';
 import { Link } from 'react-router-dom';
+import HeaderBru from '../Components/Header.jsx';
+import Routes from '../utils/RouteConstants.js'
+
+const links = {
+	Account: "/account",
+}
 
 export class StudentDashboard extends Component {
+	
 	render() {
+		
 		return (
 			<div className="background">
+				<HeaderBru 
+          			home={Routes.STUDENT_DASHBOARD} 
+          			isLoggedIn={true}
+          			links={links} 
+        		/>
+            />
 				<div className="studentDashboard">
-					<div className="welcomeStudentDiv">
-						<h3>Welcome Student!</h3>
-						<Link to="/AccountSetting">
-							<h5>Change Account Setting</h5>
-						</Link>
-					</div>
 					<div className="studentDashboardContents">
 						<div className="studentRecentLesson">
 							<h4>Recent Courses</h4>
@@ -34,7 +42,7 @@ export class StudentDashboard extends Component {
 									<li className="courseListing oddDiv">
 										<h5>Fall Seasonals 2019</h5>
 										<h6>Instructor: John Smith</h6>
-										<h6>2/3 Labs</h6>
+										<h6>2/3 Lessons</h6>
 										<Collapsible triggerWhenOpen="Collapse" trigger="Expand">
 											<ol>
 												<li>Pumpkin Spice Latte (Completed)</li>

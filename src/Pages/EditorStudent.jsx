@@ -7,6 +7,12 @@ import HeaderBru from '../Components/Header.jsx';
 import '../App.css';
 import '../Styles/HomeStyle.css';
 import '../Styles/EditorStyle.css';
+import Routes from '../utils/RouteConstants.js';
+
+
+const links = {
+  Account: "/account",
+}
 
 class EditorStudent extends Component {
     constructor(props) {
@@ -20,16 +26,11 @@ class EditorStudent extends Component {
     render() {
       return (
           <div>
-            <HeaderBru
-              first=''
-              second='Dashboard'
-              link2="/StudentDashboard"
-              third='Home'
-              link3="/Home"
-              link4="/StudentDashboard"
-              btn='Exit'
-              color= '#01AFD8'
-            />
+            <HeaderBru 
+              home={Routes.STUDENT_DASHBOARD} 
+              isLoggedIn={true}
+              links={links} 
+          />
           <div className="Editor">
             <Row>
 

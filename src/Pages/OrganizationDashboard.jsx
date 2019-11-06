@@ -1,19 +1,27 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import HeaderBru from '../Components/Header.jsx';
 import Collapsible from 'react-collapsible';
 import '../Styles/OrganizationDashboard.css';
+import Routes from '../utils/RouteConstants.js'
+
+const links = {
+	Account: "/account",
+}
 
 export class OrganizationDashboard extends Component {
+	
+	handleNext() {}
+	
 	render() {
 		return (
 			<div className="background">
+				<HeaderBru 
+          			home={Routes.ORGANIZATION_DASHBOARD} 
+          			isLoggedIn={true}
+          			links={links} 
+        		/>
 				<div className="organizationDashboard">
-					<div className="welcomeOrganizationDiv">
-						<h3>Welcome Organization!</h3>
-						<Link to="/AccountSetting">
-							<h5>Change Account Setting</h5>
-						</Link>
-					</div>
 					<div className="organizationDashboardContents">
 						<div className="organizationInstructorDiv">
 							<h4>All Instructors</h4>
@@ -26,85 +34,85 @@ export class OrganizationDashboard extends Component {
 								<ul>
 									<li>
 										<div className="listRow">
-											<p>John Smith (123@123.com){' '}</p>
+											<p>John Smith (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li className="oddDiv">
 										<div className="listRow">
-											<p>Pocahontas (123@123.com){' '}</p>
+											<p>Pocahontas (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li>
 										<div className="listRow">
-											<p>John Smith (123@123.com){' '}</p>
+											<p>John Smith (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li className="oddDiv">
 										<div className="listRow">
-											<p>Pocahontas (123@123.com){' '}</p>
+											<p>Pocahontas (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li>
 										<div className="listRow">
-											<p>John Smith (123@123.com){' '}</p>
+											<p>John Smith (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li className="oddDiv">
 										<div className="listRow">
-											<p>Pocahontas (123@123.com){' '}</p>
+											<p>Pocahontas (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li>
 										<div className="listRow">
-											<p>John Smith (123@123.com){' '}</p>
+											<p>John Smith (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li className="oddDiv">
 										<div className="listRow">
-											<p>Pocahontas (123@123.com){' '}</p>
+											<p>Pocahontas (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li>
 										<div className="listRow">
-											<p>John Smith (123@123.com){' '}</p>
+											<p>John Smith (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li className="oddDiv">
 										<div className="listRow">
-											<p>Pocahontas (123@123.com){' '}</p>
+											<p>Pocahontas (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li>
 										<div className="listRow">
-											<p>John Smith (123@123.com){' '}</p>
+											<p>John Smith (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li className="oddDiv">
 										<div className="listRow">
-											<p>Pocahontas (123@123.com){' '}</p>
+											<p>Pocahontas (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li>
 										<div className="listRow">
-											<p>John Smith (123@123.com){' '}</p>
+											<p>John Smith (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
 									<li className="oddDiv">
 										<div className="listRow">
-											<p>Pocahontas (123@123.com){' '}</p>
+											<p>Pocahontas (123@123.com) </p>
 											<button className="small-round-button">-</button>
 										</div>
 									</li>
@@ -112,7 +120,7 @@ export class OrganizationDashboard extends Component {
 							</div>
 						</div>
 						<div className="organizationLabDiv">
-							<h4>All Labs</h4>
+							<h4>All Lessons</h4>
 							<ul className="listofOrganizationLabs">
 								<li className="organizationCourseListing">
 									<h5>Caramel Latte</h5>

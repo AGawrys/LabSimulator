@@ -11,22 +11,22 @@ import OrganizationDashboard from './Pages/OrganizationDashboard.jsx';
 import CoursePage from './Pages/CoursePage.jsx';
 import Signup from './Pages/Signup.jsx';
 import EditorStudent from './Pages/EditorStudent.jsx';
+import Routes from './utils/RouteConstants.js';
 
 function App() {
   return (
     <Router>
 				<div className="App">
 					<Switch>
-						<Route exact path="/" component={Home} />
-						<Route exact path="/Home" component={Home} />
-						<Route exact path="/Editor" component={Editor} />
-						<Route exact path="/StudentEditor" component={EditorStudent} />
-						<Route exact path="/InstructorDashboard" component={InstructorDashboard} />
-						<Route exact path="/StudentDashboard" component={StudentDashboard} />
-						<Route exact path="/AccountSetting" component={AccountSetting} />
-						<Route exact path="/OrganizationDashboard" component={OrganizationDashboard}/>
-						<Route exact path="/course/" component={CoursePage}/>
-						<Route exact path="/signup/" component={Signup}/>
+						<Route exact path={Routes.DEFAULT} component={Home} />
+						<Route exact path={Routes.INSTRUCTOR_EDITOR} component={Editor} />
+						<Route exact path={Routes.STUDENT_EDITOR} component={EditorStudent} />
+						<Route exact path={Routes.INSTRUCTOR_DASHBOARD} component={InstructorDashboard} />
+						<Route exact path={Routes.STUDENT_DASHBOARD} component={StudentDashboard} />
+						<Route exact path={Routes.ACCOUNT} component={AccountSetting} />
+						<Route exact path={Routes.ORGANIZATION_DASHBOARD} component={OrganizationDashboard}/>
+						<Route exact path={Routes.COURSE} component={CoursePage}/>
+						<Route exact path={Routes.SIGN_UP} component={Signup}/>
 						<Route component={NotFound} />
 					</Switch>
 				</div>
