@@ -4,6 +4,17 @@ import Collapsible from 'react-collapsible';
 import '../Styles/InstructorDashboard.css';
 import { Link } from 'react-router-dom';
 import HeaderBru from '../Components/Header.js';
+import ListBuilder from "../Components/ListBuilder.jsx";
+
+const dummyStudents = [
+	["Jason Dong", "jason.dong@stonybrook.edu"],
+	["James Angeles", "jangles99@sbu.edu"],
+	["Agnieszka Gawrys", "messiness@hotmail.com"], 
+	["Steven Kuang", "W.H.O.M.E.G.A.L.O.L@gmail.com"], 
+	["Wei Chen", "kmforward@yahoo.com"], 
+	["Ying Zhang", "yi.zha_ng@aol.com"], 
+	["Oscar Williams", "maldingman21@notcs.stonybrook.edu"] 
+]
 
 export class InstructorDashboard extends Component {
 
@@ -25,6 +36,8 @@ export class InstructorDashboard extends Component {
 				<div className="teacherDashboard">
 					<div className="searchBarDiv">
 						<SearchBar placeHolderText={'Search for Lesson'} />
+						<ListBuilder items={dummyStudents}
+									 placeholder={"Search Students"} />
 					</div>
 					<div className="teacherDashboardContents">
 						<div className="recentDrinksDiv">

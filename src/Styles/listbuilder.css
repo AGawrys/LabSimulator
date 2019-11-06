@@ -1,0 +1,12 @@
+.listbuilder {
+    width: 45vw;
+    height: 50vh;
+
+    margin: auto;
+}
+
+.list {
+    width: 80%;
+
+    border: 1px solid black;
+}
