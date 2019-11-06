@@ -128,10 +128,14 @@ export class InstructorDashboard extends Component {
 		return (
 			<div>
 				<Modal.Body>
-		            <Form.Group controlId="formBasicEmail">
+		            <Form.Group>
 		                <Form.Label>Course Name</Form.Label>
 		                <Form.Control minlength="5" required placeholder="Enter Course Name"/>
 		            </Form.Group>
+		            <Form.Group>
+		            	<Form.Label>Description</Form.Label>
+	            		<Form.Control maxlength="140" as="textarea" rows="3"/>
+            		</Form.Group>
 		        </Modal.Body>
 		        <Modal.Footer>
 		            <Button variant="primary" type="submit">
