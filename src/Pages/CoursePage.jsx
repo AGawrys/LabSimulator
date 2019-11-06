@@ -4,6 +4,7 @@ import Collapsible from 'react-collapsible';
 import '../Styles/StudentDashboard.css';
 import { Link } from 'react-router-dom';
 import HeaderBru from '../Components/Header.jsx';
+import CollapsibleRow from '../Components/CollapsibleRow.jsx';
 import Routes from '../utils/RouteConstants.js';
 
 const links = {
@@ -31,6 +32,7 @@ class CoursePage extends Component {
 						<h4> Lessons </h4>
 						<div className="studentAllLesson">
 							<ol>
+
 								<li className="courseListing">
 									<h5> Chai Tea Latte </h5>
 									<h6> 3/4 Students </h6>
