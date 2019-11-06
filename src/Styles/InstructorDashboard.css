@@ -24,8 +24,10 @@
 }
 
 .searchBarDiv {
+	position: relative;
 	margin: auto;
 	padding-bottom: 10px;
+	height: 20vh;
 }
 
 .searchBarDiv ::placeholder {
@@ -57,10 +59,12 @@
 }
 
 .teacherDashboardContents {
+	position: relative;
 	display: flex;
 	flex-wrap: nowrap;
 	justify-content: center;
 	margin: 3%;
+	z-index: -1;
 }
 
 .recentDrinksDiv {
