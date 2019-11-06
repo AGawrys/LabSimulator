@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import '../Styles/AccountSetting.css';
-import HeaderBru from '../Components/Header.js';
+import HeaderBru from '../Components/Header.jsx';
 import title from '../Styles/Images/brü.svg';
 import { Button, FormGroup, FormControl } from 'react-bootstrap';
 import '../Styles/signup.css';

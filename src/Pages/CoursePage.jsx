@@ -3,7 +3,7 @@ import SearchBar from 'react-js-search';
 import Collapsible from 'react-collapsible';
 import '../Styles/StudentDashboard.css';
 import { Link } from 'react-router-dom';
-import HeaderBru from '../Components/Header.js';
+import HeaderBru from '../Components/Header.jsx';
 
 
 class CoursePage extends Component {

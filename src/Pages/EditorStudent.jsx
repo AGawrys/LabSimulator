@@ -3,7 +3,7 @@ import { Button, Dropdown, DropdownButton, Card} from 'react-bootstrap';
 import Collapsible from 'react-collapsible';
 import { Container, Row, Col } from 'react-grid-system';
 import 'react-sticky-header/styles.css';
-import HeaderBru from '../Components/Header.js';
+import HeaderBru from '../Components/Header.jsx';
 import '../App.css';
 import '../Styles/HomeStyle.css';
 import '../Styles/EditorStyle.css';
