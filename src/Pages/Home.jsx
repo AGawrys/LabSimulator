@@ -4,8 +4,8 @@ import 'react-sticky-header/styles.css';
 import StickyHeader from 'react-sticky-header';
 import coffeeProcess from '../Styles/Images/coffeeProcess.gif';
 import { Redirect, Link } from 'react-router-dom';
-import Popup from '../Components/Popup.js';
-import HeaderBru from '../Components/Header.js';
+import Popup from '../Components/Popup.jsx';
+import HeaderBru from '../Components/Header.jsx';
 import '../App.css';
 import '../Styles/HomeStyle.css';
 

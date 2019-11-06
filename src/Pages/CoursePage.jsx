@@ -3,7 +3,7 @@ import ReactModal from "react-modal";
 import Collapsible from 'react-collapsible';
 import '../Styles/StudentDashboard.css';
 import { Link } from 'react-router-dom';
-import HeaderBru from '../Components/Header.js';
+import HeaderBru from '../Components/Header.jsx';
 
 const dummyStudents = [
 	{id: "jason.dong@stonybrook.edu", value: "Jason Dong"},
