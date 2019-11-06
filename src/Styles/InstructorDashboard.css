@@ -6,6 +6,8 @@
 	outline: none !important;
 	height: 35px;
 	width: 35px;
+	color: white;
+	background-color: #69CB9A;
 }
 
 .small-round-button {
