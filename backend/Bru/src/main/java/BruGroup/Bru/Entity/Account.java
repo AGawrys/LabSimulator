@@ -3,11 +3,6 @@ package BruGroup.Bru.Entity;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
-enum Role
-{
-    STUDENT, ORGANIZATION, INSTRUCTOR
-}
-
 @Table(name = "Account")
 @Entity
 public class Account {
@@ -17,7 +12,7 @@ public class Account {
     private String email;
     private String name;
     private String password;
-    private Role role;
+    private String role;
 
     public Account (){
 
@@ -27,14 +22,7 @@ public class Account {
         this.email = email;
         this.name = name;
         this.password = password;
-
-        if (role.equals("STUDENT")) {
-            this.role = Role.STUDENT;
-        } else if (role.equals("INSTRUCTOR")) {
-            this.role = Role.INSTRUCTOR;
-        } else if (role.equals("ORGANIZATION")) {
-            this.role = Role.ORGANIZATION;
-        }
+        this.role = role;
 
     }
 
@@ -54,25 +42,18 @@ public class Account {
         return this.password;
     }
 
+    public String getRole () {
+        return this.role;
+    }
+
+
     @Override
     public String toString() {
         return "Account {" +
                 "email = " + email +
                 ", password = " + password +
                 ", name = " + name +
-                ", role = " + this.getRole() + "}";
-    }
-
-    public String getRole() {
-        switch (this.role) {
-            case STUDENT:
-                return "STUDENT";
-            case INSTRUCTOR:
-                return "INSTRUCTOR";
-            case ORGANIZATION:
-                return "ORGANIZATION";
-        }
-        return "";
+                ", role = " + role + "}";
     }
 
 }
