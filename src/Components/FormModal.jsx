@@ -16,7 +16,7 @@ class FormModal extends React.Component {
                     {this.props.title}
                 </Modal.Title>
             </Modal.Header>
-            <Form onSubmit={this.props.submitAction}>
+            <Form>
                 {this.props.children}
             </Form>
         </Modal>
