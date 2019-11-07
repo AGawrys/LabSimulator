@@ -24,7 +24,6 @@ public class AccountController {
     @PostMapping (path = "/createAccount")
     @CrossOrigin(origins = "*")
     public ResponseEntity createAccount(@RequestBody Account account) {
-        System.out.print(account.getRole());
         if (accountRepository.findByEmail(account.getEmail()) != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email has been used.");
         }
