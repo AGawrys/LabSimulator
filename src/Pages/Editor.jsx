@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Dropdown, DropdownButton, Card, ListGroup} from 'react-bootstrap';
+import { Button, Dropdown, DropdownButton, Card, ListGroup, Modal, Form} from 'react-bootstrap';
 import { Container, Row, Col } from 'react-grid-system';
 import 'react-sticky-header/styles.css';
 import SimpleInput from 'react-simple-input';
@@ -9,6 +9,7 @@ import tool2 from '../Styles/Images/measuredPitcher.svg';
 import tool3 from '../Styles/Images/coffee-machine.svg';
 import tool4 from '../Styles/Images/cup.svg';
 import Routes from '../utils/RouteConstants.js';
+import FormModal from '../Components/FormModal.jsx';
 import '../App.css';
 import '../Styles/HomeStyle.css';
 import '../Styles/EditorStyle.css';
@@ -22,12 +23,47 @@ class Editor extends Component {
     	super(props);
     	this.state = {
         CourseName: 'Seasonal Training',
-        currentStep: 1
+        showAddStepModal: false,
+        currentStep: '', 
+        steps: [],
+        tools: [],
     	};
+      this.stepDescription = React.createRef();
     }
 
     handleNext() {}
     handleSimulate() {}
+
+    handleAddStep = (e) => {
+      e.preventDefault();
+      this.state.steps.push(this.stepDescription.current.value);
+      this.setState({showAddStepModal: false});
+    }
+
+    getAddStepForm() {
+      return (
+        <div>
+          <Modal.Body>
+            <Form.Group>
+              <Form.Label>Description</Form.Label>
+              <Form.Control 
+                ref={this.stepDescription}
+                minLength="5" 
+                required placeholder="Enter step description (i.e pour water into cup)"/>
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" type="submit">
+              Add
+            </Button>
+          </Modal.Footer>
+        </div>
+      );
+    }
+
+    getCurrentStepForm() {
+
+    }
     
     render() {
       return (
@@ -37,6 +73,14 @@ class Editor extends Component {
             isLoggedIn={true}
             links={links} 
           />
+          <FormModal 
+            title="Create Course" 
+            show={this.state.showAddStepModal} 
+            onHide={() => this.setState({showAddStepModal:false})}
+            submitAction={this.handleAddStep}
+          >
+            {this.getAddStepForm()}
+          </FormModal>
           <section>
             <div className="editor"> 
           <Container className="page-grid">
@@ -44,11 +88,20 @@ class Editor extends Component {
               <Col col-sm={4}>
                 <Row>
                     <Card style={{ height: '35vh'}}>
-                    <Card.Header>Step {this.state.currentStep}:</Card.Header>
-                    <Card.Body style={{ height: '10vh' }}>.
-                    Pour the milk into the cup using the pitcher.
-                    </Card.Body>
-                  </Card>
+                      <Card.Header> Editor Actions </Card.Header>
+                      <Card.Body style={{ height: '10vh' }}>.
+                        <Button title="Add Step" onClick={() => {
+                          this.setState({showAddStepModal: true})}}
+                        > 
+                          Add Step 
+                        </Button>
+                        <div className="divider" />
+                        <Button title="Publish"> Publish </Button>
+                        <div className="divider" />
+                        <Button title="Delete Lesson" className="btn-danger"> Delete Lab </Button>
+                        <div className="divider" />
+                      </Card.Body>
+                    </Card>
                 </Row>
                 <div className="divider" />
                 <Row>
@@ -82,25 +135,6 @@ class Editor extends Component {
             <Col sm={2}>
               <Row>
                   <Card style={{ width: '14rem', height: '36vh'}}>
-                    <Card.Header>Add Action</Card.Header>
-                    <div className="divider" />
-                    <DropdownButton id="dropdown-basic-button" title="Action Type">
-                      <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                      <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                      <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-                    </DropdownButton>
-                  <div className="divider" />
-                  <DropdownButton id="dropdown-basic-button" title="Source">
-                      <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                      <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                      <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-                    </DropdownButton>
-                    <div className="divider" />
-                    <DropdownButton id="dropdown-basic-button" title="Target">
-                      <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                      <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                      <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-                    </DropdownButton>
                   </Card>
                   </Row>
                   <div className="divider" />
@@ -108,9 +142,11 @@ class Editor extends Component {
                   <Card style={{ width: '14rem' }}>
                     <Card.Header>All Steps</Card.Header>
                     <ListGroup variant="flush">
-                      <ListGroup.Item>Pour milk into cup using pitcher </ListGroup.Item>
-                      <ListGroup.Item>Add caramel syrup</ListGroup.Item>
-                      <ListGroup.Item>Add espresso shot</ListGroup.Item>
+                      {
+                        this.state.steps.map(step => 
+                          <ListGroup.Item> {step} </ListGroup.Item>
+                        )
+                      }
                     </ListGroup>
                   </Card>
                   </Row>
