@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import HeaderBru from '../Components/Header.js';
+import HeaderBru from '../Components/Header.jsx';
 import Collapsible from 'react-collapsible';
 import '../Styles/OrganizationDashboard.css';
+import Routes from '../utils/RouteConstants.js'
+
+const links = {
+	Account: "/account",
+}
 
 export class OrganizationDashboard extends Component {
 	
@@ -11,17 +16,11 @@ export class OrganizationDashboard extends Component {
 	render() {
 		return (
 			<div className="background">
-				<HeaderBru
-              first='Welcome, Organization!'
-              second='Settings'
-              link2='/AccountSetting'
-              third='Home'
-			  link3="/Home"
-			  link4="/Home"
-              btn='Exit'
-              color= '#01AFD8'
-              clickHeaderBtn={this.handleNext.bind(this)}
-            />
+				<HeaderBru 
+          			home={Routes.ORGANIZATION_DASHBOARD} 
+          			isLoggedIn={true}
+          			links={links} 
+        		/>
 				<div className="organizationDashboard">
 					<div className="organizationDashboardContents">
 						<div className="organizationInstructorDiv">

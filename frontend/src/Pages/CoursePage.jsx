@@ -3,26 +3,24 @@ import SearchBar from 'react-js-search';
 import Collapsible from 'react-collapsible';
 import '../Styles/StudentDashboard.css';
 import { Link } from 'react-router-dom';
-import HeaderBru from '../Components/Header.js';
+import HeaderBru from '../Components/Header.jsx';
+import CollapsibleRow from '../Components/CollapsibleRow.jsx';
+import Routes from '../utils/RouteConstants.js';
 
+const links = {
+  Account: "/account",
+}
 
 class CoursePage extends Component {
 	handleNext() {}
 	render() {
 		return (
 			<div className="background">
-				<HeaderBru
-				first='Dashboard'
-				link1="/InstructorDashboard"
-				second='Settings'
-				link2='/AccountSetting'
-				third='Home'
-				link3="/Home"
-				btn='Exit'
-				link4="/Home"
-				color= '#01AFD8'
-				clickHeaderBtn={this.handleNext.bind(this)}
-				/>
+				<HeaderBru 
+            		home={Routes.INSTRUCTOR_DASHBOARD} 
+            		isLoggedIn={true}
+            		links={links} 
+          		/>
 				<div className="studentDashboard">
 					<div className="welcomeStudentDiv">
 						<h3> Fall Seasonals 2019 </h3>
@@ -34,6 +32,7 @@ class CoursePage extends Component {
 						<h4> Lessons </h4>
 						<div className="studentAllLesson">
 							<ol>
+
 								<li className="courseListing">
 									<h5> Chai Tea Latte </h5>
 									<h6> 3/4 Students </h6>

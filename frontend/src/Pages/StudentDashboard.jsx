@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import Collapsible from 'react-collapsible';
 import '../Styles/StudentDashboard.css';
 import { Link } from 'react-router-dom';
-import HeaderBru from '../Components/Header.js';
+import HeaderBru from '../Components/Header.jsx';
+import Routes from '../utils/RouteConstants.js'
+
+const links = {
+	Account: "/account",
+}
 
 export class StudentDashboard extends Component {
 	
@@ -10,14 +15,11 @@ export class StudentDashboard extends Component {
 		
 		return (
 			<div className="background">
-				<HeaderBru
-              first='Welcome, Student!'
-              second='Settings'
-              link2='/AccountSetting'
-              third='Home'
-              link3="/Home"
-              btn='Exit'
-              color= '#01AFD8'
+				<HeaderBru 
+          			home={Routes.STUDENT_DASHBOARD} 
+          			isLoggedIn={true}
+          			links={links} 
+        		/>
             />
 				<div className="studentDashboard">
 					<div className="studentDashboardContents">
