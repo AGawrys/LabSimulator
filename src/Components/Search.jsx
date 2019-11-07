@@ -12,7 +12,16 @@ class Search extends React.Component {
             result: [],
         };
 
+        this.clear = this.clear.bind(this)
         this.onChange = this.onChange.bind(this)
+
+        this.add = props.add
+    }
+
+    clear() {
+        this.setState({
+            text: ""
+        });
     }
 
     onChange(e) {
@@ -58,8 +67,7 @@ class Search extends React.Component {
                         result.map(item => {
                             return (
                                 <li key={item}>
-                                    <ListItem item={item}/>
-                                    <button>+</button>
+                                    <ListItem item={item} add={this.add} clear={this.clear}/>
                                 </li>
                             );
                         })

@@ -1,15 +1,25 @@
 import React, { Component } from 'react';
 import ReactModal from "react-modal";
 import Collapsible from 'react-collapsible';
-import '../Styles/StudentDashboard.css';
-import { Link } from 'react-router-dom';
+import ListBuilder from "../Components/ListBuilder.jsx"
+import "../Styles/bru.css"
+import '../Styles/coursepage.css';
 import HeaderBru from '../Components/Header.jsx';
 
-const dummyStudents = [
+/* const dummyStudents = [
 	{id: "jason.dong@stonybrook.edu", value: "Jason Dong"},
 	{id: "james.angeles@stonybrook.edu", value: "James Angeles"},
 	{id: "agnieszka.gawrys@stonybrook.edu", value: "Agnieszka Gawrys"},
 	{id: "steven.kuang@stonybrook.edu", value: "Steven Kuang"}
+] */
+const dummyStudents = [
+	["Jason Dong", "jason.dong@stonybrook.edu"],
+	["James Angeles", "jangles99@sbu.edu"],
+	["Agnieszka Gawrys", "messiness@hotmail.com"], 
+	["Steven Kuang", "W.H.O.M.E.G.A.L.O.L@gmail.com"], 
+	["Wei Chen", "kmforward@yahoo.com"], 
+	["Ying Zhang", "yi.zha_ng@aol.com"], 
+	["Oscar Williams", "maldingman21@notcs.stonybrook.edu"] 
 ]
 
 ReactModal.setAppElement("#root");
@@ -23,6 +33,7 @@ class CoursePage extends Component {
 
 		this.handleOpenAddStudents = this.handleOpenAddStudents.bind(this);
 		this.handleCloseAddStudents = this.handleCloseAddStudents.bind(this);
+		this.handleTest = this.handleTest.bind(this);
 	}
 
 	handleOpenAddStudents() {
@@ -37,14 +48,21 @@ class CoursePage extends Component {
 		});
 	}
 
-	displayNewStudents(items) {
-		console.log(items)
+	handleTest() {
+		console.log("Test")
 	}
 
-	handleNext() {}
 	render() {
+		if (this.state.showAddStudentsModal) {
+			let body = document.getElementsByTagName("BODY")[0];
+			body.classList.toggle("hidden")
+		} else {
+			let body = document.getElementsByTagName("BODY")[0];
+			body.classList.remove("hidden")
+		}
+
 		return (
-			<div className="background">
+			<div className={"background"}>
 				<HeaderBru
 				first='Dashboard'
 				link1="/InstructorDashboard"
@@ -55,7 +73,6 @@ class CoursePage extends Component {
 				btn='Exit'
 				link4="/Home"
 				color= '#01AFD8'
-				clickHeaderBtn={this.handleNext.bind(this)}
 				/>
 				<div className="studentDashboard">
 					<div className="welcomeStudentDiv">
@@ -65,10 +82,17 @@ class CoursePage extends Component {
 				</div>
 				<div className="studentDashboardContents">
 
-					<ReactModal isOpen={this.state.showAddStudentsModal}
+					<ReactModal	isOpen={this.state.showAddStudentsModal}
 								contentLabel={"Add Students"}
 					>
+						<div className={"subheader"}>
+							<h1>Add Student</h1>
+						</div>
+						<ListBuilder items={dummyStudents}
+									 placeholder={"Search for Students"}
+						/>
 						<button onClick={this.handleCloseAddStudents}>Cancel</button>
+						<button onClick={this.handleCloseAddStudents}>Done</button>
 					</ReactModal>
 
 					<div className="studentRecentLesson">
@@ -118,70 +142,74 @@ class CoursePage extends Component {
 						</div>
 					</div>
 				</div>
+				
 				<div className="teacherDashboardContents">
-						<div className="recentDrinksDiv">
-							<div className="recentDrinkTop">
-								<h4>Instructors</h4>
-								<button className="buttonRound btn-primary">+</button>
-							</div>
-							<div className="recentDrinkBottom">
-								<ol>
-									<li> 
-										<div className="listRow">
-											<p> Richard McKenna </p>
-											<button className="buttonRound btn-danger">-</button>
-										</div>
-									</li>
-									<li> 
-										<div className="listRow">
-											<p> Eugene Stark </p>
-											<button className="buttonRound btn-danger">-</button>
-										</div>
-									</li>
-									<li> 
-										<div className="listRow">
-											<p> Kevin McDonnell </p>
-											<button className="buttonRound btn-danger">-</button>
-										</div>
-									</li>
-								</ol>
-							</div>
+					<div className="recentDrinksDiv">
+						<div className="recentDrinkTop">
+							<h4>Instructors</h4>
+							<button className="buttonRound btn-primary">+</button>
 						</div>
-						<div className="recentLessonsDiv">
-							<div className="recentLessonsTop">
-								<h4>Students</h4>
-								<button onClick={this.handleOpenAddStudents} className="buttonRound btn-primary">+</button>
-							</div>
-							<div className="recentDrinkBottom">
-								<ol>
-									<li> 
-										<div className="listRow">
-											<p> James Angeles </p>
-											<button className="buttonRound btn-danger">-</button>
-										</div>
-									</li>
-									<li> 
-										<div className="listRow">
-											<p> Steven Kuang </p>
-											<button className="buttonRound btn-danger">-</button>
-										</div>
-									</li>
-									<li> 
-										<div className="listRow">
-											<p> Agnieszka Gawrys </p>
-											<button className="buttonRound btn-danger">-</button>
-										</div>
-									</li>
-									<li> 
-										<div className="listRow">
-											<p>Jason Dong</p>
-											<button className="buttonRound btn-danger">-</button>
-										</div>
-									</li>
-								</ol> 
-							</div>
+						<div className="recentDrinkBottom">
+							<ol>
+								<li> 
+									<div className="listRow">
+										<p> Richard McKenna </p>
+										<button className="buttonRound btn-danger">-</button>
+									</div>
+								</li>
+								<li> 
+									<div className="listRow">
+										<p> Eugene Stark </p>
+										<button className="buttonRound btn-danger">-</button>
+									</div>
+								</li>
+								<li> 
+									<div className="listRow">
+										<p> Kevin McDonnell </p>
+										<button className="buttonRound btn-danger">-</button>
+									</div>
+								</li>
+							</ol>
 						</div>
 					</div>
+					
+					<div className="recentLessonsDiv">
+						
+						<div className="recentLessonsTop">
+							<h4>Students</h4>
+							<button onClick={this.handleOpenAddStudents} className="buttonRound btn-primary">+</button>
+						</div>
+						<div className="recentDrinkBottom">
+							<ol>
+								<li> 
+									<div className="listRow">
+										<p> James Angeles </p>
+										<button className="buttonRound btn-danger">-</button>
+									</div>
+								</li>
+								<li> 
+									<div className="listRow">
+										<p> Steven Kuang </p>
+										<button className="buttonRound btn-danger">-</button>
+									</div>
+								</li>
+								<li> 
+									<div className="listRow">
+										<p> Agnieszka Gawrys </p>
+										<button className="buttonRound btn-danger">-</button>
+									</div>
+								</li>
+								<li> 
+									<div className="listRow">
+										<p>Jason Dong</p>
+										<button className="buttonRound btn-danger">-</button>
+									</div>
+								</li>
+							</ol> 
+						</div>
+					</div>
+				</div>
+				
 			</div>
 		);
 	}

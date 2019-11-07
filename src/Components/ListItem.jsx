@@ -1,24 +1,46 @@
 import React from "react"
 import "../Styles/search.css"
 
-function ListItem(props) {
-    let listItem = []
+class ListItem extends React.Component{
+    constructor(props) {
+        super(props)
 
-    listItem.push(
-        <div>
-            {props.item[0]}
-        </div>
-    );
+        this.item = props.item
+        this.add = props.add
+        this.clear = props.clear
 
-    for (let i = 1; i < props.item.length; i++) {
-        listItem.push(
-            <div class="subtext">
-                {props.item[i]}
-            </div>
-        );
+        this.handleAdd = this.handleAdd.bind(this)
     }
 
-    return <div>{listItem}</div>
+    handleAdd() {
+        this.add(this.item);
+        this.clear();
+    }
+
+    render() {
+        let listItem = []
+
+        listItem.push(
+            <div>
+                {this.item[0]}
+            </div>
+        );
+
+        for (let i = 1; i < this.item.length; i++) {
+            listItem.push(
+                <div class="subtext">
+                    {this.item[i]}
+                </div>
+            );
+        }
+
+        if (this.add) {
+            listItem.push(<button onClick={this.handleAdd} >+</button>)
+            console.log(this.add)
+        }
+
+        return <div>{listItem}</div>
+    }
 }
 
 export default ListItem;

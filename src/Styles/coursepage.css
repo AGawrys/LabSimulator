@@ -1,0 +1,27 @@
+.hidden {
+	overflow: hidden;
+}
+
+.ReactModal__Overlay {
+    background: transparent !important;
+    transition: all .3s ease;
+}
+
+.ReactModal__Overlay--after-open {
+    background: rgba(0,0,0,.6) !important;
+}
+
+.ReactModal__Content {
+    width: 40vw;
+    height: 75vh;
+    transition: all .3s ease;
+    transform: translateX(100%) !important;
+}
+
+.ReactModal__Content--after-open {
+    transform: translateX(0) !important;
+}
+
+.ReactModal__Content--before-close {
+    transform: translateX(100%) !important;
+}
