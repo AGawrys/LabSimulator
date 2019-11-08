@@ -25,7 +25,7 @@ public class AccountController {
     @CrossOrigin(origins = "*")
     public ResponseEntity createAccount(@RequestBody Account account) {
         if (accountRepository.findByEmail(account.getEmail()) != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email has been used.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         accountRepository.save(account);
         return ResponseEntity.ok(null);
@@ -36,13 +36,13 @@ public class AccountController {
     public ResponseEntity login(@RequestBody Account account) {
         Account dbAccount = accountRepository.findByEmail(account.getEmail());
         if (dbAccount == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email has not been registered.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         if (dbAccount.getPassword().equals(account.getPassword())) {
             return ResponseEntity.ok(null);
         }
         else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect Password.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 }

@@ -21,5 +21,9 @@
 }
 
 .signUpRadio {
-	margin: 0 5%;
+	margin-left: 10%;
+}
+
+.radioButtonUser {
+	margin-left: 5px;
 }

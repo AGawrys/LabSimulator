@@ -23,7 +23,6 @@ class Signup extends React.Component {
 
 	handleFieldChange = (e, field) => {
 		this.setState({ [field]: e.target.value });
-		console.log(this.state.role);
 	};
 
 	handleSignUp = (e) => {
@@ -50,7 +49,7 @@ class Signup extends React.Component {
 
 	render() {
 		if (this.state.redirect) {
-			return <Redirect exact to="/studentdashboard" />;
+			return <Redirect exact to="/" />;
 		} else {
 			const errorMessage = this.state.errors;
 			return (
@@ -66,21 +65,24 @@ class Signup extends React.Component {
 										name="optradio"
 										required
 										onChange={(e) => this.handleRadioCheck(e, 'STUDENT')}
-									/>Student
+									/>{' '}
+									<label className="radioButtonUser">Student</label>
 								</label>
 								<label class="radio-inline signUpRadio">
 									<input
 										type="radio"
 										name="optradio"
 										onChange={(e) => this.handleRadioCheck(e, 'INSTRUCTOR')}
-									/>Instructor
+									/>
+									<label className="radioButtonUser">Instructor</label>
 								</label>
 								<label class="radio-inline signUpRadio">
 									<input
 										type="radio"
 										name="optradio"
 										onChange={(e) => this.handleRadioCheck(e, 'ORGANIZATION')}
-									/>Organization
+									/>
+									<label className="radioButtonUser">Organization</label>
 								</label>
 							</FormGroup>
 							<FormGroup controlId="formBasicText" bsSize="large">
@@ -95,7 +97,7 @@ class Signup extends React.Component {
 							<FormGroup controlId="formBasicText" bsSize="large">
 								<FormControl
 									autoFocus
-									type="text"
+									type="email"
 									placeholder="Email"
 									onChange={(e) => this.handleFieldChange(e, 'email')}
 									required
