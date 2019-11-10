@@ -8,30 +8,24 @@ import Routes from '../utils/RouteConstants.js';
 import FormModal from '../Components/FormModal.jsx';
 import { Button, Form, Modal } from 'react-bootstrap';
 
-
 const links = {
-	Account: "/account",
-}
+	Account: '/account'
+};
 
 export class InstructorDashboard extends Component {
-
 	constructor(props) {
 		super(props);
 		this.state = {
 			showCourseModal: false,
-			showLessonModal: false,
+			showLessonModal: false
 		};
 	}
 
-	handleNext(){}
+	handleNext() {}
 	render() {
 		return (
 			<div className="background">
-				<HeaderBru 
-          			home={Routes.INSTRUCTOR_DASHBOARD} 
-          			isLoggedIn={true} 
-          			links={links}
-        		/>
+				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
 				<div className="teacherDashboard">
 					<div className="searchBarDiv">
 						<SearchBar placeHolderText={'Search for Lesson'} />
@@ -40,14 +34,21 @@ export class InstructorDashboard extends Component {
 						<div className="recentDrinksDiv">
 							<div className="recentDrinkTop">
 								<h4>Recent Lessons</h4>
-								<button className="buttonRound" onClick={() => {
-									this.setState({showLessonModal: true});
-								}}>
+								<button
+									className="buttonRound btn-primary"
+									onClick={() => {
+										this.setState({ showLessonModal: true });
+									}}
+								>
 									+
 								</button>
-								<FormModal title="Create Course" show={this.state.showLessonModal} onHide={() => {
-									this.setState({showLessonModal: false})
-								}}>
+								<FormModal
+									title="Create Course"
+									show={this.state.showLessonModal}
+									onHide={() => {
+										this.setState({ showLessonModal: false });
+									}}
+								>
 									{this.getLessonForm()}
 								</FormModal>
 							</div>
@@ -90,16 +91,23 @@ export class InstructorDashboard extends Component {
 						<div className="recentLessonsDiv">
 							<div className="recentLessonsTop">
 								<h4>Recent Courses</h4>
-								<button className="buttonRound" onClick={() => {
-									this.setState({showCourseModal: true});
-								}}>
+								<button
+									className="buttonRound btn-primary"
+									onClick={() => {
+										this.setState({ showCourseModal: true });
+									}}
+								>
 									+
 								</button>
-								<FormModal title="Create Course" show={this.state.showCourseModal} onHide={() => {
-									this.setState({showCourseModal: false})
-								}}> 
+								<FormModal
+									title="Create Course"
+									show={this.state.showCourseModal}
+									onHide={() => {
+										this.setState({ showCourseModal: false });
+									}}
+								>
 									{this.getCourseForm()}
-					            </FormModal>
+								</FormModal>
 							</div>
 							<div className="recentLessonsBottom">
 								<div className="training1">
@@ -128,21 +136,21 @@ export class InstructorDashboard extends Component {
 		return (
 			<div>
 				<Modal.Body>
-		            <Form.Group>
-		                <Form.Label>Course Name</Form.Label>
-		                <Form.Control minlength="5" required placeholder="Enter Course Name"/>
-		            </Form.Group>
-		            <Form.Group>
-		            	<Form.Label>Description</Form.Label>
-	            		<Form.Control maxlength="140" as="textarea" rows="3"/>
-            		</Form.Group>
-		        </Modal.Body>
-		        <Modal.Footer>
-		            <Button variant="primary" type="submit">
-		                Create
-		            </Button>
-		        </Modal.Footer>
-	        </div>
+					<Form.Group>
+						<Form.Label>Course Name</Form.Label>
+						<Form.Control minlength="5" required placeholder="Enter Course Name" />
+					</Form.Group>
+					<Form.Group>
+						<Form.Label>Description</Form.Label>
+						<Form.Control maxlength="140" as="textarea" rows="3" />
+					</Form.Group>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="primary" type="submit">
+						Create
+					</Button>
+				</Modal.Footer>
+			</div>
 		);
 	}
 
@@ -150,17 +158,17 @@ export class InstructorDashboard extends Component {
 		return (
 			<div>
 				<Modal.Body>
-		            <Form.Group controlId="formBasicEmail">
-		                <Form.Label>Lesson Name</Form.Label>
-		                <Form.Control minlength="5" required placeholder="Enter Lesson Name"/>
-		            </Form.Group>
-		        </Modal.Body>
-		        <Modal.Footer>
-		            <Button variant="primary" type="submit">
-		                Create
-		            </Button>
-		        </Modal.Footer>
-	        </div>
+					<Form.Group controlId="formBasicEmail">
+						<Form.Label>Lesson Name</Form.Label>
+						<Form.Control minlength="5" required placeholder="Enter Lesson Name" />
+					</Form.Group>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="primary" type="submit">
+						Create
+					</Button>
+				</Modal.Footer>
+			</div>
 		);
 	}
 }

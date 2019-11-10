@@ -101,3 +101,9 @@
 	font-size: .8em !important;
 	margin-left: 10% !important;
 }
+
+.smallOrganizationButton {
+	height: 25px !important;
+	width: 25px !important;
+	margin-top: 10px;
+}

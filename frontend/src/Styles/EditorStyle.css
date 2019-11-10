@@ -1,73 +1,82 @@
 .Editor {
-    height: 100%;
-    width: 100%;
-    color: black;
+	height: 100%;
+	width: 100%;
+	color: black;
 }
 .page-grid {
-    padding-top: 15vh;
+	padding-top: 5vh;
 }
 
 .column {
-    background-color: white;
-    border-radius: 5;
-    padding-bottom: 15;
-
+	background-color: white;
+	border-radius: 5;
+	padding-bottom: 15;
 }
 .divider {
-    height: 2vh;
+	height: 2vh;
 }
 
-.list-entry{
-    padding-top: 1vh;
-    border-top-width: 0px;
-    border-bottom-width: 1px;
-    border-left-width: 0px;
-    border-right-width: 0px;
-    border-style: solid;
-    border-color: grey;
-    background-color: white;
-    color: grey;
-    padding-bottom: 5px;
+.list-entry {
+	padding-top: 1vh;
+	border-top-width: 0px;
+	border-bottom-width: 1px;
+	border-left-width: 0px;
+	border-right-width: 0px;
+	border-style: solid;
+	border-color: grey;
+	background-color: white;
+	color: grey;
+	padding-bottom: 5px;
 }
 
 .step-entry {
-    padding-top: 1vh;
-    border-top-width: 1px;
-    border-bottom-width: 0px;
-    border-left-width: 0px;
-    border-right-width: 0px;
-    border-style: solid;
-    border-color: lightgrey;
-    background-color: white;
-    color: grey;
-    padding-bottom: 5px;
+	padding-top: 1vh;
+	border-top-width: 1px;
+	border-bottom-width: 0px;
+	border-left-width: 0px;
+	border-right-width: 0px;
+	border-style: solid;
+	border-color: lightgrey;
+	background-color: white;
+	color: grey;
+	padding-bottom: 5px;
 }
 
 .step-column {
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 5px;
-    border-color: lightgrey;
-    background-color: white;
-    height: 80vh;
-    width: 55vh;
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 5px;
+	border-color: lightgrey;
+	background-color: white;
+	height: 80vh;
+	width: 55vh;
 }
 
 .tool-column {
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 5px;
-    border-color: lightgray;
-    background-color: white;
-    height: 35vh;
-    width: 20vh
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 5px;
+	border-color: lightgray;
+	background-color: white;
+	height: 35vh;
+	width: 20vh;
 }
 
 .student-editor {
-    flex: 1;
-    flex-direction: row;
+	flex: 1;
+	flex-direction: row;
 }
 
 .collapsible-list {
-    text-align: left;
+	text-align: left;
+}
+
+.editorStepButton {
+	margin-left: 10%;
+}
+
+.editorActionRow button {
+	font-weight: bold;
+	margin-right: 1%;
+	margin-bottom: 1%;
 }
