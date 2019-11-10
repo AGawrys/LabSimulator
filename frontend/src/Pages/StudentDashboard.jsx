@@ -3,28 +3,25 @@ import Collapsible from 'react-collapsible';
 import '../Styles/StudentDashboard.css';
 import { Link } from 'react-router-dom';
 import HeaderBru from '../Components/Header.jsx';
-import Routes from '../utils/RouteConstants.js'
+import Routes from '../utils/RouteConstants.js';
+import { Row } from 'react-bootstrap';
 
 const links = {
-	Account: "/account",
-}
+	Account: '/account'
+};
 
 export class StudentDashboard extends Component {
-	
 	render() {
-		
 		return (
 			<div className="background">
-				<HeaderBru 
-          			home={Routes.STUDENT_DASHBOARD} 
-          			isLoggedIn={true}
-          			links={links} 
-        		/>
-            />
+				<HeaderBru home={Routes.STUDENT_DASHBOARD} isLoggedIn={true} links={links} />
+				/>
 				<div className="studentDashboard">
 					<div className="studentDashboardContents">
 						<div className="studentRecentLesson">
-							<h4>Recent Courses</h4>
+							<Row className="headingRow">
+								<h4>Recent Courses</h4>
+							</Row>
 							<div className="studentAllLesson">
 								<ol>
 									<li className="courseListing">

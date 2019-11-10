@@ -89,6 +89,12 @@ class Editor extends Component {
 								<button type="button" className="btn btn-secondary">
 									Undo Action
 								</button>
+								<button type="button" className="btn btn-info">
+									Save Lab
+								</button>
+								<button type="button" className="btn btn-info">
+									Load Lab
+								</button>
 								<button type="button" className="btn btn-success">
 									Publish Lab
 								</button>

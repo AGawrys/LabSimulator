@@ -183,3 +183,16 @@
 	margin-right: 2%;
 	padding: 1%;
 }
+
+.deleteCourseButton {
+	float: right !important;
+}
+
+.containerHeaderDiv {
+	padding: 0 !important;
+}
+
+.instructorAddLessonButton {
+	margin-right: 2%;
+	margin-top: 2% !important;
+}
