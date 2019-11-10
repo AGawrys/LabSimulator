@@ -34,7 +34,7 @@ class ShakeModal extends React.Component {
 
   render() {
     const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
-    const {deltaPosition, controlledPosition} = this.state;
+    const {deltaPosition} = this.state;
 
     return (  
         <Modal
@@ -45,12 +45,15 @@ class ShakeModal extends React.Component {
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    {this.props.title}
+                    Shake it!
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Draggable {...dragHandlers}>
-                    <div>I can be dragged anywhere</div>
+                <Draggable bounds="parent" onDrag={this.handleDrag} {...dragHandlers}>
+                    <div className="box">
+                        <div>I can be dragged anywhere</div>
+                        <div>x: {deltaPosition.x.toFixed(0)}, y: {deltaPosition.y.toFixed(0)}</div>
+                    </div>
                 </Draggable>
             </Modal.Body>
         </Modal>
