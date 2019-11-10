@@ -10,6 +10,7 @@ import tool3 from '../Styles/Images/coffee-machine.svg';
 import tool4 from '../Styles/Images/cup.svg';
 import Routes from '../utils/RouteConstants.js';
 import FormModal from '../Components/FormModal.jsx';
+import ShakeModal from '../Components/ShakeModal.jsx';
 import Step from '../objects/Step.js';
 import '../App.css';
 import '../Styles/HomeStyle.css';
@@ -73,6 +74,7 @@ class Editor extends Component {
           >
             {this.getAddStepForm()}
           </FormModal>
+          <ShakeModal show={true}/>
           <FormModal
             title="Edit Step"
             show={this.state.showEditStepModal}
