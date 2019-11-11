@@ -1,0 +1,135 @@
+.editor {
+    display: grid;
+    grid-template:
+    "header header header header header" 10vh
+    "action details details details steps" 10vh
+    "action canvas canvas canvas steps" 20vh
+    "catalog canvas canvas canvas steps" 30vh
+    "catalog canvas canvas canvas layer" 15vh
+    "catalog canvas canvas canvas layer" 15vh
+    / 16vw 23vw 23vw 23vw 15vw;
+
+    text-align: left;
+}
+
+.header {
+    grid-area: header;
+
+    background-color: green;
+}
+
+.subheader {
+    width: 99%;
+
+    padding: 0.5rem;
+
+    background-color: grey;
+}
+
+.action-area {
+    grid-area: action;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-manager {
+    width: 99%;
+    height: 99%;
+
+    border: 1px solid black;
+}
+
+.details {
+    grid-area: details;
+
+    background-color: aqua;
+}
+
+.steps {
+    grid-area: steps;
+
+    background-color: grey;
+}
+
+.canvas-area {
+    grid-area: canvas;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.canvas {
+    width: 99%;
+    height: 99%;
+
+    border: 1px solid black;
+}
+
+.catalog-area {
+    grid-area: catalog;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.catalog {
+    width: 99%;
+    height: 99%;
+
+    border: 1px solid black;
+}
+
+.catalog-listing {
+    width: 100%;
+
+    list-style: none;
+
+    padding-left: 0;
+}
+
+.catalog-listing li{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+}
+
+.collapsible {
+    width: 100%;
+
+    border: 1px solid black;
+}
+
+.collapsible-trigger {
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+
+    padding: 0.5rem;
+    background-color: burlywood;
+}
+
+.catalog-tools {
+    width: 100%;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.thumbnail {
+    max-width: 30%;
+}
+
+.layer {
+    grid-area: layer;
+
+    background-color: ghostwhite;
+}

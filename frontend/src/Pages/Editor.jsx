@@ -10,6 +10,7 @@ import tool3 from '../Styles/Images/coffee-machine.svg';
 import tool4 from '../Styles/Images/cup.svg';
 import Routes from '../utils/RouteConstants.js';
 import FormModal from '../Components/FormModal.jsx';
+import ShakeModal from '../Components/ShakeModal.jsx';
 import '../App.css';
 import '../Styles/HomeStyle.css';
 import '../Styles/EditorStyle.css';
@@ -69,6 +70,38 @@ class Editor extends Component {
 
 	render() {
 		return (
+			/*<div class="editor">
+                <div class="header">
+
+                </div>
+
+                <div class="action-area">
+                    <div class="subheader">Action Manager</div>
+                    <div class="action-manager">
+
+                    </div>
+
+                </div>
+
+                <div class="details">
+                </div>
+
+                <div class="steps">
+
+                </div>
+
+                <div class="canvas-area">
+                </div>
+
+                <div class="catalog-area">
+                    <div class="subheader">Tools</div>
+                    <Catalog />
+                </div>
+
+                <div class="layer">
+                  
+                </ xdiv>                
+          </div>*/
 			<div>
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
 				<FormModal
@@ -79,6 +112,7 @@ class Editor extends Component {
 				>
 					{this.getAddStepForm()}
 				</FormModal>
+				<ShakeModal show={false} progressNeeded={500}/>
 				<section>
 					<div className="editor">
 						<Container className="page-grid">
