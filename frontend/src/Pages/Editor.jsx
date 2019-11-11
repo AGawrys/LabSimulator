@@ -9,6 +9,7 @@ import tool2 from '../Styles/Images/measuredPitcher.svg';
 import tool3 from '../Styles/Images/coffee-machine.svg';
 import tool4 from '../Styles/Images/cup.svg';
 import Routes from '../utils/RouteConstants.js';
+import Step from '../Objects/Step.js';
 import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import '../App.css';
@@ -26,93 +27,20 @@ class Editor extends Component {
 		super(props);
 		this.state = {
 			CourseName: 'Seasonal Training',
-			showAddStepModal: false,
 			currentStep: '',
 			steps: [],
 			tools: []
 		};
-		this.stepDescription = React.createRef();
 	}
 
 	handleNext() {}
 	handleSimulate() {}
 
-	handleAddStep = (e) => {
-		e.preventDefault();
-		this.state.steps.push(this.stepDescription.current.value);
-		this.setState({ showAddStepModal: false });
-	};
-
-	getAddStepForm() {
-		return (
-			<div>
-				<Modal.Body>
-					<Form.Group>
-						<Form.Label>Description</Form.Label>
-						<Form.Control
-							ref={this.stepDescription}
-							minLength="5"
-							required
-							placeholder="Enter step description (i.e pour water into cup)"
-						/>
-					</Form.Group>
-				</Modal.Body>
-				<Modal.Footer>
-					<Button variant="primary" type="submit">
-						Add
-					</Button>
-				</Modal.Footer>
-			</div>
-		);
-	}
-
-	getCurrentStepForm() {}
-
 	render() {
+		const {currentStep} = this.state;
 		return (
-			/*<div class="editor">
-                <div class="header">
-
-                </div>
-
-                <div class="action-area">
-                    <div class="subheader">Action Manager</div>
-                    <div class="action-manager">
-
-                    </div>
-
-                </div>
-
-                <div class="details">
-                </div>
-
-                <div class="steps">
-
-                </div>
-
-                <div class="canvas-area">
-                </div>
-
-                <div class="catalog-area">
-                    <div class="subheader">Tools</div>
-                    <Catalog />
-                </div>
-
-                <div class="layer">
-                  
-                </ xdiv>                
-          </div>*/
 			<div>
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
-				<FormModal
-					title="Create Course"
-					show={this.state.showAddStepModal}
-					onHide={() => this.setState({ showAddStepModal: false })}
-					submitAction={this.handleAddStep}
-				>
-					{this.getAddStepForm()}
-				</FormModal>
-				<ShakeModal show={false} progressNeeded={500}/>
 				<section>
 					<div className="editor">
 						<Container className="page-grid">
@@ -156,7 +84,12 @@ class Editor extends Component {
 								</Col>
 								<Col sm={8}>
 									<Card>
-										<Card.Header>Course: {this.state.CourseName} </Card.Header>
+										<Card.Header>
+											<Form.Control
+												onChange={(e) => this.onStepNameChange(e)} 
+												value={currentStep.toString()} 
+											/>
+										</Card.Header>
 										<Card.Body style={{ height: '65vh' }}>
 											This is where the canvas will be.
 										</Card.Body>
@@ -174,18 +107,15 @@ class Editor extends Component {
 												<button
 													title="Add Step"
 													className="buttonRound editorStepButton btn-primary"
-													onClick={() => {
-														this.setState({ showAddStepModal: true });
-													}}
+													onClick={this.addStep}
 												>
-													{' '}
 													+
 												</button>
 											</Card.Header>
 											<ListGroup variant="flush">
-												{this.state.steps.map((step) => (
-													<ListGroup.Item> {step} </ListGroup.Item>
-												))}
+												{
+													this.state.steps.map((step, index) => this.renderStep(step,index))
+												}
 											</ListGroup>
 										</Card>
 									</Row>
@@ -198,6 +128,56 @@ class Editor extends Component {
 			</div>
 		);
 	}
+
+	renderStep = (step, index) => {
+		const isActive = step === this.state.currentStep;
+		return (
+          <ListGroup.Item
+          	key={index} 
+          	index={index}
+          	onClick={this.onStepClick}
+          	as="li" 
+          	active={isActive}> 
+          		{step.toString()} 
+          </ListGroup.Item>
+      );
+	}
+
+	addStep = () => {
+		const {steps} = this.state;
+		const defaultStepName = "Step " + (steps.length + 1);
+		const currentStep = new Step(defaultStepName);
+		steps.push(currentStep);
+		this.setState({currentStep, steps});
+	}
+
+	onStepClick = (e) => {
+		const index = e.target.getAttribute("index");
+      	const desiredStep = this.state.steps[index];
+      	console.log(desiredStep);
+      	this.setState({
+        	currentStep: desiredStep,
+      	});
+	}
+
+	onStepNameChange = (e) => {
+		const {currentStep} = this.state;
+		if (!currentStep) {
+			return false;
+		}
+		currentStep.name = e.target.value
+		this.setState({currentStep});
+	}
+
+	deleteCurrentStep = () => {
+      const {currentStep, steps} = this.state;
+      const index = steps.indexOf(currentStep);
+      steps.splice(index);
+      const newCurrent = steps.length > 0 ? steps[steps.length - 1] : null;
+      this.setState({
+        currentStep: newCurrent, 
+      });
+    }
 }
 export default Editor;
 
