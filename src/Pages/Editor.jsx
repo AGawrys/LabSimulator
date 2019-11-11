@@ -74,7 +74,6 @@ class Editor extends Component {
           >
             {this.getAddStepForm()}
           </FormModal>
-          <ShakeModal show={true} progressNeeded={1000}/>
           <FormModal
             title="Edit Step"
             show={this.state.showEditStepModal}

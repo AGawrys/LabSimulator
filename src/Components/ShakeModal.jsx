@@ -10,38 +10,29 @@ class ShakeModal extends React.Component {
     position: {
       x: 0, y: 0
     },
-    isComplete: false,
   };
 
 
   handleDrag = (e, ui) => {
-    const {x, y} = this.state.position;
-    const {progress} = this.state;
+    const {progress, position} = this.state;
+    const {x, y} = position;
+    const newProgress = progress + Math.abs(ui.deltaX) + Math.abs(ui.deltaY);
     this.setState({
-      progress: progress + Math.abs(ui.deltaX) + Math.abs(ui.deltaY),
+      progress: newProgress,
       position: {
         x: x + ui.deltaX,
         y: y + ui.deltaY,
-      }
+      },
     });
   };
 
-  onStart = () => {
-    this.setState({activeDrags: ++this.state.activeDrags});
-  };
-
-  onStop = () => {
-    this.setState({activeDrags: --this.state.activeDrags});
-  };
-
-
   render() {
-    const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
     const {progress, position} = this.state;
-    const {progressNeeded, show} = this.props;
+    const {progressNeeded, show, onComplete} = this.props;
 
     let percentComplete = (progress / progressNeeded).toFixed(0);
     percentComplete = percentComplete < 100 ? percentComplete : 100;
+    const modalBody = percentComplete === 100 ? <SuccessBody/> : <ShakeBody handleDrag={this.handleDrag} position={position}/>;
 
     return (  
         <Modal
@@ -61,19 +52,37 @@ class ShakeModal extends React.Component {
                 </div>
             </Modal.Header>
             <Modal.Body>
-              <div style={{height: '500px', width: '750px', padding: '10px'}}>
-                <Draggable bounds="parent" onDrag={this.handleDrag} {...dragHandlers}>
-                    <div className="box">
-                        <div>I can be dragged anywhere</div>
-                        <div>x: {position.x.toFixed(0)}, y: {position.y.toFixed(0)}</div>
-                    </div>
-                </Draggable>
-              </div>
+              {modalBody}
             </Modal.Body>
+            <Modal.Footer>
+              <Button variant="primary" onClick={onComplete} disabled={percentComplete < 100}>
+                Continue
+              </Button>
+            </Modal.Footer>
         </Modal>
 
     ); 
   }
+}
+
+function ShakeBody(props) {
+  const {handleDrag, position} = props;
+  return (
+      <div style={{height: '500px', width: '750px', padding: '10px'}}>
+        <Draggable bounds="parent" onDrag={handleDrag}>
+          <div className="box">
+            <div>I can be dragged anywhere</div>
+            <div>x: {position.x.toFixed(0)}, y: {position.y.toFixed(0)}</div>
+          </div>
+        </Draggable>
+      </div>
+    );
+}
+
+function SuccessBody() {
+  return (
+    <h2> Action successfully completed! </h2>
+  );
 }
 
 export default ShakeModal;
