@@ -13,24 +13,25 @@ import Signup from './Pages/Signup.jsx';
 import EditorStudent from './Pages/EditorStudent.jsx';
 
 function App() {
-  return (
-    <Router>
-				<div className="App">
-					<Switch>
-						<Route exact path="/" component={Home} />
-						<Route exact path="/Home" component={Home} />
-						<Route exact path="/Editor" component={Editor} />
-						<Route exact path="/StudentEditor" component={EditorStudent} />
-						<Route exact path="/InstructorDashboard" component={InstructorDashboard} />
-						<Route exact path="/StudentDashboard" component={StudentDashboard} />
-						<Route exact path="/AccountSetting" component={AccountSetting} />
-						<Route exact path="/OrganizationDashboard" component={OrganizationDashboard}/>
-						<Route exact path="/course/" component={CoursePage}/>
-						<Route exact path="/signup/" component={Signup}/>
-						<Route component={NotFound} />
-					</Switch>
-				</div>
-			</Router>
-  );
+  	return (
+    	<Router>
+			<div className="App">
+				<Switch>
+					<Route exact path="/" component={Home} />
+					<Route exact path="/Home" component={Home} />
+					<Route exact path="/Editor" component={Editor} />
+					<Route exact path="/StudentEditor" component={EditorStudent} />
+					<Route exact path="/InstructorDashboard" component={InstructorDashboard} />
+					<Route exact path="/StudentDashboard" component={StudentDashboard} />
+					<Route exact path="/AccountSetting" component={AccountSetting} />
+					<Route exact path="/OrganizationDashboard" component={OrganizationDashboard}/>
+					<Route exact path="/course/" component={CoursePage}/>
+					<Route exact path="/signup/" component={Signup}/>
+					<Route component={NotFound} />
+				</Switch>
+			</div>
+		</Router>
+  	);
 }
+
 export default App;

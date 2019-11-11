@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import { Button, Dropdown, DropdownButton, Card, ListGroup} from 'react-bootstrap';
 import { Container, Row, Col } from 'react-grid-system';
 import 'react-sticky-header/styles.css';
@@ -9,25 +9,66 @@ import tool1 from '../Styles/Images/jar.svg';
 import tool2 from '../Styles/Images/measuredPitcher.svg';
 import tool3 from '../Styles/Images/coffee-machine.svg';
 import tool4 from '../Styles/Images/cup.svg';
+import Catalog from "../Components/Catalog.jsx"
 import '../App.css';
 import '../Styles/HomeStyle.css';
 import '../Styles/EditorStyle.css';
+import "../Styles/editor.css"
 
 class Editor extends Component {
     constructor(props) {
-		super(props);
-		this.state = {
-      CourseName: 'Seasonal Training',
-      currentStep: 1
-		};
+        super(props);
+        this.state = {
+            CourseName: 'Seasonal Training',
+            currentStep: 1
+        };
     }
 
     handleNext() {}
     handleSimulate() {}
     
     render() {
-      return (
-        <StickyHeader
+        return (
+            <div class="editor">
+                <div class="header">
+
+                </div>
+
+                <div class="action-area">
+                    <div class="subheader">Action Manager</div>
+                    <div class="action-manager">
+
+                    </div>
+
+                </div>
+
+                <div class="details">
+                    <button onClick={this.draw}>draw</button>
+                </div>
+
+                <div class="steps">
+
+                </div>
+
+                <div class="canvas-area">
+                </div>
+
+                <div class="catalog-area">
+                    <div class="subheader">Tools</div>
+                    <Catalog />
+                </div>
+
+                <div class="layer">
+                  
+                </div>                
+          </div>
+        );
+    }
+}
+
+export default Editor;
+
+/* <StickyHeader
           header={
             <HeaderBru
               first='   '
@@ -126,8 +167,4 @@ class Editor extends Component {
           </Container> 
           </div>
         </section>
-        </StickyHeader>
-      );
-    }
-}
-export default Editor;
+        </StickyHeader> */
