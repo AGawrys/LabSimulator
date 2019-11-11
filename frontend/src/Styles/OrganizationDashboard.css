@@ -1,0 +1,109 @@
+.background {
+}
+
+.organizationDashboard {
+	margin: auto 10%;
+}
+
+.welcomeOrganizationDiv {
+	text-align: left;
+	margin-left: 1%;
+	margin-right: 1%;
+	padding: 1%;
+}
+
+.organizationDashboardContents {
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: center;
+}
+
+.organizationInstructorDiv {
+	background-color: white;
+	flex-grow: 1;
+	border-radius: 10px;
+	align-self: flex-start;
+	text-align: left;
+	margin-right: 5%;
+	max-width: 30%;
+}
+
+.organizationInstructorDiv h4 {
+	padding: 3% 4%;
+	border-bottom: 3px solid rgb(243, 243, 243);
+}
+
+.organizationInstructorDiv ul {
+	padding: 1% 4%;
+}
+
+.scrollInstructorList {
+	overflow-y: auto;
+	max-height: 350px;
+}
+
+.scrollInstructorList form {
+	padding-left: 4%;
+}
+
+.scrollInstructorList .submitButton {
+	padding: 5px;
+	margin-left: 10px;
+}
+
+.organizationInstructorDiv li {
+	list-style-type: none;
+	text-align: left;
+	margin: 1% 2%;
+}
+
+.organizationLabDiv {
+	flex-grow: 1;
+	border-radius: 10px;
+	align-self: flex-start;
+	background-color: white;
+}
+
+.organizationLabDiv h4 {
+	border-bottom: 3px solid rgb(243, 243, 243);
+	text-align: left;
+	padding: 1.5% 2%;
+}
+
+.listofOrganizationLabs {
+	list-style-type: none;
+	text-align: left;
+	padding: 0;
+}
+
+.organizationCourseListing {
+	border-bottom: 2px solid rgb(243, 243, 243);
+	padding: 2%;
+}
+
+.oddDiv {
+	background-color: rgb(250, 242, 242);
+}
+
+.organizationCourseListing .Collapsible {
+	text-align: right;
+	color: blue;
+}
+
+.organizationCourseListing .Collapsible ul {
+	color: black;
+	text-align: left;
+	list-style-type: none;
+}
+
+.deleteInstructorButton {
+	padding: 1% 2% !important;
+	font-size: .8em !important;
+	margin-left: 10% !important;
+}
+
+.smallOrganizationButton {
+	height: 25px !important;
+	width: 25px !important;
+	margin-top: 10px;
+}

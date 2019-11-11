@@ -1,0 +1,84 @@
+.background {
+	background-color: #d9d9d9;
+	height: 100vh;
+}
+
+.welcomeStudentDiv {
+	text-align: left;
+	margin-left: 14%;
+	margin-right: 14%;
+	padding: 1%;
+}
+
+.studentDashboardContents {
+	background-color: white;
+	margin-top: 1%;
+	margin-left: 15%;
+	margin-right: 15%;
+	text-align: left;
+}
+
+.headingRow {
+	border-bottom: 3px solid rgb(243, 243, 243);
+	width: 100%;
+	margin-left: 0 !important;
+}
+
+.studentRecentLesson h4 {
+	padding: 2%;
+}
+
+.studentAllLesson {
+	overflow-y: auto;
+	max-height: 400px;
+}
+
+.studentAllLesson ol {
+	text-align: left;
+	padding: 0;
+}
+
+.courseListing {
+	padding: 2%;
+}
+
+.courseListing {
+	border-bottom: 2px solid rgb(243, 243, 243);
+}
+
+.courseListing h5 {
+	font-weight: 350;
+}
+
+.courseListing h6 {
+	font-weight: 250;
+}
+
+.courseListing .Collapsible {
+	text-align: left;
+	color: blue;
+}
+
+.courseListing .Collapsible ol {
+	color: black;
+}
+
+.courseListing .Collapsible li {
+	list-style-type: circle;
+	margin-left: 5%;
+}
+
+.oddDiv {
+	background-color: rgb(250, 242, 242);
+}
+
+.deleteButton {
+	color: red;
+	background-color: transparent;
+	border: none;
+}
+
+.instructorAddLessonButton {
+	float: right !important;
+	margin-top: 1%;
+}
