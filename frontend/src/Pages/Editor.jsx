@@ -9,12 +9,14 @@ import tool2 from '../Styles/Images/measuredPitcher.svg';
 import tool3 from '../Styles/Images/coffee-machine.svg';
 import tool4 from '../Styles/Images/cup.svg';
 import Routes from '../utils/RouteConstants.js';
+import EditorConstants from '../utils/EditorConstants.js';
 import Step from '../Objects/Step.js';
 import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import '../App.css';
 import '../Styles/HomeStyle.css';
 import '../Styles/EditorStyle.css';
+import StringUtils from '../utils/StringUtils.js';
 
 //UNDO REDO PUBLISH DELETE SIMULATE
 
@@ -86,7 +88,9 @@ class Editor extends Component {
 									<Card>
 										<Card.Header>
 											<Form.Control
-												onChange={(e) => this.onStepNameChange(e)} 
+												id="step-name-form"
+												onBlur={this.onFieldBlur}
+												onChange={this.onStepNameChange} 
 												value={currentStep.toString()} 
 											/>
 										</Card.Header>
@@ -145,8 +149,7 @@ class Editor extends Component {
 
 	addStep = () => {
 		const {steps} = this.state;
-		const defaultStepName = "Step " + (steps.length + 1);
-		const currentStep = new Step(defaultStepName);
+		const currentStep = new Step();
 		steps.push(currentStep);
 		this.setState({currentStep, steps});
 	}
@@ -167,6 +170,14 @@ class Editor extends Component {
 		}
 		currentStep.name = e.target.value
 		this.setState({currentStep});
+	}
+
+	onFieldBlur = (e) => {
+		if (StringUtils.isEmpty(e.target.value)) {
+			const {currentStep} = this.state;
+			currentStep.name = EditorConstants.DEFAULT_STEP_NAME;
+			this.setState({currentStep});
+		}	
 	}
 
 	deleteCurrentStep = () => {
