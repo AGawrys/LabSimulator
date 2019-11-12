@@ -173,8 +173,8 @@ class Editor extends Component {
 	}
 
 	onFieldBlur = (e) => {
-		if (StringUtils.isEmpty(e.target.value)) {
-			const {currentStep} = this.state;
+		const {currentStep} = this.state;
+		if (StringUtils.isEmpty(e.target.value) && currentStep) {
 			currentStep.name = EditorConstants.DEFAULT_STEP_NAME;
 			this.setState({currentStep});
 		}	
