@@ -12,6 +12,7 @@ import Routes from '../utils/RouteConstants.js';
 import EditorConstants from '../utils/EditorConstants.js';
 import Step from '../Objects/Step.js';
 import FormModal from '../Components/FormModal.jsx';
+import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import '../App.css';
 import '../Styles/HomeStyle.css';
@@ -28,10 +29,10 @@ class Editor extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			CourseName: 'Seasonal Training',
 			currentStep: '',
 			steps: [],
-			tools: []
+			tools: [],
+			showDeleteStepModal: false,
 		};
 	}
 
@@ -39,11 +40,18 @@ class Editor extends Component {
 	handleSimulate() {}
 
 	render() {
-		const {currentStep} = this.state;
+		const {currentStep, showDeleteStepModal} = this.state;
 		return (
 			<div>
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
 				<section>
+				<ConfirmationModal 
+					show={showDeleteStepModal}
+					title={EditorConstants.DELETE_STEP_CONFIRMATION_TITLE}
+					message={EditorConstants.DELETE_STEP_CONFIRMATION_MESSAGE}
+					onHide={() => this.setState({showDeleteStepModal: false})}
+					onDelete={this.deleteCurrentStep}
+				/> 
 					<div className="editor">
 						<Container className="page-grid">
 							<Row className="editorActionRow">
@@ -67,6 +75,9 @@ class Editor extends Component {
 								</button>
 								<button type="button" className="btn btn-primary">
 									Simulate Lab
+								</button>
+								<button type="button" disabled={!currentStep} onClick={this.onDeleteStep} className="btn btn-danger">
+									Delete Step
 								</button>
 							</Row>
 							<Row>
@@ -180,11 +191,17 @@ class Editor extends Component {
 		}	
 	}
 
+	onDeleteStep = () => {
+		this.setState({
+			showDeleteStepModal: true
+		});
+	}
+
 	deleteCurrentStep = () => {
       const {currentStep, steps} = this.state;
       const index = steps.indexOf(currentStep);
       steps.splice(index);
-      const newCurrent = steps.length > 0 ? steps[steps.length - 1] : null;
+      const newCurrent = steps.length > 0 ? steps[steps.length - 1] : '';
       this.setState({
         currentStep: newCurrent, 
       });
