@@ -55,32 +55,6 @@ class Editor extends Component {
 				/> 
 					<div className="editor">
 						<Container className="page-grid">
-							<Row className="editorActionRow">
-								<button type="button" className="btn btn-secondary">
-									Redo Action
-								</button>
-								<button type="button" className="btn btn-secondary">
-									Undo Action
-								</button>
-								<button type="button" className="btn btn-info">
-									Save Lab
-								</button>
-								<button type="button" className="btn btn-info">
-									Load Lab
-								</button>
-								<button type="button" className="btn btn-success">
-									Publish Lab
-								</button>
-								<button type="button" className="btn btn-danger">
-									Delete Lab
-								</button>
-								<button type="button" className="btn btn-primary">
-									Simulate Lab
-								</button>
-								<Button type="button" variant="danger" disabled={!currentStep} onClick={this.onDeleteStep}>
-									Delete Current Step
-								</Button>
-							</Row>
 							<Row>
 								<Col col-sm={4}>
 									<Row>
@@ -148,10 +122,11 @@ class Editor extends Component {
           		<Form.Control
           			index={index}
 					className="step-name-form"
-					onBlur={this.onFieldBlur}
+					onBlur={(e) => this.onFieldBlur(e,step)}
 					onChange={this.onStepNameChange} 
 					value={step.toString()} 
 				/>
+				<Button variant="danger" onClick={() => this.deleteStep(step)}> Delete </Button>
           </ListGroup.Item>
       );
 	}
@@ -180,28 +155,20 @@ class Editor extends Component {
 		this.setState({currentStep});
 	}
 
-	onFieldBlur = (e) => {
-		const {currentStep} = this.state;
-		if (StringUtils.isEmpty(e.target.value) && currentStep) {
-			currentStep.name = EditorConstants.DEFAULT_STEP_NAME;
-			this.setState({currentStep});
+	onFieldBlur = (e, step) => {
+		if (StringUtils.isEmpty(e.target.value)) {
+			step.name = EditorConstants.DEFAULT_STEP_NAME;
+			this.setState({steps:this.state.steps});
 		}	
 	}
 
-	onDeleteStep = () => {
-		this.setState({
-			showDeleteStepModal: true
-		});
-	}
-
-	deleteCurrentStep = () => {
-      const {currentStep, steps} = this.state;
-      const index = steps.indexOf(currentStep);
-      steps.splice(index);
-      const newCurrent = steps.length > 0 ? steps[steps.length - 1] : "";
-      this.setState({
-        currentStep: newCurrent, 
-      });
+	deleteStep = (step) => {
+		const {steps} = this.state;
+      	const index = steps.indexOf(step);
+      	steps.splice(index,1);
+      	this.setState({
+        	currentStep: null, 
+      	});
     }
 }
 
