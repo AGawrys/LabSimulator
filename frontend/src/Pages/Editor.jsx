@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Dropdown, DropdownButton, Card, ListGroup, Modal, Form } from 'react-bootstrap';
 import { Container, Row, Col } from 'react-grid-system';
+import Select from 'react-select';
 import 'react-sticky-header/styles.css';
 import SimpleInput from 'react-simple-input';
 import HeaderBru from '../Components/Header.jsx';
@@ -12,7 +13,6 @@ import Routes from '../utils/RouteConstants.js';
 import EditorConstants from '../utils/EditorConstants.js';
 import Step from '../Objects/Step.js';
 import FormModal from '../Components/FormModal.jsx';
-import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import '../App.css';
 import '../Styles/HomeStyle.css';
@@ -32,7 +32,6 @@ class Editor extends Component {
 			currentStep: '',
 			steps: [],
 			tools: [],
-			showDeleteStepModal: false,
 		};
 	}
 
@@ -40,19 +39,11 @@ class Editor extends Component {
 	handleSimulate() {}
 
 	render() {
-		const {currentStep, showDeleteStepModal, steps} = this.state;
-		console.log(currentStep);
+		const {currentStep, steps} = this.state;
 		return (
 			<div>
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
 				<section>
-				<ConfirmationModal 
-					show={showDeleteStepModal}
-					title={EditorConstants.DELETE_STEP_CONFIRMATION_TITLE}
-					message={EditorConstants.DELETE_STEP_CONFIRMATION_MESSAGE}
-					onHide={() => this.setState({showDeleteStepModal: false})}
-					onDelete={this.deleteCurrentStep}
-				/> 
 					<div className="editor">
 						<Container className="page-grid">
 							<Row>
@@ -80,6 +71,31 @@ class Editor extends Component {
 								<Col sm={2}>
 									<div className="divider" />
 									<Row>
+										<Card style={{ width: '14rem' }}>
+											<Card.Header> Action Manager</Card.Header>
+											<Form.Label>Select An Action</Form.Label>
+											<Select
+												name="actions"
+												options={EditorConstants.ACTIONS}
+												onChange={action => this.updateActionStep(action)}
+												placeholder="Select ..."
+												value={currentStep ? currentStep.action : null}
+											/>
+											<Form.Label> Select a Source </Form.Label>
+											<Select
+												name="source"
+												options={[]}
+												placeholder='Select ...'
+												value={currentStep ? currentStep.source : null}
+											/>
+											<Form.Label> Select a Target </Form.Label>
+											<Select
+												name="target"
+												options={[]}
+												placeholder='Search ...'
+												value={currentStep ? currentStep.target : null}
+											/>
+										</Card>
 										<Card style={{ width: '14rem' }}>
 											<Card.Header>
 												All Steps{' '}
@@ -169,6 +185,15 @@ class Editor extends Component {
       	this.setState({
         	currentStep: null, 
       	});
+    }
+
+    updateActionStep = (action) => {
+    	const {currentStep} = this.state;
+    	if (!currentStep) {
+    		return
+    	}
+    	currentStep.action = action;
+    	this.setState({currentStep});
     }
 }
 
