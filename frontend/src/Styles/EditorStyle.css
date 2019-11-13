@@ -81,11 +81,11 @@
 	margin-bottom: 1%;
 }
 
-#step-name-form {
-	border: none;
-	background:transparent;
+.step-name-form {
+	width:100% !important;
+	border: none !important;
 }
 
-#step-name-form:hover {
-	border: 1px solid #d0d0d0;
+.step-name-form:hover {
+	border: 1px solid #d0d0d0!important;
 }

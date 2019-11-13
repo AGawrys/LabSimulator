@@ -40,7 +40,8 @@ class Editor extends Component {
 	handleSimulate() {}
 
 	render() {
-		const {currentStep, showDeleteStepModal} = this.state;
+		const {currentStep, showDeleteStepModal, steps} = this.state;
+		console.log(currentStep);
 		return (
 			<div>
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
@@ -76,9 +77,9 @@ class Editor extends Component {
 								<button type="button" className="btn btn-primary">
 									Simulate Lab
 								</button>
-								<button type="button" disabled={!currentStep} onClick={this.onDeleteStep} className="btn btn-danger">
-									Delete Step
-								</button>
+								<Button type="button" variant="danger" disabled={!currentStep} onClick={this.onDeleteStep}>
+									Delete Current Step
+								</Button>
 							</Row>
 							<Row>
 								<Col col-sm={4}>
@@ -96,24 +97,13 @@ class Editor extends Component {
 									<div className="divider" />
 								</Col>
 								<Col sm={8}>
-									<Card>
-										<Card.Header>
-											<Form.Control
-												id="step-name-form"
-												onBlur={this.onFieldBlur}
-												onChange={this.onStepNameChange} 
-												value={currentStep.toString()} 
-											/>
-										</Card.Header>
+									<Card>	
 										<Card.Body style={{ height: '65vh' }}>
 											This is where the canvas will be.
 										</Card.Body>
 									</Card>
 								</Col>
 								<Col sm={2}>
-									<Row>
-										<Card style={{ width: '14rem', height: '36vh' }} />
-									</Row>
 									<div className="divider" />
 									<Row>
 										<Card style={{ width: '14rem' }}>
@@ -129,7 +119,7 @@ class Editor extends Component {
 											</Card.Header>
 											<ListGroup variant="flush">
 												{
-													this.state.steps.map((step, index) => this.renderStep(step,index))
+													steps.map((step, index) => this.renderStep(step,index))
 												}
 											</ListGroup>
 										</Card>
@@ -145,15 +135,23 @@ class Editor extends Component {
 	}
 
 	renderStep = (step, index) => {
-		const isActive = step === this.state.currentStep;
+		const {currentStep} = this.state;
+		const isActive = step === currentStep;
 		return (
           <ListGroup.Item
+          	active={isActive}
           	key={index} 
           	index={index}
           	onClick={this.onStepClick}
           	as="li" 
-          	active={isActive}> 
-          		{step.toString()} 
+          	> 
+          		<Form.Control
+          			index={index}
+					className="step-name-form"
+					onBlur={this.onFieldBlur}
+					onChange={this.onStepNameChange} 
+					value={step.toString()} 
+				/>
           </ListGroup.Item>
       );
 	}
@@ -168,7 +166,6 @@ class Editor extends Component {
 	onStepClick = (e) => {
 		const index = e.target.getAttribute("index");
       	const desiredStep = this.state.steps[index];
-      	console.log(desiredStep);
       	this.setState({
         	currentStep: desiredStep,
       	});
@@ -201,12 +198,13 @@ class Editor extends Component {
       const {currentStep, steps} = this.state;
       const index = steps.indexOf(currentStep);
       steps.splice(index);
-      const newCurrent = steps.length > 0 ? steps[steps.length - 1] : '';
+      const newCurrent = steps.length > 0 ? steps[steps.length - 1] : "";
       this.setState({
         currentStep: newCurrent, 
       });
     }
 }
+
 export default Editor;
 
 /*
