@@ -31,13 +31,11 @@ const links = {
 class Editor extends Component {
 	constructor(props) {
 		super(props);
-		const testTool = new Tool("Test Drag", tool1);
-		const testTool1 = new Tool("Drag me", tool2);
+		const step = new Step();
 		this.state = {
-			currentStep: '',
+			currentStep: step,
 			currentTool: null,
-			steps: [],
-			tools: [testTool, testTool1],
+			steps: [step],
 		};
 	}
 
@@ -45,8 +43,8 @@ class Editor extends Component {
 	handleSimulate() {}
 
 	render() {
-		const {currentStep, steps, tools} = this.state;
-		const toolOptions = tools.map(tool => tool.toSelectOption());
+		const {currentStep, steps, currentTool} = this.state;
+		const toolOptions = currentStep.tools.map(tool => tool.toSelectOption());
 		return (
 			<div>
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
@@ -72,15 +70,15 @@ class Editor extends Component {
 									<Card>	
 										<Card.Body id="canvas" style={{ height: '65vh' }}>
 											{
-												tools.map((tool, index) => this.renderTool(tool,index))
+												currentStep.tools.map((tool, index) => this.renderTool(tool,index))
 											}
 										</Card.Body>
 										<ContextMenu id={EditorConstants.CONTEXT_MENU_ID}>
-										        <MenuItem disabled={!currentStep}onClick={this.handleMenuSource}>
+										        <MenuItem onClick={this.handleMenuSource}>
 										          Make Source Tool
 										        </MenuItem>
 										        <MenuItem divider />
-										        <MenuItem disabled={!currentStep} onClick={this.handleMenuTarget}>
+										        <MenuItem onClick={this.handleMenuTarget}>
 										          Make Target Tool
 										        </MenuItem>
 								      	</ContextMenu>
@@ -93,30 +91,27 @@ class Editor extends Component {
 											<Card.Header> Action Manager</Card.Header>
 											<Form.Label>Select An Action</Form.Label>
 											<Select
-												isDisabled={!currentStep}
 												isSearchable={true}
 												name="actions"
 												options={EditorConstants.ACTIONS}
 												onChange={action => this.updateCurrentAction(action)}
-												value={currentStep ? {label: currentStep.action, value: currentStep.action} : null}
+												value={{label: currentStep.action, value: currentStep.action}}
 											/>
 											<Form.Label> Select a Source </Form.Label>
 											<Select
-												isDisabled={!currentStep}
 												isSearchable={true}
 												name="sources"
 												options={toolOptions}
 												onChange={tool => this.updateCurrentSource(tool.value)}
-												value={currentStep && currentStep.source ? currentStep.source.toSelectOption() : null}
+												value={currentStep.source ? currentStep.source.toSelectOption() : null}
 											/>
 											<Form.Label> Select a Target </Form.Label>
 											<Select
-												isDisabled={!currentStep}
 												isSearchable={true}
 												name="targets"
 												options={toolOptions}
 												onChange={tool => this.updateCurrentTarget(tool.value)}
-												value={currentStep && currentStep.target ? currentStep.target.toSelectOption() : null}
+												value={currentStep.target ? currentStep.target.toSelectOption() : null}
 											/>
 										</Card>
 										<div className="divider"/>
@@ -174,9 +169,10 @@ class Editor extends Component {
 	}
 
 	renderTool = (tool, index) => {
+		const {x,y} = tool.position;
 		return (
 			<ContextMenuTrigger index={index} id={EditorConstants.CONTEXT_MENU_ID}>
-				<Draggable index={index} bounds="#canvas" onStart={this.onDragStart}>
+				<Draggable position={{x,y}} index={index} bounds="#canvas" onStart={this.onDragStart} onStop={this.onDragEnd}>
 					<div index={index} className="box">
 						<p style={{color:"white"}}>{tool.toString()}</p>
 					</div>
@@ -188,16 +184,25 @@ class Editor extends Component {
 
 	onDragStart = (e) => {
 		const index = e.target.getAttribute("index");
-		const currentTool = this.state.tools[index];
+		const {currentStep} = this.state;
+		const currentTool = currentStep.tools[index];
 		this.setState({currentTool});
 
   	};
+
+  	onDragEnd = (e,data) => {
+  		const {x, y} = data;
+  		const {currentTool} = this.state;
+  		currentTool.position.x = x;
+  		currentTool.position.y = y;
+  		this.setState({currentTool});
+  	}
 
 	addStep = () => {
 		const {steps} = this.state;
 		const currentStep = new Step();
 		steps.push(currentStep);
-		this.setState({currentStep, steps});
+		this.setState({currentStep, steps, currentTool:null});
 	}
 
 	onStepClick = (e) => {
@@ -208,9 +213,6 @@ class Editor extends Component {
 
 	onStepNameChange = (e) => {
 		const {currentStep} = this.state;
-		if (!currentStep) {
-			return false;
-		}
 		currentStep.name = e.target.value
 		this.setState({currentStep});
 	}
@@ -253,13 +255,15 @@ class Editor extends Component {
 
     handleMenuSource = (e,data) => {
     	const index = data.target.getAttribute("index");
-		const tool = this.state.tools[index];
+    	const {currentStep} = this.state;
+		const tool = currentStep.tools[index];
 		this.updateCurrentSource(tool);
     }
 
     handleMenuTarget = (e,data) => {
     	const index = data.target.getAttribute("index");
-		const tool = this.state.tools[index];
+    	const {currentStep} = this.state;
+		const tool = currentStep.tools[index];
 		this.updateCurrentTarget(tool);
     }
 

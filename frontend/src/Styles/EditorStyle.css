@@ -170,4 +170,10 @@
     display: block;
 }
 
+.tool {
+	top: 0;
+	left: 0;
+	position:absolute;
+}
+
 
