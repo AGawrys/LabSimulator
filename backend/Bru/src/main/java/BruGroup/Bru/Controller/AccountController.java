@@ -59,6 +59,13 @@ public class AccountController {
         return ResponseEntity.ok(account);
     }
 
+    @GetMapping (path = "/accountName/{email}", produces = "application/json")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity getAccountName(@PathVariable String email) {
+        Account account = accountRepository.findByEmail(email);
+        return ResponseEntity.ok(account.getName());
+    }
+
     @GetMapping (path = "/OrganizationAccounts/{organizationEmail}", produces = "application/json")
     @CrossOrigin(origins = "*")
     public List<Account> getOrganizationAccounts(@PathVariable String organizationEmail) {

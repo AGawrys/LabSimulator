@@ -43,7 +43,7 @@ public class StudentController {
     public ResponseEntity addStudentCourse (@RequestBody StudentIdentity studentIdentity) {
         //check if courseId is valid
         Account dbAccount = accountRepository.findByEmail(studentIdentity.getEmail());
-        if (dbAccount == null && !(dbAccount.getRole().equals("STUDENT"))) {
+        if (dbAccount == null || !(dbAccount.getRole().equals("STUDENT"))) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
