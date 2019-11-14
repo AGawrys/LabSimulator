@@ -46,7 +46,6 @@ public class Account {
         return this.role;
     }
 
-
     @Override
     public String toString() {
         return "Account {" +
