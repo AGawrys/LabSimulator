@@ -18,9 +18,6 @@ public class OrganizationController {
     @Autowired
     OrganizationRepository organizationRepository;
 
-    @Autowired
-    AccountRepository accountRepository;
-
     @GetMapping (path = "/allOrganization")
     @CrossOrigin(origins = "*")
     public List<Organization> allOrganization() {
