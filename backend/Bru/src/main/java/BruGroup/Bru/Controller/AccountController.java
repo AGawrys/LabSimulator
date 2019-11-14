@@ -27,6 +27,12 @@ public class AccountController {
         if (accountRepository.findByEmail(account.getEmail()) != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+        if (account.getRole().equals("INSTRUCTOR")) {
+            if (accountRepository.findByEmail(account.getOrganizationEmail()) == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+        }
+
         accountRepository.save(account);
         return ResponseEntity.ok(null);
     }
@@ -51,5 +57,12 @@ public class AccountController {
     public ResponseEntity getAccount(@PathVariable String email) {
         Account account = accountRepository.findByEmail(email);
         return ResponseEntity.ok(account);
+    }
+
+    @GetMapping (path = "/OrganizationAccounts/{organizationEmail}", produces = "application/json")
+    @CrossOrigin(origins = "*")
+    public List<Account> getOrganizationAccounts(@PathVariable String organizationEmail) {
+        List<Account> accountList = accountRepository.findByOrganizationEmail(organizationEmail);
+        return accountList;
     }
 }

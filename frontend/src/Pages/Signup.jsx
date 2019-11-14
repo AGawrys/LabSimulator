@@ -15,11 +15,21 @@ class Signup extends React.Component {
 			errors: '',
 			name: '',
 			role: 'STUDENT',
+			organizationEmail: '',
+			display: false,
 			error: ''
 		};
 	}
 
-	handleRadioCheck = (e, role) => {};
+	handleRadioCheck = (e, role) => {
+		this.setState({ role: role });
+		this.setState({ display: false });
+	};
+
+	handleRadioCheck2 = (e, role) => {
+		this.setState({ role: role });
+		this.setState({ display: true });
+	};
 
 	handleFieldChange = (e, field) => {
 		this.setState({ [field]: e.target.value });
@@ -30,7 +40,8 @@ class Signup extends React.Component {
 			email: this.state.email,
 			name: this.state.name,
 			password: this.state.password,
-			role: this.state.role
+			role: this.state.role,
+			organizationEmail: this.state.organizationEmail
 		};
 		e.preventDefault();
 
@@ -41,7 +52,7 @@ class Signup extends React.Component {
 			},
 			(error) => {
 				this.setState({
-					errors: 'Error signing up! Try a different email'
+					errors: 'Error signing up! Check email field(s).'
 				});
 			}
 		);
@@ -72,7 +83,7 @@ class Signup extends React.Component {
 									<input
 										type="radio"
 										name="optradio"
-										onChange={(e) => this.handleRadioCheck(e, 'INSTRUCTOR')}
+										onChange={(e) => this.handleRadioCheck2(e, 'INSTRUCTOR')}
 									/>
 									<label className="radioButtonUser">Instructor</label>
 								</label>
@@ -109,6 +120,17 @@ class Signup extends React.Component {
 									type="password"
 									placeholder="Password"
 									required
+								/>
+							</FormGroup>
+							<FormGroup
+								className={this.state.display ? '' : 'hide-tag'}
+								controlId="formBasicText"
+								bsSize="large"
+							>
+								<FormControl
+									onChange={(e) => this.handleFieldChange(e, 'organizationEmail')}
+									type="email"
+									placeholder="Organization Email"
 								/>
 							</FormGroup>
 							<p style={{ color: 'red' }}> {errorMessage}</p>
