@@ -7,10 +7,38 @@ import javax.validation.constraints.Size;
 @Entity
 public class Student {
 
+    @EmbeddedId
+    private StudentIdentity studentIdentity;
+
+    public Student () {
+
+    }
+
+    public Student (StudentIdentity studentIdentity) {
+        this.studentIdentity = studentIdentity;
+    }
+
+    public StudentIdentity getStudentIdentity() {
+        return studentIdentity;
+    }
+
+    public void setStudentIdentity(StudentIdentity studentIdentity) {
+        this.studentIdentity = studentIdentity;
+    }
+
+    @Override
+    public String toString() {
+        return "Student {" +
+                "email = " + studentIdentity.getEmail() +
+                ", courseId = " + studentIdentity.getCourseId() + "}";
+    }
+
+    /*
     @Id
     @Size(max = 50)
     private String email;
     private String courseId;
+
 
     public Student() {
 
@@ -43,4 +71,5 @@ public class Student {
                 "email = " + email +
                 ", courseId = " + courseId + "}";
     }
+     */
 }

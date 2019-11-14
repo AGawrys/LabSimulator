@@ -2,6 +2,7 @@ package BruGroup.Bru.Controller;
 
 import BruGroup.Bru.Entity.Account;
 import BruGroup.Bru.Entity.Student;
+import BruGroup.Bru.Entity.StudentIdentity;
 import BruGroup.Bru.Repository.AccountRepository;
 import BruGroup.Bru.Repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,11 @@ public class StudentController {
         return studentRepository.findAll();
     }
 
-    //check if student is in a course
+    //check if single student is in a course
     @PostMapping (path = "/getStudent")
     @CrossOrigin (origins = "*")
-    public ResponseEntity getStudent (@RequestBody Student student) {
-        Student dbStudent = studentRepository.findByEmailContainingAndCourseIdContaining(student.getEmail(), student.getCourseId());
+    public ResponseEntity getStudent (@RequestBody StudentIdentity studentIdentity) {
+        Student dbStudent = studentRepository.findByStudentIdentity(studentIdentity);
         if (dbStudent == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
@@ -39,12 +40,14 @@ public class StudentController {
 
     @PostMapping(path = "/addStudentCourse")
     @CrossOrigin(origins = "*")
-    public ResponseEntity addStudentCourse (@RequestBody Student student) {
+    public ResponseEntity addStudentCourse (@RequestBody StudentIdentity studentIdentity) {
         //check if courseId is valid
-        Account dbAccount = accountRepository.findByEmail(student.getEmail());
-        if (dbAccount == null) {
+        Account dbAccount = accountRepository.findByEmail(studentIdentity.getEmail());
+        if (dbAccount == null && !(dbAccount.getRole().equals("STUDENT"))) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+
+        Student student = new Student(studentIdentity);
 
         studentRepository.save(student);
         return ResponseEntity.ok(null);
@@ -52,7 +55,8 @@ public class StudentController {
 
     @PostMapping(path = "/deleteStudentCourse")
     @CrossOrigin(origins = "*")
-    public ResponseEntity deleteStudentCourse (@RequestBody Student student) {
+    public ResponseEntity deleteStudentCourse (@RequestBody StudentIdentity studentIdentity) {
+        Student student = new Student(studentIdentity);
         studentRepository.delete(student);
         return ResponseEntity.ok(null);
     }
@@ -61,7 +65,7 @@ public class StudentController {
     @GetMapping (path = "/getStudentCourse/{email}", produces = "application/json")
     @CrossOrigin(origins = "*")
     public List<Student> getStudentCourse (@PathVariable String email) {
-        List<Student> studentList = studentRepository.findByEmailContaining(email);
+        List<Student> studentList = studentRepository.findByStudentIdentityEmail(email);
         return studentList;
     }
 
@@ -69,7 +73,7 @@ public class StudentController {
     @GetMapping (path = "/getCourseStudent/{courseId}", produces = "application/json")
     @CrossOrigin(origins = "*")
     public List<Student> getCourseStudent (@PathVariable String courseId) {
-        List<Student> studentList = studentRepository.findByCourseIdContaining(courseId);
+        List<Student> studentList = studentRepository.findByStudentIdentityCourseId(courseId);
         return studentList;
     }
 }
