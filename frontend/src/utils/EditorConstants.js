@@ -1,7 +1,7 @@
 const EditorConstants = {
 	DEFAULT_STEP_NAME: "Untitled Step",
-	DELETE_STEP_CONFIRMATION_MESSAGE: "Are you sure you want to delete this step? All dependent steps will be deleted as well.",
-	DELETE_STEP_CONFIRMATION_TITLE: "Delete Current Step",
+	CANNOT_DELETE_STEP_MESSAGE: "Unable to delete! There must be at least one existing step in a lab.",
+	CANNOT_DELETE_STEP_TITLE: "Cannot Delete Step",
 	ACTIONS: [
 		{value: "Shake", label: "Shake"}, 
 		{value: "Pour", label: "Pour"}, 

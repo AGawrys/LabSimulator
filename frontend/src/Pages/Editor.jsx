@@ -36,6 +36,7 @@ class Editor extends Component {
 			currentStep: step,
 			currentTool: null,
 			steps: [step],
+			showCannotDeleteStep: false,
 		};
 	}
 
@@ -43,12 +44,18 @@ class Editor extends Component {
 	handleSimulate() {}
 
 	render() {
-		const {currentStep, steps, currentTool} = this.state;
+		const {currentStep, steps, currentTool, showCannotDeleteStep} = this.state;
 		const toolOptions = currentStep.tools.map(tool => tool.toSelectOption());
 		return (
 			<div>
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
 				<section>
+					<CannotDeleteModal
+						title={EditorConstants.CANNOT_DELETE_STEP_TITLE}
+						message={EditorConstants.CANNOT_DELETE_STEP_MESSAGE}
+						show={showCannotDeleteStep}
+						handleClose={() => this.setState({showCannotDeleteStep:false})}
+					/>
 					<div className="editor">
 						<Container className="page-grid">
 							<Row>
@@ -103,7 +110,7 @@ class Editor extends Component {
 												name="sources"
 												options={toolOptions}
 												onChange={tool => this.updateCurrentSource(tool.value)}
-												value={currentStep.source ? currentStep.source.toSelectOption() : null}
+												value={currentStep.source ? currentStep.source.toSelectOption() : ''}
 											/>
 											<Form.Label> Select a Target </Form.Label>
 											<Select
@@ -111,7 +118,7 @@ class Editor extends Component {
 												name="targets"
 												options={toolOptions}
 												onChange={tool => this.updateCurrentTarget(tool.value)}
-												value={currentStep.target ? currentStep.target.toSelectOption() : null}
+												value={currentStep.target ? currentStep.target.toSelectOption() : ''}
 											/>
 										</Card>
 										<div className="divider"/>
@@ -149,22 +156,22 @@ class Editor extends Component {
 		const {currentStep} = this.state;
 		const isActive = step === currentStep;
 		return (
-          <ListGroup.Item
-          	active={isActive}
-          	key={index} 
-          	index={index}
-          	onClick={this.onStepClick}
-          	as="li" 
-          	> 
-          		<Form.Control
-          			index={index}
+			<ListGroup.Item
+				active={isActive}
+				key={index} 
+				index={index}
+				onClick={this.onStepClick}
+				as="li" 
+				> 
+					<Form.Control
+						index={index}
 					className="step-name-form"
 					onBlur={(e) => this.onFieldBlur(e,step)}
 					onChange={this.onStepNameChange} 
 					value={step.toString()} 
 				/>
-				<Button variant="danger" onClick={() => this.deleteStep(step)}> Delete </Button>
-          </ListGroup.Item>
+				<Button variant="danger" onClick={(e) => this.onDeleteStep(e,step)}> Delete </Button>
+			</ListGroup.Item>
       );
 	}
 
@@ -224,13 +231,27 @@ class Editor extends Component {
 		}	
 	}
 
+	onDeleteStep = (e, step) => {
+		e.cancelBubble = true;
+		if(e.stopPropagation) {
+			e.stopPropagation();
+		}
+		if(this.state.steps.length === 1) {
+			this.setState({showCannotDeleteStep:true});
+		}
+		else { 
+			this.deleteStep(step);
+		}
+	}
+
 	deleteStep = (step) => {
 		const {steps} = this.state;
       	const index = steps.indexOf(step);
+      	const newIndex = index === steps.length - 1 ? index - 1: index;
       	steps.splice(index,1);
-      	this.setState({
-        	currentStep: null, 
-      	});
+
+      	const currentStep = steps[newIndex];
+      	this.setState({currentStep});
     }
 
     updateCurrentAction = (action) => {
@@ -239,7 +260,7 @@ class Editor extends Component {
     	this.setState({currentStep});
     }
 
-    updateCurrentSource= (tool) => {
+    updateCurrentSource = (tool) => {
     	const {currentStep} = this.state;
     	currentStep.source = tool;
     	currentStep.target = currentStep.source === currentStep.target ? null : currentStep.target;
@@ -266,8 +287,23 @@ class Editor extends Component {
 		const tool = currentStep.tools[index];
 		this.updateCurrentTarget(tool);
     }
+}
 
-
+function CannotDeleteModal(props) {
+	const {show, handleClose, title, message} = props;
+	return (
+	  	<Modal show={show} onHide={handleClose}>
+	    	<Modal.Header closeButton>
+		      	<Modal.Title>{title}</Modal.Title>
+		    </Modal.Header>
+		    <Modal.Body>{message}</Modal.Body>
+		    <Modal.Footer>
+		      	<Button variant="secondary" onClick={handleClose}>
+		        	Close
+		      	</Button>
+		    </Modal.Footer>
+	  </Modal>
+	);
 }
 
 export default Editor;
