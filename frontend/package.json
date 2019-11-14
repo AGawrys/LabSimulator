@@ -10,6 +10,7 @@
 		"react-bootstrap": "^1.0.0-beta.14",
 		"react-collapsible": "^2.6.0",
 		"react-dom": "^16.10.2",
+		"react-draggable": "^4.1.0",
 		"react-dropdown-input": "^0.1.11",
 		"react-grid-system": "^6.0.3",
 		"react-js-search": "^0.2.4",
