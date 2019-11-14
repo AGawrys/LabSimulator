@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Dropdown, DropdownButton, Card, ListGroup, Modal, Form } from 'react-bootstrap';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 import { Container, Row, Col } from 'react-grid-system';
+import Draggable from 'react-draggable';
 import Select from 'react-select';
 import 'react-sticky-header/styles.css';
 import SimpleInput from 'react-simple-input';
@@ -12,6 +14,7 @@ import tool4 from '../Styles/Images/cup.svg';
 import Routes from '../utils/RouteConstants.js';
 import EditorConstants from '../utils/EditorConstants.js';
 import Step from '../Objects/Step.js';
+import Tool from '../Objects/Tool.js';
 import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import '../App.css';
@@ -28,10 +31,13 @@ const links = {
 class Editor extends Component {
 	constructor(props) {
 		super(props);
+		const testTool = new Tool("Test Drag", tool1);
+		const testTool1 = new Tool("Drag me", tool2);
 		this.state = {
 			currentStep: '',
+			currentTool: null,
 			steps: [],
-			tools: [],
+			tools: [testTool, testTool1],
 		};
 	}
 
@@ -39,7 +45,8 @@ class Editor extends Component {
 	handleSimulate() {}
 
 	render() {
-		const {currentStep, steps} = this.state;
+		const {currentStep, steps, tools} = this.state;
+		const toolOptions = tools.map(tool => tool.toSelectOption());
 		return (
 			<div>
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
@@ -63,9 +70,20 @@ class Editor extends Component {
 								</Col>
 								<Col sm={8}>
 									<Card>	
-										<Card.Body style={{ height: '65vh' }}>
-											This is where the canvas will be.
+										<Card.Body id="canvas" style={{ height: '65vh' }}>
+											{
+												tools.map((tool, index) => this.renderTool(tool,index))
+											}
 										</Card.Body>
+										<ContextMenu id={EditorConstants.CONTEXT_MENU_ID}>
+										        <MenuItem disabled={!currentStep}onClick={this.handleMenuSource}>
+										          Make Source Tool
+										        </MenuItem>
+										        <MenuItem divider />
+										        <MenuItem disabled={!currentStep} onClick={this.handleMenuTarget}>
+										          Make Target Tool
+										        </MenuItem>
+								      	</ContextMenu>
 									</Card>
 								</Col>
 								<Col sm={2}>
@@ -75,27 +93,35 @@ class Editor extends Component {
 											<Card.Header> Action Manager</Card.Header>
 											<Form.Label>Select An Action</Form.Label>
 											<Select
+												isDisabled={!currentStep}
+												isSearchable={true}
 												name="actions"
 												options={EditorConstants.ACTIONS}
-												onChange={action => this.updateActionStep(action)}
-												placeholder="Select ..."
-												value={currentStep ? currentStep.action : null}
+												onChange={action => this.updateCurrentAction(action)}
+												value={currentStep ? {label: currentStep.action, value: currentStep.action} : null}
 											/>
 											<Form.Label> Select a Source </Form.Label>
 											<Select
-												name="source"
-												options={[]}
-												placeholder='Select ...'
-												value={currentStep ? currentStep.source : null}
+												isDisabled={!currentStep}
+												isSearchable={true}
+												name="sources"
+												options={toolOptions}
+												onChange={tool => this.updateCurrentSource(tool.value)}
+												value={currentStep && currentStep.source ? currentStep.source.toSelectOption() : null}
 											/>
 											<Form.Label> Select a Target </Form.Label>
 											<Select
-												name="target"
-												options={[]}
-												placeholder='Search ...'
-												value={currentStep ? currentStep.target : null}
+												isDisabled={!currentStep}
+												isSearchable={true}
+												name="targets"
+												options={toolOptions}
+												onChange={tool => this.updateCurrentTarget(tool.value)}
+												value={currentStep && currentStep.target ? currentStep.target.toSelectOption() : null}
 											/>
 										</Card>
+										<div className="divider"/>
+										<div className="divider"/>
+										<div className="divider"/>
 										<Card style={{ width: '14rem' }}>
 											<Card.Header>
 												All Steps{' '}
@@ -147,6 +173,26 @@ class Editor extends Component {
       );
 	}
 
+	renderTool = (tool, index) => {
+		return (
+			<ContextMenuTrigger index={index} id={EditorConstants.CONTEXT_MENU_ID}>
+				<Draggable index={index} bounds="#canvas" onStart={this.onDragStart}>
+					<div className="box">
+						<p index={index} style={{color:"white"}}>{tool.toString()}</p>
+					</div>
+				</Draggable>
+			</ContextMenuTrigger>
+		);
+	}
+
+
+	onDragStart = (e) => {
+		const index = e.target.getAttribute("index");
+		const currentTool = this.state.tools[index];
+		this.setState({currentTool});
+
+  	};
+
 	addStep = () => {
 		const {steps} = this.state;
 		const currentStep = new Step();
@@ -156,10 +202,8 @@ class Editor extends Component {
 
 	onStepClick = (e) => {
 		const index = e.target.getAttribute("index");
-      	const desiredStep = this.state.steps[index];
-      	this.setState({
-        	currentStep: desiredStep,
-      	});
+      	const currentStep = this.state.steps[index];
+      	this.setState({currentStep});
 	}
 
 	onStepNameChange = (e) => {
@@ -187,14 +231,41 @@ class Editor extends Component {
       	});
     }
 
-    updateActionStep = (action) => {
+    updateCurrentAction = (action) => {
     	const {currentStep} = this.state;
-    	if (!currentStep) {
-    		return
-    	}
-    	currentStep.action = action;
+    	currentStep.action = action.value;
     	this.setState({currentStep});
     }
+
+    updateCurrentSource= (tool) => {
+    	const {currentStep} = this.state;
+    	currentStep.source = tool;
+    	currentStep.target = currentStep.source === currentStep.target ? null : currentStep.target;
+    	this.setState({currentStep});
+    }
+
+    updateCurrentTarget = (tool) => {
+    	const {currentStep} = this.state;
+    	currentStep.target = tool;
+    	currentStep.source = currentStep.source === currentStep.target ? null : currentStep.source;
+    	this.setState({currentStep});
+    }
+
+    handleMenuSource = (e,data) => {
+    	const index = data.target.getAttribute("index");
+		const tool = this.state.tools[index];
+		console.log(tool);
+		this.updateCurrentSource(tool);
+    }
+
+    handleMenuTarget = (e,data) => {
+    	const index = data.target.getAttribute("index");
+		const tool = this.state.tools[index];
+		console.log(tool);
+		this.updateCurrentTarget(tool);
+    }
+
+
 }
 
 export default Editor;

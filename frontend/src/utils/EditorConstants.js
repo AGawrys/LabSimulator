@@ -8,6 +8,7 @@ const EditorConstants = {
 		{value: "Stir", label: "Stir"}, 
 		{value: "Blend", label: "Blend"},
 	],
+	CONTEXT_MENU_ID: "tool-context-menu"
 };
 
 export default EditorConstants;
