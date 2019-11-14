@@ -1,15 +1,24 @@
 import React from "react";
+import {Droppable} from "react-drag-and-drop";
 
 class Canvas extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            tools: []
+            tools: props.tools
         }
     }
 
     render() {
-        return this.state.tools
+        return (
+            <Droppable className={this.props.className}
+                       types={["tool"]}
+                       onDrop={this.props.onDrop}>
+                <div >
+                    {this.state.tools}
+                </div>
+            </Droppable>
+        )
     }
 }
 

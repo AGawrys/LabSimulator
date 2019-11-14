@@ -53,9 +53,7 @@ class TaperedCupTool extends React.Component {
     }
 
     render() {
-        const connectDragSource = this.props.connectDragSource
-
-        return connectDragSource(
+        return (
             <div>
                 <canvas id={this.toolType}>
                         Browser must be updated
@@ -65,4 +63,4 @@ class TaperedCupTool extends React.Component {
     }
 }
 
-export default DragSource(ItemTypes.TOOL, toolSource, collect)(TaperedCupTool);
+export default TaperedCupTool;

@@ -1,7 +1,8 @@
-import React, { Component, useContext } from 'react';
-import { Button, Dropdown, DropdownButton, Card, ListGroup} from 'react-bootstrap';
-import { Container, Row, Col } from 'react-grid-system';
+import React from "react";
 import 'react-sticky-header/styles.css';
+import Lesson from "../Objects/Lesson.js"
+import Position from "../Objects/Position.js"
+import Tool from "../Objects/Tool.js"
 import StickyHeader from 'react-sticky-header';
 import SimpleInput from 'react-simple-input';
 import HeaderBru from '../Components/Header.jsx';
@@ -9,49 +10,70 @@ import tool1 from '../Styles/Images/jar.svg';
 import tool2 from '../Styles/Images/measuredPitcher.svg';
 import tool3 from '../Styles/Images/coffee-machine.svg';
 import tool4 from '../Styles/Images/cup.svg';
+import Canvas from "../Components/Canvas.jsx"
 import Catalog from "../Components/Catalog.jsx"
+import TaperedCupTool from "../Components/TaperedCupTool.jsx"
 import '../App.css';
 import '../Styles/HomeStyle.css';
 import '../Styles/EditorStyle.css';
 import "../Styles/editor.css"
 
-class Editor extends Component {
+const ToolTypes = {
+  "TaperedCup": <TaperedCupTool />
+}
+
+class Editor extends React.Component {
     constructor(props) {
-        super(props);
-        this.state = {
-            CourseName: 'Seasonal Training',
-            currentStep: 1
-        };
+          super(props);
+
+          const lesson = new Lesson()
+          this.state = {
+              lesson: lesson,
+              currentStep: lesson.getSteps().length? 1 : null 
+          };
+
+          this.onDropTool = this.onDropTool.bind(this)
     }
 
-    handleNext() {}
-    handleSimulate() {}
+    onDropTool(data) {
+        const e = window.event;
+        let lesson = this.state.lesson;
+
+        const position = new Position(e.pageX, e.pageY);
+        const tool = new Tool(data, position);
+
+        lesson.addTool(tool);
+        this.setState({
+            lesson: lesson
+        });
+    }
     
     render() {
+        const step = this.state.lesson.getSteps()[currentStep];
+        const tools = this.state.lesson.getTools();
+
         return (
             <div class="editor">
                 <div class="header">
-
                 </div>
 
                 <div class="action-area">
                     <div class="subheader">Action Manager</div>
                     <div class="action-manager">
-
                     </div>
-
                 </div>
 
                 <div class="details">
-                    <button onClick={this.draw}>draw</button>
                 </div>
 
                 <div class="steps">
 
                 </div>
 
-                <div class="canvas-area">
-                </div>
+                <Canvas className="canvas-area"
+                        onDrop={this.onDropTool}
+                        tools={tools}
+                />
 
                 <div class="catalog-area">
                     <div class="subheader">Tools</div>

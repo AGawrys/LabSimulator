@@ -1,5 +1,6 @@
 import React from "react";
 import Collapsible from 'react-collapsible';
+import {Draggable} from "react-drag-and-drop";
 import CollapsibleTrigger from "./CollapsibleTrigger.jsx"
 import TaperedCupTool from "./TaperedCupTool.jsx"
 import up from "../Styles/Images/sort-up.svg"
@@ -19,15 +20,17 @@ class Catalog extends React.Component {
     }
 
 
-
     render() {
         const categories = Object.keys(this.state.listings)
         const listings = categories.map(category => {
             let tools = this.state.listings[category].map(tool => {
                 return (
-                    <div>
-                        {tool}
-                    </div>
+                    <Draggable type="tool"
+                               data={tool.tooltype}>
+                        <div>
+                            {tool}
+                        </div>
+                    </Draggable>
                 );
             });
             
