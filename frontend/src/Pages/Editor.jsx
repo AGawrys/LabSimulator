@@ -177,8 +177,8 @@ class Editor extends Component {
 		return (
 			<ContextMenuTrigger index={index} id={EditorConstants.CONTEXT_MENU_ID}>
 				<Draggable index={index} bounds="#canvas" onStart={this.onDragStart}>
-					<div className="box">
-						<p index={index} style={{color:"white"}}>{tool.toString()}</p>
+					<div index={index} className="box">
+						<p style={{color:"white"}}>{tool.toString()}</p>
 					</div>
 				</Draggable>
 			</ContextMenuTrigger>
@@ -254,14 +254,12 @@ class Editor extends Component {
     handleMenuSource = (e,data) => {
     	const index = data.target.getAttribute("index");
 		const tool = this.state.tools[index];
-		console.log(tool);
 		this.updateCurrentSource(tool);
     }
 
     handleMenuTarget = (e,data) => {
     	const index = data.target.getAttribute("index");
 		const tool = this.state.tools[index];
-		console.log(tool);
 		this.updateCurrentTarget(tool);
     }
 
