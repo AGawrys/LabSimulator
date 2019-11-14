@@ -45,4 +45,11 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+
+    @GetMapping (path = "/account/{email}", produces = "application/json")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity getAccount(@PathVariable String email) {
+        Account account = accountRepository.findByEmail(email);
+        return ResponseEntity.ok(account);
+    }
 }
