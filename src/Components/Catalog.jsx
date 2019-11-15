@@ -19,7 +19,8 @@ class Catalog extends React.Component {
             const tools = Object.keys(TOOLS[category])
             const items = tools.map(tool => {
                 return (
-                    <Draggable type="tool"
+                    <Draggable className="thumbnail"
+                               type="tool"
                                data={tool}>
                         <div>
                             {TOOLS[category][tool]}

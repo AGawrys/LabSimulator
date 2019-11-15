@@ -40,7 +40,8 @@ class Editor extends React.Component {
         let lesson = this.state.lesson;
 
         const position = new Position(e.pageX, e.pageY);
-        const tool = new Tool(data["tool"], position);
+        console.log(position);
+        const tool = new Tool(data["tool"] , position);
 
         lesson.addTool(tool);
         this.setState({

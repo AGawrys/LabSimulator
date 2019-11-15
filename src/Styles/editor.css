@@ -56,10 +56,6 @@
 
 .canvas-area {
     grid-area: canvas;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .canvas {

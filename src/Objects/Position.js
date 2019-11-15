@@ -11,7 +11,7 @@ class Position {
     }
 
     getY() {
-        return this.Y;
+        return this.y;
     }
 
     setX(x) {

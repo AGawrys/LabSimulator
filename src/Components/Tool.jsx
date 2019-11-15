@@ -1,5 +1,6 @@
 import React from "react";
 import TaperedCupTool from "./TaperedCupTool";
+import { relative } from "path";
 
 const TOOLS = {
     "TaperedCup": <TaperedCupTool />
@@ -8,16 +9,23 @@ const TOOLS = {
 class Tool extends React.Component {
     constructor(props) {
         super(props);
+        console.log(props.tool.getPosition().getY() - props.canvas.position["top"])
         this.state = {
-            tool: props.tool
+            tool: props.tool,
+            style: {
+                width: "15%",
+                position: "relative",
+                left: props.tool.getPosition().getX()  - props.canvas.position["left"],
+                top: props.tool.getPosition().getY()  - props.canvas.position["top"]
+            }
         }
     }
 
     render() {
-        console.log(Object.keys(TOOLS)[0] == this.state.tool.getType())
-
         return(
-            TOOLS[this.state.tool.getType()]
+            <div style={this.state.style}>
+                {TOOLS[this.state.tool.getType()]}
+            </div>
         );
     }
 }
