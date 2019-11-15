@@ -27,6 +27,12 @@ public class AccountController {
         if (accountRepository.findByEmail(account.getEmail()) != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+        if (account.getRole().equals("INSTRUCTOR")) {
+            if (accountRepository.findByEmail(account.getOrganizationEmail()) == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+        }
+
         accountRepository.save(account);
         return ResponseEntity.ok(null);
     }
@@ -44,5 +50,26 @@ public class AccountController {
         else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+    }
+
+    @GetMapping (path = "/account/{email}", produces = "application/json")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity getAccount(@PathVariable String email) {
+        Account account = accountRepository.findByEmail(email);
+        return ResponseEntity.ok(account);
+    }
+
+    @GetMapping (path = "/accountName/{email}", produces = "application/json")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity getAccountName(@PathVariable String email) {
+        Account account = accountRepository.findByEmail(email);
+        return ResponseEntity.ok(account.getName());
+    }
+
+    @GetMapping (path = "/OrganizationAccounts/{organizationEmail}", produces = "application/json")
+    @CrossOrigin(origins = "*")
+    public List<Account> getOrganizationAccounts(@PathVariable String organizationEmail) {
+        List<Account> accountList = accountRepository.findByOrganizationEmail(organizationEmail);
+        return accountList;
     }
 }
