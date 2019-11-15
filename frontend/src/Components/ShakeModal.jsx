@@ -36,7 +36,7 @@ class ShakeModal extends React.Component {
 
     return (  
         <Modal
-            show={show}
+            show={true}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             centered
@@ -71,8 +71,7 @@ function ShakeBody(props) {
       <div style={{height: '500px', width: '750px', padding: '10px'}}>
         <Draggable bounds="parent" onDrag={handleDrag}>
           <div className="box">
-            <div>I can be dragged anywhere</div>
-            <div>x: {position.x.toFixed(0)}, y: {position.y.toFixed(0)}</div>
+            <p style={{color: "white"}}>I can be dragged anywhere</p>
           </div>
         </Draggable>
       </div>

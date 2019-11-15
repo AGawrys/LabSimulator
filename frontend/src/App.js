@@ -12,6 +12,7 @@ import CoursePage from './Pages/CoursePage.jsx';
 import Signup from './Pages/Signup.jsx';
 import EditorStudent from './Pages/EditorStudent.jsx';
 import Routes from './utils/RouteConstants.js';
+import ShakeModalPage from './Pages/ShakeModalPage.jsx';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
 						<Route exact path={Routes.ORGANIZATION_DASHBOARD} component={OrganizationDashboard}/>
 						<Route exact path={Routes.COURSE} component={CoursePage}/>
 						<Route exact path={Routes.SIGN_UP} component={Signup}/>
+						<Route exact path={"/shake"} component={ShakeModalPage}/>
 						<Route component={NotFound} />
 					</Switch>
 				</div>
