@@ -7,24 +7,17 @@ class TaperedCupTool extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-
+            width: null,
+            height: null,
             fill: 0,
             fillColor: "rgb(0,0,0)"
         }
-        this.position = new Position(0,0);
-        this.toolType = "TaperedCup";
-    }
-
-    sizeCanvas() {
-        const canvas = document.getElementById(this.toolType);
-        canvas.style.width = "100%"
-        canvas.style.height = "100%"
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetWidth;
+        
+        this.ref = React.createRef();
     }
 
     draw() {
-        const canvas = document.getElementById(this.toolType);
+        const canvas = this.ref.current;
         if (canvas.getContext) {
             let context = canvas.getContext("2d");
 
@@ -48,15 +41,21 @@ class TaperedCupTool extends React.Component {
     }
 
     componentDidMount() {
-        this.sizeCanvas();
-        this.draw();
+        const canvas = this.ref.current.getBoundingClientRect()
+        this.setState({
+            width: canvas.width,
+            height: canvas.height
+        }, this.draw);
     }
 
     render() {
         return (
             <div>
-                <canvas id={this.toolType}>
-                        Browser must be updated
+                <canvas style={{width: "100%", height: "100%"}}
+                        width={this.state.width}
+                        height={this.state.width}
+                        ref={this.ref}>
+                    Tapered Cup
                 </canvas>
             </div>
         );

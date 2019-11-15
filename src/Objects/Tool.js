@@ -1,7 +1,8 @@
 class Tool {
-    constructor(type, position) {
+    constructor(type, position, layer) {
         this.type = type;
         this.position = position;
+        this.layer = layer;
     }
 
     getType() {
@@ -12,8 +13,16 @@ class Tool {
         return this.position;
     }
 
+    getLayer() {
+        return this.layer;
+    }
+
     setPosition(position) {
         this.position = position;
+    }
+
+    setPosition(layer) {
+        this.layer = layer;
     }
 }
 

@@ -4,7 +4,7 @@ import TaperedCupTool from "./TaperedCupTool.jsx"
 const TOOLS = {
     Cups: {
         TaperedCup: <TaperedCupTool />
-    }
+    },
 };
 
 export default TOOLS;

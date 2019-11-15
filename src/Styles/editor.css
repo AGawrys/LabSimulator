@@ -1,12 +1,12 @@
 .editor {
     display: grid;
     grid-template:
-    "header header header header header" 10vh
-    "action details details details steps" 10vh
-    "action canvas canvas canvas steps" 20vh
-    "catalog canvas canvas canvas steps" 30vh
-    "catalog canvas canvas canvas layer" 15vh
-    "catalog canvas canvas canvas layer" 15vh
+    "header header header header header" 9.8vh
+    "action details details details steps" 9.8vh
+    "action canvas canvas canvas steps" 19.8vh
+    "catalog canvas canvas canvas steps" 29.8vh
+    "catalog canvas canvas canvas layer" 14.8vh
+    "catalog canvas canvas canvas layer" 14.8vh
     / 16vw 23vw 23vw 23vw 15vw;
 
     text-align: left;
@@ -56,13 +56,10 @@
 
 .canvas-area {
     grid-area: canvas;
-}
-
-.canvas {
     width: 99%;
     height: 99%;
 
-    border: 1px solid black;
+    position: relative;
 }
 
 .catalog-area {

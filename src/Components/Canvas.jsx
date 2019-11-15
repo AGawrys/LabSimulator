@@ -7,10 +7,18 @@ class Canvas extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            canvas: null
+            canvas: null,
+            focused: null
         }
 
+        this.focusTool = this.focusTool.bind(this);
         this.ref = React.createRef();
+    }
+
+    focusTool(tool) {
+        this.setState({
+            focused: tool.getLayer()
+        })
     }
 
     componentDidMount() {
@@ -25,7 +33,11 @@ class Canvas extends React.Component {
 
         const ToolComponents = (
             tools.map(tool => {
-                return <Tool tool={tool} canvas={canvas} />
+                return <Tool tool={tool}
+                        canvas={canvas}
+                        focused={this.state.focused === tool.getLayer()}
+                        focusTool={this.focusTool}
+                        />
             })
         );
 
@@ -33,8 +45,12 @@ class Canvas extends React.Component {
                 <Droppable className={this.props.className}
                        types={["tool"]}
                        onDrop={this.props.onDrop}
-                       ref={this.ref}>
-                    {ToolComponents}
+                       >
+                    <div className={this.props.className}
+                         ref={this.ref}
+                         >
+                        {ToolComponents}
+                    </div>  
                 </Droppable>
         )
     }

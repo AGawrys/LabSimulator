@@ -40,8 +40,8 @@ class Editor extends React.Component {
         let lesson = this.state.lesson;
 
         const position = new Position(e.pageX, e.pageY);
-        console.log(position);
-        const tool = new Tool(data["tool"] , position);
+        const layer = this.state.lesson.tools.length;
+        const tool = new Tool(data["tool"] , position, layer);
 
         lesson.addTool(tool);
         this.setState({
@@ -59,8 +59,6 @@ class Editor extends React.Component {
 
                 <div class="action-area">
                     <div class="subheader">Action Manager</div>
-                    <div class="action-manager">
-                    </div>
                 </div>
 
                 <div class="details">
@@ -80,9 +78,6 @@ class Editor extends React.Component {
                     <Catalog />
                 </div>
 
-                <div class="layer">
-                  
-                </div>                
           </div>
         );
     }
