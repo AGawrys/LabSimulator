@@ -1,6 +1,5 @@
 import React from "react";
 import TaperedCupTool from "./TaperedCupTool";
-import { relative } from "path";
 
 const TOOLS = {
     "TaperedCup": <TaperedCupTool />
@@ -9,7 +8,6 @@ const TOOLS = {
 class Tool extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props.tool.getPosition().getY() - props.canvas.position["top"])
         this.state = {
             tool: props.tool,
             style: {
@@ -19,11 +17,28 @@ class Tool extends React.Component {
                 top: props.tool.getPosition().getY()  - props.canvas.position["top"]
             }
         }
+
+        this.ref = React.createRef();
+    }
+
+    componentDidMount() {
+        const tool = this.ref.current.getBoundingClientRect();
+        const leftOffset = tool.width / 2;
+        const topOffset = tool.height / 2;
+
+        let style = {...this.state.style};
+        style["left"] = style.left - leftOffset >= 0? style.left - leftOffset : 0;
+        style["top"] = style.top - topOffset >= 0? style.top - topOffset: 0;
+
+        this.setState({
+            style: style
+        })
     }
 
     render() {
         return(
-            <div style={this.state.style}>
+            <div style={this.state.style}
+                 ref={this.ref}>
                 {TOOLS[this.state.tool.getType()]}
             </div>
         );
