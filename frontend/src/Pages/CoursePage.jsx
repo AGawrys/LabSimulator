@@ -5,7 +5,10 @@ import HeaderBru from '../Components/Header.jsx';
 import Routes from '../utils/RouteConstants.js';
 import FormModal from '../Components/FormModal.jsx';
 import ConfirmationModal from '../Components/ConfirmationModal.jsx';
+import InstructorRow from '../Components/InstructorRow.jsx';
+import LessonRow from '../Components/LessonRow.jsx';
 import { Button, Modal, Form, Row, ListGroup } from 'react-bootstrap';
+import ModalConstants from '../utils/ModalConstants.js';
 
 const links = {
 	Account: '/account'
@@ -26,6 +29,9 @@ class CoursePage extends Component {
 			showDeleteStudent: false,
 			showDeleteLesson: false,
 			showAllLessonsModal: false,
+			selectedLesson: null,
+			selectedStudent: null,
+			selectedInstructor: null,
 			courseInfo: courseInfo,
 		};
 	}
@@ -41,20 +47,20 @@ class CoursePage extends Component {
 			<div className="background">
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
 				<ConfirmationModal
-					title="Remove Instructor"
-					message="Are you sure you want to remove this instructor?"
+					title={ModalConstants.REMOVE_INSTRUCTOR_TITLE}
+					message={ModalConstants.REMOVE_INSTRUCTOR_MESSAGE}
 					onHide={() => this.setState({showDeleteInstructor: false})}
 					show={showDeleteInstructor}
 					onDelete={this.deleteInstructor}/>
 				<ConfirmationModal
-					title="Remove Student"
-					message="Are you sure you want to remove this student?"
+					title={ModalConstants.REMOVE_STUDENT_TITLE}
+					message={ModalConstants.REMOVE_STUDENT_MESSAGE}
 					onHide={() => this.setState({showDeleteStudent: false})}
 					show={showDeleteStudent}
 					onDelete={this.deleteStudent}/>
 				<ConfirmationModal
-					title="Remove Lesson"
-					message="Are you sure you want to remove this lesson?"
+					title={ModalConstants.REMOVE_LESSON_TITLE}
+					message={ModalConstants.REMOVE_LESSON_MESSAGE}
 					onHide={() => this.setState({showDeleteLesson: false})}
 					show={showDeleteLesson}
 					onDelete={this.deleteLesson}/>
@@ -87,7 +93,9 @@ class CoursePage extends Component {
 						</div>
 						<div className="studentAllLesson">
 							<ListGroup>
-								{lessons.map((lesson) => this.renderLesson(lesson))}
+								{lessons.map((lesson, index) => 
+									<LessonRow key={index} lesson={lesson} onClick={this.onLessonClick}/>)
+								}
 							</ListGroup>
 						</div>
 					</div>
@@ -100,7 +108,9 @@ class CoursePage extends Component {
 						</div>
 						<div className="recentDrinkBottom">
 							<ListGroup>
-								{instructors.map((instructor) => this.renderInstructor(instructor))}
+								{instructors.map((instructor,index) => 
+									<InstructorRow key={index} instructor={instructor} onClick={this.onInstructorClick}/>)
+								}
 							</ListGroup>
 						</div>
 					</div>
@@ -111,7 +121,7 @@ class CoursePage extends Component {
 						</div>
 						<div className="recentDrinkBottom">
 							<ListGroup>
-								{students.map((student) => this.renderStudent(student))}
+								{students.map((student, index) => this.renderStudent(student, index))}
 							</ListGroup>
 						</div>
 					</div>
@@ -120,50 +130,9 @@ class CoursePage extends Component {
 		);
 	}
 
-
-
-	renderLesson = (lesson) => {
+	renderStudent = (student, index) =>  {
 		return (
-			<ListGroup.Item>
-				<h5> {lesson.title} </h5>
-				<button
-					className="deleteCourseButton buttonRound btn-danger"
-					onClick={() => {
-						this.setState({ showDeleteLesson: true, selectedLesson: lesson});
-					}}
-				>
-					-
-				</button>
-			</ListGroup.Item>
-		);
-
-		/*
-			<li className="courseListing">
-				<h5> Maple Pecan Latte </h5>
-				<h6> 3/4 Students </h6>
-				<button
-					className="deleteCourseButton buttonRound btn-danger"
-					onClick={() => {
-						this.setState({ showConfirmDeleteModal: true });
-					}}
-				>
-					-
-				</button>
-				<Collapsible triggerWhenOpen="Collapse" trigger="Expand">
-					<ol>
-						<li> James Angeles (Completed) 5 Attempts </li>
-						<li> Steven Kuang </li>
-						<li> Agnieszka Gawrys (Completed) 2 Attempts</li>
-						<li> Jason Dong (Completed) 3 Attempts</li>
-					</ol>
-				</Collapsible>
-			</li>
-		*/
-	}
-
-	renderStudent = (student) =>  {
-		return (
-			<ListGroup.Item>
+			<ListGroup.Item key={index}>
 				<div className="listRow">
 					<p> {student.name} </p>
 					<button
@@ -180,22 +149,18 @@ class CoursePage extends Component {
 
 	}
 
-	renderInstructor = (instructor) => {
-		return (
-			<ListGroup.Item>
-				<div className="listRow">
-					<p> {instructor.name}</p>
-					<button
-						className="buttonRound btn-danger"
-						onClick={() => {
-							this.setState({ showDeleteInstructor: true, selectedInstructor: instructor});
-						}}
-					>
-						-
-					</button>
-				</div>
-			</ListGroup.Item>
-		);
+	onLessonClick = (lesson) => {
+		this.setState({
+			showDeleteLesson: true,
+			selectedLesson: lesson,
+		});
+	}
+
+	onInstructorClick = (instructor) =>  {
+		this.setState({
+			showDeleteInstructor: true,
+			selectedInstructor: instructor,
+		});
 	}
 
 	handleDelete = (e) => {

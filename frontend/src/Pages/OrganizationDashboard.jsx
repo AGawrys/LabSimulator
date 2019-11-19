@@ -1,21 +1,59 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { Button, Modal, Form, Row, ListGroup } from 'react-bootstrap';
 import HeaderBru from '../Components/Header.jsx';
 import Collapsible from 'react-collapsible';
 import '../Styles/OrganizationDashboard.css';
 import Routes from '../utils/RouteConstants.js';
+import ConfirmationModal from '../Components/ConfirmationModal.jsx';
+import InstructorRow from '../Components/InstructorRow.jsx';
+import LessonRow from '../Components/LessonRow.jsx';
+import ModalConstants from '../utils/ModalConstants.js';
 
 const links = {
 	Account: '/account'
 };
 
-export class OrganizationDashboard extends Component {
-	handleNext() {}
+export class OrganizationDashboard extends React.Component {
+
+	constructor(props) {
+		super(props);
+		const organizationInfo =  {
+			instructors: [{name: "Kevin McDonnell"}, {name: "Richard McKenna"},{name: "Eugene Stark"}],
+			lessons: [{title: "Pumpkin Spice Latte"}, {title: "Caramel Frappuccino"}],
+		}
+		this.state = {
+			showDeleteLesson: false,
+			selectedLesson: null,
+			showDeleteInstructor: false,
+			selectedInstructor: null,
+			organizationInfo: organizationInfo,
+		}
+	}
+	
 
 	render() {
+		const {showDeleteLesson, selectedLesson, showDeleteInstructor, selectedInstructor, organizationInfo} = this.state;
+		if(organizationInfo === null) {
+			return null;
+		}
+		const {instructors, lessons} = organizationInfo;
+
 		return (
 			<div className="background">
 				<HeaderBru home={Routes.ORGANIZATION_DASHBOARD} isLoggedIn={true} links={links} />
+				<ConfirmationModal
+					title={ModalConstants.REMOVE_INSTRUCTOR_TITLE}
+					message={ModalConstants.REMOVE_INSTRUCTOR_MESSAGE}
+					onHide={() => this.setState({showDeleteInstructor: false})}
+					show={showDeleteInstructor}
+					onDelete={this.deleteInstructor}/>
+				<ConfirmationModal
+					title={ModalConstants.REMOVE_LESSON_TITLE}
+					message={ModalConstants.REMOVE_LESSON_MESSAGE}
+					onHide={() => this.setState({showDeleteLesson: false})}
+					show={showDeleteLesson}
+					onDelete={this.deleteLesson}/>
 				<div className="organizationDashboard">
 					<div className="organizationDashboardContents">
 						<div className="organizationInstructorDiv">
@@ -30,161 +68,39 @@ export class OrganizationDashboard extends Component {
 										value="+"
 									/>
 								</form>
-								<ul>
-									<li>
-										<div className="listRow">
-											<p>John Smith (123@123.com) </p>
-											<button className="smallOrganizationButton buttonRound btn-danger">
-												-
-											</button>
-										</div>
-									</li>
-									<li className="oddDiv">
-										<div className="listRow">
-											<p>Pocahontas (123@123.com) </p>
-											<button className="smallOrganizationButton buttonRound btn-danger">
-												-
-											</button>
-										</div>
-									</li>
-									<li>
-										<div className="listRow">
-											<p>John Smith (123@123.com) </p>
-											<button className="smallOrganizationButton buttonRound btn-danger">
-												-
-											</button>
-										</div>
-									</li>
-									<li className="oddDiv">
-										<div className="listRow">
-											<p>Pocahontas (123@123.com) </p>
-											<button className="smallOrganizationButton buttonRound btn-danger">
-												-
-											</button>
-										</div>
-									</li>
-									<li>
-										<div className="listRow">
-											<p>John Smith (123@123.com) </p>
-											<button className="smallOrganizationButton buttonRound btn-danger">
-												-
-											</button>
-										</div>
-									</li>
-									<li className="oddDiv">
-										<div className="listRow">
-											<p>Pocahontas (123@123.com) </p>
-											<button className="smallOrganizationButton buttonRound btn-danger">
-												-
-											</button>
-										</div>
-									</li>
-									<li>
-										<div className="listRow">
-											<p>John Smith (123@123.com) </p>
-											<button className="smallOrganizationButton buttonRound btn-danger">
-												-
-											</button>
-										</div>
-									</li>
-									<li className="oddDiv">
-										<div className="listRow">
-											<p>Pocahontas (123@123.com) </p>
-											<button className="smallOrganizationButton buttonRound btn-danger">
-												-
-											</button>
-										</div>
-									</li>
-									<li>
-										<div className="listRow">
-											<p>John Smith (123@123.com) </p>
-											<button className="smallOrganizationButton buttonRound btn-danger">
-												-
-											</button>
-										</div>
-									</li>
-									<li className="oddDiv">
-										<div className="listRow">
-											<p>Pocahontas (123@123.com) </p>
-											<button className="smallOrganizationButton buttonRound btn-danger">
-												-
-											</button>
-										</div>
-									</li>
-									<li>
-										<div className="listRow">
-											<p>John Smith (123@123.com) </p>
-											<button className="smallOrganizationButton buttonRound btn-danger">
-												-
-											</button>
-										</div>
-									</li>
-									<li className="oddDiv">
-										<div className="listRow">
-											<p>Pocahontas (123@123.com) </p>
-											<button className="smallOrganizationButton buttonRound btn-danger">
-												-
-											</button>
-										</div>
-									</li>
-									<li>
-										<div className="listRow">
-											<p>John Smith (123@123.com) </p>
-											<button className="smallOrganizationButton buttonRound btn-danger">
-												-
-											</button>
-										</div>
-									</li>
-									<li className="oddDiv">
-										<div className="listRow">
-											<p>Pocahontas (123@123.com) </p>
-											<button className="smallOrganizationButton buttonRound btn-danger">
-												-
-											</button>
-										</div>
-									</li>
-								</ul>
+								<ListGroup>
+									{instructors.map((instructor,index) => 
+										<InstructorRow key={index} instructor={instructor} onClick={this.onInstructorClick}/>)
+									}
+								</ListGroup>
 							</div>
 						</div>
 						<div className="organizationLabDiv">
 							<h4>All Lessons</h4>
-							<ul className="listofOrganizationLabs">
-								<li className="organizationCourseListing">
-									<h5>Caramel Latte</h5>
-									<Collapsible triggerWhenOpen="Collapse" trigger="Expand">
-										<ul>
-											<li>1. Get</li>
-											<li>2. Drink</li>
-											<li>3. Done</li>
-										</ul>
-									</Collapsible>
-								</li>
-								<li className="organizationCourseListing">
-									<h5>Strawberry Green Tea</h5>
-									<Collapsible triggerWhenOpen="Collapse" trigger="Expand">
-										<ul>
-											<li>1. Get</li>
-											<li>2. Drink</li>
-											<li>3. Done</li>
-										</ul>
-									</Collapsible>
-								</li>
-								<li className="organizationCourseListing">
-									<h5>Mocha Frappuccino</h5>
-									<Collapsible triggerWhenOpen="Collapse" trigger="Expand">
-										<ul>
-											<li>1. Get</li>
-											<li>2. Drink</li>
-											<li>3. Done</li>
-										</ul>
-									</Collapsible>
-								</li>
-							</ul>
+							<ListGroup>
+								{lessons.map((lesson, index) => 
+									<LessonRow key={index} lesson={lesson} onClick={this.onLessonClick}/>)
+								}
+							</ListGroup>
 						</div>
 					</div>
 				</div>
 			</div>
 		);
+	}
+
+	onInstructorClick = (instructor) =>  {
+		this.setState({
+			showDeleteInstructor: true,
+			selectedInstructor: instructor,
+		});
+	}
+
+	onLessonClick = (lesson) => {
+		this.setState({
+			showDeleteLesson: true,
+			selectedLesson: lesson,
+		});
 	}
 }
 
