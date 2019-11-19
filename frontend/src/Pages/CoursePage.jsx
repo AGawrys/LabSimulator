@@ -77,8 +77,7 @@ class CoursePage extends Component {
 			</div>
 		);
 	}
-
-	handleNext() {}
+	
 	render() {
 		return (
 			<div className="background">
