@@ -20,9 +20,10 @@ public class ToolIdentity implements Serializable {
 
     }
 
-    public ToolIdentity(String toolID, int stepID) {
+    public ToolIdentity(String name, int stepNumber, int lessonId) {
         this.name = name;
-        this.stepID = stepID;
+        this.stepNumber = stepNumber;
+        this.lessonId = lessonId;
     }
 
     public String getName() {
@@ -33,11 +34,19 @@ public class ToolIdentity implements Serializable {
         this.name = name;
     }
 
-    public int getStepID() {
-        return stepID;
+    public int getStepNumber() {
+        return stepNumber;
     }
 
-    public void setStepID(int stepID) {
-        this.stepID = stepID;
+    public void setStepNumber(int stepID) {
+        this.stepNumber = stepID;
+    }
+
+    public int getLessonId() {
+        return lessonId;
+    }
+
+    public void setLessonId(int lessonId) {
+        this.lessonId = lessonId;
     }
 }

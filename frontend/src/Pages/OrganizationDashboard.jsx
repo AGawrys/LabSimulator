@@ -8,7 +8,7 @@ import Routes from '../utils/RouteConstants.js';
 import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import InstructorRow from '../Components/InstructorRow.jsx';
 import LessonRow from '../Components/LessonRow.jsx';
-import ModalConstants from '../utils/ModalConstants.js';
+import GeneralConstants from '../utils/GeneralConstants.js';
 
 const links = {
 	Account: '/account'
@@ -43,14 +43,14 @@ export class OrganizationDashboard extends React.Component {
 			<div className="background">
 				<HeaderBru home={Routes.ORGANIZATION_DASHBOARD} isLoggedIn={true} links={links} />
 				<ConfirmationModal
-					title={ModalConstants.REMOVE_INSTRUCTOR_TITLE}
-					message={ModalConstants.REMOVE_INSTRUCTOR_MESSAGE}
+					title={GeneralConstants.REMOVE_INSTRUCTOR_TITLE}
+					message={GeneralConstants.REMOVE_INSTRUCTOR_MESSAGE}
 					onHide={() => this.setState({showDeleteInstructor: false})}
 					show={showDeleteInstructor}
 					onDelete={this.deleteInstructor}/>
 				<ConfirmationModal
-					title={ModalConstants.REMOVE_LESSON_TITLE}
-					message={ModalConstants.REMOVE_LESSON_MESSAGE}
+					title={GeneralConstants.REMOVE_LESSON_TITLE}
+					message={GeneralConstants.REMOVE_LESSON_MESSAGE}
 					onHide={() => this.setState({showDeleteLesson: false})}
 					show={showDeleteLesson}
 					onDelete={this.deleteLesson}/>

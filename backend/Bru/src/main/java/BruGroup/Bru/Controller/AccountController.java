@@ -39,13 +39,13 @@ public class AccountController {
 
     @PostMapping (path = "/account")
     @CrossOrigin(origins = "*")
-    public ResponseEntity login(@RequestBody Account account) {
+    public ResponseEntity<Account> login(@RequestBody Account account) {
         Account dbAccount = accountRepository.findByEmail(account.getEmail());
         if (dbAccount == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         if (dbAccount.getPassword().equals(account.getPassword())) {
-            return ResponseEntity.ok(null);
+            return ResponseEntity.status(HttpStatus.OK).body(dbAccount);
         }
         else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);

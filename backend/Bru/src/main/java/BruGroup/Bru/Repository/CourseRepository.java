@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, String> {
-    Course findByCourseID(@PathVariable String id);
+    Course findByCourseId(@PathVariable String courseId);
 }

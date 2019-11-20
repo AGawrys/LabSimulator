@@ -29,11 +29,11 @@ public class CourseController {
     @CrossOrigin(origins="*")
     public ResponseEntity createCourse(@RequestBody Course course) {
         String courseID = generateCourseID();
-        while (courseRepository.findByCourseID(courseID) != null) {
+        while (courseRepository.findByCourseId(courseID) != null) {
             courseID = generateCourseID();
         }
         Course savedCourse = new Course(course.getName());
-        savedCourse.setId(courseID);
+        savedCourse.setCourseId(courseID);
         courseRepository.save(course);
         return ResponseEntity.ok(null);
     }
@@ -41,7 +41,7 @@ public class CourseController {
     @PostMapping (path="/deleteCourse/{courseId}", produces = "application/json")
     @CrossOrigin(origins= "*")
     public ResponseEntity deleteCourse(@PathVariable String courseId) {
-        Course course = courseRepository.findByCourseID(courseId);
+        Course course = courseRepository.findByCourseId(courseId);
         if (course == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

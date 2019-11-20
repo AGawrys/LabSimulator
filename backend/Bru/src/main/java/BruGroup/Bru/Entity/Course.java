@@ -8,19 +8,20 @@ import javax.persistence.Id;
 public class Course {
 
     @Id
-    private String id;
+    private String courseId;
     private String name;
 
     public Course () {
 
     }
+
     public Course(String name){
         this.name = name;
     }
 
-    public String getId() { return id; }
+    public String getCourseId() { return courseId; }
 
-    public void setId(String id) { this.id = id; }
+    public void setCourseId(String courseId) { this.courseId = courseId; }
 
     public String getName() {
         return name;
@@ -33,7 +34,7 @@ public class Course {
     @Override
     public String toString() {
         return "User {" +
-                "Course Access Code = " + id +
+                "Course Access Code = " + courseId +
                 ", Name = " + name
                 + "}";
     }
