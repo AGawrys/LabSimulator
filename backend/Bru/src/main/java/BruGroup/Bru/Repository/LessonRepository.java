@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 @Repository
-public interface LessonRepository extends JpaRepository<Lesson, LessonIdentity> {
-    List<Lesson> findByLessonIdentityInstructorEmail(@PathVariable String instructorEmail);
-    Lesson findByLessonIdentityLessonId(@PathVariable String lessonId);
+public interface LessonRepository extends JpaRepository<Lesson, String> {
+    List<Lesson> findByInstructorEmail(@PathVariable String instructorEmail);
+    Lesson findByLessonId(@PathVariable String lessonId);
 }

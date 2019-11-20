@@ -37,23 +37,31 @@ public class LessonController {
     @GetMapping(path = "/getInstructorLessons/{instructorEmail}")
     @CrossOrigin(origins = "*")
     public List<Lesson> getInstructorLessons(@PathVariable String instructorEmail) {
-        List<Lesson> lessonList = lessonRepository.findByLessonIdentityInstructorEmail(instructorEmail);
-        return lessonList;
-    }
-/*
-    @GetMapping(path = "/getLesson/{lessonId}")
-    @CrossOrigin(origins = "*")
-    public List<Lesson> getInstructorLessons(@PathVariable String lessonId) {
-        List<Lesson> lessonList = lessonRepository.findByLessonIdentityLessonId(instructorEmail);
+        List<Lesson> lessonList = lessonRepository.findByInstructorEmail(instructorEmail);
         return lessonList;
     }
 
-*/
+    @GetMapping(path = "/getLesson/{lessonId}")
+    @CrossOrigin(origins = "*")
+    public Lesson getLesson(@PathVariable String lessonId) {
+        Lesson lesson = lessonRepository.findByLessonId(lessonId);
+        return lesson;
+    }
+
+    @PostMapping(path = "/updateLessonName")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity updateLessonName(@RequestBody Lesson lesson) {
+        Lesson lessonId = lessonRepository.findByLessonId(lesson.getLessonId());
+        lessonId.setName(lesson.getName());
+        lessonRepository.save(lessonId);
+        return ResponseEntity.ok(null);
+    }
+
+
+
 }
 
 /*
 LessonId Clones
-Get One Row
 Set Name
-Find Labs to one Instructor
  */

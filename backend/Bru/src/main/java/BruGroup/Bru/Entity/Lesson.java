@@ -6,8 +6,9 @@ import javax.persistence.*;
 @Entity
 public class Lesson {
 
-    @EmbeddedId
-    private LessonIdentity lessonIdentity;
+    @Id
+    private String lessonId;
+    private String instructorEmail;
     private String organizationName;
     private String name;
 
@@ -15,18 +16,11 @@ public class Lesson {
 
     }
 
-    public Lesson(LessonIdentity lessonIdentity, String organizationName, String name) {
-        this.lessonIdentity = lessonIdentity;
+    public Lesson(String lessonId, String instructorEmail, String organizationName, String name) {
+        this.lessonId = lessonId;
+        this.instructorEmail = instructorEmail;
         this.organizationName = organizationName;
         this.name = name;
-    }
-
-    public LessonIdentity getLessonIdentity() {
-        return lessonIdentity;
-    }
-
-    public void setLessonIdentity(LessonIdentity lessonIdentity) {
-        this.lessonIdentity = lessonIdentity;
     }
 
     public String getOrganizationName() {
@@ -48,9 +42,25 @@ public class Lesson {
     @Override
     public String toString() {
         return "Lesson {" +
-                "instructorEmail = " + lessonIdentity.getInstructorEmail() +
-                ", lessonId = " + lessonIdentity.getLessonId() +
+                "instructorEmail = " + instructorEmail +
+                ", lessonId = " +  lessonId +
                 ", organizationName = " + organizationName +
                 ", name = " + name + "}";
+    }
+
+    public String getInstructorEmail() {
+        return instructorEmail;
+    }
+
+    public void setInstructorEmail(String instructorEmail) {
+        this.instructorEmail = instructorEmail;
+    }
+
+    public String getLessonId() {
+        return lessonId;
+    }
+
+    public void setLessonId(String lessonId) {
+        this.lessonId = lessonId;
     }
 }
