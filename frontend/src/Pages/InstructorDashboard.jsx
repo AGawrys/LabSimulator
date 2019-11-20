@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import SearchBar from 'react-js-search';
 import Collapsible from 'react-collapsible';
 import '../Styles/InstructorDashboard.css';
-import { Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import HeaderBru from '../Components/Header.jsx';
 import Routes from '../utils/RouteConstants.js';
 import FormModal from '../Components/FormModal.jsx';
 import { Button, Form, Modal } from 'react-bootstrap';
+import axios from 'axios';
+
 
 const links = {
 	Account: '/account'
@@ -21,7 +23,7 @@ export class InstructorDashboard extends Component {
 		};
 	}
 
-	handleNext() {}
+
 	render() {
 		return (
 			<div className="background">

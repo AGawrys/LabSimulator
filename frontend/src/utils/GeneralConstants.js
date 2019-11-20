@@ -8,6 +8,7 @@ const GeneralConstants = {
 	STUDENT: "STUDENT",
 	INSTRUCTOR: "INSTRUCTOR",
 	ORGANIZATION: "ORGANIZATION",
+	NO_ROLE: "ROLE INDEPENDENT",
 };
 
 export default GeneralConstants;

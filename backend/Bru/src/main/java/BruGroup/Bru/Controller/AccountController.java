@@ -2,11 +2,17 @@ package BruGroup.Bru.Controller;
 
 import BruGroup.Bru.Entity.Account;
 import BruGroup.Bru.Repository.AccountRepository;
+import com.oracle.javafx.jmx.json.JSONException;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.apache.commons.lang3.time.DateUtils;
 
+import java.security.Key;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -14,6 +20,7 @@ public class AccountController {
 
     @Autowired
     AccountRepository accountRepository;
+    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     @GetMapping (path = "/allAccounts")
     @CrossOrigin(origins = "*")
@@ -39,13 +46,20 @@ public class AccountController {
 
     @PostMapping (path = "/account")
     @CrossOrigin(origins = "*")
-    public ResponseEntity<Account> login(@RequestBody Account account) {
+    public ResponseEntity<TokenCreationResponse> login(@RequestBody Account account) {
         Account dbAccount = accountRepository.findByEmail(account.getEmail());
         if (dbAccount == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         if (dbAccount.getPassword().equals(account.getPassword())) {
-            return ResponseEntity.status(HttpStatus.OK).body(dbAccount);
+            String jwt = Jwts.builder()
+                    .setSubject(account.getEmail())
+                    .setExpiration(getExpirationDate())
+                    .setIssuedAt(new Date())
+                    .signWith(key)
+                    .compact();
+            TokenCreationResponse response = new TokenCreationResponse(jwt, dbAccount.getRole());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
         else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -71,5 +85,88 @@ public class AccountController {
     public List<Account> getOrganizationAccounts(@PathVariable String organizationEmail) {
         List<Account> accountList = accountRepository.findByOrganizationEmail(organizationEmail);
         return accountList;
+    }
+
+    @PostMapping (path = "/token-auth")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity verifyToken(@RequestBody String token) throws JSONException {
+        Jws<Claims> jws;
+        try {
+            jws = Jwts.parser()
+                    .setSigningKey(key)
+                    .parseClaimsJws(token);
+            Date expirationDate = jws.getBody().getExpiration();
+            boolean isExpired = new Date().after(expirationDate);
+            if (isExpired) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+            else {
+                String email = jws.getBody().getSubject();
+                Account dbAccount = accountRepository.findByEmail(email);
+                TokenVerificationResponse response = new TokenVerificationResponse(email, dbAccount.getRole());
+                return ResponseEntity.ok(response);
+            }
+        } catch (JwtException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+    }
+
+    private static Date getExpirationDate() {
+        Date currentDate = new Date();
+        Date expirationDate = DateUtils.addDays(currentDate, 1);
+        return expirationDate;
+    }
+}
+
+class TokenCreationResponse {
+    private String token;
+    private String role;
+
+    public TokenCreationResponse(String token, String role) {
+        this.token = token;
+        this.role = role;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+}
+
+class TokenVerificationResponse {
+    private String email;
+    private String role;
+
+    public TokenVerificationResponse(String email, String role) {
+        this.email = email;
+        this.role = role;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

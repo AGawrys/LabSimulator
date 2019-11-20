@@ -8,7 +8,7 @@ import FormModal from '../Components/FormModal.jsx';
 import { Button, Form, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import GeneralConstants from '../utils/GeneralConstants.js';
-import RouteConstants from '../utils/RouteConstants.js';
+import Routes from '../utils/RouteConstants.js';
 
 class HeaderBru extends React.Component {
 	constructor(props) {
@@ -36,11 +36,14 @@ class HeaderBru extends React.Component {
 			password: this.state.password
 		};
 
-		axios.post('http://localhost:8080/account', account).then(
+		axios.post(Routes.SERVER + 'account', account).then(
 			(response) => {
-				const {email, role} = response.data;
-				localStorage.setItem("email", email);
-				this.setState({ authenticated: true, role: role});
+				const {token, role} = response.data;
+				localStorage.setItem('token', token);
+				this.setState({
+					authenticated: true,
+					role: role,
+				});
 			},
 			(error) => {
 				this.setState({
@@ -170,13 +173,13 @@ class HeaderBru extends React.Component {
 	getCorrectRoute() {
 		const {role} = this.state;
 		if (role == GeneralConstants.STUDENT) {
-			return RouteConstants.STUDENT_DASHBOARD;
+			return Routes.STUDENT_DASHBOARD;
 		}
 		else if (role == GeneralConstants.INSTRUCTOR) {
-			return RouteConstants.INSTRUCTOR_DASHBOARD;
+			return Routes.INSTRUCTOR_DASHBOARD;
 		}
 		else {
-			return RouteConstants.ORGANIZATION_DASHBOARD;
+			return Routes.ORGANIZATION_DASHBOARD;
 		}
 	}
 
