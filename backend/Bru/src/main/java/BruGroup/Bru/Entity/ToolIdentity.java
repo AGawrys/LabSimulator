@@ -11,7 +11,10 @@ public class ToolIdentity implements Serializable {
     private String name;
 
     @NotNull
-    private int stepID;
+    private int stepNumber;
+
+    @NotNull
+    private int lessonId;
 
     public ToolIdentity() {
 
