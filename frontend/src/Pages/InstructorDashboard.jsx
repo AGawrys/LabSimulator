@@ -19,10 +19,12 @@ export class InstructorDashboard extends Component {
 		super(props);
 		this.state = {
 			showCourseModal: false,
-			showLessonModal: false
+			showLessonModal: false,
+			createdCourseName: null,
+			createdCourseDescription: null,
+			courseInfo: null,
 		};
 	}
-
 
 	render() {
 		return (
@@ -55,39 +57,6 @@ export class InstructorDashboard extends Component {
 								</FormModal>
 							</div>
 							<div className="recentDrinkBottom">
-								<ol>
-									<li>
-										Caramel Latte{' '}
-										<Collapsible triggerWhenOpen="Collapse" trigger="Expand">
-											<ol>
-												<li>1. Get</li>
-												<li>2. Drink</li>
-												<li>3. Done</li>
-											</ol>
-										</Collapsible>
-									</li>
-									<li className="oddDiv">
-										Strawberry Green Tea
-										<Collapsible triggerWhenOpen="Collapse" trigger="Expand">
-											<ol>
-												<li>1. Get</li>
-												<li>2. Drink</li>
-												<li>3. Done</li>
-											</ol>
-										</Collapsible>
-									</li>
-
-									<li>
-										Mocha Frappuccino
-										<Collapsible triggerWhenOpen="Collapse" trigger="Expand">
-											<ol>
-												<li>1. Get</li>
-												<li>2. Drink</li>
-												<li>3. Done</li>
-											</ol>
-										</Collapsible>
-									</li>
-								</ol>
 							</div>
 						</div>
 						<div className="recentLessonsDiv">
@@ -107,25 +76,12 @@ export class InstructorDashboard extends Component {
 									onHide={() => {
 										this.setState({ showCourseModal: false });
 									}}
+									submitAction={this.onCreateCourse}
 								>
 									{this.getCourseForm()}
 								</FormModal>
 							</div>
 							<div className="recentLessonsBottom">
-								<div className="training1">
-									<div className="training1Header">
-										<h5>Training 1</h5>
-										<h6>(3 Drinks)</h6>
-									</div>
-
-									<Collapsible triggerWhenOpen="Collapse" trigger="Expand">
-										<ol>
-											<li>Caramel Latte</li>
-											<li>Strawberry Green Tea</li>
-											<li>Mocha Frappuccino</li>
-										</ol>
-									</Collapsible>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -134,21 +90,51 @@ export class InstructorDashboard extends Component {
 		);
 	}
 
+	onCreateCourse = (e) => {
+		e.preventDefault();
+		const {createdCourseName, createdCourseDescription} = this.state;
+		const course = {
+			name: createdCourseName,
+			description: createdCourseDescription
+		}
+		const body = {
+			email: this.props.email,
+			course: course,
+		};
+		axios.post(Routes.SERVER + "createCourse", body).then(
+			(response) => {
+				const courseCode = response.data;
+				const newRoute = Routes.COURSE + courseCode;
+				this.props.history.push(newRoute);
+			},
+			(error) => {
+				console.log(error);
+			}
+		)
+	} 
+
 	getCourseForm() {
 		return (
 			<div>
 				<Modal.Body>
 					<Form.Group>
 						<Form.Label>Course Name</Form.Label>
-						<Form.Control minlength="5" required placeholder="Enter Course Name" />
+						<Form.Control 
+							minlength="5" 
+							required placeholder="Enter Course Name"
+							onChange={(e) => this.handleFieldChange(e, 'createdCourseName')}/>
 					</Form.Group>
 					<Form.Group>
 						<Form.Label>Description</Form.Label>
-						<Form.Control maxlength="140" as="textarea" rows="3" />
+						<Form.Control 
+							maxLength="140" 
+							as="textarea" 
+							rows="3"
+							onChange={(e) => this.handleFieldChange(e, 'createdCourseDescription')}/>
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button variant="primary" type="submit">
+					<Button variant="primary" type="submit" >
 						Create
 					</Button>
 				</Modal.Footer>
@@ -173,6 +159,10 @@ export class InstructorDashboard extends Component {
 			</div>
 		);
 	}
+
+	handleFieldChange = (e, field) => {
+		this.setState({ [field]: e.target.value });
+	};
 }
 
 export default InstructorDashboard;

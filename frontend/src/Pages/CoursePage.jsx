@@ -9,6 +9,7 @@ import InstructorRow from '../Components/InstructorRow.jsx';
 import LessonRow from '../Components/LessonRow.jsx';
 import { Button, Modal, Form, Row, ListGroup } from 'react-bootstrap';
 import GeneralConstants from '../utils/GeneralConstants.js';
+import {useParams} from "react-router-dom";
 
 const links = {
 	Account: '/account'
@@ -17,8 +18,9 @@ const links = {
 class CoursePage extends Component {
 	constructor(props) {
 		super(props);
+		const {course_id} = props.computedMatch.params;
 		const courseInfo =  {
-			accessCode: "4x8Y5",
+			accessCode: course_id,
 			title: "Fall Seasonals 2019",
 			students: [{name: "James Angeles"}, {name: "Nieszka Gawrys"}, {name: "Steven Kuang"}, {name: "Jason Dong"}],
 			instructors: [{name: "Kevin McDonnell"}, {name: "Richard McKenna"},{name: "Eugene Stark"}],

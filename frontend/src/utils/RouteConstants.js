@@ -12,7 +12,7 @@ const Routes = {
 	STUDENT_DASHBOARD: '/' + STUDENT + '/' + DASHBOARD,
 	ACCOUNT: '/account',
 	ORGANIZATION_DASHBOARD: '/' + ORGANIZATION + '/' + DASHBOARD,
-	COURSE: '/course',
+	COURSE: '/course/',
 	SIGN_UP: '/signup',
 	SERVER: 'http://localhost:8080/',
 	NOT_FOUND: '/404',

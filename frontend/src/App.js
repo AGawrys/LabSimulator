@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom';
 import './App.css';
 import Home from './Pages/Home.jsx';
 import Editor from './Pages/Editor.jsx';
@@ -22,13 +22,34 @@ function App() {
 				<div className="App">
 					<Switch>
 						<Route exact path={Routes.DEFAULT} component={Home} />
-						<PrivateRoute exact path={Routes.INSTRUCTOR_EDITOR} component={Editor} role={GeneralConstants.INSTRUCTOR} />
-						<PrivateRoute exact path={Routes.STUDENT_EDITOR} component={EditorStudent} role={GeneralConstants.STUDENT} />
-						<PrivateRoute exact path={Routes.INSTRUCTOR_DASHBOARD} component={InstructorDashboard} role={GeneralConstants.INSTRUCTOR} />
-						<PrivateRoute exact path={Routes.STUDENT_DASHBOARD} component={StudentDashboard} role={GeneralConstants.STUDENT}/>
-						<PrivateRoute exact path={Routes.ACCOUNT} component={AccountSetting} role={GeneralConstants.NO_ROLE} />
-						<PrivateRoute exact path={Routes.ORGANIZATION_DASHBOARD} component={OrganizationDashboard} role={GeneralConstants.ORGANIZATION}/>
-						<PrivateRoute exact path={Routes.COURSE} component={CoursePage} role={GeneralConstants.NO_ROLE}/>
+						<PrivateRoute exact 
+							path={Routes.INSTRUCTOR_EDITOR} 
+							component={withRouter(Editor)} 
+							role={GeneralConstants.INSTRUCTOR}/>
+						<PrivateRoute exact 
+							path={Routes.STUDENT_EDITOR} 
+							component={withRouter(EditorStudent)} 
+							role={GeneralConstants.STUDENT} />
+						<PrivateRoute exact 
+							path={Routes.INSTRUCTOR_DASHBOARD} 
+							component={withRouter(InstructorDashboard)} 
+							role={GeneralConstants.INSTRUCTOR} />
+						<PrivateRoute exact 
+							path={Routes.STUDENT_DASHBOARD} 
+							component={withRouter(StudentDashboard)} 
+							role={GeneralConstants.STUDENT}/>
+						<PrivateRoute exact 
+							path={Routes.ACCOUNT} 
+							component={withRouter(AccountSetting)} 
+							role={GeneralConstants.NO_ROLE} />
+						<PrivateRoute exact 
+							path={Routes.ORGANIZATION_DASHBOARD} 
+							component={withRouter(OrganizationDashboard)} 
+							role={GeneralConstants.ORGANIZATION}/>
+						<PrivateRoute exact 
+							path={Routes.COURSE + ":course_id"} 
+							component={withRouter(CoursePage)} 
+							role={GeneralConstants.NO_ROLE}/>
 						<Route exact path={Routes.SIGN_UP} component={Signup}/>
 						<Route component={NotFound} />
 					</Switch>
