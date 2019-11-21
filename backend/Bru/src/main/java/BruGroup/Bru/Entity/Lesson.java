@@ -11,16 +11,18 @@ public class Lesson {
     private String instructorEmail;
     private String organizationName;
     private String name;
+    private int published;  //0 is not published, 1 is published
 
     public Lesson() {
 
     }
 
-    public Lesson(String lessonId, String instructorEmail, String organizationName, String name) {
+    public Lesson(String lessonId, String instructorEmail, String organizationName, String name, int published) {
         this.lessonId = lessonId;
         this.instructorEmail = instructorEmail;
         this.organizationName = organizationName;
         this.name = name;
+        this.published = published;
     }
 
     public String getOrganizationName() {
@@ -45,7 +47,8 @@ public class Lesson {
                 "instructorEmail = " + instructorEmail +
                 ", lessonId = " +  lessonId +
                 ", organizationName = " + organizationName +
-                ", name = " + name + "}";
+                ", name = " + name +
+                ", published = " + published + "}";
     }
 
     public String getInstructorEmail() {
@@ -62,5 +65,13 @@ public class Lesson {
 
     public void setLessonId(String lessonId) {
         this.lessonId = lessonId;
+    }
+
+    public int getPublished() {
+        return published;
+    }
+
+    public void setPublished(int published) {
+        this.published = published;
     }
 }

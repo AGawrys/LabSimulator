@@ -1,7 +1,10 @@
 package BruGroup.Bru.Controller;
 
 import BruGroup.Bru.Entity.Lesson;
+import BruGroup.Bru.Entity.Organization;
+import BruGroup.Bru.Repository.AccountRepository;
 import BruGroup.Bru.Repository.LessonRepository;
+import BruGroup.Bru.Repository.OrganizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +16,12 @@ public class LessonController {
 
     @Autowired
     LessonRepository lessonRepository;
+
+    @Autowired
+    OrganizationRepository organizationRepository;
+
+    @Autowired
+    AccountRepository accountRepository;
 
     @GetMapping(path = "/allLessons")
     @CrossOrigin(origins = "*")
@@ -57,11 +66,19 @@ public class LessonController {
         return ResponseEntity.ok(null);
     }
 
+    @PostMapping(path = "/publishLab/{lessonId}")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity publishLab(@PathVariable String lessonId) {
+        Lesson lesson = lessonRepository.findByLessonId(lessonId);
+        lesson.setPublished(1);
+        lessonRepository.save(lesson);
+
+        String orgEmail = accountRepository.findByEmail(lesson.getInstructorEmail()).getOrganizationEmail();
+        Organization organization = new Organization(lessonId, orgEmail);
+        organizationRepository.save(organization);
+
+        return ResponseEntity.ok(null);
+    }
 
 
 }
-
-/*
-LessonId Clones
-Set Name
- */
