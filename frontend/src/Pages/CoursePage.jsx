@@ -11,6 +11,7 @@ import LessonRow from '../Components/LessonRow.jsx';
 import { Button, Modal, Form, Row, ListGroup } from 'react-bootstrap';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 const links = {
 	Account: '/account'
@@ -42,6 +43,9 @@ class CoursePage extends Component {
 		const { showDeleteStudent, courseInfo, showDeleteLesson, showAddInstructorsModal} = this.state;
 		if (courseInfo === null) {
 			return null;
+		}
+		if (!this.teachesClass()) {
+			return <Redirect exact to={Routes.NOT_FOUND}/>
 		}
 		const {selectedStudent, selectedInstructor, selectedLesson} = this.state;
 		const {title, accessCode, courseStudents, courseInstructors, lessons, potentialStudents, potentialInstructors} = courseInfo;
@@ -278,6 +282,17 @@ class CoursePage extends Component {
 			(response) => this.getCourse(),
 			(error) => console.log(error)
 		);
+	}
+
+	teachesClass = () => {
+		const {courseInstructors} = this.state.courseInfo;
+		const {email} = this.props;
+		for (let instructor of courseInstructors) {
+			if (instructor.email === email) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
 
