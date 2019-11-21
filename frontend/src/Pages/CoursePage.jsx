@@ -9,7 +9,8 @@ import InstructorRow from '../Components/InstructorRow.jsx';
 import LessonRow from '../Components/LessonRow.jsx';
 import { Button, Modal, Form, Row, ListGroup } from 'react-bootstrap';
 import GeneralConstants from '../utils/GeneralConstants.js';
-import {useParams} from "react-router-dom";
+import axios from 'axios';
+
 
 const links = {
 	Account: '/account'
@@ -18,14 +19,6 @@ const links = {
 class CoursePage extends Component {
 	constructor(props) {
 		super(props);
-		const {course_id} = props.computedMatch.params;
-		const courseInfo =  {
-			accessCode: course_id,
-			title: "Fall Seasonals 2019",
-			students: [{name: "James Angeles"}, {name: "Nieszka Gawrys"}, {name: "Steven Kuang"}, {name: "Jason Dong"}],
-			instructors: [{name: "Kevin McDonnell"}, {name: "Richard McKenna"},{name: "Eugene Stark"}],
-			lessons: [{title: "Pumpkin Spice Latte"}, {title: "Caramel Frappuccino"}],
-		}
 		this.state = {
 			showDeleteInstructor: false,
 			showDeleteStudent: false,
@@ -34,8 +27,16 @@ class CoursePage extends Component {
 			selectedLesson: null,
 			selectedStudent: null,
 			selectedInstructor: null,
-			courseInfo: courseInfo,
+			courseInfo: null,
 		};
+	}
+
+	componentDidMount() {
+		const {course_id} = this.props.computedMatch.params;
+		axios.get(Routes.SERVER + "getCourse/" + course_id).then(
+			(response) => this.parseCourseResponse(response),
+			(error) => console.log(error)
+		);
 	}
 
 	render() {
@@ -130,6 +131,22 @@ class CoursePage extends Component {
 				</div>
 			</div>
 		);
+	}
+
+	parseCourseResponse = (response) => {
+		const {course, instructorAccounts, studentAccounts} = response.data;
+		console.log(course);
+		const courseInfo = {
+			accessCode: course.courseId,
+			title: course.name,
+			description: course.description,
+			instructors: instructorAccounts,
+			students: studentAccounts,
+			lessons: [],
+		}
+		this.setState({
+			courseInfo: courseInfo
+		})
 	}
 
 	renderStudent = (student, index) =>  {
