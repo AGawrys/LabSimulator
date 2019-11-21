@@ -25,6 +25,7 @@ class CoursePage extends Component {
 			showDeleteLesson: false,
 			showAllLessonsModal: false,
 			showAddStudentsModal: false,
+			showAddInstructorsModal: false,
 			selectedLesson: null,
 			selectedStudent: null,
 			selectedInstructor: null,
@@ -37,7 +38,8 @@ class CoursePage extends Component {
 	}
 
 	render() {
-		const {showAllLessonsModal, showAddStudentsModal, showDeleteInstructor, showDeleteStudent, courseInfo, showDeleteLesson} = this.state;
+		const {showAllLessonsModal, showAddStudentsModal, showDeleteInstructor} = this.state;
+		const { showDeleteStudent, courseInfo, showDeleteLesson, showAddInstructorsModal} = this.state;
 		if (courseInfo === null) {
 			return null;
 		}
@@ -51,13 +53,13 @@ class CoursePage extends Component {
 					message={GeneralConstants.REMOVE_INSTRUCTOR_MESSAGE}
 					onHide={() => this.setState({showDeleteInstructor: false})}
 					show={showDeleteInstructor}
-					onDelete={() => this.deleteAccount(selectedInstructor, "/deleteInstructorCourse")}/>
+					onDelete={() => this.deleteAccount(selectedInstructor, "deleteInstructorCourse")}/>
 				<ConfirmationModal
 					title={GeneralConstants.REMOVE_STUDENT_TITLE}
 					message={GeneralConstants.REMOVE_STUDENT_MESSAGE}
 					onHide={() => this.setState({showDeleteStudent: false})}
 					show={showDeleteStudent}
-					onDelete={() => this.deleteAccount(selectedStudent, "/deleteStudentCourse")}/>
+					onDelete={() => this.deleteAccount(selectedStudent, "deleteStudentCourse")}/>
 				<ConfirmationModal
 					title={GeneralConstants.REMOVE_LESSON_TITLE}
 					message={GeneralConstants.REMOVE_LESSON_MESSAGE}
@@ -79,6 +81,15 @@ class CoursePage extends Component {
 					show={showAddStudentsModal}
 					title={GeneralConstants.ADD_STUDENT_TITLE}
 					onHide={() => this.setState({showAddStudentsModal: false})}
+					onSuccessfulAdd={this.getCourse}
+				/>
+				<AddSearchModal
+					actionRoute={Routes.SERVER + "/addCourseInstructors"}
+					param={accessCode}
+					items={potentialInstructors}
+					show={showAddInstructorsModal}
+					title={GeneralConstants.ADD_INSTRUCTOR_TITLE}
+					onHide={() => this.setState({showAddInstructorsModal: false})}
 					onSuccessfulAdd={this.getCourse}
 				/>
 				<div className="studentDashboard">
@@ -113,7 +124,10 @@ class CoursePage extends Component {
 					<div className="recentDrinksDiv">
 						<div className="recentDrinkTop">
 							<h4>Instructors</h4>
-							<button className="buttonRound btn-primary">+</button>
+							<button 
+								className="buttonRound btn-primary"
+								onClick={() => this.setState({showAddInstructorsModal: true})}
+							>+</button>
 						</div>
 						<div className="recentDrinkBottom">
 							<ListGroup>
@@ -122,7 +136,7 @@ class CoursePage extends Component {
 										disabled={courseInstructors.length == 1} 
 										key={index} 
 										instructor={instructor} 
-										onClick={this.onInstructorClick}/>)
+										onClick={() => this.onInstructorClick(instructor)}/>)
 								}
 							</ListGroup>
 						</div>
@@ -253,7 +267,8 @@ class CoursePage extends Component {
 	}
 
 	deleteAccount = (account, action) => {
-		const courseInfo = this.state;
+		console.log(account);
+		const {courseInfo} = this.state;
 		const {accessCode} = courseInfo;
 		const body = {
 			email: account.email,

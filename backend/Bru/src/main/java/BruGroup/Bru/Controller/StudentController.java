@@ -44,7 +44,7 @@ public class StudentController {
         List<String> emails = body.getEmails();
         String courseId = body.getParam();
 
-        if (!validAccounts(emails)) {
+        if (!validAccounts(emails, "STUDENT")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         StudentIdentity identity;
@@ -82,10 +82,10 @@ public class StudentController {
         return studentList;
     }
 
-    public boolean validAccounts(List<String> emails) {
+    public boolean validAccounts(List<String> emails, String role) {
         for (String email: emails) {
             Account account = accountRepository.findByEmail(email);
-            if (account == null || !account.getRole().equals("STUDENT")) {
+            if (account == null || !account.getRole().equals(role)) {
                 return false;
             }
         }

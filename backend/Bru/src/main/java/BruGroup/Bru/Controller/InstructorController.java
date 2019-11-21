@@ -42,17 +42,23 @@ public class InstructorController {
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping(path = "/addInstructorCourse")
+    @PostMapping(path = "/addCourseInstructors")
     @CrossOrigin(origins = "*")
-    public ResponseEntity addInstructorCourse (@RequestBody InstructorIdentity instructorIdentity) {
-        //check if courseId is valid
-        Account dbAccount = accountRepository.findByEmail(instructorIdentity.getEmail());
-        if (dbAccount == null || !(dbAccount.getRole().equals("INSTRUCTOR"))) {
+    public ResponseEntity addCourseInstructors (@RequestBody AddToCourseBody body) {
+        List<String> emails = body.getEmails();
+        String courseId = body.getParam();
+
+        if (!validAccounts(emails, "INSTRUCTOR")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+        InstructorIdentity identity;
+        Instructor instructor;
 
-        Instructor instructor = new Instructor(instructorIdentity);
-        instructorRepository.save(instructor);
+        for (String email: emails) {
+            identity = new InstructorIdentity(email, courseId);
+            instructor = new Instructor(identity);
+            instructorRepository.save(instructor);
+        }
         return ResponseEntity.ok(null);
     }
 
@@ -101,6 +107,16 @@ public class InstructorController {
             courses.add(currentCourse);
         }
         return courses;
+    }
+
+    public boolean validAccounts(List<String> emails, String role) {
+        for (String email: emails) {
+            Account account = accountRepository.findByEmail(email);
+            if (account == null || !account.getRole().equals(role)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 
