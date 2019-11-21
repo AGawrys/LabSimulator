@@ -38,18 +38,21 @@ public class StudentController {
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping(path = "/addStudentCourse")
+    @PostMapping(path = "/enrollStudents")
     @CrossOrigin(origins = "*")
-    public ResponseEntity addStudentCourse (@RequestBody StudentIdentity studentIdentity) {
-        //check if courseId is valid
-        Account dbAccount = accountRepository.findByEmail(studentIdentity.getEmail());
-        if (dbAccount == null || !(dbAccount.getRole().equals("STUDENT"))) {
+    public ResponseEntity enrollStudents (@RequestBody List<String> emails, String courseId) {
+
+        if (!validAccounts(emails)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+        StudentIdentity identity = null;
+        Student student = null;
 
-        Student student = new Student(studentIdentity);
-
-        studentRepository.save(student);
+        for (String email: emails) {
+            identity = new StudentIdentity(email, courseId);
+            student = new Student(identity);
+            studentRepository.save(student);
+        }
         return ResponseEntity.ok(null);
     }
 
@@ -75,5 +78,15 @@ public class StudentController {
     public List<Student> getCourseStudent (@PathVariable String courseId) {
         List<Student> studentList = studentRepository.findByStudentIdentityCourseId(courseId);
         return studentList;
+    }
+
+    public boolean validAccounts(List<String> emails) {
+        for (String email: emails) {
+            Account account = accountRepository.findByEmail(email);
+            if (account == null || account.getRole() != "STUDENT") {
+                return false;
+            }
+        }
+        return true;
     }
 }
