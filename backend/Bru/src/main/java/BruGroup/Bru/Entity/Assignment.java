@@ -30,7 +30,7 @@ public class Assignment {
 
     @Override
     public String toString() {
-        return "Instructor {" +
+        return "Assignment {" +
                 "email = " + assignmentIdentity.getEmail() +
                 ", courseId = " + assignmentIdentity.getLessonId() +
                 ", completed = " + completed + "}";

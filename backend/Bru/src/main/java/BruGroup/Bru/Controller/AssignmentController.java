@@ -39,7 +39,7 @@ public class AssignmentController {
     @GetMapping(path = "/getAssignmentLessonId/{lessonId}")
     @CrossOrigin(origins = "*")
     public List<Assignment> getAssignmentLessonId(@PathVariable String lessonId) {
-        List<Assignment> assignmentList = assignmentRepositor.findByAssignmentIdentityLessonId(lessonId);
+        List<Assignment> assignmentList = assignmentRepository.findByAssignmentIdentityLessonId(lessonId);
         return assignmentList;
     }
 
