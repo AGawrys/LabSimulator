@@ -5,12 +5,12 @@ import HeaderBru from '../Components/Header.jsx';
 import Routes from '../utils/RouteConstants.js';
 import FormModal from '../Components/FormModal.jsx';
 import ConfirmationModal from '../Components/ConfirmationModal.jsx';
+import AddSearchModal from '../Components/AddSearchModal.jsx';
 import InstructorRow from '../Components/InstructorRow.jsx';
 import LessonRow from '../Components/LessonRow.jsx';
 import { Button, Modal, Form, Row, ListGroup } from 'react-bootstrap';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import axios from 'axios';
-
 
 const links = {
 	Account: '/account'
@@ -24,6 +24,7 @@ class CoursePage extends Component {
 			showDeleteStudent: false,
 			showDeleteLesson: false,
 			showAllLessonsModal: false,
+			showAddStudentsModal: false,
 			selectedLesson: null,
 			selectedStudent: null,
 			selectedInstructor: null,
@@ -32,20 +33,16 @@ class CoursePage extends Component {
 	}
 
 	componentDidMount() {
-		const {course_id} = this.props.computedMatch.params;
-		axios.get(Routes.SERVER + "getCourse/" + course_id).then(
-			(response) => this.parseCourseResponse(response),
-			(error) => console.log(error)
-		);
+		this.getCourse();
 	}
 
 	render() {
-		const {showAllLessonsModal, showDeleteInstructor, showDeleteStudent, courseInfo, showDeleteLesson} = this.state;
+		const {showAllLessonsModal, showAddStudentsModal, showDeleteInstructor, showDeleteStudent, courseInfo, showDeleteLesson} = this.state;
 		if (courseInfo === null) {
 			return null;
 		}
 
-		const {title, accessCode, courseStudents, courseInstructors, lessons} = courseInfo;
+		const {title, accessCode, courseStudents, courseInstructors, lessons, potentialStudents, potentialInstructors} = courseInfo;
 		return (
 			<div className="background">
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
@@ -75,6 +72,14 @@ class CoursePage extends Component {
 				>
 					{this.getShowAllLessons()}
 				</FormModal>
+				<AddSearchModal
+					actionRoute={Routes.SERVER + "/enroll"}
+					items={potentialStudents}
+					show={showAddStudentsModal}
+					title={GeneralConstants.ADD_STUDENT_TITLE}
+					onHide={() => this.setState({showAddStudentsModal: false})}
+					onAdd={this.getCourse}
+				/>
 				<div className="studentDashboard">
 					<div className="welcomeStudentDiv">
 						<h3> {title} </h3>
@@ -120,7 +125,11 @@ class CoursePage extends Component {
 					<div className="recentLessonsDiv">
 						<div className="recentLessonsTop">
 							<h4>Students</h4>
-							<button className="buttonRound btn-primary">+</button>
+							<button 
+								className="buttonRound btn-primary" 
+								onClick={()=> this.setState({showAddStudentsModal: true})}>
+								+
+							</button>
 						</div>
 						<div className="recentDrinkBottom">
 							<ListGroup>
@@ -133,9 +142,19 @@ class CoursePage extends Component {
 		);
 	}
 
+	getCourse = () => {
+		const {course_id} = this.props.computedMatch.params;
+		axios.get(Routes.SERVER + "getCourse/" + course_id).then(
+			(response) => this.parseCourseResponse(response),
+			(error) => console.log(error)
+		);
+	}
+
 	parseCourseResponse = (response) => {
-		console.log(response);
-		const {course, courseInstructors, courseStudents, potentialInstructors, potentialStudents} = response.data;
+		let {course, courseInstructors, courseStudents, potentialInstructors, potentialStudents} = response.data;
+		potentialInstructors = this.parseSearchResults(potentialInstructors);
+		potentialStudents = this.parseSearchResults(potentialStudents);
+
 		const courseInfo = {
 			accessCode: course.courseId,
 			title: course.name,
@@ -148,6 +167,12 @@ class CoursePage extends Component {
 		}
 		this.setState({
 			courseInfo: courseInfo
+		});
+	}
+
+	parseSearchResults = (accounts) => {
+		return accounts.map((account) => { 
+			return {id: account.email, value: account.name + " (" + account.email + ")"}
 		});
 	}
 

@@ -5,6 +5,7 @@ const GeneralConstants = {
 	REMOVE_LESSON_MESSAGE: "Are you sure you want to remove this lesson?",
 	REMOVE_STUDENT_TITLE: "Remove Student",
 	REMOVE_STUDENT_MESSAGE: "Are you sure you want to remove this student?",
+	ADD_STUDENT_TITLE: "Add Student to Course",
 	STUDENT: "STUDENT",
 	INSTRUCTOR: "INSTRUCTOR",
 	ORGANIZATION: "ORGANIZATION",
