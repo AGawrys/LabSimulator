@@ -45,7 +45,7 @@ class CoursePage extends Component {
 			return null;
 		}
 
-		const {title, accessCode, students, instructors, lessons} = courseInfo;
+		const {title, accessCode, courseStudents, courseInstructors, lessons} = courseInfo;
 		return (
 			<div className="background">
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
@@ -111,7 +111,7 @@ class CoursePage extends Component {
 						</div>
 						<div className="recentDrinkBottom">
 							<ListGroup>
-								{instructors.map((instructor,index) => 
+								{courseInstructors.map((instructor,index) => 
 									<InstructorRow key={index} instructor={instructor} onClick={this.onInstructorClick}/>)
 								}
 							</ListGroup>
@@ -124,7 +124,7 @@ class CoursePage extends Component {
 						</div>
 						<div className="recentDrinkBottom">
 							<ListGroup>
-								{students.map((student, index) => this.renderStudent(student, index))}
+								{courseStudents.map((student, index) => this.renderStudent(student, index))}
 							</ListGroup>
 						</div>
 					</div>
@@ -134,19 +134,21 @@ class CoursePage extends Component {
 	}
 
 	parseCourseResponse = (response) => {
-		const {course, instructorAccounts, studentAccounts} = response.data;
-		console.log(course);
+		console.log(response);
+		const {course, courseInstructors, courseStudents, potentialInstructors, potentialStudents} = response.data;
 		const courseInfo = {
 			accessCode: course.courseId,
 			title: course.name,
 			description: course.description,
-			instructors: instructorAccounts,
-			students: studentAccounts,
+			courseInstructors: courseInstructors,
+			courseStudents: courseStudents,
+			potentialInstructors: potentialInstructors,
+			potentialStudents:potentialStudents,
 			lessons: [],
 		}
 		this.setState({
 			courseInfo: courseInfo
-		})
+		});
 	}
 
 	renderStudent = (student, index) =>  {

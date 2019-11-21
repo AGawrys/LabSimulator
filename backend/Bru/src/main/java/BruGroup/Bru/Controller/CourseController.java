@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @RestController
 public class CourseController {
@@ -77,32 +78,51 @@ public class CourseController {
 
         List<Student> studentList = studentRepository.findByStudentIdentityCourseId(courseId);
         List<Instructor> instructorList = instructorRepository.findByInstructorIdentityCourseId(courseId);
+        List<Account> courseStudents = getStudentAccounts(studentList);
+        List<Account> courseInstructors = getInstructorAccounts(instructorList);
 
-        List<Account> studentAccounts = getStudentAccounts(studentList);
-        List<Account> instructorAccounts = getInstructorAccounts(instructorList);
-        CourseInformation info = new CourseInformation(course, studentAccounts, instructorAccounts);
+        List<Account> potentialStudents =  getStudentsNotInCourse(courseStudents);
+        List<Account> potentialInstructors = getInstructorsNotInCourse(courseInstructors);
+
+        CourseInformation info = new CourseInformation(course, courseStudents, courseInstructors, potentialStudents, potentialInstructors);
         return ResponseEntity.ok(info);
     }
 
     public List<Account> getStudentAccounts(List<Student> studentList) {
-        List<Account> accounts = new ArrayList<>();
-        Account currentAccount = null;
-        for (Student student: studentList) {
-            currentAccount = accountRepository.findByEmail(student.getStudentIdentity().getEmail());
-            accounts.add(currentAccount);
-        }
-        return accounts;
+        return studentList.stream()
+                    .map(student -> accountRepository.findByEmail(student.getStudentIdentity().getEmail()))
+                    .collect(Collectors.toList());
     }
 
     public List<Account> getInstructorAccounts(List<Instructor> instructorList) {
-        List<Account> accounts = new ArrayList<>();
-        Account currentAccount = null;
-        for (Instructor instructor: instructorList) {
-            currentAccount = accountRepository.findByEmail(instructor.getInstructorIdentity().getEmail());
-            accounts.add(currentAccount);
-        }
-        return accounts;
+        return instructorList.stream()
+                    .map(instructor -> accountRepository.findByEmail(instructor.getInstructorIdentity().getEmail()))
+                    .collect(Collectors.toList());
     }
+
+    public List<Account> getInstructorsNotInCourse(List<Account> accounts) {
+        String organization = accounts.get(0).getOrganizationEmail();     // a course will always have at least one instructor
+        List<String> emails = accounts.stream().map(account -> account.getEmail()).collect(Collectors.toList());
+        List<Account> accountsNotInCourse = accountRepository.findByOrganizationEmailAndRoleAndEmailNotIn(organization,"INSTRUCTOR",emails);
+        return accountsNotInCourse;
+    }
+
+    public List<Account> getStudentsNotInCourse(List<Account> accounts) {
+        List<Account> studentsNotInCourse = null;
+        if (accounts.isEmpty()) {
+            studentsNotInCourse = accountRepository.findByRole("STUDENT");
+        }
+        else {
+            List<String> emails = accounts.stream().map(account -> account.getEmail()).collect(Collectors.toList());
+            studentsNotInCourse = accountRepository.findByRoleAndEmailNotIn("STUDENT", emails);
+        }
+        return studentsNotInCourse;
+    }
+
+    public List<Lesson> getCurriculum(String courseId) {
+        return null;
+    }
+
 }
 
 class CreateCourseParams {
@@ -137,13 +157,17 @@ class CreateCourseParams {
 
 class CourseInformation {
     private Course course;
-    private List<Account> studentAccounts;
-    private List<Account> instructorAccounts;
+    private List<Account> courseStudents;
+    private List<Account> courseInstructors;
+    private List<Account> potentialStudents;
+    private List<Account> potentialInstructors;
 
-    public CourseInformation(Course course, List<Account> studentAccounts, List<Account> instructorAccounts) {
+    public CourseInformation(Course course, List<Account> courseStudents, List<Account> courseInstructors, List<Account> potentialStudents, List<Account> potentialInstructors) {
         this.course = course;
-        this.studentAccounts = studentAccounts;
-        this.instructorAccounts = instructorAccounts;
+        this.courseStudents = courseStudents;
+        this.courseInstructors = courseInstructors;
+        this.potentialStudents = potentialStudents;
+        this.potentialInstructors = potentialInstructors;
     }
 
     public Course getCourse() {
@@ -154,19 +178,35 @@ class CourseInformation {
         this.course = course;
     }
 
-    public List<Account> getStudentAccounts() {
-        return studentAccounts;
+    public List<Account> getCourseStudents() {
+        return courseStudents;
     }
 
-    public void setStudentAccounts(List<Account> studentAccounts) {
-        this.studentAccounts = studentAccounts;
+    public void setCourseStudents(List<Account> courseStudents) {
+        this.courseStudents = courseStudents;
     }
 
-    public List<Account> getInstructorAccounts() {
-        return instructorAccounts;
+    public List<Account> getCourseInstructors() {
+        return courseInstructors;
     }
 
-    public void setInstructorAccounts(List<Account> instructorAccounts) {
-        this.instructorAccounts = instructorAccounts;
+    public void setCourseInstructors(List<Account> courseInstructors) {
+        this.courseInstructors = courseInstructors;
+    }
+
+    public List<Account> getPotentialStudents() {
+        return potentialStudents;
+    }
+
+    public void setPotentialStudents(List<Account> potentialStudents) {
+        this.potentialStudents = potentialStudents;
+    }
+
+    public List<Account> getPotentialInstructors() {
+        return potentialInstructors;
+    }
+
+    public void setPotentialInstructors(List<Account> potentialInstructors) {
+        this.potentialInstructors = potentialInstructors;
     }
 }
