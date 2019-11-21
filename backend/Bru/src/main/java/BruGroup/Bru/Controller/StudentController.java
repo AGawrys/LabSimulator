@@ -40,13 +40,15 @@ public class StudentController {
 
     @PostMapping(path = "/enrollStudents")
     @CrossOrigin(origins = "*")
-    public ResponseEntity enrollStudents (@RequestBody List<String> emails, String courseId) {
+    public ResponseEntity enrollStudents (@RequestBody AddToCourseBody body) {
+        List<String> emails = body.getEmails();
+        String courseId = body.getParam();
 
         if (!validAccounts(emails)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        StudentIdentity identity = null;
-        Student student = null;
+        StudentIdentity identity;
+        Student student;
 
         for (String email: emails) {
             identity = new StudentIdentity(email, courseId);
@@ -83,10 +85,40 @@ public class StudentController {
     public boolean validAccounts(List<String> emails) {
         for (String email: emails) {
             Account account = accountRepository.findByEmail(email);
-            if (account == null || account.getRole() != "STUDENT") {
+            if (account == null || !account.getRole().equals("STUDENT")) {
                 return false;
             }
         }
         return true;
+    }
+}
+
+class AddToCourseBody {
+    private List<String> emails;
+    private String param;
+
+    public AddToCourseBody() {
+
+    }
+
+    public AddToCourseBody(List<String> emails, String param) {
+        this.emails = emails;
+        this.param = param;
+    }
+
+    public List<String> getEmails() {
+        return emails;
+    }
+
+    public void setEmails(List<String> emails) {
+        this.emails = emails;
+    }
+
+    public String getParam() {
+        return param;
+    }
+
+    public void setParam(String courseId) {
+        this.param = courseId;
     }
 }

@@ -52,11 +52,18 @@ class FormModal extends React.Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        const {actionRoute, items} = this.props;
-        const selectedIndices = this.state.selectedItems.map((item) => item.id - 1);
-        const emails = selectedIndices.map((index) => items[index].id);
-        axios.post(actionRoute, emails).then(
-            (response) => console.log(response),
+        const {actionRoute, items, param, onSuccessfulAdd, onHide} = this.props;
+        const selectedIndices = this.state.selectedItems.map((item) => item.id);
+        const emails = selectedIndices.map((index) => items[index].email);
+        const body = {
+            emails: emails,
+            param: param,
+        };
+        axios.post(actionRoute, body).then(
+            (response) => {
+                onSuccessfulAdd();
+                onHide();
+            },
             (error) => console.log(error),
         )
     }

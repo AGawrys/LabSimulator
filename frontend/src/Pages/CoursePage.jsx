@@ -41,7 +41,7 @@ class CoursePage extends Component {
 		if (courseInfo === null) {
 			return null;
 		}
-
+		const {selectedStudent, selectedInstructor, selectedLesson} = this.state;
 		const {title, accessCode, courseStudents, courseInstructors, lessons, potentialStudents, potentialInstructors} = courseInfo;
 		return (
 			<div className="background">
@@ -51,13 +51,13 @@ class CoursePage extends Component {
 					message={GeneralConstants.REMOVE_INSTRUCTOR_MESSAGE}
 					onHide={() => this.setState({showDeleteInstructor: false})}
 					show={showDeleteInstructor}
-					onDelete={this.deleteInstructor}/>
+					onDelete={() => this.deleteAccount(selectedInstructor, "/deleteInstructorCourse")}/>
 				<ConfirmationModal
 					title={GeneralConstants.REMOVE_STUDENT_TITLE}
 					message={GeneralConstants.REMOVE_STUDENT_MESSAGE}
 					onHide={() => this.setState({showDeleteStudent: false})}
 					show={showDeleteStudent}
-					onDelete={this.deleteStudent}/>
+					onDelete={() => this.deleteAccount(selectedStudent, "/deleteStudentCourse")}/>
 				<ConfirmationModal
 					title={GeneralConstants.REMOVE_LESSON_TITLE}
 					message={GeneralConstants.REMOVE_LESSON_MESSAGE}
@@ -73,12 +73,13 @@ class CoursePage extends Component {
 					{this.getShowAllLessons()}
 				</FormModal>
 				<AddSearchModal
-					actionRoute={Routes.SERVER + "/enroll"}
+					actionRoute={Routes.SERVER + "/enrollStudents"}
+					param={accessCode}
 					items={potentialStudents}
 					show={showAddStudentsModal}
 					title={GeneralConstants.ADD_STUDENT_TITLE}
 					onHide={() => this.setState({showAddStudentsModal: false})}
-					onAdd={this.getCourse}
+					onSuccessfulAdd={this.getCourse}
 				/>
 				<div className="studentDashboard">
 					<div className="welcomeStudentDiv">
@@ -117,7 +118,11 @@ class CoursePage extends Component {
 						<div className="recentDrinkBottom">
 							<ListGroup>
 								{courseInstructors.map((instructor,index) => 
-									<InstructorRow key={index} instructor={instructor} onClick={this.onInstructorClick}/>)
+									<InstructorRow 
+										disabled={courseInstructors.length == 1} 
+										key={index} 
+										instructor={instructor} 
+										onClick={this.onInstructorClick}/>)
 								}
 							</ListGroup>
 						</div>
@@ -171,8 +176,8 @@ class CoursePage extends Component {
 	}
 
 	parseSearchResults = (accounts) => {
-		return accounts.map((account) => { 
-			return {id: account.email, value: account.name + " (" + account.email + ")"}
+		return accounts.map((account, index) => { 
+			return {id: index, value: account.name + " (" + account.email + ")", email: account.email}
 		});
 	}
 
@@ -244,6 +249,19 @@ class CoursePage extends Component {
 					</Button>
 				</Modal.Footer>
 			</div>
+		);
+	}
+
+	deleteAccount = (account, action) => {
+		const courseInfo = this.state;
+		const {accessCode} = courseInfo;
+		const body = {
+			email: account.email,
+			courseId: accessCode,
+		};
+		axios.post(Routes.SERVER + action, body).then(
+			(response) => this.getCourse(),
+			(error) => console.log(error)
 		);
 	}
 }

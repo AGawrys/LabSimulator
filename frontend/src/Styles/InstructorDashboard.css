@@ -2,7 +2,7 @@
 }
 
 .buttonRound {
-	border-radius: 100px;
+	border-radius: 100px !important;
 	outline: none !important;
 	height: 35px;
 	width: 35px;
