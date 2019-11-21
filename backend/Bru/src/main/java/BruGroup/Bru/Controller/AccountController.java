@@ -2,6 +2,8 @@ package BruGroup.Bru.Controller;
 
 import BruGroup.Bru.Entity.Account;
 import BruGroup.Bru.Repository.AccountRepository;
+import BruGroup.Bru.Repository.InstructorRepository;
+import BruGroup.Bru.Repository.LessonRepository;
 import com.oracle.javafx.jmx.json.JSONException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -20,6 +22,14 @@ public class AccountController {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    InstructorRepository instructorRepository;
+
+    @Autowired
+    LessonRepository lessonRepository;
+
+
     Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     @GetMapping (path = "/allAccounts")

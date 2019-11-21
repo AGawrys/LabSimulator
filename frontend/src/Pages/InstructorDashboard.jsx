@@ -6,8 +6,9 @@ import { Redirect, Link } from 'react-router-dom';
 import HeaderBru from '../Components/Header.jsx';
 import Routes from '../utils/RouteConstants.js';
 import FormModal from '../Components/FormModal.jsx';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Button, Form, Modal, ListGroup } from 'react-bootstrap';
 import axios from 'axios';
+import CourseRow from '../Components/CourseRow.jsx';
 
 
 const links = {
@@ -22,11 +23,28 @@ export class InstructorDashboard extends Component {
 			showLessonModal: false,
 			createdCourseName: null,
 			createdCourseDescription: null,
-			courseInfo: null,
+			instructorInfo: {},
+			loaded: false,
 		};
 	}
 
+	componentDidMount() {
+		const {email} = this.props;
+		axios.get(Routes.SERVER + "getInstructor/" + email).then (
+			(response) => this.onInstructorInfoResponse(response),
+			(error) => {
+				console.log(error);
+			}
+		)
+	}
+
 	render() {
+		const {instructorInfo, loaded} = this.state;
+		if (!loaded) {
+			return null;
+		}
+		const {courses, lessons} = instructorInfo;
+
 		return (
 			<div className="background">
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
@@ -82,6 +100,9 @@ export class InstructorDashboard extends Component {
 								</FormModal>
 							</div>
 							<div className="recentLessonsBottom">
+								<ListGroup>
+									{courses.map((course, index) => <CourseRow {...this.props} key={index} course={course}/>)}
+								</ListGroup>
 							</div>
 						</div>
 					</div>
@@ -111,8 +132,18 @@ export class InstructorDashboard extends Component {
 				console.log(error);
 			}
 		)
-	} 
+	}
 
+	onInstructorInfoResponse = (response) => {
+		const {courses, lessons} = response.data;
+		this.setState({
+			loaded: true,
+			instructorInfo: {
+				courses: courses,
+				lessons: lessons,
+			},
+		});
+	}
 	getCourseForm() {
 		return (
 			<div>
