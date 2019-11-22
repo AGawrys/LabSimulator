@@ -10,6 +10,7 @@ public class Instructor {
 
     @EmbeddedId
     private InstructorIdentity instructorIdentity;
+
     public Instructor(){
 
     }

@@ -7,30 +7,39 @@ import javax.persistence.*;
 @Entity
 public class Organization {
 
-    @EmbeddedId
-    private OrganizationIdentity organizationIdentity;
+    @Id
+    private String lessonId;
+    private String email;
 
     public Organization() {
 
     }
 
-    public Organization(OrganizationIdentity organizationIdentity) {
-        this.organizationIdentity = organizationIdentity;
-    }
-
-    public OrganizationIdentity getOrganizationIdentity() {
-        return organizationIdentity;
-    }
-
-    public void setOrganizationIdentity(OrganizationIdentity organizationIdentity) {
-        this.organizationIdentity = organizationIdentity;
+    public Organization(String lessonId, String email) {
+        this.lessonId = lessonId;
+        this.email = email;
     }
 
     @Override
     public String toString() {
         return "Organization {" +
-                "email = " + organizationIdentity.getEmail() +
-                ", lessonId = " + organizationIdentity.getLessonId() + "}";
+                "lessonId = " +  lessonId +
+                ", email = " + email + "}";
     }
 
+    public void setLessonId(String lessonId) {
+        this.lessonId = lessonId;
+    }
+
+    public String getLessonId() {
+        return lessonId;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 }
