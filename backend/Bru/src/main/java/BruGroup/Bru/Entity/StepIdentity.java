@@ -10,10 +10,10 @@ import java.io.Serializable;
 public class StepIdentity implements Serializable {
 
     @NotNull
-    String lessonId;
+    private String lessonId;
 
     @NotNull
-    int stepNumber;
+    private int stepNumber;
 
     public StepIdentity(){}
 
