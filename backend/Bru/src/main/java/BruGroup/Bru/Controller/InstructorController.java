@@ -76,7 +76,7 @@ public class InstructorController {
     @CrossOrigin (origins = "*")
     public ResponseEntity getInstructorInformation (@PathVariable String email) {
         List<Instructor> instructorKeys = instructorRepository.findByInstructorIdentityEmail(email);
-        List<Lesson> lessonList = lessonRepository.findByLessonIdentityInstructorEmail(email);
+        List<Lesson> lessonList = lessonRepository.findByInstructorEmail(email);
 
         List<Course> courses = getCourses(instructorKeys);
         InstructorInformation info = new InstructorInformation(courses,lessonList);

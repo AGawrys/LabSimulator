@@ -8,14 +8,14 @@ import javax.persistence.*;
 public class Organization {
 
     @Id
-    private String lessonId;
+    private int lessonId;
     private String email;
 
     public Organization() {
 
     }
 
-    public Organization(String lessonId, String email) {
+    public Organization(int lessonId, String email) {
         this.lessonId = lessonId;
         this.email = email;
     }
@@ -27,11 +27,11 @@ public class Organization {
                 ", email = " + email + "}";
     }
 
-    public void setLessonId(String lessonId) {
+    public void setLessonId(int lessonId) {
         this.lessonId = lessonId;
     }
 
-    public String getLessonId() {
+    public int getLessonId() {
         return lessonId;
     }
 

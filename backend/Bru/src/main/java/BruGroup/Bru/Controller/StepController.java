@@ -36,7 +36,7 @@ public class StepController {
 
     @PostMapping(path = "/lessonSteps/{lessonId}")
     @CrossOrigin(origins = "*")
-    public List<Step> lessonSteps (@PathVariable String lessonId) {
+    public List<Step> lessonSteps (@PathVariable int lessonId) {
         List<Step> stepList = stepRepository.findByStepIdentityLessonId(lessonId);
         return stepList;
     }

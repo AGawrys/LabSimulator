@@ -11,13 +11,13 @@ public class CourseLessonIdentity implements Serializable {
     private String courseId;
 
     @NotNull
-    private String lessonId;
+    private int lessonId;
 
     public CourseLessonIdentity() {
 
     }
 
-    public CourseLessonIdentity(String courseId, String lessonId) {
+    public CourseLessonIdentity(String courseId, int lessonId) {
         this.courseId = courseId;
         this.lessonId = lessonId;
     }
@@ -31,11 +31,11 @@ public class CourseLessonIdentity implements Serializable {
         this.courseId = courseId;
     }
 
-    public String getLessonId() {
+    public int getLessonId() {
         return lessonId;
     }
 
-    public void setLessonId(String lessonId) {
+    public void setLessonId(int lessonId) {
         this.lessonId = lessonId;
     }
 }

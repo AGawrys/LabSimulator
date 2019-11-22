@@ -10,19 +10,19 @@ import java.io.Serializable;
 public class StepIdentity implements Serializable {
 
     @NotNull
-    private String lessonId;
+    private int lessonId;
 
     @NotNull
     private int stepNumber;
 
     public StepIdentity(){}
 
-    public StepIdentity(String lessonId, int stepNumber) {
+    public StepIdentity(int lessonId, int stepNumber) {
         this.lessonId = lessonId;
         this.stepNumber = stepNumber;
     }
 
-    public String getLessonId() {
+    public int getLessonId() {
         return lessonId;
     }
 
@@ -30,7 +30,7 @@ public class StepIdentity implements Serializable {
         return stepNumber;
     }
 
-    public void setLessonId(String lessonId) {
+    public void setLessonId(int lessonId) {
         this.lessonId = lessonId;
     }
 

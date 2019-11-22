@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface StepRepository extends JpaRepository<Step, StepIdentity> {
-    List<Step> findByStepIdentityLessonId(@PathVariable String lessonId);
+    List<Step> findByStepIdentityLessonId(@PathVariable int lessonId);
     Step findByStepIdentity(StepIdentity stepIdentity);
 }

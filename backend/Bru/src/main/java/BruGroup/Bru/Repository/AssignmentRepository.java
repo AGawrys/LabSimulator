@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 public interface AssignmentRepository extends JpaRepository<Assignment, AssignmentIdentity> {
     Assignment findByAssignmentIdentity(AssignmentIdentity assignmentIdentity);
-    List<Assignment> findByAssignmentIdentityLessonId(@PathVariable String lessonId);
+    List<Assignment> findByAssignmentIdentityLessonId(@PathVariable int lessonId);
 }

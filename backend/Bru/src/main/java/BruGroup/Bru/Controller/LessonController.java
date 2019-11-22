@@ -52,7 +52,7 @@ public class LessonController {
 
     @GetMapping(path = "/getLesson/{lessonId}")
     @CrossOrigin(origins = "*")
-    public Lesson getLesson(@PathVariable String lessonId) {
+    public Lesson getLesson(@PathVariable int lessonId) {
         Lesson lesson = lessonRepository.findByLessonId(lessonId);
         return lesson;
     }
@@ -65,20 +65,5 @@ public class LessonController {
         lessonRepository.save(lessonId);
         return ResponseEntity.ok(null);
     }
-
-    @PostMapping(path = "/publishLab/{lessonId}")
-    @CrossOrigin(origins = "*")
-    public ResponseEntity publishLab(@PathVariable String lessonId) {
-        Lesson lesson = lessonRepository.findByLessonId(lessonId);
-        lesson.setPublished(1);
-        lessonRepository.save(lesson);
-
-        String orgEmail = accountRepository.findByEmail(lesson.getInstructorEmail()).getOrganizationEmail();
-        Organization organization = new Organization(lessonId, orgEmail);
-        organizationRepository.save(organization);
-
-        return ResponseEntity.ok(null);
-    }
-
 
 }
