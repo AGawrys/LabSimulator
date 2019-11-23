@@ -27,8 +27,8 @@ public class CourseLesson {
 
     @Override
     public String toString() {
-        return "CouseLesson {" +
-                "couseId = " + courseLessonIdentity.getCourseId() +
+        return "CourseLesson {" +
+                "courseId = " + courseLessonIdentity.getCourseId() +
                 ", lessonId = " + courseLessonIdentity.getLessonId() + "}";
     }
 }

@@ -1,19 +1,14 @@
 package BruGroup.Bru.Controller;
 
 import BruGroup.Bru.Entity.*;
-import BruGroup.Bru.Repository.AccountRepository;
-import BruGroup.Bru.Repository.CourseRepository;
-import BruGroup.Bru.Repository.InstructorRepository;
-import BruGroup.Bru.Repository.StudentRepository;
+import BruGroup.Bru.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @RestController
@@ -21,6 +16,12 @@ public class CourseController {
 
     @Autowired
     CourseRepository courseRepository;
+
+    @Autowired
+    LessonRepository lessonRepository;
+
+    @Autowired
+    CourseLessonRepository curriculumRepository;
 
     @Autowired
     InstructorRepository instructorRepository;
@@ -78,13 +79,16 @@ public class CourseController {
 
         List<Student> studentList = studentRepository.findByStudentIdentityCourseId(courseId);
         List<Instructor> instructorList = instructorRepository.findByInstructorIdentityCourseId(courseId);
+        List<CourseLesson> lessons = curriculumRepository.findByCourseLessonIdentityCourseId(courseId);
+
         List<Account> courseStudents = getStudentAccounts(studentList);
         List<Account> courseInstructors = getInstructorAccounts(instructorList);
+        List<Lesson> courseLessons = getCourseLessons(lessons);
 
         List<Account> potentialStudents =  getStudentsNotInCourse(courseStudents);
         List<Account> potentialInstructors = getInstructorsNotInCourse(courseInstructors);
 
-        CourseInformation info = new CourseInformation(course, courseStudents, courseInstructors, potentialStudents, potentialInstructors);
+        CourseInformation info = new CourseInformation(course,courseLessons,courseStudents,courseInstructors,potentialStudents,potentialInstructors);
         return ResponseEntity.ok(info);
     }
 
@@ -119,8 +123,10 @@ public class CourseController {
         return studentsNotInCourse;
     }
 
-    public List<Lesson> getCurriculum(String courseId) {
-        return null;
+    public List<Lesson> getCourseLessons(List<CourseLesson> lessons) {
+        return lessons.stream()
+                    .map(lesson -> lessonRepository.findByLessonId(lesson.getCourseLessonIdentity().getLessonId()))
+                    .collect(Collectors.toList());
     }
 
 }
@@ -157,13 +163,15 @@ class CreateCourseParams {
 
 class CourseInformation {
     private Course course;
+    private List<Lesson> courseLessons;
     private List<Account> courseStudents;
     private List<Account> courseInstructors;
     private List<Account> potentialStudents;
     private List<Account> potentialInstructors;
 
-    public CourseInformation(Course course, List<Account> courseStudents, List<Account> courseInstructors, List<Account> potentialStudents, List<Account> potentialInstructors) {
+    public CourseInformation(Course course, List<Lesson> courseLessons, List<Account> courseStudents, List<Account> courseInstructors, List<Account> potentialStudents, List<Account> potentialInstructors) {
         this.course = course;
+        this.courseLessons = courseLessons;
         this.courseStudents = courseStudents;
         this.courseInstructors = courseInstructors;
         this.potentialStudents = potentialStudents;
@@ -208,5 +216,13 @@ class CourseInformation {
 
     public void setPotentialInstructors(List<Account> potentialInstructors) {
         this.potentialInstructors = potentialInstructors;
+    }
+
+    public List<Lesson> getCourseLessons() {
+        return courseLessons;
+    }
+
+    public void setCourseLessons(List<Lesson> courseLessons) {
+        this.courseLessons = courseLessons;
     }
 }

@@ -24,24 +24,25 @@ class CoursePage extends Component {
 			showDeleteInstructor: false,
 			showDeleteStudent: false,
 			showDeleteLesson: false,
-			showAllLessonsModal: false,
+			showAddLessonsModal: false,
 			showAddStudentsModal: false,
 			showAddInstructorsModal: false,
 			selectedLesson: null,
 			selectedStudent: null,
 			selectedInstructor: null,
 			courseInfo: null,
+			instructorLessons: null
 		};
 	}
 
 	componentDidMount() {
-		this.getCourse();
+		this.fetchAllInformation();
 	}
 
 	render() {
-		const {showAllLessonsModal, showAddStudentsModal, showDeleteInstructor} = this.state;
-		const { showDeleteStudent, courseInfo, showDeleteLesson, showAddInstructorsModal} = this.state;
-		if (courseInfo === null) {
+		const {showAddLessonsModal, showAddStudentsModal, showDeleteInstructor, instructorLessons} = this.state;
+		const { showDeleteStudent, courseInfo, showDeleteLesson,showAddInstructorsModal} = this.state;
+		if (courseInfo === null || instructorLessons === null) {
 			return null;
 		}
 		if (!this.teachesClass()) {
@@ -70,14 +71,15 @@ class CoursePage extends Component {
 					onHide={() => this.setState({showDeleteLesson: false})}
 					show={showDeleteLesson}
 					onDelete={this.deleteLesson}/>
-				<FormModal
-					title="Adding Lesson"
-					show={showAllLessonsModal}
-					onHide={() => this.setState({ showAllLessonsModal: false })}
-					submitAction={this.handleShowAllLessons}
-				>
-					{this.getShowAllLessons()}
-				</FormModal>
+				<AddSearchModal
+					actionRoute={Routes.SERVER + "/addLessons"}
+					param={accessCode}
+					items={instructorLessons}
+					show={showAddLessonsModal}
+					title={GeneralConstants.ADD_LESSON_TITLE}
+					onHide={() => this.setState({showAddLessonsModal: false})}
+					onSuccessfulAdd={this.fetchAllInformation}
+				/>
 				<AddSearchModal
 					actionRoute={Routes.SERVER + "/enrollStudents"}
 					param={accessCode}
@@ -109,7 +111,7 @@ class CoursePage extends Component {
 							<button
 								className="buttonRound btn-primary instructorAddLessonButton"
 								onClick={() => {
-									this.setState({ showAllLessonsModal: true });
+									this.setState({ showAddLessonsModal: true });
 								}}
 							>
 								+
@@ -118,7 +120,9 @@ class CoursePage extends Component {
 						<div className="studentAllLesson">
 							<ListGroup>
 								{lessons.map((lesson, index) => 
-									<LessonRow key={index} lesson={lesson} onClick={this.onLessonClick}/>)
+									<LessonRow {...this.props} key={index} lesson={lesson} canDelete={true} 
+										onClick={(e) => this.onLessonClick(e,lesson)}
+									/>)
 								}
 							</ListGroup>
 						</div>
@@ -165,6 +169,11 @@ class CoursePage extends Component {
 		);
 	}
 
+	fetchAllInformation = () => {
+		this.getCourse();
+		this.getInstructorLessons();
+	}
+
 	getCourse = () => {
 		const {course_id} = this.props.computedMatch.params;
 		axios.get(Routes.SERVER + "getCourse/" + course_id).then(
@@ -173,8 +182,20 @@ class CoursePage extends Component {
 		);
 	}
 
+	getInstructorLessons = () => {
+		const {course_id} = this.props.computedMatch.params;
+		const body = {
+			courseId: course_id,
+			instructorEmail: this.props.email,
+		};
+		axios.post(Routes.SERVER + "/getPotentialLessons", body).then(
+			(response) => this.parseLessonResponse(response),
+			(error) => console.log(error),
+		);
+	}
+
 	parseCourseResponse = (response) => {
-		let {course, courseInstructors, courseStudents, potentialInstructors, potentialStudents} = response.data;
+		let {course, courseInstructors, courseStudents, potentialInstructors, potentialStudents, courseLessons} = response.data;
 		potentialInstructors = this.parseSearchResults(potentialInstructors);
 		potentialStudents = this.parseSearchResults(potentialStudents);
 
@@ -186,16 +207,27 @@ class CoursePage extends Component {
 			courseStudents: courseStudents,
 			potentialInstructors: potentialInstructors,
 			potentialStudents:potentialStudents,
-			lessons: [],
+			lessons: courseLessons,
 		}
 		this.setState({
 			courseInfo: courseInfo
 		});
 	}
 
+	parseLessonResponse = (response) => {
+		const potentialLessons = response.data;
+		const parsedLessons = potentialLessons.map((lesson, index) => {
+			return {id: index, value: lesson.name, key: lesson.lessonId}
+		});
+		console.log(response.data);
+		this.setState({
+			instructorLessons: parsedLessons,
+		});
+	}
+
 	parseSearchResults = (accounts) => {
 		return accounts.map((account, index) => { 
-			return {id: index, value: account.name + " (" + account.email + ")", email: account.email}
+			return {id: index, value: account.name + " (" + account.email + ")", key: account.email}
 		});
 	}
 
@@ -218,7 +250,11 @@ class CoursePage extends Component {
 
 	}
 
-	onLessonClick = (lesson) => {
+	onLessonClick = (e, lesson) => {
+		e.cancelBubble = true;
+		if (e.stopPropagation) {
+			e.stopPropagation();
+		}
 		this.setState({
 			showDeleteLesson: true,
 			selectedLesson: lesson,
@@ -271,9 +307,7 @@ class CoursePage extends Component {
 	}
 
 	deleteAccount = (account, action) => {
-		console.log(account);
-		const {courseInfo} = this.state;
-		const {accessCode} = courseInfo;
+		const {accessCode} = this.state.courseInfo;
 		const body = {
 			email: account.email,
 			courseId: accessCode,
@@ -281,6 +315,19 @@ class CoursePage extends Component {
 		axios.post(Routes.SERVER + action, body).then(
 			(response) => this.getCourse(),
 			(error) => console.log(error)
+		);
+	}
+
+	deleteLesson = () => {
+		const {accessCode} = this.state.courseInfo;
+		const {lessonId} = this.state.selectedLesson;
+		const body = {
+			courseId: accessCode,
+			lessonId: lessonId
+		};
+		axios.post(Routes.SERVER + "deleteCourseLesson", body).then(
+			(response) => this.fetchAllInformation(),
+			(error) => console.log(error),
 		);
 	}
 

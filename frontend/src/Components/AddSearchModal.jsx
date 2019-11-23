@@ -15,11 +15,12 @@ class FormModal extends React.Component {
     }
 
     render() { 
-        const {items, onHide} = this.props; 
+        const {items, onHide, show} = this.props; 
         const {selectedItems} = this.state;
         return (  
             <Modal
-                {...this.props} 
+                show={show}
+                onHide={onHide} 
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
@@ -32,7 +33,8 @@ class FormModal extends React.Component {
                 <Form onSubmit={this.onSubmit}>
                     <Modal.Body>
                         <Search items={items}
-                                placeholder='Search by email'
+                                placeholder='Search...'
+                                NotFoundPlaceholder='No items found!'
                                 multiple={true}
                                 onItemsChanged={(items) => this.setState({selectedItems:items})}
                         />
@@ -54,9 +56,9 @@ class FormModal extends React.Component {
         e.preventDefault();
         const {actionRoute, items, param, onSuccessfulAdd, onHide} = this.props;
         const selectedIndices = this.state.selectedItems.map((item) => item.id);
-        const emails = selectedIndices.map((index) => items[index].email);
+        const keys = selectedIndices.map((index) => items[index].key);
         const body = {
-            emails: emails,
+            ids: keys,
             param: param,
         };
         axios.post(actionRoute, body).then(

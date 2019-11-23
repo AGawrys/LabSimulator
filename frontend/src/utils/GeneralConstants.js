@@ -8,6 +8,7 @@ const GeneralConstants = {
 	CANNOT_REMOVE_INSTRUCTOR_MESSAGE: "There must be at least one instructor teaching a course.",
 	ADD_STUDENT_TITLE: "Add Student to Course",
 	ADD_INSTRUCTOR_TITLE: "Add Instructor",
+	ADD_LESSON_TITLE: "Add Lesson to Course",
 	STUDENT: "STUDENT",
 	INSTRUCTOR: "INSTRUCTOR",
 	ORGANIZATION: "ORGANIZATION",

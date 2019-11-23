@@ -40,8 +40,8 @@ public class StudentController {
 
     @PostMapping(path = "/enrollStudents")
     @CrossOrigin(origins = "*")
-    public ResponseEntity enrollStudents (@RequestBody AddToCourseBody body) {
-        List<String> emails = body.getEmails();
+    public ResponseEntity enrollStudents (@RequestBody AddMultipleBody body) {
+        List<String> emails = body.getIds();
         String courseId = body.getParam();
 
         if (!validAccounts(emails, "STUDENT")) {
@@ -93,25 +93,25 @@ public class StudentController {
     }
 }
 
-class AddToCourseBody {
-    private List<String> emails;
+class AddMultipleBody {
+    private List<String> ids;
     private String param;
 
-    public AddToCourseBody() {
+    public AddMultipleBody() {
 
     }
 
-    public AddToCourseBody(List<String> emails, String param) {
-        this.emails = emails;
+    public AddMultipleBody(List<String> emails, String param) {
+        this.ids = emails;
         this.param = param;
     }
 
-    public List<String> getEmails() {
-        return emails;
+    public List<String> getIds() {
+        return ids;
     }
 
-    public void setEmails(List<String> emails) {
-        this.emails = emails;
+    public void setIds(List<String> emails) {
+        this.ids = emails;
     }
 
     public String getParam() {

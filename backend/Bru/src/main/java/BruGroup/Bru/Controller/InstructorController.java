@@ -44,8 +44,8 @@ public class InstructorController {
 
     @PostMapping(path = "/addCourseInstructors")
     @CrossOrigin(origins = "*")
-    public ResponseEntity addCourseInstructors (@RequestBody AddToCourseBody body) {
-        List<String> emails = body.getEmails();
+    public ResponseEntity addCourseInstructors (@RequestBody AddMultipleBody body) {
+        List<String> emails = body.getIds();
         String courseId = body.getParam();
 
         if (!validAccounts(emails, "INSTRUCTOR")) {
@@ -83,7 +83,7 @@ public class InstructorController {
         return ResponseEntity.ok(info);
     }
 
-    //get insturctor's coureses
+    //get instructor's courses
     @GetMapping (path = "/getCourses/{email}", produces = "application/json")
     @CrossOrigin(origins = "*")
     public List<Instructor> getInstructorCourse (@PathVariable String email) {
@@ -91,7 +91,8 @@ public class InstructorController {
         return instructorList;
     }
 
-    //get courses insructors
+
+    //get course instructors
     @GetMapping (path = "/getInstructors/{courseId}", produces = "application/json")
     @CrossOrigin(origins = "*")
     public List<Instructor> getCourseInstructor (@PathVariable String courseId) {
