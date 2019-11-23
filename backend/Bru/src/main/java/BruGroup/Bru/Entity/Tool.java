@@ -18,6 +18,7 @@ public class Tool {
     @NotNull
     private double y;
 
+    private String name;
     private int amount;
     private String color;
 
@@ -25,10 +26,11 @@ public class Tool {
 
     }
 
-    public Tool(ToolIdentity toolIdentity, double x, double y, int amount, String color) {
+    public Tool(ToolIdentity toolIdentity, double x, double y, int amount, String color, String name) {
         this.toolIdentity = toolIdentity;
         this.x = x;
         this.y = y;
+        this.name = name;
         this.amount = amount;
         this.color = color;
     }
@@ -79,5 +81,13 @@ public class Tool {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -13,20 +13,22 @@ public class Step {
     private String name;
     private String description;
     private String actionType;
-    private String source;
-    private String target;
+    private int source;
+    private int target;
+    private int actionMeasurement;
 
     public Step(){
 
     }
 
-    public Step(StepIdentity stepIdentity, String name, String description, String actionType, String source, String target) {
+    public Step(StepIdentity stepIdentity, String name, String description, String actionType, int source, int target, int actionMeasurement) {
         this.stepIdentity = stepIdentity;
         this.name = name;
         this.description = description;
         this.actionType = actionType;
         this.source = source;
         this.target = target;
+        this.actionMeasurement = actionMeasurement;
     }
 
     public String getName() {
@@ -53,19 +55,19 @@ public class Step {
         this.actionType = actionType;
     }
 
-    public String getSource() {
+    public int getSource() {
         return source;
     }
 
-    public void setSource(String source) {
+    public void setSource(int source) {
         this.source = source;
     }
 
-    public String getTarget() {
+    public int getTarget() {
         return target;
     }
 
-    public void setTarget(String target) {
+    public void setTarget(int target) {
         this.target = target;
     }
 
@@ -82,6 +84,7 @@ public class Step {
                 ", description = " + description +
                 ", actionType = " + actionType +
                 ", source = " + source +
-                ", target = " + target + "}";
+                ", target = " + target +
+                ", actionMeasurement = " + actionMeasurement + "}";
     }
 }

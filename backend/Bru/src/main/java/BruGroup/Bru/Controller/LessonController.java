@@ -1,16 +1,12 @@
 package BruGroup.Bru.Controller;
 
-import BruGroup.Bru.Entity.CourseLesson;
-import BruGroup.Bru.Entity.Lesson;
-import BruGroup.Bru.Entity.Organization;
-import BruGroup.Bru.Repository.AccountRepository;
-import BruGroup.Bru.Repository.CourseLessonRepository;
-import BruGroup.Bru.Repository.LessonRepository;
-import BruGroup.Bru.Repository.OrganizationRepository;
+import BruGroup.Bru.Entity.*;
+import BruGroup.Bru.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +26,12 @@ public class LessonController {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    ToolRepository toolRepository;
+
+    @Autowired
+    StepRepository stepRepository;
 
     @GetMapping(path = "/allLessons")
     @CrossOrigin(origins = "*")
@@ -73,17 +75,30 @@ public class LessonController {
 
     @GetMapping(path = "/getLesson/{lessonId}")
     @CrossOrigin(origins = "*")
-    public Lesson getLesson(@PathVariable int lessonId) {
+    public ResponseEntity getLesson(@PathVariable int lessonId) {
         Lesson lesson = lessonRepository.findByLessonId(lessonId);
-        return lesson;
+        List<Step> stepList = stepRepository.findByStepIdentityLessonId(lessonId);
+        List<StepInformation> stepInformationList = new ArrayList<>();
+
+        for (Step step : stepList) {
+            StepInformation stepInformation = new StepInformation();
+            stepInformation.setStep(step);
+            List<Tool> toolList = toolRepository.findByToolIdentityLessonIdAndToolIdentityStepNumber(lessonId, step.getStepIdentity().getStepNumber());
+            stepInformation.setToolList(toolList);
+            stepInformationList.add(stepInformation);
+        }
+
+        LessonInformation lessonInformation = new LessonInformation(lesson, stepInformationList);
+
+        return ResponseEntity.ok(lessonInformation);
     }
 
-    @PostMapping(path = "/updateLessonName")
+    @PostMapping(path = "/updateLessonName")        //SAVE
     @CrossOrigin(origins = "*")
-    public ResponseEntity updateLessonName(@RequestBody Lesson lesson) {
-        Lesson lessonId = lessonRepository.findByLessonId(lesson.getLessonId());
-        lessonId.setName(lesson.getName());
-        lessonRepository.save(lessonId);
+    public ResponseEntity updateLessonName(@RequestBody LessonInformation lessonInformation) {
+        Lesson lesson = lessonInformation.getLesson();
+        lessonRepository.save(lesson);
+        saveStepTable(lessonInformation.getStepInformation(), lesson.getLessonId());
         return ResponseEntity.ok(null);
     }
 
@@ -94,6 +109,30 @@ public class LessonController {
             courseLessonIds.add(lesson.getCourseLessonIdentity().getLessonId());
         }
         return courseLessonIds;
+    }
+
+    public void saveToolTable (List<Tool> toolList) {
+        for (Tool tool: toolList) {
+            toolRepository.save(tool);
+        }
+    }
+
+    public void saveStepTable (List <StepInformation> stepInformationList, int lessonId) {
+        List<Step> deleteStepList = stepRepository.findByStepIdentityLessonId(lessonId);
+        for (Step step: deleteStepList) {
+            stepRepository.delete(step);
+        }
+
+        List<Tool> deleteToolList = toolRepository.findByToolIdentityLessonId(lessonId);
+        for (Tool tool: deleteToolList) {
+            toolRepository.delete(tool);
+        }
+
+        for (StepInformation stepInformation: stepInformationList) {
+            Step step = stepInformation.getStep();
+            stepRepository.save(step);
+            saveToolTable(stepInformation.getToolList());
+        }
     }
 
 }
@@ -125,5 +164,69 @@ class PotentialLessonParameters {
 
     public void setInstructorEmail(String instructorEmail) {
         this.instructorEmail = instructorEmail;
+    }
+}
+
+class LessonInformation {
+
+    private Lesson lesson;
+    private List<StepInformation> stepInformation;
+
+    public LessonInformation(){}
+
+    public LessonInformation(Lesson lesson, List<StepInformation> stepInformation) {
+        this.lesson = lesson;
+        this.stepInformation = stepInformation;
+    }
+
+    public Lesson getLesson() {
+        return lesson;
+    }
+
+    public void setLesson(Lesson lesson) {
+        this.lesson = lesson;
+    }
+
+    public List<StepInformation> getStepInformation() {
+        return stepInformation;
+    }
+
+    public void setStepInformation(List<StepInformation> stepInformation) {
+        this.stepInformation = stepInformation;
+    }
+}
+
+class StepInformation {
+    private Step step;
+    private List<Tool> toolList;
+
+    public StepInformation() {
+
+    }
+
+    public StepInformation (Step step, List<Tool> toolList) {
+        this.step = step;
+        this.toolList = toolList;
+    }
+
+    public Step getStep() {
+        return step;
+    }
+
+    public void setStep(Step step) {
+        this.step = step;
+    }
+
+    public List<Tool> getToolList() {
+        return toolList;
+    }
+
+    public void setToolList(List<Tool> toolList) {
+        this.toolList = toolList;
+    }
+
+    public List<Tool> addToolList (Tool tool) {
+        this.toolList.add(tool);
+        return toolList;
     }
 }
