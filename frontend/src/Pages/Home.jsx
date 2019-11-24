@@ -13,13 +13,12 @@ class Home extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			loginPopup: false,
 			loginbtn: 'Login'
 		};
 	}
 
 	handleLogin() {
-		return <Redirect exact to="/Editor" />;
+		return <Redirect exact to="/instructor/" />;
 	}
 
 	togglePopup() {
@@ -39,14 +38,6 @@ class Home extends Component {
 			<div>
 				<HeaderBru home={Routes.DEFAULT} />
 				<section>
-					{this.state.showPopup ? (
-						<Popup
-							text="Click &quot;Close Button&quot; to hide popup"
-							closePopup={this.togglePopup.bind(this)}
-							errorMessage={this.state.errorLogin}
-							handleSubmit={this.handleLogin.bind(this)}
-						/>
-					) : null}
 					<div className="Home-page">
 						<div className="App">
 							<header className="Home-header">

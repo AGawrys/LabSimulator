@@ -6,35 +6,19 @@ import javax.persistence.*;
 @Entity
 public class Lesson {
 
-    @EmbeddedId
-    private LessonIdentity lessonIdentity;
-    private String organizationName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int lessonId;
+    private String instructorEmail;
     private String name;
 
     public Lesson() {
 
     }
 
-    public Lesson(LessonIdentity lessonIdentity, String organizationName, String name) {
-        this.lessonIdentity = lessonIdentity;
-        this.organizationName = organizationName;
+    public Lesson(String name, String instructorEmail) {
+        this.instructorEmail = instructorEmail;
         this.name = name;
-    }
-
-    public LessonIdentity getLessonIdentity() {
-        return lessonIdentity;
-    }
-
-    public void setLessonIdentity(LessonIdentity lessonIdentity) {
-        this.lessonIdentity = lessonIdentity;
-    }
-
-    public String getOrganizationName() {
-        return organizationName;
-    }
-
-    public void setOrganizationName(String organizationName) {
-        this.organizationName = organizationName;
     }
 
     public String getName() {
@@ -45,12 +29,21 @@ public class Lesson {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "Lesson {" +
-                "instructorEmail = " + lessonIdentity.getInstructorEmail() +
-                ", lessonId = " + lessonIdentity.getLessonId() +
-                ", organizationName = " + organizationName +
-                ", name = " + name + "}";
+
+    public String getInstructorEmail() {
+        return instructorEmail;
     }
+
+    public void setInstructorEmail(String instructorEmail) {
+        this.instructorEmail = instructorEmail;
+    }
+
+    public int getLessonId() {
+        return lessonId;
+    }
+
+    public void setLessonId(int lessonId) {
+        this.lessonId = lessonId;
+    }
+
 }

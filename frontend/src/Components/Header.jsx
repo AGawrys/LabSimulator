@@ -1,12 +1,14 @@
 import React from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import { Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import title from '../Styles/Images/brü.svg';
 import '../Styles/HeaderBruStyle.css';
 import FormModal from '../Components/FormModal.jsx';
 import { Button, Form, Modal } from 'react-bootstrap';
 import axios from 'axios';
+import GeneralConstants from '../utils/GeneralConstants.js';
+import Routes from '../utils/RouteConstants.js';
 
 class HeaderBru extends React.Component {
 	constructor(props) {
@@ -16,8 +18,9 @@ class HeaderBru extends React.Component {
 			showLoginModal: false,
 			email: '',
 			password: '',
-			login: false,
-			errors: ''
+			authenticated: false,
+			errors: '',
+			role: null,
 		};
 	}
 
@@ -33,10 +36,14 @@ class HeaderBru extends React.Component {
 			password: this.state.password
 		};
 
-		axios.post('http://localhost:8080/account', account).then(
+		axios.post(Routes.SERVER + 'account', account).then(
 			(response) => {
-				console.log(response);
-				this.setState({ login: true });
+				const {token, role} = response.data;
+				localStorage.setItem('token', token);
+				this.setState({
+					authenticated: true,
+					role: role,
+				});
 			},
 			(error) => {
 				this.setState({
@@ -47,6 +54,12 @@ class HeaderBru extends React.Component {
 	};
 
 	render() {
+		const {authenticated} = this.state;
+		if (authenticated) {
+			const route = this.getCorrectRoute();
+			return <Redirect exact to={route}/>;
+		}
+
 		const navLinks = this.renderLinks();
 		return (
 			<Navbar bg="#69CB9A" className="justify-content-between">
@@ -69,10 +82,10 @@ class HeaderBru extends React.Component {
 		if (!this.props.links) {
 			return null;
 		}
-		const navLinks = Object.entries(this.props.links).map((link) => {
+		const navLinks = Object.entries(this.props.links).map((link, index) => {
 			const [ text, route ] = link;
 			return (
-				<Nav.Item>
+				<Nav.Item key={index}>
 					<Nav.Link href={route}>{text}</Nav.Link>
 				</Nav.Item>
 			);
@@ -156,6 +169,20 @@ class HeaderBru extends React.Component {
 			</div>
 		);
 	}
+
+	getCorrectRoute() {
+		const {role} = this.state;
+		if (role == GeneralConstants.STUDENT) {
+			return Routes.STUDENT_DASHBOARD;
+		}
+		else if (role == GeneralConstants.INSTRUCTOR) {
+			return Routes.INSTRUCTOR_DASHBOARD;
+		}
+		else {
+			return Routes.ORGANIZATION_DASHBOARD;
+		}
+	}
+
 }
 
 export default HeaderBru;

@@ -1,14 +1,23 @@
 import React, { Component } from 'react';
 import { Button, Modal, Form, Row, ListGroup } from 'react-bootstrap';
+import Routes from '../utils/RouteConstants.js';
 
 function LessonRow(props) {
-	const {lesson, onClick} = props;
+	const {lesson, onClick, canDelete} = props;
+	const {name, lessonId} = lesson;
+	const deleteButton = canDelete ? (
+			<Button className="buttonRound btn-danger" onClick={onClick}> - </Button>
+		) : null;
+
 	return (
-		<ListGroup.Item>
-			<h5> {lesson.title} </h5>
-			<button className="deleteCourseButton buttonRound btn-danger" onClick={onClick}>
-				-
-			</button>
+		<ListGroup.Item action onClick={() => {
+			const newRoute = Routes.INSTRUCTOR_EDITOR + lessonId;
+			props.history.push(newRoute);	
+		}}>
+			<div className="listRow">
+				<p> {name} </p>
+				{deleteButton}
+			</div>
 		</ListGroup.Item>
 	);
 }

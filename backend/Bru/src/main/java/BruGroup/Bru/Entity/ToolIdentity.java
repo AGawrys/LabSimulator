@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class ToolIdentity implements Serializable {
 
     @NotNull
-    private String name;
+    private int layer;
 
     @NotNull
     private int stepNumber;
@@ -20,24 +20,33 @@ public class ToolIdentity implements Serializable {
 
     }
 
-    public ToolIdentity(String toolID, int stepID) {
-        this.name = name;
-        this.stepID = stepID;
+    public ToolIdentity(int layer, int stepNumber, int lessonId) {
+        this.layer = layer;
+        this.stepNumber = stepNumber;
+        this.lessonId = lessonId;
     }
 
-    public String getName() {
-        return name;
+    public int getLayer() {
+        return layer;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLayer(int layer) {
+        this.layer = layer;
     }
 
-    public int getStepID() {
-        return stepID;
+    public int getStepNumber() {
+        return stepNumber;
     }
 
-    public void setStepID(int stepID) {
-        this.stepID = stepID;
+    public void setStepNumber(int stepID) {
+        this.stepNumber = stepID;
+    }
+
+    public int getLessonId() {
+        return lessonId;
+    }
+
+    public void setLessonId(int lessonId) {
+        this.lessonId = lessonId;
     }
 }

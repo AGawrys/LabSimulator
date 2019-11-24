@@ -38,18 +38,23 @@ public class StudentController {
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping(path = "/addStudentCourse")
+    @PostMapping(path = "/enrollStudents")
     @CrossOrigin(origins = "*")
-    public ResponseEntity addStudentCourse (@RequestBody StudentIdentity studentIdentity) {
-        //check if courseId is valid
-        Account dbAccount = accountRepository.findByEmail(studentIdentity.getEmail());
-        if (dbAccount == null || !(dbAccount.getRole().equals("STUDENT"))) {
+    public ResponseEntity enrollStudents (@RequestBody AddMultipleBody body) {
+        List<String> emails = body.getIds();
+        String courseId = body.getParam();
+
+        if (!validAccounts(emails, "STUDENT")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+        StudentIdentity identity;
+        Student student;
 
-        Student student = new Student(studentIdentity);
-
-        studentRepository.save(student);
+        for (String email: emails) {
+            identity = new StudentIdentity(email, courseId);
+            student = new Student(identity);
+            studentRepository.save(student);
+        }
         return ResponseEntity.ok(null);
     }
 
@@ -75,5 +80,45 @@ public class StudentController {
     public List<Student> getCourseStudent (@PathVariable String courseId) {
         List<Student> studentList = studentRepository.findByStudentIdentityCourseId(courseId);
         return studentList;
+    }
+
+    public boolean validAccounts(List<String> emails, String role) {
+        for (String email: emails) {
+            Account account = accountRepository.findByEmail(email);
+            if (account == null || !account.getRole().equals(role)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+class AddMultipleBody {
+    private List<String> ids;
+    private String param;
+
+    public AddMultipleBody() {
+
+    }
+
+    public AddMultipleBody(List<String> emails, String param) {
+        this.ids = emails;
+        this.param = param;
+    }
+
+    public List<String> getIds() {
+        return ids;
+    }
+
+    public void setIds(List<String> emails) {
+        this.ids = emails;
+    }
+
+    public String getParam() {
+        return param;
+    }
+
+    public void setParam(String courseId) {
+        this.param = courseId;
     }
 }
