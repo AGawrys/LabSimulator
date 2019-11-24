@@ -23,7 +23,12 @@ class EditorStudent extends Component {
 			disable: 'true',
 			feedback: 'false',
 			feedbackColor: green,
-			feedbackMsg: ''
+			feedbackMsg: '',
+			lastMove: {
+				xPos: 0,
+				yPos: 0,
+				src: ''
+			}
 		};
 	}
 
@@ -46,15 +51,52 @@ class EditorStudent extends Component {
 		}
 	};
 
-	handleStart() {}
+	handleStart = (data) => {
+		const { x, y, srcElement} = data;
+		console.log(" onstart data is " + data);
+		console.log(" start x:  " + x +" start y: " + y );
+		const { lastMove } = this.state;
+		const { src } = lastMove;
+		const newLastMove = {
+			xPos: x,
+			yPos: y,
+			src: src,
+		}
+		console.log(newLastMove);
+		this.setState({lastMove: newLastMove});
+	}
 	handleDrag() {}
+	revertTool = () => {
+		const { lastMove, lessons, currentStep, currentLesson } = this.state;
+		const { xPos, yPos, src } = lastMove;
+
+		lessons[currentLesson].steps[currentStep].tools.forEach((tool, j) => {
+			if(tool.name === src.id){
+				const newTool = tool;
+				newTool.x = xPos;
+				newTool.y = yPos;
+				const lessonsUpdate = lessons;
+				lessonsUpdate[currentLesson].steps[currentStep].tools[j] = newTool;
+				this.setState({lessons: lessonsUpdate});
+			}
+		});
+	}
 	handleStop = (data) => {
 		let msg;
 		const { x, y, srcElement } = data;
 		console.log(srcElement.id);
 		console.log('x: ' + x + ' y: ' + y);
-		const { lessons, currentLesson, currentStep } = this.state;
+		console.log("on stop data is ", data);
+		const { lessons, currentLesson, currentStep, lastMove } = this.state;
 		const step = lessons[currentLesson].steps[currentStep];
+
+		const currentSrc = {
+			xPos: lastMove.xPos,
+			yPost: lastMove.yPos,
+			src: srcElement,
+		}
+		
+		this.setState({lastMove : currentSrc});
 		if (srcElement.id !== step.source.name) {
 			msg = 'That is not a ' + step.source.name + '. (you grabbed a ' + srcElement.id + ' )';
 			this.setState({ feedbackMsg: msg });
@@ -191,6 +233,15 @@ class EditorStudent extends Component {
 								type="button"
 							>
 								NEXT STEP
+							</Button>
+							<Button
+								style={{ backgroundColor: 'black', width: '40vh', justifySelf: 'flex-end' }}
+								onClick={this.revertTool}
+								block
+								bsSize="small"
+								type="button"
+							>
+								UNDO
 							</Button>
 						</Col>
 						<Col>
