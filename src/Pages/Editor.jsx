@@ -1,7 +1,6 @@
 import React from "react";
 import 'react-sticky-header/styles.css';
 import Lesson from "../Objects/Lesson.js"
-import Position from "../Objects/Position.js"
 import Tool from "../Objects/Tool.js"
 import StickyHeader from 'react-sticky-header';
 import SimpleInput from 'react-simple-input';
@@ -17,10 +16,6 @@ import '../App.css';
 import '../Styles/HomeStyle.css';
 import '../Styles/EditorStyle.css';
 import "../Styles/editor.css"
-
-const ToolTypes = {
-  "TaperedCup": <TaperedCupTool />
-}
 
 class Editor extends React.Component {
     constructor(props) {
