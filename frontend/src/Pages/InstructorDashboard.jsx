@@ -7,25 +7,38 @@ import HeaderBru from '../Components/Header.jsx';
 import Routes from '../utils/RouteConstants.js';
 import FormModal from '../Components/FormModal.jsx';
 import { Button, Form, Modal } from 'react-bootstrap';
-
-const links = {
-	Account: '/account'
-};
+import { Redirect } from 'react-router-dom';
 
 export class InstructorDashboard extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			showCourseModal: false,
-			showLessonModal: false
+			showLessonModal: false,
+			goToLessonEditor: false,
+			goToCoursePage: false,
 		};
 	}
 
 	handleNext() {}
+	handleGoToCourse () {
+		this.setState({ goToCoursePage: true});
+	};
+
+	handleGoToEditor(){
+		this.setState({ goToLessonEditor: true});
+	};
+
 	render() {
+		const {goToLessonEditor, goToCoursePage} = this.state;
+		if(goToLessonEditor){
+			return <Redirect exact to="/instructor/editor" />;
+		} else if( goToCoursePage) {
+			return <Redirect exact to="/course" />;
+		}
 		return (
 			<div className="background">
-				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
+				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} />
 				<div className="teacherDashboard">
 					<div className="searchBarDiv">
 						<SearchBar placeHolderText={'Search for Lesson'} />
@@ -146,7 +159,7 @@ export class InstructorDashboard extends Component {
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button variant="primary" type="submit">
+					<Button variant="primary" type="submit" onClick={this.handleGoToCourse.bind(this)}>
 						Create
 					</Button>
 				</Modal.Footer>
@@ -164,7 +177,7 @@ export class InstructorDashboard extends Component {
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button variant="primary" type="submit">
+					<Button variant="primary" type="submit" onClick={this.handleGoToEditor.bind(this)}>
 						Create
 					</Button>
 				</Modal.Footer>

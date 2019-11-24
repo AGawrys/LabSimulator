@@ -25,7 +25,7 @@ import StringUtils from '../utils/StringUtils.js';
 //UNDO REDO PUBLISH DELETE SIMULATE
 
 const links = {
-	Account: '/account'
+	Account: '/instructor/dashboard'
 };
 
 class Editor extends Component {

@@ -7,7 +7,7 @@ import FormModal from '../Components/FormModal.jsx';
 import { Button, Modal, Form, Row } from 'react-bootstrap';
 
 const links = {
-	Account: '/account'
+	Account: '/instructor/dashboard'
 };
 
 class CoursePage extends Component {

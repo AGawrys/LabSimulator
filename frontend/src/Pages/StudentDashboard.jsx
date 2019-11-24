@@ -4,17 +4,34 @@ import '../Styles/StudentDashboard.css';
 import { Link } from 'react-router-dom';
 import HeaderBru from '../Components/Header.jsx';
 import Routes from '../utils/RouteConstants.js';
-import { Row } from 'react-bootstrap';
-
-const links = {
-	Account: '/account'
-};
+import { Row, Button } from 'react-bootstrap';
+import { Container, Grid, Col } from 'react-grid-system';
+import { Redirect } from 'react-router-dom';
+import { getCourses } from '../Validation/StudentEditorValidation.js';
 
 export class StudentDashboard extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			goTolab: false,
+			courses : getCourses(),
+		};
+	}
+
+    handleStartLab() {
+		this.setState({ goToLab: true});
+	}
+
 	render() {
+		const {goToLab, courses} = this.state;
+		if(goToLab){
+			return <Redirect exact to="/student/editor" />;
+		}
+
+
 		return (
 			<div className="background">
-				<HeaderBru home={Routes.STUDENT_DASHBOARD} isLoggedIn={true} links={links} />
+				<HeaderBru home={Routes.STUDENT_DASHBOARD} isLoggedIn={true} />
 				/>
 				<div className="studentDashboard">
 					<div className="studentDashboardContents">
@@ -25,6 +42,8 @@ export class StudentDashboard extends Component {
 							<div className="studentAllLesson">
 								<ol>
 									<li className="courseListing">
+										<Row>
+											<Col>
 										<h5>Training1</h5>
 										<h6>Instructor: John Smith</h6>
 										<h6>Completed</h6>
@@ -35,6 +54,21 @@ export class StudentDashboard extends Component {
 												<li>Maple Pecan Latte (Completed)</li>
 											</ol>
 										</Collapsible>
+											</Col>
+											<Col>
+											<Button
+												style={{ backgroundColor: 'black', width: '40vh', justifySelf: 'flex-end' }}
+												onClick={this.handleStartLab.bind(this)}
+												block
+												bsSize="small"
+												type="button"
+											>
+												NEXT STEP
+											</Button>
+											</Col>
+
+										</Row>
+										
 									</li>
 									<li className="courseListing oddDiv">
 										<h5>Fall Seasonals 2019</h5>
