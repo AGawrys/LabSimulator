@@ -6,26 +6,21 @@ class Tool extends React.Component {
         super(props);
         this.state = {
             tool: props.tool,
-            selected: false
+            selected: false,
         }
 
-        this.onDragStart = this.onDragStart.bind(this);
+        this.onBlur = this.onBlur.bind(this);
         this.onDragStop = this.onDragStop.bind(this);
         this.canvas = React.createRef();
     }
 
-    onDragStart(e, data) {
-        this.setState({
-            selected: true
-        })
+    onBlur() {
+        const {tool} = this.state
+        tool.stale();
     }
 
     onDragStop(e, data) {
-        const canvas = document.getElementById("canvas")
-        const {left, top} = canvas.getBoundingClientRect();
         let tool = this.state.tool;
-        const position = tool.getPosition()
-        console.log(position, data)
         tool.setPosition(data.x, data.y);
         this.setState({
             tool: tool,
@@ -41,6 +36,9 @@ class Tool extends React.Component {
             let context = canvas.getContext("2d");
             context.stroke(path);
         }
+        if (this.props.draggable && tool.isNew()) {
+            this.canvas.current.focus();
+        }
     }
 
     render() {
@@ -49,6 +47,8 @@ class Tool extends React.Component {
 
         const ToolCanvas = (
             <canvas
+                tabIndex={props.draggable? 0 : null}
+                onBlur={props.draggable && tool.isNew()? this.onBlur : null}
                 width={tool.getWidth()}
                 height={tool.getHeight()}
                 ref={this.canvas}
@@ -63,8 +63,8 @@ class Tool extends React.Component {
                 <Draggable
                     bounds={"#canvas"}
                     defaultPosition={{x: tool.getPosition().getX(), y: tool.getPosition().getY()}}
-                    onStart={this.onDragStart}
                     onStop={this.onDragStop}
+                    onClick={props.draggable? this.onClick : null}
                 >
                     {ToolCanvas}
                 </Draggable>
@@ -72,12 +72,14 @@ class Tool extends React.Component {
         }
 
         return(
-            <div style={{
+            <div 
+                style={{
                     width: tool.getWidth(),
                     height: tool.getHeight(),
                     margin: 0,
-                    position: "absolute"
-            }}>
+                    position: props.draggable? "absolute" : "relative",
+                }}
+            >
                 {ToolComponent}
             </div>
         );

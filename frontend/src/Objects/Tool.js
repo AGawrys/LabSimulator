@@ -9,6 +9,7 @@ class Tool {
 		this.width = width;
 		this.height = height;
 		this.layer = layer;
+		this.new = true;
 	}
 
 	getName() {
@@ -53,7 +54,15 @@ class Tool {
 
     setLayer(layer) {
         this.layer = layer;
-    }
+	}
+
+	isNew() {
+		return this.new;
+	}
+
+	stale() {
+		this.new = false;
+	}
 
 	toString() {
 		return this.name;
