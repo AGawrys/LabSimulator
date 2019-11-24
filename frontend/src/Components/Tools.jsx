@@ -1,5 +1,4 @@
 import React from "react"
-import TaperedCupTool from "./TaperedCupTool.jsx"
 
 export const CATEGORIES = {
     Cups: [
