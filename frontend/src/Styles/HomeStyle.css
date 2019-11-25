@@ -70,3 +70,13 @@
   padding-right: 25px;
   padding-top: 5px;
 }
+
+.cup {
+  width: 150px;
+  height: 180px;
+  border: 6px solid #000;
+  border-top: 2px solid transparent;
+  border-radius: 15px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}

@@ -1,8 +1,7 @@
 import React from 'react';  
 import {Button, Modal, ProgressBar } from 'react-bootstrap';
-import ArrowKeysReact from 'arrow-keys-react';
 import SuccessBody from './ActionCompletedBody.jsx';
-import ReactPlayer from 'react-player'
+
 
 class StirModal extends React.Component {
 
@@ -10,14 +9,7 @@ class StirModal extends React.Component {
 		super(props);
 		this.state = {
 			progress: 0,
-			currentKey: "UP",
-		};
-		ArrowKeysReact.config({
-			left: () => this.handleArrowKeyPress("LEFT"),
-			right: () => this.handleArrowKeyPress("RIGHT"),
-			up: () => this.handleArrowKeyPress("UP"),
-			down: () => this.handleArrowKeyPress("DOWN"),
-		});
+		}
 	}
 
 	render() {
@@ -25,14 +17,13 @@ class StirModal extends React.Component {
 		const {progressNeeded, show, onComplete} = this.props;
 		let percentComplete = ((progress / progressNeeded) * 100).toFixed(2);
     	percentComplete = percentComplete < 100 ? percentComplete : 100;
-    	const modalBody = percentComplete === 100 ? <SuccessBody/> : <StirBody currentKey={currentKey}/>;
+    	const modalBody = percentComplete === 100 ? <SuccessBody/> : 
+    		<PourBody currentKey={currentKey} onPourStart={this.onPourStart} onPourEnd={this.onPourEnd}/>;
 
     	return (
     		<Modal
-    			{...ArrowKeysReact.events}
     		    show={true}
     		    size="lg"
-    		    tabIndex={1}
     		    aria-labelledby="contained-modal-title-vcenter"
     		    centered
     		>
@@ -58,31 +49,23 @@ class StirModal extends React.Component {
 		);
 	}
 
-	handleArrowKeyPress = (direction) => {
-		const {currentKey, progress} = this.state;
-		if (KEY_ORDER[currentKey] !== direction) {
-			return;
-		}
-		this.setState({
-			currentKey: direction,
-			progress: direction === "RIGHT" ? progress + 1 : progress,
-		});
+	onPourStart = () => {
+		
+	}
+
+	onPourEnd = () => {
+		console.log("Pour has Ended!");
 	}
 }
 
-const KEY_ORDER = {
-	RIGHT: "DOWN",
-	DOWN: "LEFT",
-	LEFT: "UP",
-	UP: "RIGHT",
-};
-
-function StirBody(props) {
+function PourBody(props) {
+	const {onPourStart, onPourEnd} = props;
 	return (
-		<React.Fragment>
-			<p> NEXT Key: {KEY_ORDER[props.currentKey]}</p>
-		</React.Fragment>
-	);
+		<div> 
+			<div className="cup"> </div>
+			<Button variant="success" onMouseDown={onPourStart} onMouseUp={onPourEnd}> Pour! </Button>
+		</div>
+	);	
 }
 
 export default StirModal;
