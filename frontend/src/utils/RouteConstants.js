@@ -7,7 +7,7 @@ const ORGANIZATION = 'organization';
 const Routes = {
 	DEFAULT: '/',
 	INSTRUCTOR_EDITOR: '/' + INSTRUCTOR + '/' + EDITOR + "/",
-	STUDENT_EDITOR: '/' + STUDENT + '/' + EDITOR,
+	STUDENT_EDITOR: '/' + STUDENT + '/' + EDITOR + "/",
 	INSTRUCTOR_DASHBOARD: '/' + INSTRUCTOR + '/' + DASHBOARD,
 	STUDENT_DASHBOARD: '/' + STUDENT + '/' + DASHBOARD,
 	ACCOUNT: '/account',
