@@ -11,7 +11,6 @@ import axios from 'axios';
 import CourseRow from '../Components/CourseRow.jsx';
 import LessonRow from '../Components/LessonRow.jsx';
 
-
 const links = {
 	Account: '/account'
 };
@@ -24,29 +23,28 @@ export class InstructorDashboard extends Component {
 			showLessonModal: false,
 			createdCourseName: null,
 			createdCourseDescription: null,
-			createdLessonName:null,
+			createdLessonName: null,
 			instructorInfo: {},
-			loaded: false,
+			loaded: false
 		};
 	}
 
 	componentDidMount() {
-		const {email} = this.props;
-		axios.get(Routes.SERVER + "getInstructor/" + email).then (
+		const { email } = this.props;
+		axios.get(Routes.SERVER + 'getInstructor/' + email).then(
 			(response) => this.onInstructorInfoResponse(response),
 			(error) => {
 				console.log(error);
 			}
-		)
+		);
 	}
 
 	render() {
-		const {instructorInfo, loaded} = this.state;
+		const { instructorInfo, loaded } = this.state;
 		if (!loaded) {
 			return null;
 		}
-		const {courses, lessons} = instructorInfo;
-		console.log(lessons);
+		const { courses, lessons } = instructorInfo;
 		return (
 			<div className="background">
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
@@ -79,7 +77,9 @@ export class InstructorDashboard extends Component {
 							</div>
 							<div className="recentDrinkBottom">
 								<ListGroup>
-									{lessons.map((lesson, index) => <LessonRow {...this.props} key={index} lesson={lesson} canDelete={false}/>)}
+									{lessons.map((lesson, index) => (
+										<LessonRow {...this.props} key={index} lesson={lesson} canDelete={false} />
+									))}
 								</ListGroup>
 							</div>
 						</div>
@@ -107,7 +107,9 @@ export class InstructorDashboard extends Component {
 							</div>
 							<div className="recentLessonsBottom">
 								<ListGroup>
-									{courses.map((course, index) => <CourseRow {...this.props} key={index} course={course}/>)}
+									{courses.map((course, index) => (
+										<CourseRow {...this.props} key={index} course={course} />
+									))}
 								</ListGroup>
 							</div>
 						</div>
@@ -119,64 +121,63 @@ export class InstructorDashboard extends Component {
 
 	onCreateCourse = (e) => {
 		e.preventDefault();
-		const {createdCourseName, createdCourseDescription} = this.state;
+		const { createdCourseName, createdCourseDescription } = this.state;
 		const course = {
 			name: createdCourseName,
 			description: createdCourseDescription
-		}
+		};
 		const body = {
 			email: this.props.email,
-			course: course,
+			course: course
 		};
-		axios.post(Routes.SERVER + "createCourse", body).then(
+		axios.post(Routes.SERVER + 'createCourse', body).then(
 			(response) => {
 				this.navigateToCreatedCourse(response.data);
 			},
 			(error) => {
 				console.log(error);
 			}
-		)
-	}
+		);
+	};
 
 	onCreateLesson = (e) => {
 		e.preventDefault();
-		const {createdLessonName} = this.state;
+		const { createdLessonName } = this.state;
 		const body = {
 			name: createdLessonName,
-			instructorEmail: this.props.email,
+			instructorEmail: this.props.email
 		};
-		axios.post(Routes.SERVER + "addLesson",body).then(
+		axios.post(Routes.SERVER + 'addLesson', body).then(
 			(response) => {
-				console.log(response);//this.navigateToCreatedLab(response.data);
+				this.navigateToCreatedLesson(response.data);
 			},
 			(error) => {
 				console.log(error);
 			}
-		)
-	}
+		);
+	};
 
 	onInstructorInfoResponse = (response) => {
-		const {courses, lessons} = response.data;
+		const { courses, lessons } = response.data;
 		this.setState({
 			loaded: true,
 			instructorInfo: {
 				courses: courses,
-				lessons: lessons,
-			},
+				lessons: lessons
+			}
 		});
-	}
+	};
 
 	navigateToCreatedCourse = (data) => {
-		const {courseCode} = data;
+		const { courseCode } = data;
 		const newRoute = Routes.COURSE + courseCode;
 		this.props.history.push(newRoute);
-	}
+	};
 
-	navigateToCreatedLab = (data) => {
-		const {lessonId} = data;
+	navigateToCreatedLesson = (lessonId) => {
 		const newRoute = Routes.INSTRUCTOR_EDITOR + lessonId;
 		this.props.history.push(newRoute);
-	}
+	};
 
 	getCourseForm() {
 		return (
@@ -184,22 +185,25 @@ export class InstructorDashboard extends Component {
 				<Modal.Body>
 					<Form.Group>
 						<Form.Label>Course Name</Form.Label>
-						<Form.Control 
-							minlength="5" 
-							required placeholder="Enter Course Name"
-							onChange={(e) => this.handleFieldChange(e, 'createdCourseName')}/>
+						<Form.Control
+							minlength="5"
+							required
+							placeholder="Enter Course Name"
+							onChange={(e) => this.handleFieldChange(e, 'createdCourseName')}
+						/>
 					</Form.Group>
 					<Form.Group>
 						<Form.Label>Description</Form.Label>
-						<Form.Control 
-							maxLength="140" 
-							as="textarea" 
+						<Form.Control
+							maxLength="140"
+							as="textarea"
 							rows="3"
-							onChange={(e) => this.handleFieldChange(e, 'createdCourseDescription')}/>
+							onChange={(e) => this.handleFieldChange(e, 'createdCourseDescription')}
+						/>
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button variant="primary" type="submit" >
+					<Button variant="primary" type="submit">
 						Create
 					</Button>
 				</Modal.Footer>
@@ -213,11 +217,12 @@ export class InstructorDashboard extends Component {
 				<Modal.Body>
 					<Form.Group controlId="formBasicEmail">
 						<Form.Label>Lesson Name</Form.Label>
-						<Form.Control 
-							minLength="3" 
-							required 
+						<Form.Control
+							minLength="3"
+							required
 							placeholder="Enter Lesson Name"
-							onChange={(e) => this.handleFieldChange(e, 'createdLessonName')} />
+							onChange={(e) => this.handleFieldChange(e, 'createdLessonName')}
+						/>
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer>

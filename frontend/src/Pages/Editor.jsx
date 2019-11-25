@@ -9,6 +9,7 @@ import HeaderBru from '../Components/Header.jsx';
 import Catalog from '../Components/Catalog.jsx';
 import Canvas from '../Components/Canvas.jsx';
 import Routes from '../utils/RouteConstants.js';
+import GeneralConstants from '../utils/GeneralConstants.js';
 import EditorConstants from '../utils/EditorConstants.js';
 import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
@@ -16,14 +17,15 @@ import Tool from '../Objects/Tool.js';
 import Position from '../Objects/Position.js';
 import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
+import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import '../App.css';
 import '../Styles/HomeStyle.css';
 import '../Styles/EditorStyle.css';
 import StringUtils from '../utils/StringUtils.js';
 import { IMAGES } from '../Components/Tools.jsx';
-import axios from 'axios';
 import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
 import { swapElements } from '../LilacArray.js';
+import axios from 'axios';
 
 //UNDO REDO PUBLISH DELETE SIMULATE
 
@@ -35,12 +37,12 @@ class Editor extends Component {
 	constructor(props) {
 		super(props);
 		const lesson = new Lesson();
-		const step = new Step();
 		this.state = {
 			lesson: lesson,
-			currentStep: step,
+			currentStep: null,
 			currentTool: null,
-			steps: [ step ]
+			steps: null,
+			showDeleteLessonModal: false
 		};
 
 		this.onDropTool = this.onDropTool.bind(this);
@@ -49,12 +51,82 @@ class Editor extends Component {
 	handleNext() {}
 	handleSimulate() {}
 
+	componentDidMount() {
+		const lesson_id = this.props.computedMatch.params.lesson_id;
+		this.state.lesson.setId(lesson_id);
+		axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
+			(response) => {
+				console.log(response);
+				const stepInformation = response.data.stepInformation;
+				var listStep = [];
+				for (var i = 0; i < stepInformation.length; i++) {
+					const getStep = stepInformation[i];
+					var toolList = [];
+					for (var j = 0; j < stepInformation[i].toolList.length; j++) {
+						const images = IMAGES[stepInformation[i].toolList[j].toolType];
+						const toolInput = new Tool(
+							stepInformation[i].toolList[j].toolType,
+							images,
+							new Position(stepInformation[i].toolList[j].x, stepInformation[i].toolList[j].y),
+							stepInformation[i].toolList[j].width,
+							stepInformation[i].toolList[j].height,
+							stepInformation[i].toolList[j].toolIdentity.layer,
+							stepInformation[i].toolList[j].color,
+							stepInformation[i].toolList[j].amount
+						);
+						console.log(toolInput);
+						toolList.push(toolInput);
+					}
+					console.log(toolList);
+					const stepInput = new Step(
+						getStep.step.name,
+						getStep.step.description,
+						toolList,
+						getStep.step.actionType,
+						getStep.step.source,
+						getStep.step.target,
+						getStep.step.actionMeasurement
+					);
+					console.log(stepInput);
+					listStep.push(stepInput);
+				}
+				if (listStep.length == 0) {
+					const createStep = new Step();
+					this.setState({
+						steps: [ createStep ],
+						currentStep: createStep
+					});
+				} else {
+					this.setState({
+						steps: listStep,
+						currentStep: listStep[0]
+					});
+				}
+			},
+			(error) => {
+				console.log(error);
+				this.props.history.push(Routes.NOT_FOUND);
+			}
+		);
+	}
+
 	render() {
-		const { currentStep, steps, currentTool, showCannotDeleteStep } = this.state;
+		const { currentStep, steps, currentTool, showDeleteLessonModal } = this.state;
+		if (steps == null) {
+			return null;
+		}
 		const toolOptions = currentStep.tools.map((tool) => tool.toSelectOption());
+
 		return (
 			<div>
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
+				<ConfirmationModal
+					title={GeneralConstants.DELETE_LESSON_TITLE}
+					message={GeneralConstants.DELETE_LESSON_MESSAGE}
+					onHide={() => this.setState({ showDeleteLessonModal: false })}
+					show={showDeleteLessonModal}
+					onDelete={this.deleteLesson}
+				/>
 				<Container fluid={true}>
 					<Row>
 						<Col lg={2}>
@@ -71,7 +143,7 @@ class Editor extends Component {
 						</Col>
 
 						<Col lg={2}>
-							<Row>
+							<Col>
 								<Col>
 									<Card style={{ width: '14rem' }}>
 										<Card.Header> Action Manager</Card.Header>
@@ -107,7 +179,7 @@ class Editor extends Component {
 										/>
 									</Card>
 								</Col>
-							</Row>
+							</Col>
 
 							<Row>
 								<Col>
@@ -128,10 +200,15 @@ class Editor extends Component {
 									</Card>
 								</Col>
 							</Row>
+							<Row>
+								<Button onClick={() => this.setState({ showDeleteLessonModal: true })} variant="danger">
+									{' '}
+									Delete Lesson
+								</Button>
+							</Row>
 						</Col>
 					</Row>
 					<button onClick={this.saveLesson}>SAVE</button>
-					<button onClick={this.createLesson}>NEW</button>
 				</Container>
 			</div>
 		);
@@ -143,12 +220,11 @@ class Editor extends Component {
 			name: this.state.lesson.name
 		};
 		e.preventDefault();
-		console.log(this.state.lesson.id);
 		axios.post('http://localhost:8080/addLesson', lesson).then(
 			(response) => {
 				console.log(response);
 				this.state.lesson.setId(response.data);
-				console.log(this.state.lesson.id);
+				console.log('ID' + response.data);
 			},
 			(error) => {
 				console.log(error);
@@ -166,8 +242,8 @@ class Editor extends Component {
 			stepInformation: this.constructSaveStepObject()
 		};
 		e.preventDefault();
-		console.log(this.state.steps);
 
+		console.log('SAVE' + this.state.lesson.id);
 		axios.post('http://localhost:8080/updateLessonName', lessonInformation).then(
 			(response) => {
 				console.log(response);
@@ -181,7 +257,6 @@ class Editor extends Component {
 	constructSaveStepObject() {
 		const { steps } = this.state;
 		return steps.map((step, index) => {
-			console.log(index);
 			const toolList = this.constructToolListObject(step.tools, index);
 			return {
 				step: {
@@ -196,7 +271,7 @@ class Editor extends Component {
 					target: step.target,
 					actionMeasurement: step.actionMeasurement
 				},
-				toolList: this.constructToolListObject(step.tools)
+				toolList: toolList
 			};
 		});
 	}
@@ -206,7 +281,7 @@ class Editor extends Component {
 			return {
 				toolIdentity: {
 					layer: tool.layer,
-					stepNumber: index,
+					stepNumber: stepNumber,
 					lessonId: this.state.lesson.id
 				},
 				toolType: tool.type,
@@ -356,6 +431,16 @@ class Editor extends Component {
 		const { currentStep } = this.state;
 		const tool = currentStep.tools[index];
 		this.updateCurrentTarget(tool);
+	};
+
+	deleteLesson = () => {
+		const { lesson_id } = this.props.computedMatch.params;
+		axios.post(Routes.SERVER + 'deleteLesson/' + lesson_id, {}).then(
+			(response) => {
+				this.props.history.push(Routes.INSTRUCTOR_DASHBOARD);
+			},
+			(error) => console.log(error)
+		);
 	};
 }
 

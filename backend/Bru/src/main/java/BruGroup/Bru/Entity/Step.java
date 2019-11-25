@@ -75,6 +75,10 @@ public class Step {
         return stepIdentity;
     }
 
+    public int getactionMeasurement() { return actionMeasurement;}
+
+    public void setActionMeasurement() {this.actionMeasurement = actionMeasurement;}
+
     @Override
     public String toString() {
         return "Step {" +

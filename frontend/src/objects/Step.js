@@ -16,8 +16,8 @@ class Step {
 		this.action = action;
 		this.source = source;
 		this.target = target;
-		this.tools = [];
-		this.actionMeasurement = this.actionMeasurement;
+		this.tools = tools;
+		this.actionMeasurement = actionMeasurement;
 	}
 
 	getName() {

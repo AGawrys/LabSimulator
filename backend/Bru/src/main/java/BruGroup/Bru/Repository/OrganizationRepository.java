@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface OrganizationRepository extends JpaRepository<Organization, String> {
     List<Organization> findByEmail(@PathVariable String email);
+    Organization findByLessonId(@PathVariable int lessonId);
 }
