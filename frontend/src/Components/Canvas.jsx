@@ -31,16 +31,15 @@ class Canvas extends React.Component {
 
     render() {
         const tools = this.props.tools
-
         const ToolComponents = (
             tools.map((tool, index) => {
-                const { x, y } = tool.position;
                 return (
                     //<ContextMenuTrigger 
                         //index={index}
                         //id={EditorConstants.CONTEXT_MENU_ID}
                     //>
                                 <Tool
+                                    key={index}
                                     draggable
                                     tool={tool}
                                     bounds={this.canvas}

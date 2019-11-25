@@ -25,4 +25,11 @@ function matrix_includes(matrix, target) {
     return false
 }
 
-export {isArrayEqual, matrix, matrix_includes}
+function swapElements(arr, oldIndex, newIndex) {
+    const element = arr[oldIndex];
+    arr[oldIndex] = arr[newIndex];
+    arr[newIndex] = element;
+    return arr;
+}
+
+export {isArrayEqual, matrix, matrix_includes, swapElements}

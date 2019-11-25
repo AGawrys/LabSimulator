@@ -22,6 +22,8 @@ import '../Styles/EditorStyle.css';
 import StringUtils from '../utils/StringUtils.js';
 import { IMAGES } from '../Components/Tools.jsx';
 import axios from 'axios';
+import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
+import { swapElements } from '../LilacArray.js';
 
 //UNDO REDO PUBLISH DELETE SIMULATE
 
@@ -38,8 +40,7 @@ class Editor extends Component {
 			lesson: lesson,
 			currentStep: step,
 			currentTool: null,
-			steps: [ step ],
-			showCannotDeleteStep: false
+			steps: [ step ]
 		};
 
 		this.onDropTool = this.onDropTool.bind(this);
@@ -51,18 +52,9 @@ class Editor extends Component {
 	render() {
 		const { currentStep, steps, currentTool, showCannotDeleteStep } = this.state;
 		const toolOptions = currentStep.tools.map((tool) => tool.toSelectOption());
-
 		return (
 			<div>
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
-
-				<CannotDeleteModal
-					title={EditorConstants.CANNOT_DELETE_STEP_TITLE}
-					message={EditorConstants.CANNOT_DELETE_STEP_MESSAGE}
-					show={showCannotDeleteStep}
-					handleClose={() => this.setState({ showCannotDeleteStep: false })}
-				/>
-
 				<Container fluid={true}>
 					<Row>
 						<Col lg={2}>
@@ -89,7 +81,13 @@ class Editor extends Component {
 											name="actions"
 											options={EditorConstants.ACTIONS}
 											onChange={(action) => this.updateCurrentAction(action)}
-											value={{ label: currentStep.action, value: currentStep.action }}
+											value={
+												currentStep.action ? (
+													{ label: currentStep.action, value: currentStep.action }
+												) : (
+													''
+												)
+											}
 										/>
 										<Form.Label> Select a Source </Form.Label>
 										<Select
@@ -124,9 +122,9 @@ class Editor extends Component {
 												+
 											</button>
 										</Card.Header>
-										<ListGroup variant="flush">
+										<SortableContainer onSortEnd={this.onDropStep} useDragHandle>
 											{steps.map((step, index) => this.renderStep(step, index))}
-										</ListGroup>
+										</SortableContainer>
 									</Card>
 								</Col>
 							</Row>
@@ -224,21 +222,19 @@ class Editor extends Component {
 	renderStep = (step, index) => {
 		const { currentStep } = this.state;
 		const isActive = step === currentStep;
-
 		return (
-			<ListGroup.Item active={isActive} key={index} index={index} onClick={this.onStepClick} as="li">
-				<Form.Control
-					index={index}
-					className="step-name-form"
-					onBlur={(e) => this.onFieldBlur(e, step)}
-					onChange={this.onStepNameChange}
-					value={step.toString()}
-				/>
-				<Button variant="danger" onClick={(e) => this.onDeleteStep(e, step)}>
-					{' '}
-					Delete{' '}
-				</Button>
-			</ListGroup.Item>
+			<SortableStep
+				key={index}
+				index={index}
+				stepIndex={index}
+				isActive={isActive}
+				onStepClick={this.onStepClick}
+				onStepNameChange={this.onStepNameChange}
+				onDeleteStep={this.onDeleteStep}
+				onFieldBlur={this.onFieldBlur}
+				value={step}
+				isDisabled={this.state.steps.length === 1}
+			/>
 		);
 	};
 
@@ -276,6 +272,12 @@ class Editor extends Component {
 		});
 	}
 
+	onDropStep = ({ oldIndex, newIndex }) => {
+		const { steps } = this.state;
+		const swappedSteps = swapElements(steps, oldIndex, newIndex);
+		this.setState({ steps: swappedSteps });
+	};
+
 	addStep = () => {
 		const { steps } = this.state;
 		const currentStep = new Step();
@@ -307,11 +309,7 @@ class Editor extends Component {
 		if (e.stopPropagation) {
 			e.stopPropagation();
 		}
-		if (this.state.steps.length === 1) {
-			this.setState({ showCannotDeleteStep: true });
-		} else {
-			this.deleteStep(step);
-		}
+		this.deleteStep();
 	};
 
 	deleteStep = (step) => {
@@ -359,22 +357,26 @@ class Editor extends Component {
 	};
 }
 
-function CannotDeleteModal(props) {
-	const { show, handleClose, title, message } = props;
+const DragHandle = sortableHandle(() => <span>::</span>);
+const SortableContainer = sortableContainer(({ children }) => <ListGroup variant="flush">{children}</ListGroup>);
+const SortableStep = sortableElement((props) => {
+	const { stepIndex, isActive, onStepClick, onStepNameChange, onDeleteStep, onFieldBlur, value, isDisabled } = props;
 	return (
-		<Modal show={show} onHide={handleClose}>
-			<Modal.Header closeButton>
-				<Modal.Title>{title}</Modal.Title>
-			</Modal.Header>
-			<Modal.Body>{message}</Modal.Body>
-			<Modal.Footer>
-				<Button variant="secondary" onClick={handleClose}>
-					Close
-				</Button>
-			</Modal.Footer>
-		</Modal>
+		<ListGroup.Item active={isActive} key={stepIndex} index={stepIndex} onClick={onStepClick} as="li">
+			<DragHandle />
+			<Form.Control
+				index={stepIndex}
+				className="step-name-form"
+				onBlur={(e) => onFieldBlur(e, value)}
+				onChange={onStepNameChange}
+				value={value.toString()}
+			/>
+			<Button disabled={isDisabled} variant="danger" onClick={(e) => onDeleteStep(e, value)}>
+				Delete{' '}
+			</Button>
+		</ListGroup.Item>
 	);
-}
+});
 
 export default Editor;
 

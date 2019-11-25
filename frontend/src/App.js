@@ -13,7 +13,6 @@ import Signup from './Pages/Signup.jsx';
 import EditorStudent from './Pages/EditorStudent.jsx';
 import Routes from './utils/RouteConstants.js';
 import GeneralConstants from './utils/GeneralConstants.js';
-import ShakeModalPage from './Pages/ShakeModalPage.jsx';
 import PrivateRoute from './Components/PrivateRoute.jsx';
 
 function App() {
