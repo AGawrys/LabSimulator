@@ -41,9 +41,10 @@ public class LessonController {
 
     @PostMapping(path = "/addLesson")
     @CrossOrigin(origins = "*")
-    public ResponseEntity addLesson(@RequestBody Lesson lesson) {
+    public ResponseEntity addLesson(@RequestBody CreateLessonParams lessonParams) {
+        Lesson lesson = new Lesson(lessonParams.getName(), lessonParams.getInstructorEmail());
         lessonRepository.save(lesson);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(lesson.getLessonId());
     }
 
     @PostMapping(path = "/deleteLesson")
@@ -193,6 +194,36 @@ class LessonInformation {
 
     public void setStepInformation(List<StepInformation> stepInformation) {
         this.stepInformation = stepInformation;
+    }
+}
+
+class CreateLessonParams {
+    private String instructorEmail;
+    private String name;
+
+    public CreateLessonParams() {
+
+    }
+
+    public CreateLessonParams(String instructorEmail, String name) {
+        this.instructorEmail = instructorEmail;
+        this.name = name;
+    }
+
+    public String getInstructorEmail() {
+        return instructorEmail;
+    }
+
+    public void setInstructorEmail(String instructorEmail) {
+        this.instructorEmail = instructorEmail;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
 

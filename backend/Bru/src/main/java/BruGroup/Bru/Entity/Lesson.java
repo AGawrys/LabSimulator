@@ -17,8 +17,9 @@ public class Lesson {
     }
 
     public Lesson(String name, String instructorEmail) {
-        this.instructorEmail = instructorEmail;
         this.name = name;
+        this.instructorEmail = instructorEmail;
+
     }
 
     public String getName() {

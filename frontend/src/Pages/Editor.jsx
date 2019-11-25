@@ -6,21 +6,22 @@ import Select from 'react-select';
 import 'react-sticky-header/styles.css';
 import SimpleInput from 'react-simple-input';
 import HeaderBru from '../Components/Header.jsx';
-import Catalog from "../Components/Catalog.jsx";
-import Canvas from "../Components/Canvas.jsx";
+import Catalog from '../Components/Catalog.jsx';
+import Canvas from '../Components/Canvas.jsx';
 import Routes from '../utils/RouteConstants.js';
 import EditorConstants from '../utils/EditorConstants.js';
-import Lesson from "../Objects/Lesson.js";
+import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
 import Tool from '../Objects/Tool.js';
-import Position from "../Objects/Position.js";
+import Position from '../Objects/Position.js';
 import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import '../App.css';
 import '../Styles/HomeStyle.css';
 import '../Styles/EditorStyle.css';
 import StringUtils from '../utils/StringUtils.js';
-import {IMAGES} from "../Components/Tools.jsx"
+import { IMAGES } from '../Components/Tools.jsx';
+import axios from 'axios';
 
 //UNDO REDO PUBLISH DELETE SIMULATE
 
@@ -31,7 +32,7 @@ const links = {
 class Editor extends Component {
 	constructor(props) {
 		super(props);
-		const lesson = new Lesson()
+		const lesson = new Lesson();
 		const step = new Step();
 		this.state = {
 			lesson: lesson,
@@ -48,7 +49,7 @@ class Editor extends Component {
 	handleSimulate() {}
 
 	render() {
-		const {currentStep, steps, currentTool, showCannotDeleteStep} = this.state;
+		const { currentStep, steps, currentTool, showCannotDeleteStep } = this.state;
 		const toolOptions = currentStep.tools.map((tool) => tool.toSelectOption());
 
 		return (
@@ -69,10 +70,7 @@ class Editor extends Component {
 						</Col>
 
 						<Col lg={8}>
-							<Canvas
-								onDrop={this.onDropTool}
-								tools={currentStep.getTools()}
-							/>
+							<Canvas onDrop={this.onDropTool} tools={currentStep.getTools()} />
 							<ContextMenu id={EditorConstants.CONTEXT_MENU_ID}>
 								<MenuItem onClick={this.handleMenuSource}>Make Source Tool</MenuItem>
 								<MenuItem divider />
@@ -134,9 +132,98 @@ class Editor extends Component {
 							</Row>
 						</Col>
 					</Row>
+					<button onClick={this.saveLesson}>SAVE</button>
+					<button onClick={this.createLesson}>CREATE</button>
 				</Container>
 			</div>
 		);
+	}
+
+	createLesson = (e) => {
+		const lesson = {
+			instructorEmail: this.props.email,
+			name: this.state.lesson.name
+		};
+		e.preventDefault();
+
+		axios.post('http://localhost:8080/addLesson', lesson).then(
+			(response) => {
+				console.log(response);
+				this.state.lesson.setId(response.data);
+				console.log(this.state.lesson);
+			},
+			(error) => {
+				this.setState({
+					errors: 'Error signing up! Check email field(s).'
+				});
+			}
+		);
+	};
+
+	saveLesson = (e) => {
+		const lessonInformation = {
+			lesson: {
+				lessonId: this.state.lesson.id,
+				instructorEmail: this.props.email,
+				name: this.state.lesson.name
+			},
+			stepInformation: this.constructSaveStepObject()
+		};
+		e.preventDefault();
+		console.log(this.state.lesson.id);
+
+		axios.post('http://localhost:8080/updateLessonName', lessonInformation).then(
+			(response) => {
+				console.log(response);
+			},
+			(error) => {
+				this.setState({
+					errors: 'Error saving!'
+				});
+			}
+		);
+	};
+
+	constructSaveStepObject() {
+		const { steps } = this.state;
+		return steps.map((step, index) => {
+			const toolList = this.constructToolListObject(step.tools, index);
+			return {
+				step: {
+					stepIdentity: {
+						lessonId: this.state.lesson.id,
+						stepNumber: index
+					},
+					name: step.name,
+					description: step.description,
+					actionType: step.action,
+					source: step.source,
+					target: step.target,
+					actionMeasurement: step.actionMeasurement
+				},
+				toolList: this.constructToolListObject(step.tools)
+			};
+		});
+	}
+
+	constructToolListObject(tools, stepNumber) {
+		return tools.map((tool, index) => {
+			return {
+				toolIdentity: {
+					layer: tool.layer,
+					stepNumber: stepNumber,
+					lessonId: this.state.lesson.id
+				},
+				toolType: tool.type,
+				x: tool.position.getX(),
+				y: tool.position.getY(),
+				name: tool.name,
+				amount: tool.amount,
+				color: tool.color,
+				height: tool.height,
+				width: tool.width
+			};
+		});
 	}
 
 	renderStep = (step, index) => {
@@ -161,26 +248,26 @@ class Editor extends Component {
 	};
 
 	onDropTool(data) {
-		const canvas = document.getElementById("canvas");
-		const {left, top, width, height} = canvas.getBoundingClientRect();
-		const {pageX, pageY} = window.event;
+		const canvas = document.getElementById('canvas');
+		const { left, top, width, height } = canvas.getBoundingClientRect();
+		const { pageX, pageY } = window.event;
 		const length = 125;
 
-		let x, y
-		if (pageX - length/2 < left) {
+		let x, y;
+		if (pageX - length / 2 < left) {
 			x = 0;
-		} else if (pageX + length/2 > width + left) {
+		} else if (pageX + length / 2 > width + left) {
 			x = width - length;
 		} else {
-			x = pageX - left - length/2
+			x = pageX - left - length / 2;
 		}
 
-		if (pageY - length/2 < top) {
+		if (pageY - length / 2 < top) {
 			y = 0;
-		} else if (pageY + length/2 > height + top) {
+		} else if (pageY + length / 2 > height + top) {
 			y = height - length;
 		} else {
-			y = pageY - top - length/2
+			y = pageY - top - length / 2;
 		}
 
 		const position = new Position(x, y);
@@ -188,11 +275,11 @@ class Editor extends Component {
 		const layer = this.state.currentStep.getTools().length;
 		const tool = new Tool(data.tool, image, position, length, length, layer);
 		let currentStep = this.state.currentStep;
-        currentStep.addTool(tool);
-        this.setState({
-            currentStep: currentStep
-        });
-    }
+		currentStep.addTool(tool);
+		this.setState({
+			currentStep: currentStep
+		});
+	}
 
 	addStep = () => {
 		const { steps } = this.state;
