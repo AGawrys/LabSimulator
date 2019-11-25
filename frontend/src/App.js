@@ -14,11 +14,11 @@ import EditorStudent from './Pages/EditorStudent.jsx';
 import Routes from './utils/RouteConstants.js';
 import GeneralConstants from './utils/GeneralConstants.js';
 import PrivateRoute from './Components/PrivateRoute.jsx';
-import PourModal from './Components/PourModal.jsx';
+import StirModal from './Components/StirModal.jsx';
 
 function App() {
   return (
-    <PourModal
+    <StirModal
     	progressNeeded={10}
     	show={true}
     	onComplete={() => console.log("complete")}

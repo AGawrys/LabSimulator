@@ -4,7 +4,7 @@ import ArrowKeysReact from 'arrow-keys-react';
 import SuccessBody from './ActionCompletedBody.jsx';
 import ReactPlayer from 'react-player'
 
-class PourModal extends React.Component {
+class StirModal extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -85,4 +85,4 @@ function PourBody(props) {
 	);
 }
 
-export default PourModal;
+export default StirModal;
