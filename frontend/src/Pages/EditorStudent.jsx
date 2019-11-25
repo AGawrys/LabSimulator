@@ -27,8 +27,8 @@ class EditorStudent extends Component {
 			lastMove: {
 				xPos: 0,
 				yPos: 0,
-				src: ''
-			}
+			},
+			currentTool: null,
 		};
 	}
 
@@ -51,16 +51,14 @@ class EditorStudent extends Component {
 		}
 	};
 
-	handleStart = (data) => {
-		const { x, y, srcElement} = data;
-		console.log(" onstart data is " + data);
+	handleStart = (e, data) => {
+		const { x, y } = data;
+		console.log(" onstart e is " + e.id);
 		console.log(" start x:  " + x +" start y: " + y );
 		const { lastMove } = this.state;
-		const { src } = lastMove;
 		const newLastMove = {
 			xPos: x,
 			yPos: y,
-			src: src,
 		}
 		console.log(newLastMove);
 		this.setState({lastMove: newLastMove});
@@ -84,12 +82,16 @@ class EditorStudent extends Component {
 	handleStop = (data) => {
 		let msg;
 		const { x, y, srcElement } = data;
-		console.log(srcElement.id);
 		console.log('x: ' + x + ' y: ' + y);
 		console.log("on stop data is ", data);
 		const { lessons, currentLesson, currentStep, lastMove } = this.state;
 		const step = lessons[currentLesson].steps[currentStep];
-
+		
+		const index = data.target.getAttribute('index');
+		const currentTool = lessons[currentLesson].steps[currentStep].tools[index];
+		console.log("current tool i s" + currentTool);
+		this.setState({ currentTool });
+		
 		const currentSrc = {
 			xPos: lastMove.xPos,
 			yPost: lastMove.yPos,
@@ -199,15 +201,15 @@ class EditorStudent extends Component {
 								>
 									<p> {lessons[currentLesson].steps[currentStep].name}</p>
 									<div style={{ height: '65vh', width: '70vh' }}>
-										{lessons[currentLesson].steps[currentStep].tools.map((tool) => (
+										{lessons[currentLesson].steps[currentStep].tools.map((tool, j) => (
 											<Draggable
 												bounds="#canvas"
 												axis="both"
+												index={j}
 												defaultPosition={{ x: tool.x, y: tool.y }}
 												grid={[ 25, 25 ]}
 												scale={1}
 												onStart={this.handleStart}
-												onDrag={this.handleDrag}
 												onStop={this.handleStop}
 											>
 												<div>
