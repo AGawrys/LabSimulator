@@ -73,11 +73,13 @@ class Editor extends Component {
 								onDrop={this.onDropTool}
 								tools={currentStep.getTools()}
 							/>
-							<ContextMenu id={EditorConstants.CONTEXT_MENU_ID}>
-								<MenuItem onClick={this.handleMenuSource}>Make Source Tool</MenuItem>
-								<MenuItem divider />
+							{/* <ContextMenu id={EditorConstants.CONTEXT_MENU_ID}>
+								<MenuItem onClick={this.handleMenuSource}>
+									<Form.Control
+									/>
+								</MenuItem>
 								<MenuItem onClick={this.handleMenuTarget}>Make Target Tool</MenuItem>
-							</ContextMenu>
+							</ContextMenu> */}
 						</Col>
 
 						<Col lg={2}>

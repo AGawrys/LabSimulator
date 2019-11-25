@@ -1,22 +1,37 @@
 import React from "react";
 import Draggable from 'react-draggable';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
+import EditorConstants from '../utils/EditorConstants.js';
 
 class Tool extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             tool: props.tool,
-            selected: false,
+            focused: null
         }
 
+        this.onFocus = this.onFocus.bind(this);
         this.onBlur = this.onBlur.bind(this);
         this.onDragStop = this.onDragStop.bind(this);
         this.canvas = React.createRef();
     }
 
+    onFocus() {
+        this.setState({
+            focused: true
+        });
+        this.props.setCurrentTool(this.state.tool)
+    }
+
     onBlur() {
         const {tool} = this.state
-        tool.stale();
+        if (tool.isNew()) {
+            tool.stale();
+        }
+        this.setState({
+            focused: false
+        });
     }
 
     onDragStop(e, data) {
@@ -48,7 +63,8 @@ class Tool extends React.Component {
         const ToolCanvas = (
             <canvas
                 tabIndex={props.draggable? 0 : null}
-                onBlur={props.draggable && tool.isNew()? this.onBlur : null}
+                onFocus={props.draggable? this.onFocus : null}
+                onBlur={props.draggable? this.onBlur : null}
                 width={tool.getWidth()}
                 height={tool.getHeight()}
                 ref={this.canvas}
@@ -72,7 +88,7 @@ class Tool extends React.Component {
         }
 
         return(
-            <div 
+            <div
                 style={{
                     width: tool.getWidth(),
                     height: tool.getHeight(),
