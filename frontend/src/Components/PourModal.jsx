@@ -2,6 +2,7 @@ import React from 'react';
 import {Button, Modal, ProgressBar } from 'react-bootstrap';
 import ArrowKeysReact from 'arrow-keys-react';
 import SuccessBody from './ActionCompletedBody.jsx';
+import ReactPlayer from 'react-player'
 
 class PourModal extends React.Component {
 
@@ -77,7 +78,11 @@ const KEY_ORDER = {
 };
 
 function PourBody(props) {
-	return <p> NEXT Key: {KEY_ORDER[props.currentKey]}</p>;
+	return (
+		<React.Fragment>
+			<p> NEXT Key: {KEY_ORDER[props.currentKey]}</p>
+		</React.Fragment>
+	);
 }
 
 export default PourModal;
