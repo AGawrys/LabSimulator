@@ -122,3 +122,4 @@ class AddMultipleBody {
         this.param = courseId;
     }
 }
+

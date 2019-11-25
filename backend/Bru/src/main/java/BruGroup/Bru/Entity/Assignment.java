@@ -9,30 +9,19 @@ import javax.persistence.Table;
 public class Assignment {
     @EmbeddedId
     private AssignmentIdentity assignmentIdentity;
-    private int completed;  //0 not completed, 1 completed
 
     public Assignment() {
 
     }
 
-    public Assignment(AssignmentIdentity assignmentIdentity, int completed) {
+    public Assignment(AssignmentIdentity assignmentIdentity) {
         this.assignmentIdentity = assignmentIdentity;
-        this.completed = completed;
-    }
-
-    public int getCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(int completed) {
-        this.completed = completed;
     }
 
     @Override
     public String toString() {
         return "Assignment {" +
                 "email = " + assignmentIdentity.getEmail() +
-                ", courseId = " + assignmentIdentity.getLessonId() +
-                ", completed = " + completed + "}";
+                ", courseId = " + assignmentIdentity.getLessonId();
     }
 }
