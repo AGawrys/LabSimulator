@@ -143,12 +143,12 @@ class Editor extends Component {
 			name: this.state.lesson.name
 		};
 		e.preventDefault();
-
+		console.log(this.state.lesson.id);
 		axios.post('http://localhost:8080/addLesson', lesson).then(
 			(response) => {
 				console.log(response);
 				this.state.lesson.setId(response.data);
-				console.log(this.state.lesson);
+				console.log(this.state.lesson.id);
 			},
 			(error) => {
 				console.log(error);
@@ -166,6 +166,7 @@ class Editor extends Component {
 			stepInformation: this.constructSaveStepObject()
 		};
 		e.preventDefault();
+		console.log(this.state.steps);
 
 		axios.post('http://localhost:8080/updateLessonName', lessonInformation).then(
 			(response) => {
@@ -180,6 +181,7 @@ class Editor extends Component {
 	constructSaveStepObject() {
 		const { steps } = this.state;
 		return steps.map((step, index) => {
+			console.log(index);
 			const toolList = this.constructToolListObject(step.tools, index);
 			return {
 				step: {
@@ -204,7 +206,7 @@ class Editor extends Component {
 			return {
 				toolIdentity: {
 					layer: tool.layer,
-					stepNumber: stepNumber,
+					stepNumber: index,
 					lessonId: this.state.lesson.id
 				},
 				toolType: tool.type,

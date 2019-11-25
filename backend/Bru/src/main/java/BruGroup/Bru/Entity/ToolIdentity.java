@@ -11,7 +11,7 @@ public class ToolIdentity implements Serializable {
     private int layer;
 
     @NotNull
-    private int l;
+    private int stepNumber;
 
     @NotNull
     private int lessonId;
