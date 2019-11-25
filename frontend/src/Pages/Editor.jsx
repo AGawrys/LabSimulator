@@ -9,6 +9,7 @@ import HeaderBru from '../Components/Header.jsx';
 import Catalog from "../Components/Catalog.jsx";
 import Canvas from "../Components/Canvas.jsx";
 import Routes from '../utils/RouteConstants.js';
+import GeneralConstants from '../utils/GeneralConstants.js';
 import EditorConstants from '../utils/EditorConstants.js';
 import Lesson from "../Objects/Lesson.js";
 import Step from '../Objects/Step.js';
@@ -16,6 +17,7 @@ import Tool from '../Objects/Tool.js';
 import Position from "../Objects/Position.js";
 import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
+import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import '../App.css';
 import '../Styles/HomeStyle.css';
 import '../Styles/EditorStyle.css';
@@ -23,6 +25,7 @@ import StringUtils from '../utils/StringUtils.js';
 import {IMAGES} from "../Components/Tools.jsx"
 import {sortableContainer, sortableElement, sortableHandle} from 'react-sortable-hoc';
 import {swapElements} from '../LilacArray.js';
+import axios from 'axios';
 
 //UNDO REDO PUBLISH DELETE SIMULATE
 
@@ -40,6 +43,7 @@ class Editor extends Component {
 			currentStep: step,
 			currentTool: null,
 			steps: [ step ],
+			showDeleteLessonModal: false,
 		};
 
 		this.onDropTool = this.onDropTool.bind(this);
@@ -49,11 +53,17 @@ class Editor extends Component {
 	handleSimulate() {}
 
 	render() {
-		const {currentStep, steps, currentTool, showCannotDeleteStep} = this.state;
+		const {currentStep, steps, currentTool, showDeleteLessonModal} = this.state;
 		const toolOptions = currentStep.tools.map((tool) => tool.toSelectOption());
 		return (
 			<div>
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
+				<ConfirmationModal
+					title={GeneralConstants.DELETE_LESSON_TITLE}
+					message={GeneralConstants.DELETE_LESSON_MESSAGE}
+					onHide={() => this.setState({showDeleteLessonModal: false})}
+					show={showDeleteLessonModal}
+					onDelete={this.deleteLesson}/>
 				<Container fluid={true}>
 					<Row>
 						<Col lg={2}>
@@ -123,6 +133,12 @@ class Editor extends Component {
 										</SortableContainer>
 									</Card>
 								</Col>
+							</Row>
+							<Row>
+								<Button 
+									onClick={() => this.setState({showDeleteLessonModal: true})}
+									variant="danger"> Delete Lesson 
+								</Button>
 							</Row>
 						</Col>
 					</Row>
@@ -267,6 +283,16 @@ class Editor extends Component {
 		const tool = currentStep.tools[index];
 		this.updateCurrentTarget(tool);
 	};
+
+	deleteLesson = () => {
+		const {lesson_id} = this.props.computedMatch.params;
+		axios.post(Routes.SERVER + "deleteLesson/" + lesson_id, {}).then(
+			(response) => {
+				this.props.history.push(Routes.INSTRUCTOR_DASHBOARD)
+			},
+			(error) => console.log(error),
+		);
+	}
 }
 
 const DragHandle = sortableHandle(() => <span>::</span>);

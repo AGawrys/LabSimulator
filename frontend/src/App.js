@@ -26,6 +26,10 @@ function App() {
 							component={withRouter(Editor)} 
 							role={GeneralConstants.INSTRUCTOR}/>
 						<PrivateRoute exact 
+							path={Routes.INSTRUCTOR_EDITOR + ":lesson_id"} 
+							component={withRouter(Editor)} 
+							role={GeneralConstants.INSTRUCTOR}/>
+						<PrivateRoute exact 
 							path={Routes.STUDENT_EDITOR} 
 							component={withRouter(EditorStudent)} 
 							role={GeneralConstants.STUDENT} />

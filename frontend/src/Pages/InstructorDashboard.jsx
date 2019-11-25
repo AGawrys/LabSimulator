@@ -46,7 +46,6 @@ export class InstructorDashboard extends Component {
 			return null;
 		}
 		const {courses, lessons} = instructorInfo;
-		console.log(lessons);
 		return (
 			<div className="background">
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
@@ -147,7 +146,7 @@ export class InstructorDashboard extends Component {
 		};
 		axios.post(Routes.SERVER + "addLesson",body).then(
 			(response) => {
-				console.log(response);//this.navigateToCreatedLab(response.data);
+				this.navigateToCreatedLesson(response.data);
 			},
 			(error) => {
 				console.log(error);
@@ -172,8 +171,7 @@ export class InstructorDashboard extends Component {
 		this.props.history.push(newRoute);
 	}
 
-	navigateToCreatedLab = (data) => {
-		const {lessonId} = data;
+	navigateToCreatedLesson = (lessonId) => {
 		const newRoute = Routes.INSTRUCTOR_EDITOR + lessonId;
 		this.props.history.push(newRoute);
 	}

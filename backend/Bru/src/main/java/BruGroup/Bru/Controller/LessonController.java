@@ -3,6 +3,8 @@ package BruGroup.Bru.Controller;
 import BruGroup.Bru.Entity.*;
 import BruGroup.Bru.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +35,9 @@ public class LessonController {
     @Autowired
     StepRepository stepRepository;
 
+    @Autowired
+    AssignmentRepository assignmentRepository;
+
     @GetMapping(path = "/allLessons")
     @CrossOrigin(origins = "*")
     public List<Lesson> allLessons() {
@@ -43,13 +48,31 @@ public class LessonController {
     @CrossOrigin(origins = "*")
     public ResponseEntity addLesson(@RequestBody Lesson lesson) {
         lessonRepository.save(lesson);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(lesson.getLessonId());
     }
 
-    @PostMapping(path = "/deleteLesson")
+    @PostMapping(path = "/deleteLesson/{lessonId}")
     @CrossOrigin(origins = "*")
-    public ResponseEntity deleteLesson(@RequestBody Lesson lesson) {
+    public ResponseEntity deleteLesson(@PathVariable int lessonId) {
+        Lesson lesson = lessonRepository.findByLessonId(lessonId);
+        if (lesson == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        List<CourseLesson> courseLessons = curriculumRepository.findByCourseLessonIdentityLessonId(lessonId);
+        List<Assignment> assignments = assignmentRepository.findByAssignmentIdentityLessonId(lessonId);
+        List<Step> steps = stepRepository.findByStepIdentityLessonId(lessonId);
+        List<Tool> tools = toolRepository.findByToolIdentityLessonId(lessonId);
+
+        Organization publishedLesson = organizationRepository.findByLessonId(lessonId);
+        if(publishedLesson != null) {
+            organizationRepository.delete(publishedLesson);
+        }
+        toolRepository.deleteAll(tools);
+        curriculumRepository.deleteAll(courseLessons);
+        assignmentRepository.deleteAll(assignments);
+        stepRepository.deleteAll(steps);
         lessonRepository.delete(lesson);
+
         return ResponseEntity.ok(null);
     }
 
@@ -132,6 +155,12 @@ public class LessonController {
             Step step = stepInformation.getStep();
             stepRepository.save(step);
             saveToolTable(stepInformation.getToolList());
+        }
+    }
+
+    public void deleteAllReferences(JpaRepository repository,List references) {
+        for (Object reference: references) {
+            repository.delete(reference);
         }
     }
 

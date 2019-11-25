@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface CourseLessonRepository extends JpaRepository<CourseLesson, CourseLessonIdentity> {
     List<CourseLesson> findByCourseLessonIdentityCourseId(@PathVariable String courseId);
+    List<CourseLesson> findByCourseLessonIdentityLessonId(@PathVariable int lessonId);
 }
