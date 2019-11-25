@@ -1,7 +1,8 @@
 import React from 'react';  
 import '../Styles/popupStyle.css';  
-import { Button, Form, Modal, ProgressBar } from 'react-bootstrap';
+import { Button, Modal, ProgressBar } from 'react-bootstrap';
 import Draggable from 'react-draggable';
+import SuccessBody from './ActionCompletedBody.jsx';
 
 class ShakeModal extends React.Component {
 
@@ -29,14 +30,13 @@ class ShakeModal extends React.Component {
   render() {
     const {progress, position} = this.state;
     const {progressNeeded, show, onComplete} = this.props;
-
-    let percentComplete = (progress / progressNeeded).toFixed(0);
+    let percentComplete = ((progress / progressNeeded) * 100).toFixed(2);
     percentComplete = percentComplete < 100 ? percentComplete : 100;
     const modalBody = percentComplete === 100 ? <SuccessBody/> : <ShakeBody handleDrag={this.handleDrag} position={position}/>;
 
     return (  
         <Modal
-            show={true}
+            show={show}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             centered
@@ -76,12 +76,6 @@ function ShakeBody(props) {
         </Draggable>
       </div>
     );
-}
-
-function SuccessBody() {
-  return (
-    <h2> Action successfully completed! </h2>
-  );
 }
 
 export default ShakeModal;

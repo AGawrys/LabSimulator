@@ -13,48 +13,16 @@ import Signup from './Pages/Signup.jsx';
 import EditorStudent from './Pages/EditorStudent.jsx';
 import Routes from './utils/RouteConstants.js';
 import GeneralConstants from './utils/GeneralConstants.js';
-import ShakeModalPage from './Pages/ShakeModalPage.jsx';
 import PrivateRoute from './Components/PrivateRoute.jsx';
+import PourModal from './Components/PourModal.jsx';
 
 function App() {
   return (
-    <Router>
-				<div className="App">
-					<Switch>
-						<Route exact path={Routes.DEFAULT} component={Home} />
-						<PrivateRoute exact 
-							path={Routes.INSTRUCTOR_EDITOR} 
-							component={withRouter(Editor)} 
-							role={GeneralConstants.INSTRUCTOR}/>
-						<PrivateRoute exact 
-							path={Routes.STUDENT_EDITOR} 
-							component={withRouter(EditorStudent)} 
-							role={GeneralConstants.STUDENT} />
-						<PrivateRoute exact 
-							path={Routes.INSTRUCTOR_DASHBOARD} 
-							component={withRouter(InstructorDashboard)} 
-							role={GeneralConstants.INSTRUCTOR} />
-						<PrivateRoute exact 
-							path={Routes.STUDENT_DASHBOARD} 
-							component={withRouter(StudentDashboard)} 
-							role={GeneralConstants.STUDENT}/>
-						<PrivateRoute exact 
-							path={Routes.ACCOUNT} 
-							component={withRouter(AccountSetting)} 
-							role={GeneralConstants.NO_ROLE} />
-						<PrivateRoute exact 
-							path={Routes.ORGANIZATION_DASHBOARD} 
-							component={withRouter(OrganizationDashboard)} 
-							role={GeneralConstants.ORGANIZATION}/>
-						<PrivateRoute exact 
-							path={Routes.COURSE + ":course_id"} 
-							component={withRouter(CoursePage)} 
-							role={GeneralConstants.NO_ROLE}/>
-						<Route exact path={Routes.SIGN_UP} component={Signup}/>
-						<Route component={NotFound} />
-					</Switch>
-				</div>
-			</Router>
+    <PourModal
+    	progressNeeded={10}
+    	show={true}
+    	onComplete={() => console.log("complete")}
+	/>
   );
 }
 export default App;
