@@ -133,7 +133,7 @@ class Editor extends Component {
 						</Col>
 					</Row>
 					<button onClick={this.saveLesson}>SAVE</button>
-					<button onClick={this.createLesson}>CREATE</button>
+					<button onClick={this.createLesson}>NEW</button>
 				</Container>
 			</div>
 		);
@@ -153,9 +153,7 @@ class Editor extends Component {
 				console.log(this.state.lesson);
 			},
 			(error) => {
-				this.setState({
-					errors: 'Error signing up! Check email field(s).'
-				});
+				console.log(error);
 			}
 		);
 	};
@@ -170,16 +168,13 @@ class Editor extends Component {
 			stepInformation: this.constructSaveStepObject()
 		};
 		e.preventDefault();
-		console.log(this.state.lesson.id);
 
 		axios.post('http://localhost:8080/updateLessonName', lessonInformation).then(
 			(response) => {
 				console.log(response);
 			},
 			(error) => {
-				this.setState({
-					errors: 'Error saving!'
-				});
+				console.log(error);
 			}
 		);
 	};
@@ -400,3 +395,32 @@ export default Editor;
   </Card>
 </Row>
 */
+
+/*
+axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
+	(response) => {
+		this.parseLessonInformation(response);
+	},
+	(error) => {
+		console.log(error);
+	}
+);
+
+parseLessonInformation = (response) => {
+	let {lesson, stepInformation} = response.data;
+	potentialInstructors = this.parseStepInformation(stepInformation);
+
+	const courseInfo = {
+		accessCode: course.courseId,
+		title: course.name,
+		description: course.description,
+		courseInstructors: courseInstructors,
+		courseStudents: courseStudents,
+		potentialInstructors: potentialInstructors,
+		potentialStudents:potentialStudents,
+		lessons: courseLessons,
+	}
+	this.setState({
+		courseInfo: courseInfo
+	});
+}*/
