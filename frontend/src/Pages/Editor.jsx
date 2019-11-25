@@ -50,6 +50,7 @@ class Editor extends Component {
 	render() {
 		const {currentStep, steps, currentTool, showCannotDeleteStep} = this.state;
 		const toolOptions = currentStep.tools.map((tool) => tool.toSelectOption());
+		console.log(currentStep.tools);
 
 		return (
 			<div>

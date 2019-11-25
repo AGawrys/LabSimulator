@@ -5,7 +5,6 @@ class Tool extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            tool: props.tool,
             selected: false
         }
 
@@ -23,7 +22,7 @@ class Tool extends React.Component {
     onDragStop(e, data) {
         const canvas = document.getElementById("canvas")
         const {left, top} = canvas.getBoundingClientRect();
-        let tool = this.state.tool;
+        const {tool} = this.props;
         const position = tool.getPosition()
         console.log(position, data)
         tool.setPosition(data.x, data.y);
@@ -34,7 +33,7 @@ class Tool extends React.Component {
 
     componentDidMount() {
         const canvas = this.canvas.current;
-        const tool = this.state.tool
+        const {tool} = this.props
         const image = tool.getImage();
         const path = image.draw(tool.getWidth(), tool.getHeight());
         if (canvas.getContext) {
@@ -44,8 +43,7 @@ class Tool extends React.Component {
     }
 
     render() {
-        const props = this.props;
-        const tool = this.state.tool;
+        const {tool} = this.props;
 
         const ToolCanvas = (
             <canvas
@@ -58,11 +56,14 @@ class Tool extends React.Component {
         )
 
         let ToolComponent = ToolCanvas;
-        if (props.draggable) {
+        if (this.props.draggable) {
+            console.log(this.props.tool);
+            console.log({x: tool.getPosition().getX(), y: tool.getPosition().getY()});
+
             ToolComponent = (
                 <Draggable
                     bounds={"#canvas"}
-                    defaultPosition={{x: tool.getPosition().getX(), y: tool.getPosition().getY()}}
+                    position={{x: tool.getPosition().getX(), y: tool.getPosition().getY()}}
                     onStart={this.onDragStart}
                     onStop={this.onDragStop}
                 >
