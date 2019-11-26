@@ -57,7 +57,7 @@ class Canvas extends React.Component {
                 >
                     <div
                         id={"canvas"} 
-                        style={{width: "100%", height: "100%", border: "1px solid black"}}
+                        style={{width: "100%", height: '80vh', border: "1px solid black"}}
                         ref={this.ref}
                     >
                         {ToolComponents}

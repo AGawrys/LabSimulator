@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,7 +47,8 @@ public class LessonController {
 
     @PostMapping(path = "/addLesson")
     @CrossOrigin(origins = "*")
-    public ResponseEntity addLesson(@RequestBody Lesson lesson) {
+    public ResponseEntity addLesson(@RequestBody CreateLessonParams lessonParams) {
+        Lesson lesson = new Lesson(lessonParams.getName(), lessonParams.getInstructorEmail());
         lessonRepository.save(lesson);
         return ResponseEntity.ok(lesson.getLessonId());
     }
@@ -100,6 +102,9 @@ public class LessonController {
     @CrossOrigin(origins = "*")
     public ResponseEntity getLesson(@PathVariable int lessonId) {
         Lesson lesson = lessonRepository.findByLessonId(lessonId);
+        if (lesson == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
         List<Step> stepList = stepRepository.findByStepIdentityLessonId(lessonId);
         List<StepInformation> stepInformationList = new ArrayList<>();
 
@@ -222,6 +227,36 @@ class LessonInformation {
 
     public void setStepInformation(List<StepInformation> stepInformation) {
         this.stepInformation = stepInformation;
+    }
+}
+
+class CreateLessonParams {
+    private String instructorEmail;
+    private String name;
+
+    public CreateLessonParams() {
+
+    }
+
+    public CreateLessonParams(String instructorEmail, String name) {
+        this.instructorEmail = instructorEmail;
+        this.name = name;
+    }
+
+    public String getInstructorEmail() {
+        return instructorEmail;
+    }
+
+    public void setInstructorEmail(String instructorEmail) {
+        this.instructorEmail = instructorEmail;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
 

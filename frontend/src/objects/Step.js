@@ -2,13 +2,22 @@ import EditorConstants from '../utils/EditorConstants.js';
 import Tool from './Tool.js';
 
 class Step {
-	constructor(name=EditorConstants.DEFAULT_STEP_NAME, description=null, tools=[], action=null, source=null, target=null) {
+	constructor(
+		name = EditorConstants.DEFAULT_STEP_NAME,
+		description = null,
+		tools = [],
+		action = null,
+		source = null,
+		target = null,
+		actionMeasurement = null
+	) {
 		this.name = name;
 		this.description = description;
 		this.action = action;
 		this.source = source;
 		this.target = target;
-		this.tools = []
+		this.tools = tools;
+		this.actionMeasurement = actionMeasurement;
 	}
 
 	getName() {
@@ -57,6 +66,14 @@ class Step {
 
 	addTool(tool) {
 		this.tools.push(tool);
+	}
+
+	getActionMeasurement() {
+		return this.actionMeasurement;
+	}
+
+	setActionMeasurement(actionMeasurement) {
+		this.actionMeasurement = actionMeasurement;
 	}
 
 	toString() {

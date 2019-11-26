@@ -1,14 +1,16 @@
-import Position from "./Position";
+import Position from './Position';
 
 class Tool {
-	constructor(type, image, position=null, width, height, layer=null) {
-		this.name = "Tool " + layer;
+	constructor(type, image, position = null, width, height, layer = null, color = 0, amount = 0) {
+		this.name = 'Tool ' + layer;
 		this.type = type;
 		this.image = image;
 		this.position = position;
 		this.width = width;
 		this.height = height;
 		this.layer = layer;
+		this.color = color;
+		this.amount = amount;
 	}
 
 	getName() {
@@ -16,17 +18,17 @@ class Tool {
 	}
 
 	getType() {
-        return this.type;
-    }
+		return this.type;
+	}
 
 	getImage() {
 		return this.image;
 	}
 
-    getPosition() {
-        return this.position;
+	getPosition() {
+		return this.position;
 	}
-	
+
 	getWidth() {
 		return this.width;
 	}
@@ -35,25 +37,41 @@ class Tool {
 		return this.height;
 	}
 
-    getLayer() {
-        return this.layer;
-    }
+	getLayer() {
+		return this.layer;
+	}
 
 	setName(name) {
 		this.name = name;
 	}
 
-    setPosition(position) {
-        this.position = position;
+	setPosition(position) {
+		this.position = position;
 	}
-	
+
 	setPosition(x, y) {
 		this.position = new Position(x, y);
 	}
 
-    setLayer(layer) {
-        this.layer = layer;
-    }
+	setLayer(layer) {
+		this.layer = layer;
+	}
+
+	getAmount() {
+		return this.amount;
+	}
+
+	setAmount(amount) {
+		this.amount = amount;
+	}
+
+	getColor() {
+		return this.color;
+	}
+
+	setColor(color) {
+		this.color = color;
+	}
 
 	toString() {
 		return this.name;
@@ -62,8 +80,8 @@ class Tool {
 	toSelectOption() {
 		return {
 			label: this.name,
-			value: this,		
-		}
+			value: this
+		};
 	}
 }
 

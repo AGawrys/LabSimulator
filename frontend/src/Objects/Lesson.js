@@ -1,31 +1,26 @@
 import EditorConstants from '../utils/EditorConstants.js';
 
 class Lesson {
-    constructor(name=EditorConstants.DEFAULT_LESSON_NAME) {
-        this.name = name;
-        this.steps = [];
-        this.tools = [];
-    }
+	constructor(name = EditorConstants.DEFAULT_LESSON_NAME,id) {
+		this.name = name;
+		this.id = id;
+	}
 
-    getName() {
-        return this.name;
-    }
+	getName() {
+		return this.name;
+	}
 
-    getSteps() {
-        return this.steps;
-    }
+	addTool(tool) {
+		this.tools.push(tool);
+	}
 
-    getTools() {
-        return this.tools;
-    }
+	getId() {
+		return this.id;
+	}
 
-    addStep(step) {
-        this.steps.push(step);
-    }
-
-    addTool(tool) {
-        this.tools.push(tool)
-    }
+	setId(id) {
+		this.id = id;
+	}
 }
 
 export default Lesson;
