@@ -13,6 +13,9 @@ import { isAbsolute } from 'path';
 
 const green = 'green';
 const red = 'red';
+const links = {
+	Account: '/student/dashboard'
+};
 class EditorStudent extends Component {
 	constructor(props) {
 		super(props);
@@ -100,12 +103,7 @@ class EditorStudent extends Component {
 		return (
 			<div>
 				<HeaderBru
-					first=""
-					second="Dashboard"
-					link2="/StudentDashboard"
-					third="Home"
-					link3="/Home"
-					link4="/StudentDashboard"
+					links={links}
 					btn="Exit"
 					color="#01AFD8"
 				/>

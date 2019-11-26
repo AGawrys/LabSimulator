@@ -30,7 +30,7 @@ import axios from 'axios';
 //UNDO REDO PUBLISH DELETE SIMULATE
 
 const links = {
-	Account: '/account'
+	Account: '/instructor/dashboard'
 };
 
 class Editor extends Component {
