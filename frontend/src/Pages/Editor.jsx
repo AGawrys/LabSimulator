@@ -44,11 +44,16 @@ class Editor extends Component {
 			currentTool: null,
 			steps: [ step ],
 			showDeleteLessonModal: false,
+			showActionMenu: true,
+			currentTool: '',
 		};
 
 		this.onDropTool = this.onDropTool.bind(this);
 	}
 
+	handleToolClick = () => {
+		this.setState({showActionMenu : !this.showActionMenu});
+	}
 	handleNext() {}
 	handleSimulate() {}
 
@@ -67,10 +72,12 @@ class Editor extends Component {
 				<Container fluid={true}>
 					<Row>
 						<Col lg={2}>
+							<div className="divider" />
 							<Catalog />
 						</Col>
 
 						<Col lg={8}>
+						<div className="divider" />
 							<Canvas
 								onDrop={this.onDropTool}
 								tools={currentStep.getTools()}
@@ -83,58 +90,66 @@ class Editor extends Component {
 						</Col>
 
 						<Col lg={2}>
+						<div className="divider" />
 							<Row>
 								<Col>
-									<Card style={{ width: '14rem' }}>
+									<Card style={{ width: '13rem' }}>
 										<Card.Header> Action Manager</Card.Header>
-										<Form.Label>Select An Action</Form.Label>
+										<div className="divider" />
 										<Select
+											placeholder='Action'
 											isSearchable={true}
 											name="actions"
 											options={EditorConstants.ACTIONS}
 											onChange={(action) => this.updateCurrentAction(action)}
 											value={currentStep.action ? { label: currentStep.action, value: currentStep.action } : ""}
 										/>
-										<Form.Label> Select a Source </Form.Label>
+										<div className="divider" />
 										<Select
+											placeholder='Source'
 											isSearchable={true}
 											name="sources"
 											options={toolOptions}
 											onChange={(tool) => this.updateCurrentSource(tool.value)}
 											value={currentStep.source ? currentStep.source.toSelectOption() : ''}
 										/>
-										<Form.Label> Select a Target </Form.Label>
+										<div className="divider" />
 										<Select
+											placeholder='Target'
 											isSearchable={true}
 											name="targets"
 											options={toolOptions}
 											onChange={(tool) => this.updateCurrentTarget(tool.value)}
 											value={currentStep.target ? currentStep.target.toSelectOption() : ''}
 										/>
+										<div className="divider" />
 									</Card>
 								</Col>
 							</Row>
-
-							<Row>
+							<div className="divider" />
+							{!this.showActionMenu ? (<Row>
 								<Col>
-									<Card style={{ width: '14rem' }}>
+									<Card style={{ width: '13rem' }}>
 										<Card.Header>
 											All Steps{' '}
-											<button
+											<Button
 												title="Add Step"
 												className="buttonRound editorStepButton btn-primary"
 												onClick={this.addStep}
 											>
 												+
-											</button>
+											</Button>
 										</Card.Header>
+										<Card.Body>
 										<SortableContainer onSortEnd={this.onDropStep} useDragHandle>
 											{steps.map((step, index) => this.renderStep(step,index))}
 										</SortableContainer>
+										</Card.Body>
 									</Card>
 								</Col>
-							</Row>
-							<Row>
+							</Row>) : null}
+							<div className="divider" />
+							<Row style={{flex: 1, justifyContent: "center"}}>
 								<Button 
 									onClick={() => this.setState({showDeleteLessonModal: true})}
 									variant="danger"> Delete Lesson 

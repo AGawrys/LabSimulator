@@ -9,9 +9,9 @@ class PrivateRoute extends React.Component {
 		super(props);
 		this.state = {
 			loading: true,
-			isAuthenticated: false,
+			isAuthenticated: true,
 			email: null,
-			role: null
+			role: 'INSTRUCTOR'
 		};
 	}
 
