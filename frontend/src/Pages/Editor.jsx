@@ -31,7 +31,7 @@ import ReactTooltip from 'react-tooltip';
 //UNDO REDO PUBLISH DELETE SIMULATE
 
 const links = {
-	Account: '/account'
+	Account: '/instructor/dashboard'
 };
 
 class Editor extends Component {
@@ -43,12 +43,17 @@ class Editor extends Component {
 			currentStep: null,
 			currentTool: null,
 			steps: null,
-			showDeleteLessonModal: false
+			showDeleteLessonModal: false,
+			showActionMenu: true,
+			currentTool: '',
 		};
 
 		this.onDropTool = this.onDropTool.bind(this);
 	}
 
+	handleToolClick = () => {
+		this.setState({showActionMenu : !this.showActionMenu});
+	}
 	handleNext() {}
 	handleSimulate() {}
 
@@ -132,10 +137,12 @@ class Editor extends Component {
 				<Container fluid={true}>
 					<Row>
 						<Col lg={2}>
+							<div className="divider" />
 							<Catalog />
 						</Col>
 
 						<Col lg={8}>
+						<div className="divider" />
 							<Canvas
 								onDrop={this.onDropTool}
 								tools={currentStep.getTools()}
@@ -143,12 +150,14 @@ class Editor extends Component {
 						</Col>
 
 						<Col lg={2}>
-							<Col>
+						<div className="divider" />
+							<Row>
 								<Col>
-									<Card style={{ width: '14rem' }}>
+									<Card style={{ width: '13rem' }}>
 										<Card.Header> Action Manager</Card.Header>
-										<Form.Label>Select An Action</Form.Label>
+										<div className="divider" />
 										<Select
+											placeholder='Action'
 											isSearchable={true}
 											name="actions"
 											options={EditorConstants.ACTIONS}
@@ -161,38 +170,41 @@ class Editor extends Component {
 												)
 											}
 										/>
-										<Form.Label> Select a Source </Form.Label>
+										<div className="divider" />
 										<Select
+											placeholder='Source'
 											isSearchable={true}
 											name="sources"
 											options={toolOptions}
 											onChange={(tool) => this.updateCurrentSource(tool.value)}
 											value={currentStep.source ? currentStep.source.toSelectOption() : ''}
 										/>
-										<Form.Label> Select a Target </Form.Label>
+										<div className="divider" />
 										<Select
+											placeholder='Target'
 											isSearchable={true}
 											name="targets"
 											options={toolOptions}
 											onChange={(tool) => this.updateCurrentTarget(tool.value)}
 											value={currentStep.target ? currentStep.target.toSelectOption() : ''}
 										/>
+										<div className="divider" />
 									</Card>
 								</Col>
-							</Col>
-
+							</Row>
+							<div className="divider" />
 							<Row>
 								<Col>
-									<Card style={{ width: '14rem' }}>
+									<Card style={{ width: '13rem' }}>
 										<Card.Header>
 											All Steps{' '}
-											<button
+											<Button
 												title="Add Step"
 												className="buttonRound editorStepButton btn-primary"
 												onClick={this.addStep}
 											>
 												+
-											</button>
+											</Button>
 										</Card.Header>
 										<SortableContainer onSortEnd={this.onDropStep} useDragHandle>
 											{steps.map((step, index) => this.renderStep(step, index))}
@@ -200,15 +212,19 @@ class Editor extends Component {
 									</Card>
 								</Col>
 							</Row>
-							<Row>
-								<Button onClick={() => this.setState({ showDeleteLessonModal: true })} variant="danger">
-									{' '}
-									Delete Lesson
-								</Button>
+							<div className="divider" />
+							<Row style={{flex: 1, justifyContent: "center"}}>
+								<Button 
+									onClick={() => this.setState({showDeleteLessonModal: true})}
+									variant="danger"> Delete Lesson 
+								</Button>								
+							</Row>
+							<div className="divider"/>
+							<Row style={{flex: 1, justifyContent: "center"}}>
+								<Button variant="info" onClick={this.saveLesson}> Save </Button>
 							</Row>
 						</Col>
 					</Row>
-					<button onClick={this.saveLesson}>SAVE</button>
 				</Container>
 			</div>
 		);

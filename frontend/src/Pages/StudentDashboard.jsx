@@ -11,6 +11,9 @@ const links = {
 	Account: '/account'
 };
 
+const statusColor=['white', '#f7f5da', '#d8f2dd'];
+const status=["Incomplete", "In progress", "Complete" ];
+const statusBtn=["START", "CONTINUE", "REDO"];
 export class StudentDashboard extends Component {
 	constructor(props) {
 		super(props);
@@ -38,6 +41,7 @@ export class StudentDashboard extends Component {
 				<HeaderBru home={Routes.STUDENT_DASHBOARD} isLoggedIn={true} links={links} />
 				<div className="studentDashboard">
 					<div className="studentDashboardContents">
+						<Card>
 						<div className="studentRecentLesson">
 							<Row className="headingRow">
 								<h4>My Courses</h4>
@@ -54,6 +58,7 @@ export class StudentDashboard extends Component {
 								</ListGroup>
 							</div>
 						</div>
+						</Card>
 					</div>
 				</div>
 			</div>

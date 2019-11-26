@@ -59,8 +59,14 @@ class Signup extends React.Component {
 	};
 
 	render() {
+		const { role } = this.state;
 		if (this.state.redirect) {
-			return <Redirect exact to="/" />;
+			if (role === "STUDENT"){
+				return <Redirect exact to="/student/dashboard" />;
+			}
+			else{ 
+				return <Redirect exact to="/instructor/dashboard" />;
+			}
 		} else {
 			const errorMessage = this.state.errors;
 			return (

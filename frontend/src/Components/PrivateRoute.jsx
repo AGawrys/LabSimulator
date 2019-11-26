@@ -11,7 +11,7 @@ class PrivateRoute extends React.Component {
 			loading: true,
 			isAuthenticated: true,
 			email: null,
-			role: "INSTRUCTOR"
+			role: null,
 		};
 	}
 

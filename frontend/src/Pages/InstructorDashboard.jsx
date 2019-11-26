@@ -14,7 +14,6 @@ import LessonRow from '../Components/LessonRow.jsx';
 const links = {
 	Account: '/account'
 };
-
 export class InstructorDashboard extends Component {
 	constructor(props) {
 		super(props);
@@ -39,6 +38,15 @@ export class InstructorDashboard extends Component {
 		);
 	}
 
+	handleNext() {}
+	handleGoToCourse () {
+		this.setState({ goToCoursePage: true});
+	};
+
+	handleGoToEditor(){
+		this.setState({ goToLessonEditor: true});
+	};
+
 	render() {
 		const { instructorInfo, loaded } = this.state;
 		if (!loaded) {
@@ -47,7 +55,7 @@ export class InstructorDashboard extends Component {
 		const { courses, lessons } = instructorInfo;
 		return (
 			<div className="background">
-				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
+				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} />
 				<div className="teacherDashboard">
 					<div className="searchBarDiv">
 						<SearchBar placeHolderText={'Search for Lesson'} />
@@ -226,7 +234,7 @@ export class InstructorDashboard extends Component {
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button variant="primary" type="submit">
+					<Button variant="primary" type="submit" onClick={this.handleGoToEditor.bind(this)}>
 						Create
 					</Button>
 				</Modal.Footer>

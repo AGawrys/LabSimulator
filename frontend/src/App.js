@@ -30,7 +30,7 @@ function App() {
 							component={withRouter(Editor)} 
 							role={GeneralConstants.INSTRUCTOR}/>
 						<PrivateRoute exact 
-							path={Routes.STUDENT_EDITOR} 
+							path={Routes.STUDENT_EDITOR + ":lesson_id"} 
 							component={withRouter(EditorStudent)} 
 							role={GeneralConstants.STUDENT} />
 						<PrivateRoute exact 

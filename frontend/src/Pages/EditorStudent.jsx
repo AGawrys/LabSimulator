@@ -13,6 +13,11 @@ import { isAbsolute } from 'path';
 
 const green = 'green';
 const red = 'red';
+
+const links = {
+	Account: '/student/dashboard'
+};
+
 class EditorStudent extends Component {
 	constructor(props) {
 		super(props);
@@ -100,19 +105,14 @@ class EditorStudent extends Component {
 		return (
 			<div>
 				<HeaderBru
-					first=""
-					second="Dashboard"
-					link2="/StudentDashboard"
-					third="Home"
-					link3="/Home"
-					link4="/StudentDashboard"
+					links={links}
 					btn="Exit"
 					color="#01AFD8"
 				/>
 				<div className="Editor">
 					<Row>
 						<Col col-sm={2}>
-							<div className="divider" />
+							<div className="divider"> </div>
 							<div className="step-column" style={{ overflowY: 'scroll' }}>
 								<p style={{ margin: 1, padding: 0, color: 'grey', fontWeight: 'bold' }}>
 									Seasonal Training{' '}
