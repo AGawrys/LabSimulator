@@ -26,6 +26,7 @@ class Canvas extends React.Component {
         this.setState({
             currentTool: tool
         });
+        console.log(this.state.currentTool)
     }
 
     resetCurrentTool() {

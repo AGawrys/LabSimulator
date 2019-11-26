@@ -37,12 +37,32 @@ class ToolEditor extends React.Component {
     }
 
     onChangeX() {
-        this.tool.setPosition(parseInt(this.xRef.current.value, 10), this.tool.getPosition().getY())
+        const canvas = document.getElementById("canvas")
+        const bounds = canvas.getBoundingClientRect();
+        let x = parseInt(this.xRef.current.value, 10)
+        if (x > bounds.width) {
+            x = bounds.width - this.tool.getWidth()
+            this.xRef.current.value = x;
+        } else if (x < 0) {
+            x = 0
+            this.xRef.current.value = 0;
+        }
+        this.tool.setPosition(x, this.tool.getPosition().getY())
         this.props.setCurrentTool(this.tool);
     }
 
     onChangeY() {
-        this.tool.setPosition(this.tool.getPosition().getX(), parseInt(this.yRef.current.value, 10))
+        const canvas = document.getElementById("canvas")
+        const bounds = canvas.getBoundingClientRect();
+        let y = parseInt(this.yRef.current.value, 10)
+        if (y > bounds.height) {
+            y = bounds.height - this.tool.getHeight()
+            this.yRef.current.value = y;
+        } else if (y < 0) {
+            y = 0
+            this.yRef.current.value = 0;
+        }
+        this.tool.setPosition(this.tool.getPosition().getX(), y)
         this.props.setCurrentTool(this.tool);
     }
 
@@ -56,7 +76,39 @@ class ToolEditor extends React.Component {
         this.props.setCurrentTool(this.tool);
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.tool !== prevProps.tool) {
+            this.tool = this.props.tool
+        }
+    }
+
     render() {
+        const canvas = document.getElementById("canvas")
+        const bounds = canvas.getBoundingClientRect();
+
+        let supplemental = [<hr />]
+        const properties = this.tool.getImage().properties;
+        const keys = Object.keys(properties);
+        keys.map(key => {
+            const ref = React.createRef();
+            supplemental.push(
+                <Form.Group as={Row}>
+                    <Form.Label column md={2}>{key}</Form.Label>
+                    <Col>
+                        <Form.Control
+                            type={"number"}
+                            defaultValue={properties[key]}
+                            onChange={() => {
+                                properties[key] = ref.current.value;
+                                this.props.setCurrentTool(this.tool);
+                            }}
+                            ref={ref}
+                        />
+                    </Col>    
+                </Form.Group>
+            )
+        })
+
         return(
             <Modal
                 id="tool-editor"
@@ -65,6 +117,7 @@ class ToolEditor extends React.Component {
                 size={"sm"}
                 dialogAs={DraggableDialog}
             >
+                <hr />
                 <Form.Group as={Row}>
                     <Form.Label column md={2}>Name</Form.Label>
                     <Col>
@@ -83,6 +136,8 @@ class ToolEditor extends React.Component {
                         <Form.Control
                             onChange={this.onChangeX} 
                             type={"number"}
+                            min={0}
+                            max={bounds.width - this.tool.getWidth()}
                             defaultValue={this.tool? this.tool.getPosition().getX() : null}
                             ref={this.xRef}
                         />
@@ -119,7 +174,8 @@ class ToolEditor extends React.Component {
                             ref={this.heightRef}
                         />
                     </Col>
-                </Form.Group>             
+                </Form.Group>
+                {supplemental}            
             </Modal>
         )
     }

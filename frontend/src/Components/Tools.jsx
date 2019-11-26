@@ -1,4 +1,5 @@
 import React from "react"
+import {LineCalculator} from "../utils/LilacAlgebra.js"
 
 export const CATEGORIES = {
     Cups: [
@@ -8,16 +9,36 @@ export const CATEGORIES = {
 
 export const IMAGES = {
     TaperedCup: {
-        draw: (width, height) => {
-            let path = new Path2D
-            path.moveTo(width * .1, height * .05);
-            path.lineTo(width * .2, height * .95);
-            path.lineTo(width * .8, height * .95);
-            path.lineTo(width * .9, height * .05);
-            return path;
+        draw: (canvas, width, height, properties) => {
+            if (canvas.getContext) {
+                let context = canvas.getContext("2d");
+
+                const bounds = canvas.getBoundingClientRect();
+                context.clearRect(0, 0, bounds.width, bounds.height);
+    
+                context.beginPath();
+                context.moveTo(width * .1, height * .05);
+                context.lineTo(width * .2, height * .95);
+                context.lineTo(width * .8, height * .95);
+                context.lineTo(width * .9, height * .05);
+                context.stroke()
+    
+                const left = LineCalculator(width * .1, height * .05, width * .2, height * .95)
+                const right = LineCalculator(width * .8, height * .95, width * .9, height * .05)
+                
+                const cupHeight = (height * .95) - (height * .05)
+                const fillPoint = (height * .05) + (cupHeight * (1 - properties.Fill))
+
+                context.beginPath();
+                context.moveTo(left.x(fillPoint), fillPoint);
+                context.lineTo(width * .2, height * .95)
+                context.lineTo(width * .8, height * .95)
+                context.lineTo(right.x(fillPoint), fillPoint);
+                context.fill()
+            }
         },
         properties: {
-            fill: 0
+            Fill: 0
         }
     }
 }

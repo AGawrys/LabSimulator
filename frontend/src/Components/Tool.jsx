@@ -26,11 +26,10 @@ class Tool extends React.Component {
 
     componentDidMount() {
         const image = this.tool.getImage();
-        const path = image.draw(this.tool.getWidth(), this.tool.getHeight());
-        if (this.canvas.current.getContext) {
-            const context = this.canvas.current.getContext("2d");
-            context.stroke(path);
-        }
+        image.draw(this.canvas.current,
+                   this.tool.getWidth(),
+                   this.tool.getHeight(),
+                   image.properties)
     }
 
     componentDidUpdate() {
