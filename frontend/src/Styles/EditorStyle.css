@@ -176,6 +176,7 @@
 	position:absolute;
 }
 
+<<<<<<< HEAD
 .right {
 	float: right;
 }
@@ -245,3 +246,12 @@
 	cursor:row-resize;
 }
 
+#tool-editor {
+	position: absolute;
+	top: 0;
+	left: 20px;
+}
+
+.modal-backdrop {
+	opacity: 0.2 !important;
+}

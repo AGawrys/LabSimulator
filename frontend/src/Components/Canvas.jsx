@@ -1,55 +1,97 @@
 import React from "react";
-import Draggable from 'react-draggable';
 import {Droppable} from "react-drag-and-drop";
-import {ContextMenuTrigger} from 'react-contextmenu';
+import { Form } from 'react-bootstrap';
+import {ContextMenu, MenuItem, ContextMenuTrigger} from 'react-contextmenu';
 import EditorConstants from '../utils/EditorConstants.js';
 import Tool from "./Tool.jsx"
+import ToolEditor from "./ToolEditor.jsx";
 
 class Canvas extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentTool: null
+            currentTool: null,
+            isEditingTool: false
         }
 
-        this.focusTool = this.focusTool.bind(this);
-        
-        this.ref = React.createRef();
-        this.tools = props.tools;
-        this.canvas = null;
+        this.setCurrentTool = this.setCurrentTool.bind(this);
+        this.resetCurrentTool = this.resetCurrentTool.bind(this);
+        this.onClickEdit = this.onClickEdit.bind(this);
+        this.onHide = this.onHide.bind(this);
     }
 
-    focusTool(tool) {
+    setCurrentTool(tool) {
         this.setState({
-            focused: tool.getLayer()
+            currentTool: tool
+        });
+        console.log(this.state.currentTool)
+    }
+
+    resetCurrentTool() {
+        this.setState({
+            currentTool: null
         })
     }
-    
-    componentDidMount() {
-        this.canvas = this.ref.current
+
+    onClickEdit() {
+        this.setState({
+            isEditingTool: true
+        });
+    }
+
+    onHide() {
+        this.setState({
+            isEditingTool: false
+        });
     }
 
     render() {
-        const tools = this.props.tools
-        const ToolComponents = (
-            tools.map((tool, index) => {
-                return (
-                    //<ContextMenuTrigger 
-                        //index={index}
-                        //id={EditorConstants.CONTEXT_MENU_ID}
-                    //>
-                                <Tool
-                                    key={index}
-                                    draggable
-                                    tool={tool}
-                                    bounds={this.canvas}
-                                />
-                    //</ContextMenuTrigger>
+        const ToolComponents = this.props.tools.map((tool) => {
+            let ToolComponent;
+            if (this.state.currentTool === tool) {
+                ToolComponent = (
+                    <ContextMenuTrigger
+                        id={EditorConstants.CONTEXT_MENU_ID}
+                    >
+                        <Tool
+                            draggable
+                            selected
+                            tool={tool}
+                            setCurrentTool={this.setCurrentTool}
+                        />
+                    </ContextMenuTrigger>
                 )
-            })
-        );
+            } else {
+                ToolComponent = (
+                    <Tool
+                        draggable
+                        tool={tool}
+                        setCurrentTool={this.setCurrentTool}
+                    />
+                );
+            }
+
+            return (
+                <div>
+                    {ToolComponent}
+                </div>
+            );
+        });
+
+        let ToolEditorComponent;
+        if (this.state.currentTool) {
+            ToolEditorComponent = (
+                <ToolEditor
+                    tool={this.state.currentTool}
+                    show={this.state.isEditingTool}
+                    onHide={this.onHide}
+                    setCurrentTool={this.setCurrentTool}
+                />
+            );
+        }
 
         return (
+            <React.Fragment>
                 <Droppable 
                     style={{width: "100%", height: "100%"}}
                     types={["tool"]}
@@ -57,12 +99,38 @@ class Canvas extends React.Component {
                 >
                     <div
                         id={"canvas"} 
-                        style={{width: "100%", height: '80vh', border: "1px solid black"}}
+                        style={{width: "100%", height: '80vh', position: 'relative'}}
                         ref={this.ref}
+                        onClick={this.resetCurrentTool}
                     >
                         {ToolComponents}
+                        
                     </div>  
                 </Droppable>
+
+                <ContextMenu
+                    id={EditorConstants.CONTEXT_MENU_ID}
+                >
+                    <MenuItem
+                        onClick={this.onClickEdit}
+                    >
+                        Edit {this.state.currentTool? this.state.currentTool.getName() : null}
+                    </MenuItem>
+                    <MenuItem
+                        onClick={this.onClickMoveUp}
+                    >
+                        Move Up
+                    </MenuItem>
+                    <MenuItem
+                        onClick={this.onClickMoveDown}
+                    >
+                        Move Down
+                    </MenuItem>
+                </ContextMenu>
+                <div>
+                    {ToolEditorComponent}
+                </div>
+            </React.Fragment>
         )
     }
 }

@@ -1,54 +1,56 @@
 import React from "react";
 import Draggable from 'react-draggable';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
+import EditorConstants from '../utils/EditorConstants.js';
 
 class Tool extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             selected: false
-        }
+        }   
+        this.selected = props.selected;
 
-        this.onDragStart = this.onDragStart.bind(this);
+        this.onClick = this.onClick.bind(this);
         this.onDragStop = this.onDragStop.bind(this);
         this.canvas = React.createRef();
     }
 
-    onDragStart(e, data) {
-        this.setState({
-            selected: true
-        })
+    onClick(e) {
+        this.props.setCurrentTool(this.props.tool);
+        e.stopPropagation();
     }
 
     onDragStop(e, data) {
-        const canvas = document.getElementById("canvas")
-        const {left, top} = canvas.getBoundingClientRect();
         const {tool} = this.props;
-        const position = tool.getPosition()
-        console.log(position, data)
         tool.setPosition(data.x, data.y);
-        this.setState({
-            tool: tool,
-        });
     }
 
     componentDidMount() {
-        const canvas = this.canvas.current;
-        const {tool} = this.props
+        const {tool} = this.props;
         const image = tool.getImage();
-        const path = image.draw(tool.getWidth(), tool.getHeight());
-        if (canvas.getContext) {
-            let context = canvas.getContext("2d");
-            context.stroke(path);
-        }
+        image.draw(this.canvas.current,
+                   tool.getWidth(),
+                   tool.getHeight(),
+                   image.properties)
+    }
+
+    componentDidUpdate() {
+        this.componentDidMount()
     }
 
     render() {
-        const {tool} = this.props;
 
+        const {tool} = this.props;
+        let style = this.selected?
+            {border: "1px green solid"} :
+            {border: "1px #f3f3f3 solid"}
         const ToolCanvas = (
             <canvas
                 width={tool.getWidth()}
                 height={tool.getHeight()}
+                style={style}
+                onClick={this.props.draggable? this.onClick : null}
                 ref={this.canvas}
             >
                 {tool.getName()}
@@ -57,14 +59,10 @@ class Tool extends React.Component {
 
         let ToolComponent = ToolCanvas;
         if (this.props.draggable) {
-            console.log(this.props.tool);
-            console.log({x: tool.getPosition().getX(), y: tool.getPosition().getY()});
-
             ToolComponent = (
                 <Draggable
                     bounds={"#canvas"}
                     position={{x: tool.getPosition().getX(), y: tool.getPosition().getY()}}
-                    onStart={this.onDragStart}
                     onStop={this.onDragStop}
                 >
                     {ToolCanvas}
@@ -73,12 +71,14 @@ class Tool extends React.Component {
         }
 
         return(
-            <div style={{
+            <div
+                style={{
                     width: tool.getWidth(),
                     height: tool.getHeight(),
                     margin: 0,
-                    position: "absolute"
-            }}>
+                    position: this.props.draggable? "absolute" : "relative",
+                }}
+            >
                 {ToolComponent}
             </div>
         );

@@ -136,12 +136,10 @@ class Editor extends Component {
 						</Col>
 
 						<Col lg={8}>
-							<Canvas onDrop={this.onDropTool} tools={currentStep.getTools()} />
-							<ContextMenu id={EditorConstants.CONTEXT_MENU_ID}>
-								<MenuItem onClick={this.handleMenuSource}>Make Source Tool</MenuItem>
-								<MenuItem divider />
-								<MenuItem onClick={this.handleMenuTarget}>Make Target Tool</MenuItem>
-							</ContextMenu>
+							<Canvas
+								onDrop={this.onDropTool}
+								tools={currentStep.getTools()}
+							/>
 						</Col>
 
 						<Col lg={2}>
@@ -321,7 +319,12 @@ class Editor extends Component {
 		}
 
 		const position = new Position(x, y);
-		const image = IMAGES[data.tool];
+		let image = {};
+		image.draw = IMAGES[data.tool].draw;
+		image.properties = {};
+		Object.keys(IMAGES[data.tool].properties).map(key => {
+			image.properties[key] = IMAGES[data.tool].properties[key]
+		})
 		const layer = this.state.currentStep.getTools().length;
 		const tool = new Tool(data.tool, image, position, length, length, layer);
 		let currentStep = this.state.currentStep;

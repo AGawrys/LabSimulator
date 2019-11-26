@@ -11,6 +11,7 @@ class Tool {
 		this.layer = layer;
 		this.color = color;
 		this.amount = amount;
+		this.new = true;
 	}
 
 	getName() {
@@ -71,6 +72,26 @@ class Tool {
 
 	setColor(color) {
 		this.color = color;
+	}
+
+	setWidth(width) {
+		this.width = width;
+	}
+
+	setHeight(height) {
+		this.height = height;
+	}
+
+    setLayer(layer) {
+        this.layer = layer;
+	}
+
+	isNew() {
+		return this.new;
+	}
+
+	stale() {
+		this.new = false;
 	}
 
 	toString() {
