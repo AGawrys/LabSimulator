@@ -4,21 +4,22 @@ import { Form } from 'react-bootstrap';
 import {ContextMenu, MenuItem, ContextMenuTrigger} from 'react-contextmenu';
 import EditorConstants from '../utils/EditorConstants.js';
 import Tool from "./Tool.jsx"
+import ToolEditor from "./ToolEditor.jsx";
 
 class Canvas extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentTool: null,
-            editTool: false
+            isEditingTool: false
         }
 
         this.tools = props.tools;
 
         this.setCurrentTool = this.setCurrentTool.bind(this);
-        this.onClickName = this.onClickName.bind(this);
-
-        this.inputName = null;
+        this.resetCurrentTool = this.resetCurrentTool.bind(this);
+        this.onClickEdit = this.onClickEdit.bind(this);
+        this.onHide = this.onHide.bind(this);
     }
 
     setCurrentTool(tool) {
@@ -27,27 +28,35 @@ class Canvas extends React.Component {
         });
     }
 
-    onClickEdit(event, data, collect) {
+    resetCurrentTool() {
         this.setState({
-            editTool: true
+            currentTool: null
+        })
+    }
+
+    onClickEdit() {
+        this.setState({
+            isEditingTool: true
+        });
+    }
+
+    onHide() {
+        this.setState({
+            isEditingTool: false
         });
     }
 
     render() {
-        const tools = this.props.tools;
-        const currentTool = this.state.currentTool;
-
-        const ToolComponents = tools.map((tool, index) => {
+        const ToolComponents = this.tools.map((tool) => {
             let ToolComponent;
-
             if (this.state.currentTool === tool) {
                 ToolComponent = (
                     <ContextMenuTrigger
-                        index={index} 
                         id={EditorConstants.CONTEXT_MENU_ID}
                     >
                         <Tool
                             draggable
+                            selected
                             tool={tool}
                             setCurrentTool={this.setCurrentTool}
                         />
@@ -70,6 +79,18 @@ class Canvas extends React.Component {
             )
         });
 
+        let ToolEditorComponent;
+        if (this.state.currentTool) {
+            ToolEditorComponent = (
+                <ToolEditor
+                    tool={this.state.currentTool}
+                    show={this.state.isEditingTool}
+                    onHide={this.onHide}
+                    setCurrentTool={this.setCurrentTool}
+                />
+            );
+        }
+
         return (
             <React.Fragment>
                 <Droppable 
@@ -84,8 +105,10 @@ class Canvas extends React.Component {
                             height: "100%",
                             position: "relative"
                         }}
+                        onClick={this.resetCurrentTool}
                     >
                         {ToolComponents}
+                        
                     </div>  
                 </Droppable>
 
@@ -95,7 +118,7 @@ class Canvas extends React.Component {
                     <MenuItem
                         onClick={this.onClickEdit}
                     >
-                        Edit {currentTool? currentTool.getName() : null}
+                        Edit {this.state.currentTool? this.state.currentTool.getName() : null}
                     </MenuItem>
                     <MenuItem
                         onClick={this.onClickMoveUp}
@@ -108,6 +131,9 @@ class Canvas extends React.Component {
                         Move Down
                     </MenuItem>
                 </ContextMenu>
+                <div>
+                    {ToolEditorComponent}
+                </div>
             </React.Fragment>
         )
     }

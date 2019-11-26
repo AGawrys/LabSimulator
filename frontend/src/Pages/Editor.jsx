@@ -73,13 +73,6 @@ class Editor extends Component {
 								onDrop={this.onDropTool}
 								tools={currentStep.getTools()}
 							/>
-							{/* <ContextMenu id={EditorConstants.CONTEXT_MENU_ID}>
-								<MenuItem onClick={this.handleMenuSource}>
-									<Form.Control
-									/>
-								</MenuItem>
-								<MenuItem onClick={this.handleMenuTarget}>Make Target Tool</MenuItem>
-							</ContextMenu> */}
 						</Col>
 
 						<Col lg={2}>
@@ -186,7 +179,7 @@ class Editor extends Component {
 		}
 
 		const position = new Position(x, y);
-		const image = IMAGES[data.tool];
+		const image = IMAGES [data.tool];
 		const layer = this.state.currentStep.getTools().length;
 		const tool = new Tool(data.tool, image, position, length, length, layer);
 		let currentStep = this.state.currentStep;

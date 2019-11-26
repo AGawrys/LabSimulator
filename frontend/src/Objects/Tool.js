@@ -52,6 +52,14 @@ class Tool {
 		this.position = new Position(x, y);
 	}
 
+	setWidth(width) {
+		this.width = width;
+	}
+
+	setHeight(height) {
+		this.height = height;
+	}
+
     setLayer(layer) {
         this.layer = layer;
 	}
