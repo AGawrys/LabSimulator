@@ -13,9 +13,11 @@ import { isAbsolute } from 'path';
 
 const green = 'green';
 const red = 'red';
+
 const links = {
 	Account: '/student/dashboard'
 };
+
 class EditorStudent extends Component {
 	constructor(props) {
 		super(props);
@@ -110,7 +112,7 @@ class EditorStudent extends Component {
 				<div className="Editor">
 					<Row>
 						<Col col-sm={2}>
-							<div className="divider" />
+							<div className="divider"> </div>
 							<div className="step-column" style={{ overflowY: 'scroll' }}>
 								<p style={{ margin: 1, padding: 0, color: 'grey', fontWeight: 'bold' }}>
 									Seasonal Training{' '}
