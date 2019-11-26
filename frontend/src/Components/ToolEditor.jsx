@@ -40,7 +40,7 @@ class ToolEditor extends React.Component {
         const canvas = document.getElementById("canvas")
         const bounds = canvas.getBoundingClientRect();
         let x = parseInt(this.xRef.current.value, 10)
-        if (x > bounds.width) {
+        if (x + this.tool.getWidth() > bounds.width) {
             x = bounds.width - this.tool.getWidth()
             this.xRef.current.value = x;
         } else if (x < 0) {
@@ -67,7 +67,22 @@ class ToolEditor extends React.Component {
     }
 
     onChangeWidth() {
-        this.tool.setWidth(parseInt(this.widthRef.current.value, 10))
+        const canvas = document.getElementById("canvas")
+        const bounds = canvas.getBoundingClientRect();
+        let width = parseInt(this.widthRef.current.value, 10)
+        if (width > bounds.width) {
+            width = bounds.width
+            if (this.tool.getPosition().getX() + width > bounds.width) {
+                const x = bounds.width - width;
+                this.tool.setPosition(x, this.tool.getPosition().getY());
+                this.xRef.current.value = x;
+            }
+            this.widthRef.current.value = width;
+        } else if (width < 0) {
+            width = 0
+            this.widthRef.current.value = 0;
+        }
+        this.tool.setWidth(width)
         this.props.setCurrentTool(this.tool);
     }
 
