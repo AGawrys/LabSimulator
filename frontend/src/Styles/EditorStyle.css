@@ -52,6 +52,16 @@
 	width: 55vh;
 }
 
+.tool-columns {
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 5px;
+	border-color: lightgrey;
+	background-color: white;
+	height: 80vh;
+	width: 30vh;
+}
+
 .tool-column {
 	border-width: 1px;
 	border-style: solid;

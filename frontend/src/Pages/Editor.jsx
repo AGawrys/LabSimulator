@@ -36,7 +36,8 @@ class Editor extends Component {
 			currentStep: step,
 			currentTool: null,
 			steps: [ step ],
-			showCannotDeleteStep: false
+			showCannotDeleteStep: false,
+			showActionForm: false,
 		};
 	}
 
@@ -57,12 +58,13 @@ class Editor extends Component {
 						handleClose={() => this.setState({ showCannotDeleteStep: false })}
 					/>
 					<div className="editor">
-						<Container className="page-grid">
+						
 							<Row>
-								<Col col-sm={4}>
-									<Row>
-										<Col className="tool-column" style={{ margin: 0, padding: 0 }}>
-											<div style={{ width: '20vh', flex: 1, flexDirection: 'row' }}>
+							<Col col-sm={2}>
+							<div className="divider" />
+							<div className="tool-columns" style={{ overflowY: 'scroll' }}>
+										<Col style={{ width: '10vh', height: '40vh', margin: 0, padding: 0 }}>
+											<div style={{ flex: 1, flexDirection: 'row' }}>
 												<SimpleInput style={{ width: '10vh' }} placeholder="search" />
 											</div>
 											<img src={tool1} style={{ height: '40px' }} />
@@ -70,25 +72,23 @@ class Editor extends Component {
 											<img src={tool3} style={{ height: '40px' }} />
 											<img src={tool4} style={{ height: '40px' }} />
 										</Col>
-									</Row>
 									<div className="divider" />
-								</Col>
-								<Col sm={8}>
-									<Card>
-										<Card.Body id="canvas" style={{ height: '65vh' }}>
-											{currentStep.tools.map((tool, index) => this.renderTool(tool, index))}
-										</Card.Body>
-										<ContextMenu id={EditorConstants.CONTEXT_MENU_ID}>
-											<MenuItem onClick={this.handleMenuSource}>Make Source Tool</MenuItem>
-											<MenuItem divider />
-											<MenuItem onClick={this.handleMenuTarget}>Make Target Tool</MenuItem>
-										</ContextMenu>
-									</Card>
-								</Col>
+							</div>
+							</Col>
+							<Col sm={8}>
+									<div id="canvas" style={{ height: '65vh' }}>
+										{currentStep.tools.map((tool, index) => this.renderTool(tool, index))}
+									</div>
+									<ContextMenu id={EditorConstants.CONTEXT_MENU_ID}>
+										<MenuItem onClick={this.handleMenuSource}>Make Source Tool</MenuItem>
+										<MenuItem divider />
+										<MenuItem onClick={this.handleMenuTarget}>Make Target Tool</MenuItem>
+									</ContextMenu>
+							</Col>
 								<Col sm={2}>
 									<div className="divider" />
 									<Row>
-										<Card style={{ width: '14rem' }}>
+										{this.showActionForm ? (<Card style={{ width: '34vh' }}>
 											<Card.Header> Action Manager</Card.Header>
 											<Form.Label>Select An Action</Form.Label>
 											<Select
@@ -114,11 +114,9 @@ class Editor extends Component {
 												onChange={(tool) => this.updateCurrentTarget(tool.value)}
 												value={currentStep.target ? currentStep.target.toSelectOption() : ''}
 											/>
-										</Card>
-										<div className="divider" />
-										<div className="divider" />
-										<div className="divider" />
-										<Card style={{ width: '14rem' }}>
+										</Card>) : null}
+										{!this.showActionForm ?
+										(<Card style={{ width: '34vh' }}>
 											<Card.Header>
 												All Steps{' '}
 												<button
@@ -132,15 +130,15 @@ class Editor extends Component {
 											<ListGroup variant="flush">
 												{steps.map((step, index) => this.renderStep(step, index))}
 											</ListGroup>
-										</Card>
+										</Card>) : null }
 									</Row>
 									<div className="divider" />
 								</Col>
 							</Row>
-						</Container>
 					</div>
-				</section>
+					</section>
 			</div>
+			
 		);
 	}
 
