@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Dropdown, DropdownButton, Card, ListGroup, Modal, Form } from 'react-bootstrap';
+import { Button, Dropdown, DropdownButton, Card, ListGroup, Modal, Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { Container, Row, Col } from 'react-grid-system';
 import Select from 'react-select';
@@ -26,6 +26,7 @@ import {IMAGES} from "../Components/Tools.jsx"
 import {sortableContainer, sortableElement, sortableHandle} from 'react-sortable-hoc';
 import {swapElements} from '../LilacArray.js';
 import axios from 'axios';
+import ReactTooltip from 'react-tooltip';
 
 //UNDO REDO PUBLISH DELETE SIMULATE
 
@@ -216,6 +217,7 @@ class Editor extends Component {
 	onStepClick = (e) => {
 		const index = e.target.getAttribute('index');
 		const currentStep = this.state.steps[index];
+		console.log(currentStep);
 		this.setState({ currentStep });
 	};
 
@@ -237,16 +239,17 @@ class Editor extends Component {
 		if (e.stopPropagation) {
 			e.stopPropagation();
 		}
-		this.deleteStep();
+		this.deleteStep(step);
 	};
 
 	deleteStep = (step) => {
+		console.log(step);
 		const { steps } = this.state;
 		const index = steps.indexOf(step);
 		const newIndex = index === steps.length - 1 ? index - 1 : index;
 		steps.splice(index, 1);
-
 		const currentStep = steps[newIndex];
+		console.log(currentStep);
 		this.setState({ currentStep });
 	};
 
@@ -295,13 +298,17 @@ class Editor extends Component {
 	}
 }
 
-const DragHandle = sortableHandle(() => <span>::</span>);
+const DragHandle = sortableHandle(() => <span className="step-drag"></span>);
 const SortableContainer = sortableContainer(({children}) => <ListGroup variant="flush">{children}</ListGroup>);
 const SortableStep = sortableElement((props) => {
 	const {stepIndex, isActive, onStepClick, onStepNameChange, onDeleteStep, onFieldBlur, value, isDisabled} = props;
+	const deleteButton = isDisabled 
+		? null
+		: <Button className="close" onClick={(e) => onDeleteStep(e, value)}></Button>
 	return (
 		<ListGroup.Item active={isActive} key={stepIndex} index={stepIndex} onClick={onStepClick} as="li">
 			<DragHandle/>
+			<div index={stepIndex} className="divider"></div>
 			<Form.Control
 				index={stepIndex}
 				className="step-name-form"
@@ -309,9 +316,7 @@ const SortableStep = sortableElement((props) => {
 				onChange={onStepNameChange}
 				value={value.toString()}
 			/>
-			<Button disabled={isDisabled} variant="danger" onClick={(e) => onDeleteStep(e, value)}>
-				Delete{' '}
-			</Button>
+			{deleteButton}
 		</ListGroup.Item>
 	);
 });
