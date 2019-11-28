@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
-import { Button, Dropdown, DropdownButton, Card, ListGroup, Modal, Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {
+	Button,
+	Dropdown,
+	DropdownButton,
+	Card,
+	ListGroup,
+	Modal,
+	Form,
+	OverlayTrigger,
+	Tooltip,
+	FormControl
+} from 'react-bootstrap';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { Container, Row, Col } from 'react-grid-system';
 import Select from 'react-select';
@@ -45,15 +56,15 @@ class Editor extends Component {
 			steps: null,
 			showDeleteLessonModal: false,
 			showActionMenu: true,
-			currentTool: '',
+			currentTool: ''
 		};
 
 		this.onDropTool = this.onDropTool.bind(this);
 	}
 
 	handleToolClick = () => {
-		this.setState({showActionMenu : !this.showActionMenu});
-	}
+		this.setState({ showActionMenu: !this.showActionMenu });
+	};
 	handleNext() {}
 	handleSimulate() {}
 
@@ -93,7 +104,7 @@ class Editor extends Component {
 					);
 					listStep.push(stepInput);
 				}
-				const {lesson} = response.data;
+				const { lesson } = response.data;
 				const currentLesson = new Lesson(lesson.name, lesson.lessonId);
 				if (listStep.length == 0) {
 					const createStep = new Step();
@@ -117,6 +128,10 @@ class Editor extends Component {
 		);
 	}
 
+	handleFieldChange = (e) => {
+		this.state.lesson.setName(e.target.value);
+	};
+
 	render() {
 		const { currentStep, steps, currentTool, showDeleteLessonModal } = this.state;
 		if (steps == null) {
@@ -134,95 +149,150 @@ class Editor extends Component {
 					show={showDeleteLessonModal}
 					onDelete={this.deleteLesson}
 				/>
-				<Container fluid={true}>
+
+				<Container fluid={true} className="instructorContainer">
+					<Col className="instructorEditorToolBar brownBorder">
+						<Row>
+							<Col className="editorToolBarSpacing" lg={4}>
+								<FormControl
+									onChange={(e) => this.handleFieldChange(e)}
+									className="editorControlName"
+									autoFocus
+									type="text"
+									value={this.state.lesson.name}
+									required
+								/>
+							</Col>
+						</Row>
+						<Row>
+							<Col className="editorToolBarButton alignLeft" lg={7}>
+								<button type="button" class="btn btn-primary">
+									Primary
+								</button>
+								<button type="button" class="btn btn-primary">
+									Primary
+								</button>
+								<button type="button" class="btn btn-primary">
+									Primary
+								</button>
+								<button type="button" class="btn btn-primary">
+									Primary
+								</button>
+								<button type="button" class="btn btn-primary">
+									Primary
+								</button>
+								<button type="button" class="btn btn-primary">
+									Primary
+								</button>
+								<button type="button" class="btn btn-primary">
+									Primary
+								</button>
+							</Col>
+							<Col className="editorToolBarButton alignRight" lg={5}>
+								<Button
+									type="button"
+									variant="danger"
+									onClick={() => this.setState({ showDeleteLessonModal: true })}
+								>
+									<i class="fas fa-trash-alt" />
+								</Button>
+								<Button type="button" variant="success" onClick={this.saveLesson}>
+									<i class="fas fa-save" />
+								</Button>
+							</Col>
+						</Row>
+					</Col>
 					<Row>
 						<Col lg={2}>
-							<div className="divider" />
-							<Catalog />
+							<div className="editorLeftScroll brownBorder">
+								<Card.Header> Tool </Card.Header>
+								<Catalog />
+								<Catalog />
+							</div>
 						</Col>
 
 						<Col lg={8}>
-						<div className="divider" />
-							<Canvas
-								onDrop={this.onDropTool}
-								tools={currentStep.getTools()}
-							/>
+							<Canvas onDrop={this.onDropTool} tools={currentStep.getTools()} />
 						</Col>
 
 						<Col lg={2}>
-						<div className="divider" />
-							<Row>
-								<Col>
-									<Card style={{ width: '13rem' }}>
-										<Card.Header> Action Manager</Card.Header>
-										<div className="divider" />
-										<Select
-											placeholder='Action'
-											isSearchable={true}
-											name="actions"
-											options={EditorConstants.ACTIONS}
-											onChange={(action) => this.updateCurrentAction(action)}
-											value={
-												currentStep.action ? (
-													{ label: currentStep.action, value: currentStep.action }
-												) : (
-													''
-												)
-											}
-										/>
-										<div className="divider" />
-										<Select
-											placeholder='Source'
-											isSearchable={true}
-											name="sources"
-											options={toolOptions}
-											onChange={(tool) => this.updateCurrentSource(tool.value)}
-											value={currentStep.source ? currentStep.source.toSelectOption() : ''}
-										/>
-										<div className="divider" />
-										<Select
-											placeholder='Target'
-											isSearchable={true}
-											name="targets"
-											options={toolOptions}
-											onChange={(tool) => this.updateCurrentTarget(tool.value)}
-											value={currentStep.target ? currentStep.target.toSelectOption() : ''}
-										/>
-										<div className="divider" />
-									</Card>
-								</Col>
-							</Row>
-							<div className="divider" />
-							<Row>
-								<Col>
-									<Card style={{ width: '13rem' }}>
-										<Card.Header>
-											All Steps{' '}
-											<Button
-												title="Add Step"
-												className="buttonRound editorStepButton btn-primary"
-												onClick={this.addStep}
-											>
-												+
-											</Button>
-										</Card.Header>
+							<div className="brownBorder editorRightScroll">
+								<Card>
+									<Card.Header> Action Manager</Card.Header>
+									<Select
+										className="editorSelect"
+										placeholder="Action"
+										isSearchable={true}
+										name="actions"
+										options={EditorConstants.ACTIONS}
+										onChange={(action) => this.updateCurrentAction(action)}
+										value={
+											currentStep.action ? (
+												{ label: currentStep.action, value: currentStep.action }
+											) : (
+												''
+											)
+										}
+									/>
+
+									<Select
+										className="editorSelect"
+										placeholder="Source"
+										isSearchable={true}
+										name="sources"
+										options={toolOptions}
+										onChange={(tool) => this.updateCurrentSource(tool.value)}
+										value={currentStep.source ? currentStep.source.toSelectOption() : ''}
+									/>
+
+									<Select
+										className="editorSelect"
+										placeholder="Target"
+										isSearchable={true}
+										name="targets"
+										options={toolOptions}
+										onChange={(tool) => this.updateCurrentTarget(tool.value)}
+										value={currentStep.target ? currentStep.target.toSelectOption() : ''}
+									/>
+								</Card>
+								<div className="divider" />
+								<Card>
+									<Card.Header>
+										All Steps{' '}
+										<Button
+											title="Add Step"
+											className="buttonRound editorStepButton btn-primary"
+											onClick={this.addStep}
+										>
+											+
+										</Button>
+									</Card.Header>
+									<div className="scrollableStep">
 										<SortableContainer onSortEnd={this.onDropStep} useDragHandle>
 											{steps.map((step, index) => this.renderStep(step, index))}
 										</SortableContainer>
-									</Card>
-								</Col>
-							</Row>
-							<div className="divider" />
-							<Row style={{flex: 1, justifyContent: "center"}}>
-								<Button 
-									onClick={() => this.setState({showDeleteLessonModal: true})}
-									variant="danger"> Delete Lesson 
-								</Button>								
-							</Row>
-							<div className="divider"/>
-							<Row style={{flex: 1, justifyContent: "center"}}>
-								<Button variant="info" onClick={this.saveLesson}> Save </Button>
-							</Row>
+									</div>
+								</Card>
+								{/*
+								<div className="divider" />
+								<Row style={{ flex: 1, justifyContent: 'center' }}>
+									<Button
+										onClick={() => this.setState({ showDeleteLessonModal: true })}
+										variant="danger"
+									>
+										{' '}
+										Delete Lesson
+									</Button>
+								</Row>
+								<div className="divider" />
+								<Row style={{ flex: 1, justifyContent: 'center' }}>
+									<Button variant="info" onClick={this.saveLesson}>
+										{' '}
+										Save{' '}
+									</Button>
+								</Row>
+*/}
+							</div>
 						</Col>
 					</Row>
 				</Container>
@@ -338,9 +408,9 @@ class Editor extends Component {
 		let image = {};
 		image.draw = IMAGES[data.tool].draw;
 		image.properties = {};
-		Object.keys(IMAGES[data.tool].properties).map(key => {
-			image.properties[key] = IMAGES[data.tool].properties[key]
-		})
+		Object.keys(IMAGES[data.tool].properties).map((key) => {
+			image.properties[key] = IMAGES[data.tool].properties[key];
+		});
 		const layer = this.state.currentStep.getTools().length;
 		const tool = new Tool(data.tool, image, position, length, length, layer);
 		let currentStep = this.state.currentStep;
@@ -444,17 +514,15 @@ class Editor extends Component {
 	};
 }
 
-const DragHandle = sortableHandle(() => <span className="step-drag"></span>);
-const SortableContainer = sortableContainer(({children}) => <ListGroup variant="flush">{children}</ListGroup>);
+const DragHandle = sortableHandle(() => <span className="step-drag" />);
+const SortableContainer = sortableContainer(({ children }) => <ListGroup variant="flush">{children}</ListGroup>);
 const SortableStep = sortableElement((props) => {
-	const {stepIndex, isActive, onStepClick, onStepNameChange, onDeleteStep, onFieldBlur, value, isDisabled} = props;
-	const deleteButton = isDisabled 
-		? null
-		: <Button className="close" onClick={(e) => onDeleteStep(e, value)}></Button>
+	const { stepIndex, isActive, onStepClick, onStepNameChange, onDeleteStep, onFieldBlur, value, isDisabled } = props;
+	const deleteButton = isDisabled ? null : <Button className="close" onClick={(e) => onDeleteStep(e, value)} />;
 	return (
 		<ListGroup.Item active={isActive} key={stepIndex} index={stepIndex} onClick={onStepClick} as="li">
-			<DragHandle/>
-			<div index={stepIndex} className="divider"></div>
+			<DragHandle />
+			<div index={stepIndex} className="divider" />
 			<Form.Control
 				index={stepIndex}
 				className="step-name-form"

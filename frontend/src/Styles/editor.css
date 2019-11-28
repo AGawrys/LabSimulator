@@ -1,128 +1,188 @@
 .editor {
-    display: grid;
-    grid-template:
-    "header header header header header" 9.8vh
-    "action details details details steps" 9.8vh
-    "action canvas canvas canvas steps" 19.8vh
-    "catalog canvas canvas canvas steps" 29.8vh
-    "catalog canvas canvas canvas layer" 14.8vh
-    "catalog canvas canvas canvas layer" 14.8vh
-    / 16vw 23vw 23vw 23vw 15vw;
+	display: grid;
+	grid-template: "header header header header header" 9.8vh "action details details details steps" 9.8vh
+		"action canvas canvas canvas steps" 19.8vh "catalog canvas canvas canvas steps" 29.8vh
+		"catalog canvas canvas canvas layer" 14.8vh "catalog canvas canvas canvas layer" 14.8vh / 16vw 23vw 23vw 23vw
+		15vw;
 
-    text-align: left;
+	text-align: left;
 }
 
 .header {
-    grid-area: header;
+	grid-area: header;
 
-    background-color: green;
+	background-color: green;
 }
 
 .subheader {
-    width: 99%;
+	width: 99%;
 
-    padding: 0.5rem;
+	padding: 0.5rem;
 
-    background-color: grey;
+	background-color: grey;
 }
 
 .action-area {
-    grid-area: action;
+	grid-area: action;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 }
 
 .action-manager {
-    width: 99%;
-    height: 99%;
+	width: 99%;
+	height: 99%;
 
-    border: 1px solid black;
+	border: 1px solid black;
 }
 
 .details {
-    grid-area: details;
+	grid-area: details;
 
-    background-color: aqua;
+	background-color: aqua;
 }
 
 .steps {
-    grid-area: steps;
+	grid-area: steps;
 
-    background-color: grey;
+	background-color: grey;
 }
 
 .canvas-area {
-    grid-area: canvas;
-    width: 99%;
-    height: 99%;
+	grid-area: canvas;
+	width: 99%;
+	height: 99%;
 
-    position: relative;
+	position: relative;
 }
 
 .catalog-area {
-    grid-area: catalog;
+	grid-area: catalog;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 }
 
 .catalog {
-    width: 99%;
-    height: 99%;
+	width: 99%;
+	height: 99%;
 
-    border: 1px solid black;
+	border: 1px solid black;
 }
 
 .catalog-listing {
-    width: 100%;
+	width: 100%;
 
-    list-style: none;
+	list-style: none;
 
-    padding-left: 0;
+	padding-left: 0;
 }
 
-.catalog-listing li{
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    margin: auto;
+.catalog-listing li {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	margin: auto;
 }
 
 .collapsible {
-    width: 100%;
+	width: 100%;
 
-    border: 1px solid black;
+	border: 1px solid black;
 }
 
 .collapsible-trigger {
-    width: 100%;
+	width: 100%;
 
-    display: flex;
-    justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 
-    padding: 0.5rem;
-    background-color: burlywood;
+	padding: 0.5rem;
+	background-color: burlywood;
 }
 
 .catalog-tools {
-    width: 100%;
+	width: 100%;
 
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
 }
 
 .thumbnail {
-    max-width: 30%;
+	max-width: 30%;
 }
 
 .layer {
-    grid-area: layer;
+	grid-area: layer;
 
-    background-color: ghostwhite;
+	background-color: ghostwhite;
+}
+
+#canvas {
+	border: 2px solid brown;
+	border-radius: 3px;
+}
+
+.brownBorder {
+	border: 2px solid brown;
+	border-radius: 3px;
+}
+
+.editorSelect {
+	margin: 10px 5px;
+}
+
+.editorRightScroll {
+	height: 550px;
+}
+
+.scrollableStep {
+	max-height: 230px;
+	overflow-y: auto;
+}
+
+.instructorEditorToolBar {
+	padding: 5px 20px !important;
+	margin-bottom: 15px;
+	margin-top: 5px;
+}
+
+.editorToolBarSpacing {
+	padding: 5px !important;
+}
+
+.instructorContainer {
+	margin-bottom: 10px;
+}
+
+.editorControlName {
+	height: 50px !important;
+	margin: 0;
+}
+
+.editorToolBarButton {
+	padding: 0px !important;
+	margin: auto;
+}
+
+.editorToolBarButton button {
+	margin: 0 5px;
+}
+
+.alignLeft {
+	text-align: left;
+}
+
+.alignRight {
+	text-align: right;
+}
+
+.editorLeftScroll {
+	max-height: 550px;
+	overflow-y: auto;
 }

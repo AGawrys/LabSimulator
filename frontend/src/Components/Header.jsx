@@ -20,7 +20,7 @@ class HeaderBru extends React.Component {
 			password: '',
 			authenticated: false,
 			errors: '',
-			role: null,
+			role: null
 		};
 	}
 
@@ -38,11 +38,11 @@ class HeaderBru extends React.Component {
 
 		axios.post(Routes.SERVER + 'account', account).then(
 			(response) => {
-				const {token, role} = response.data;
+				const { token, role } = response.data;
 				localStorage.setItem('token', token);
 				this.setState({
 					authenticated: true,
-					role: role,
+					role: role
 				});
 			},
 			(error) => {
@@ -54,10 +54,10 @@ class HeaderBru extends React.Component {
 	};
 
 	render() {
-		const {authenticated} = this.state;
+		const { authenticated } = this.state;
 		if (authenticated) {
 			const route = this.getCorrectRoute();
-			return <Redirect exact to={route}/>;
+			return <Redirect exact to={route} />;
 		}
 
 		const navLinks = this.renderLinks();
@@ -171,18 +171,15 @@ class HeaderBru extends React.Component {
 	}
 
 	getCorrectRoute() {
-		const {role} = this.state;
+		const { role } = this.state;
 		if (role == GeneralConstants.STUDENT) {
 			return Routes.STUDENT_DASHBOARD;
-		}
-		else if (role == GeneralConstants.INSTRUCTOR) {
+		} else if (role == GeneralConstants.INSTRUCTOR) {
 			return Routes.INSTRUCTOR_DASHBOARD;
-		}
-		else {
+		} else {
 			return Routes.ORGANIZATION_DASHBOARD;
 		}
 	}
-
 }
 
 export default HeaderBru;
