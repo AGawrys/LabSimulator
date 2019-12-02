@@ -101,12 +101,14 @@ class Editor extends Component {
 	}
 
 	loadTool = (toolData) => {
-		const {toolType, x, y, width, height, toolIdentity, color, amount} = toolData;
+		const {toolType, x, y, width, height, toolIdentity, color, amount, name} = toolData;
 		const {layer} = toolIdentity;
 		const image = this.createImage(toolType);
 		image.properties.Fill = amount;
 		const position = new Position(x, y);
-		return new Tool(toolType, image, position, width, height, layer, color, amount);
+		const loadedTool = new Tool(toolType, image, position, width, height, layer, color, amount);
+		loadedTool.setName(name);
+		return loadedTool;
 	}
 
 	handleFieldChange = (e) => {

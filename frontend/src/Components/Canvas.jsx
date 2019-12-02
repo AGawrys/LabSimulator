@@ -24,7 +24,6 @@ class Canvas extends React.Component {
         this.setState({
             currentTool: tool
         });
-        console.log(this.state.currentTool)
     }
 
     resetCurrentTool() {
@@ -42,6 +41,18 @@ class Canvas extends React.Component {
     onHide() {
         this.setState({
             isEditingTool: false
+        });
+    }
+
+    onDeleteTool = () => {
+        const {tools} = this.props;
+        const index = tools.indexOf(this.state.currentTool);
+        tools.splice(index, 1);
+        for (let i = 0; i < tools.length; i++) {
+            tools[i].layer = i;
+        }
+        this.setState({
+            currentTool: null,
         });
     }
 
@@ -125,6 +136,11 @@ class Canvas extends React.Component {
                         onClick={this.onClickMoveDown}
                     >
                         Move Down
+                    </MenuItem>
+                    <MenuItem
+                        onClick={this.onDeleteTool}
+                    >
+                        Delete Tool 
                     </MenuItem>
                 </ContextMenu>
                 <div>
