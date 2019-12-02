@@ -72,60 +72,40 @@ class Editor extends Component {
 		const lesson_id = this.props.computedMatch.params.lesson_id;
 		this.state.lesson.setId(lesson_id);
 		axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
-			(response) => {
-				console.log(response);
-				const stepInformation = response.data.stepInformation;
-				var listStep = [];
-				for (var i = 0; i < stepInformation.length; i++) {
-					const getStep = stepInformation[i];
-					var toolList = [];
-					for (var j = 0; j < stepInformation[i].toolList.length; j++) {
-						const images = IMAGES[stepInformation[i].toolList[j].toolType];
-						const toolInput = new Tool(
-							stepInformation[i].toolList[j].toolType,
-							images,
-							new Position(stepInformation[i].toolList[j].x, stepInformation[i].toolList[j].y),
-							stepInformation[i].toolList[j].width,
-							stepInformation[i].toolList[j].height,
-							stepInformation[i].toolList[j].toolIdentity.layer,
-							stepInformation[i].toolList[j].color,
-							stepInformation[i].toolList[j].amount
-						);
-						toolList.push(toolInput);
-					}
-					const stepInput = new Step(
-						getStep.step.name,
-						getStep.step.description,
-						toolList,
-						getStep.step.actionType,
-						getStep.step.source,
-						getStep.step.target,
-						getStep.step.actionMeasurement
-					);
-					listStep.push(stepInput);
-				}
-				const { lesson } = response.data;
-				const currentLesson = new Lesson(lesson.name, lesson.lessonId);
-				if (listStep.length == 0) {
-					const createStep = new Step();
-					this.setState({
-						lesson: currentLesson,
-						steps: [ createStep ],
-						currentStep: createStep
-					});
-				} else {
-					this.setState({
-						lesson: currentLesson,
-						steps: listStep,
-						currentStep: listStep[0]
-					});
-				}
-			},
+			(response) => this.loadLesson(response),
 			(error) => {
 				console.log(error);
 				this.props.history.push(Routes.NOT_FOUND);
 			}
 		);
+	}
+
+	loadLesson = (response) => {
+		const {stepInformation, lesson} = response.data;
+		const loadedSteps = stepInformation.map((stepData) => this.loadStep(stepData));
+		const currentLesson = new Lesson(lesson.name, lesson.lessonId);
+		const steps = loadedSteps.length === 0 ? [new Step()] : loadedSteps;
+
+		this.setState({
+			lesson: currentLesson,
+			steps: steps,
+			currentStep: steps[0],
+		});
+	}
+
+	loadStep = (stepData) => {
+		const {toolList, step} = stepData;
+		const {name, description, actionType, source, target, actionMeasurement} = step;
+		const loadedTools = toolList.map((tool) => this.loadTool(tool));
+		return new Step(name, description, loadedTools, actionType, source, target, actionMeasurement);
+	}
+
+	loadTool = (toolData) => {
+		const {toolType, x, y, width, height, toolIdentity, color, amount} = toolData;
+		const {layer} = toolIdentity;
+		const images = IMAGES[toolType];
+		const position = new Position(x, y);
+		return new Tool(toolType, images, position, width, height, layer, color, amount);
 	}
 
 	handleFieldChange = (e) => {
@@ -273,25 +253,6 @@ class Editor extends Component {
 										</SortableContainer>
 									</div>
 								</Card>
-								{/*
-								<div className="divider" />
-								<Row style={{ flex: 1, justifyContent: 'center' }}>
-									<Button
-										onClick={() => this.setState({ showDeleteLessonModal: true })}
-										variant="danger"
-									>
-										{' '}
-										Delete Lesson
-									</Button>
-								</Row>
-								<div className="divider" />
-								<Row style={{ flex: 1, justifyContent: 'center' }}>
-									<Button variant="info" onClick={this.saveLesson}>
-										{' '}
-										Save{' '}
-									</Button>
-								</Row>
-*/}
 							</div>
 						</Col>
 					</Row>
@@ -536,50 +497,3 @@ const SortableStep = sortableElement((props) => {
 });
 
 export default Editor;
-
-/*
-<Row>
-  <Card style={{ height: '35vh' }}>
-    <Card.Header> Editor Actions </Card.Header>
-    <Card.Body style={{ height: '10vh' }}>
-      <div className="divider" />
-        <Button title="Publish"> Publish </Button>
-          <div className="divider" />
-          <Button title="Delete Lesson" className="btn-danger">
-            {' '}
-            Delete Lab{' '}
-          </Button>
-      <div className="divider" />
-    </Card.Body>
-  </Card>
-</Row>
-*/
-
-/*
-axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
-	(response) => {
-		this.parseLessonInformation(response);
-	},
-	(error) => {
-		console.log(error);
-	}
-);
-
-parseLessonInformation = (response) => {
-	let {lesson, stepInformation} = response.data;
-	potentialInstructors = this.parseStepInformation(stepInformation);
-
-	const courseInfo = {
-		accessCode: course.courseId,
-		title: course.name,
-		description: course.description,
-		courseInstructors: courseInstructors,
-		courseStudents: courseStudents,
-		potentialInstructors: potentialInstructors,
-		potentialStudents:potentialStudents,
-		lessons: courseLessons,
-	}
-	this.setState({
-		courseInfo: courseInfo
-	});
-}*/
