@@ -103,9 +103,10 @@ class Editor extends Component {
 	loadTool = (toolData) => {
 		const {toolType, x, y, width, height, toolIdentity, color, amount} = toolData;
 		const {layer} = toolIdentity;
-		const images = IMAGES[toolType];
+		const image = this.createImage(toolType);
+		image.properties.Fill = amount;
 		const position = new Position(x, y);
-		return new Tool(toolType, images, position, width, height, layer, color, amount);
+		return new Tool(toolType, image, position, width, height, layer, color, amount);
 	}
 
 	handleFieldChange = (e) => {
@@ -366,12 +367,7 @@ class Editor extends Component {
 		}
 
 		const position = new Position(x, y);
-		let image = {};
-		image.draw = IMAGES[data.tool].draw;
-		image.properties = {};
-		Object.keys(IMAGES[data.tool].properties).map((key) => {
-			image.properties[key] = IMAGES[data.tool].properties[key];
-		});
+		const image = this.createImage(data.tool);
 		const layer = this.state.currentStep.getTools().length;
 		const tool = new Tool(data.tool, image, position, length, length, layer);
 		let currentStep = this.state.currentStep;
@@ -473,6 +469,18 @@ class Editor extends Component {
 			(error) => console.log(error)
 		);
 	};
+
+	createImage = (toolType) => {
+		const image = {};
+		image.draw = IMAGES[toolType].draw;
+		image.properties = {};
+		Object.keys(IMAGES[toolType].properties).map((key) => {
+			image.properties[key] = IMAGES[toolType].properties[key];
+		});
+		return image;
+	}
+
+
 }
 
 const DragHandle = sortableHandle(() => <span className="step-drag" />);

@@ -115,6 +115,7 @@ class ToolEditor extends React.Component {
                             defaultValue={properties[key]}
                             onChange={() => {
                                 properties[key] = ref.current.value;
+                                this.props.tool.amount = ref.current.value;
                                 this.props.setCurrentTool(this.tool);
                             }}
                             ref={ref}
