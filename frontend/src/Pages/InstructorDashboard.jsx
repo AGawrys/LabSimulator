@@ -10,6 +10,7 @@ import { Button, Form, Modal, ListGroup } from 'react-bootstrap';
 import axios from 'axios';
 import CourseRow from '../Components/CourseRow.jsx';
 import LessonRow from '../Components/LessonRow.jsx';
+import plus from '../Styles/Images/icons8-plus.svg';
 
 const links = {
 	Account: '/account'
@@ -54,23 +55,24 @@ export class InstructorDashboard extends Component {
 		}
 		const { courses, lessons } = instructorInfo;
 		return (
-			<div className="background">
+			<div className="background-container">
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} />
 				<div className="teacherDashboard">
 					<div className="searchBarDiv">
+					<h1 class="m-0 font-weight-light text-secondary headings">Welcome to your Dashboard</h1>
 						<SearchBar placeHolderText={'Search for Lesson'} />
 					</div>
 					<div className="teacherDashboardContents">
-						<div className="recentDrinksDiv">
+						<div className="recentDrinksDiv cardBorder">
 							<div className="recentDrinkTop">
-								<h4>My Lessons</h4>
+							<h5 class="m-0 font-weight-bold text-secondary headings">LESSONS</h5>
 								<button
-									className="buttonRound btn-primary"
+									className="clearButton"
 									onClick={() => {
 										this.setState({ showLessonModal: true });
 									}}
 								>
-									+
+									<img src={plus} />
 								</button>
 								<FormModal
 									title="Create Lesson"
@@ -91,16 +93,16 @@ export class InstructorDashboard extends Component {
 								</ListGroup>
 							</div>
 						</div>
-						<div className="recentLessonsDiv">
+						<div className="recentLessonsDiv cardBorder">
 							<div className="recentLessonsTop">
-								<h4>My Courses</h4>
+							<h5 class="m-0 font-weight-bold text-secondary headings">COURSES</h5>
 								<button
-									className="buttonRound btn-primary"
+									className="clearButton"
 									onClick={() => {
 										this.setState({ showCourseModal: true });
 									}}
 								>
-									+
+									<img src={plus} />
 								</button>
 								<FormModal
 									title="Create Course"
