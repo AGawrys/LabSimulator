@@ -1,7 +1,7 @@
 import Position from './Position';
 
 class Tool {
-	constructor(type, image, position = null, width, height, layer = null, color = 0, amount = 0) {
+	constructor(type, image, position = null, width, height, layer = null, color = "#0077be", amount = 0) {
 		this.name = 'Tool ' + layer;
 		this.type = type;
 		this.image = image;

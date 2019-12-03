@@ -57,7 +57,7 @@ class Canvas extends React.Component {
     }
 
     render() {
-        const ToolComponents = this.props.tools.map((tool) => {
+        const ToolComponents = this.props.tools.map((tool, index) => {
             let ToolComponent;
             if (this.state.currentTool === tool) {
                 ToolComponent = (
@@ -83,7 +83,7 @@ class Canvas extends React.Component {
             }
 
             return (
-                <div>
+                <div key={index}>
                     {ToolComponent}
                 </div>
             );

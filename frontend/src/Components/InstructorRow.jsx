@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Button, Modal, Form, Row, ListGroup, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import React from 'react';
+import { Button, ListGroup, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import GeneralConstants from '../utils/GeneralConstants.js';
 
 function InstructorRow(props) {

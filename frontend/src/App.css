@@ -24,3 +24,7 @@
 .react-draggable {
   	cursor: move;
 }
+
+.input-range {
+	width: 90% !important;
+}

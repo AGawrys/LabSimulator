@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Button, Modal, Form, Row, ListGroup } from 'react-bootstrap';
+import React from 'react';
+import { Button, ListGroup } from 'react-bootstrap';
 import Routes from '../utils/RouteConstants.js';
 
 function LessonRow(props) {

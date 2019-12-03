@@ -38,6 +38,7 @@ import { sortableContainer, sortableElement, sortableHandle } from 'react-sortab
 import { swapElements } from '../LilacArray.js';
 import axios from 'axios';
 import ReactTooltip from 'react-tooltip';
+import InputRange from 'react-input-range';
 
 //UNDO REDO PUBLISH DELETE SIMULATE
 
@@ -105,6 +106,7 @@ class Editor extends Component {
 		const {layer} = toolIdentity;
 		const image = this.createImage(toolType);
 		image.properties.Fill = amount;
+		image.properties.Color = color;
 		const position = new Position(x, y);
 		const loadedTool = new Tool(toolType, image, position, width, height, layer, color, amount);
 		loadedTool.setName(name);
@@ -149,27 +151,27 @@ class Editor extends Component {
 						</Row>
 						<Row>
 							<Col className="editorToolBarButton alignLeft" lg={7}>
-								<button type="button" class="btn btn-primary">
+								<Button type="button" variant="primary">
 									Primary
-								</button>
-								<button type="button" class="btn btn-primary">
+								</Button>
+								<Button type="button" variant="primary">
 									Primary
-								</button>
-								<button type="button" class="btn btn-primary">
+								</Button>
+								<Button type="button" variant="primary">
 									Primary
-								</button>
-								<button type="button" class="btn btn-primary">
+								</Button>
+								<Button type="button" variant="primary">
 									Primary
-								</button>
-								<button type="button" class="btn btn-primary">
+								</Button>
+								<Button type="button" variant="primary">
 									Primary
-								</button>
-								<button type="button" class="btn btn-primary">
+								</Button>
+								<Button type="button" variant="primary">
 									Primary
-								</button>
-								<button type="button" class="btn btn-primary">
+								</Button>
+								<Button type="button" variant="primary">
 									Primary
-								</button>
+								</Button>
 							</Col>
 							<Col className="editorToolBarButton alignRight" lg={5}>
 								<Button
@@ -177,10 +179,10 @@ class Editor extends Component {
 									variant="danger"
 									onClick={() => this.setState({ showDeleteLessonModal: true })}
 								>
-									<i class="fas fa-trash-alt" />
+									<i className="fas fa-trash-alt" />
 								</Button>
 								<Button type="button" variant="success" onClick={this.saveLesson}>
-									<i class="fas fa-save" />
+									<i className="fas fa-save" />
 								</Button>
 							</Col>
 						</Row>

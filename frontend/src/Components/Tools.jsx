@@ -1,4 +1,3 @@
-import React from "react"
 import {LineCalculator} from "../utils/LilacAlgebra.js"
 
 export const CATEGORIES = {
@@ -34,11 +33,13 @@ export const IMAGES = {
                 context.lineTo(width * .2, height * .95)
                 context.lineTo(width * .8, height * .95)
                 context.lineTo(right.x(fillPoint), fillPoint);
-                context.fill()
+                context.fillStyle = properties.Color;
+                context.fill();
             }
         },
         properties: {
-            Fill: 0
+            Fill: 0,
+            Color: "#03a9f4",
         }
     }
 }

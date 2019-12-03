@@ -2,16 +2,12 @@ import React from "react"
 import { Form, Modal } from 'react-bootstrap';
 import Draggable from 'react-draggable';
 import { Row, Col } from 'react-grid-system';
-
-class DraggableDialog extends React.Component {
-    render() {
-        return (
-                <Modal.Dialog {...this.props} />
-        )
-    }
-}
+import { SketchPicker } from 'react-color'
+import InputRange from 'react-input-range';
+import 'react-input-range/lib/css/index.css';
 
 class ToolEditor extends React.Component {
+
     constructor(props) {
         super(props)
 
@@ -25,8 +21,6 @@ class ToolEditor extends React.Component {
         this.onChangeHeight = this.onChangeHeight.bind(this);
 
         this.nameRef = React.createRef();
-        this.xRef = React.createRef();
-        this.yRef = React.createRef();
         this.widthRef = React.createRef();
         this.heightRef = React.createRef();
     }
@@ -36,13 +30,12 @@ class ToolEditor extends React.Component {
         this.props.setCurrentTool(this.tool);
     }
 
-    onChangeX() {
+    onChangeX(value) {
         const canvas = document.getElementById("canvas")
         const bounds = canvas.getBoundingClientRect();
-        let x = parseInt(this.xRef.current.value, 10)
+        let x = parseInt(value, 10)
         if (x + this.tool.getWidth() > bounds.width) {
-            x = bounds.width - this.tool.getWidth()
-            this.xRef.current.value = x;
+            x = bounds.width - this.tool.getWidth();
         } else if (x < 0) {
             x = 0
             this.xRef.current.value = 0;
@@ -51,16 +44,14 @@ class ToolEditor extends React.Component {
         this.props.setCurrentTool(this.tool);
     }
 
-    onChangeY() {
+    onChangeY(value) {
         const canvas = document.getElementById("canvas")
         const bounds = canvas.getBoundingClientRect();
-        let y = parseInt(this.yRef.current.value, 10)
+        let y = parseInt(value, 10)
         if (y > bounds.height) {
             y = bounds.height - this.tool.getHeight()
-            this.yRef.current.value = y;
         } else if (y < 0) {
             y = 0
-            this.yRef.current.value = 0;
         }
         this.tool.setPosition(this.tool.getPosition().getX(), y)
         this.props.setCurrentTool(this.tool);
@@ -104,26 +95,17 @@ class ToolEditor extends React.Component {
         let supplemental = [<hr />]
         const properties = this.tool.getImage().properties;
         const keys = Object.keys(properties);
-        keys.map(key => {
-            const ref = React.createRef();
-            supplemental.push(
+        const SUPPLEMENTAL_CONTROLS = this.getSupplementalControls();
+        const supplementalControls = keys.map(key => {
+            return (
                 <Form.Group as={Row}>
                     <Form.Label column md={2}>{key}</Form.Label>
                     <Col>
-                        <Form.Control
-                            type={"number"}
-                            defaultValue={properties[key]}
-                            onChange={() => {
-                                properties[key] = ref.current.value;
-                                this.props.tool.amount = ref.current.value;
-                                this.props.setCurrentTool(this.tool);
-                            }}
-                            ref={ref}
-                        />
-                    </Col>    
+                        {SUPPLEMENTAL_CONTROLS[key]}
+                    </Col>
                 </Form.Group>
-            )
-        })
+            );
+        });
 
         return(
             <Modal
@@ -134,67 +116,111 @@ class ToolEditor extends React.Component {
                 dialogAs={DraggableDialog}
             >
                 <hr />
-                <Form.Group as={Row}>
-                    <Form.Label column md={2}>Name</Form.Label>
-                    <Col>
-                        <Form.Control
-                            type={"text"}
-                            defaultValue={this.tool? this.tool.getName() : null}
-                            onChange={this.onChangeName}
-                            ref={this.nameRef}
-                        />
-                    </Col>    
-                </Form.Group>
+                <div style={{margin: "15px"}}>
+                    <Form.Group as={Row}>
+                        <Form.Label column md={2}>Name</Form.Label>
+                        <Col>
+                            <Form.Control
+                                type={"text"}
+                                defaultValue={this.tool? this.tool.getName() : null}
+                                onChange={this.onChangeName}
+                                ref={this.nameRef}
+                            />
+                        </Col>    
+                    </Form.Group>
 
-                <Form.Group as={Row}>
-                    <Form.Label column md={1}>X</Form.Label>
-                    <Col>
-                        <Form.Control
-                            onChange={this.onChangeX} 
-                            type={"number"}
-                            min={0}
-                            max={bounds.width - this.tool.getWidth()}
-                            defaultValue={this.tool? this.tool.getPosition().getX() : null}
-                            ref={this.xRef}
-                        />
-                    </Col>
+                    <Form.Group as={Row}>
+                        <Form.Label column md={2}>X</Form.Label>
+                        <Col>
+                            <InputRange
+                                draggableTrack
+                                formatLabel={(value) => value.toFixed(2)} 
+                                minValue={0} 
+                                maxValue={bounds.width - this.tool.getWidth()} 
+                                onChange={this.onChangeX} 
+                                value={this.tool ? this.tool.getPosition().getX() : null}/>
+                        </Col>
+                    </Form.Group>
+                    <Form.Group as={Row}>
+                        <Form.Label column md={2}>Y</Form.Label>
+                        <Col>
+                            <InputRange
+                                draggableTrack
+                                formatLabel={(value) => value.toFixed(2)} 
+                                minValue={0} 
+                                maxValue={bounds.height - this.tool.getHeight()} 
+                                onChange={this.onChangeY} 
+                                value={this.tool ? this.tool.getPosition().getY() : null}/>
+                        </Col>
+                    </Form.Group>
 
-                    <Form.Label column md={1}>Y</Form.Label>
-                    <Col>
-                        <Form.Control
-                            onChange={this.onChangeY} 
-                            type={"number"}
-                            defaultValue={this.tool? this.tool.getPosition().getY() : null}
-                            ref={this.yRef}
-                        />
-                    </Col>
-                </Form.Group>
+                    <Form.Group as={Row}>
+                        <Form.Label column md={2}>Width</Form.Label>
+                        <Col>
+                            <Form.Control
+                                onChange={this.onChangeWidth} 
+                                type={"number"}
+                                defaultValue={this.tool? this.tool.getWidth() : null}
+                                ref={this.widthRef}
+                            />
+                        </Col>
 
-                <Form.Group as={Row}>
-                    <Form.Label column md={2}>Width</Form.Label>
-                    <Col>
-                        <Form.Control
-                            onChange={this.onChangeWidth} 
-                            type={"number"}
-                            defaultValue={this.tool? this.tool.getWidth() : null}
-                            ref={this.widthRef}
-                        />
-                    </Col>
-
-                    <Form.Label column md={2}>Height</Form.Label>
-                    <Col>
-                        <Form.Control
-                            onChange={this.onChangeHeight} 
-                            type={"number"}
-                            defaultValue={this.tool? this.tool.getHeight() : null}
-                            ref={this.heightRef}
-                        />
-                    </Col>
-                </Form.Group>
-                {supplemental}            
+                        <Form.Label column md={2}>Height</Form.Label>
+                        <Col>
+                            <Form.Control
+                                onChange={this.onChangeHeight} 
+                                type={"number"}
+                                defaultValue={this.tool? this.tool.getHeight() : null}
+                                ref={this.heightRef}
+                            />
+                        </Col>
+                    </Form.Group>
+                    {supplementalControls} 
+                </div>          
             </Modal>
+        );
+    }
+
+    getSupplementalControls = () => {
+        const {tool} = this.props;
+        const SUPPLEMENTAL_CONTROLS = {
+            Fill: <InputRange
+                        draggableTrack
+                        formatLabel={(value) => value.toFixed(2)} 
+                        minValue={0} 
+                        maxValue={1} 
+                        onChange={this.onFillChange}
+                        step={.01} 
+                        value={tool.amount}/>,
+            Color: <SketchPicker color={tool.color} onChange={this.onColorChange}/>,
+        };
+        return SUPPLEMENTAL_CONTROLS;
+    }
+
+    onFillChange = (value) => {
+        const {tool} = this.props;
+        const properties = tool.getImage().properties;
+        properties["Fill"] = value;
+        tool.amount = value;
+        this.props.setCurrentTool(this.props.tool);
+    }
+
+    onColorChange = (color, event) => {
+        const {tool} = this.props;
+        const properties = tool.getImage().properties;
+        properties["Color"] = color.hex;
+        tool.color = color.hex;
+        this.props.setCurrentTool(this.props.tool);
+    }
+}
+
+class DraggableDialog extends React.Component {
+    render() {
+        return (
+                <Modal.Dialog {...this.props} />
         )
     }
 }
+
 
 export default ToolEditor;
