@@ -117,6 +117,10 @@
 	padding: 2%;
 }
 
+.headings {
+	align-self: center;
+	padding-left: 5px;
+}
 .clearButton {
 	background-color: transparent;
 	border-width: 0;
