@@ -38,6 +38,7 @@ import { sortableContainer, sortableElement, sortableHandle } from 'react-sortab
 import { swapElements } from '../LilacArray.js';
 import axios from 'axios';
 import ReactTooltip from 'react-tooltip';
+import plus from '../Styles/Images/icons8-plus.svg';
 
 //UNDO REDO PUBLISH DELETE SIMULATE
 
@@ -167,25 +168,16 @@ class Editor extends Component {
 						<Row>
 							<Col className="editorToolBarButton alignLeft" lg={7}>
 								<button type="button" class="btn btn-primary">
-									Primary
+									Publish
+								</button>
+								<button type="button" class="btn btn-secondary">
+									Simulate
+								</button>
+								<button type="button" class="btn btn-info">
+									Duplicate
 								</button>
 								<button type="button" class="btn btn-primary">
-									Primary
-								</button>
-								<button type="button" class="btn btn-primary">
-									Primary
-								</button>
-								<button type="button" class="btn btn-primary">
-									Primary
-								</button>
-								<button type="button" class="btn btn-primary">
-									Primary
-								</button>
-								<button type="button" class="btn btn-primary">
-									Primary
-								</button>
-								<button type="button" class="btn btn-primary">
-									Primary
+									Add Instructor
 								</button>
 							</Col>
 							<Col className="editorToolBarButton alignRight" lg={5}>
@@ -205,7 +197,7 @@ class Editor extends Component {
 					<Row>
 						<Col lg={2}>
 							<div className="editorLeftScroll brownBorder">
-								<Card.Header> Tool </Card.Header>
+								<Card.Header><h6 class="m-0 font-weight-bold text-primary headings"> TOOLS </h6> </Card.Header>
 								<Catalog />
 								<Catalog />
 							</div>
@@ -220,7 +212,8 @@ class Editor extends Component {
 						<Col lg={2}>
 							<div className="brownBorder editorRightScroll">
 								<Card>
-									<Card.Header> Action Manager</Card.Header>
+									<Card.Header><h6 class="m-0 font-weight-bold text-primary headings">ACTION MANAGER</h6>
+							</Card.Header>
 									<Select
 										className="editorSelect"
 										placeholder="Action"
@@ -260,14 +253,16 @@ class Editor extends Component {
 								<div className="divider" />
 								<Card>
 									<Card.Header>
-										All Steps{' '}
-										<Button
+										<Row style={{justifyContent: 'space-evenly'}}>
+									<h6 class="m-0 font-weight-bold text-primary headings"> STEPS </h6>
+										<button
 											title="Add Step"
-											className="buttonRound editorStepButton btn-primary"
+											className="clearButton"
 											onClick={this.addStep}
 										>
-											+
-										</Button>
+											<img src={plus} />
+										</button>
+										</Row>
 									</Card.Header>
 									<div className="scrollableStep">
 										<SortableContainer onSortEnd={this.onDropStep} useDragHandle>
