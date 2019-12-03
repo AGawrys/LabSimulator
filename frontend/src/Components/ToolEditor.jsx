@@ -96,9 +96,9 @@ class ToolEditor extends React.Component {
         const properties = this.tool.getImage().properties;
         const keys = Object.keys(properties);
         const SUPPLEMENTAL_CONTROLS = this.getSupplementalControls();
-        const supplementalControls = keys.map(key => {
+        const supplementalControls = keys.map((key, index) => {
             return (
-                <Form.Group as={Row}>
+                <Form.Group as={Row} key={index}>
                     <Form.Label column md={2}>{key}</Form.Label>
                     <Col>
                         {SUPPLEMENTAL_CONTROLS[key]}
@@ -192,7 +192,7 @@ class ToolEditor extends React.Component {
                         onChange={this.onFillChange}
                         step={.01} 
                         value={tool.amount}/>,
-            Color: <SketchPicker color={tool.color} onChange={this.onColorChange}/>,
+            Color: <SketchPicker disableAlpha={true} color={tool.color} onChange={this.onColorChange}/>,
         };
         return SUPPLEMENTAL_CONTROLS;
     }

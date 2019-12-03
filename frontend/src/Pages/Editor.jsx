@@ -144,7 +144,7 @@ class Editor extends Component {
 									className="editorControlName"
 									autoFocus
 									type="text"
-									value={this.state.lesson.name}
+									defaultValue={this.state.lesson.name}
 									required
 								/>
 							</Col>
