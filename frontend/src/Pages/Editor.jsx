@@ -212,7 +212,9 @@ class Editor extends Component {
 						</Col>
 
 						<Col lg={8}>
+							<div className="brownBorder">
 							<Canvas onDrop={this.onDropTool} tools={currentStep.getTools()} />
+							</div>
 						</Col>
 
 						<Col lg={2}>

@@ -19,7 +19,7 @@
 
 	padding: 0.5rem;
 
-	background-color: grey;
+	background-color: white;
 }
 
 .action-area {
@@ -129,8 +129,9 @@
 }
 
 .brownBorder {
-	border: 2px solid brown;
-	border-radius: 3px;
+	border: 0.5px solid rgb(224, 224, 224);
+	border-radius: 5px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .editorSelect {
@@ -150,7 +151,7 @@
 	padding: 5px 20px !important;
 	margin-bottom: 15px;
 	margin-top: 5px;
-}
+	}
 
 .editorToolBarSpacing {
 	padding: 5px !important;
@@ -158,6 +159,7 @@
 
 .instructorContainer {
 	margin-bottom: 10px;
+	background-color: white;
 }
 
 .editorControlName {
