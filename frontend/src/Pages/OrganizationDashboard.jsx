@@ -9,6 +9,7 @@ import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import InstructorRow from '../Components/InstructorRow.jsx';
 import LessonRow from '../Components/LessonRow.jsx';
 import GeneralConstants from '../utils/GeneralConstants.js';
+import axios from 'axios';
 
 const links = {
 	Account: '/account'
@@ -18,17 +19,20 @@ export class OrganizationDashboard extends React.Component {
 
 	constructor(props) {
 		super(props);
-		const organizationInfo =  {
-			instructors: [{name: "Kevin McDonnell"}, {name: "Richard McKenna"},{name: "Eugene Stark"}],
-			lessons: [{title: "Pumpkin Spice Latte"}, {title: "Caramel Frappuccino"}],
-		}
 		this.state = {
 			showDeleteLesson: false,
 			selectedLesson: null,
 			showDeleteInstructor: false,
 			selectedInstructor: null,
-			organizationInfo: organizationInfo,
+			organizationInfo: null,
 		}
+	}
+
+	componentDidMount() {
+		axios.get(Routes.SERVER + "organizationInformation/" + this.props.email).then(
+			(response) => this.parseResponse(response.data),
+			(error) => console.log(error),
+		);
 	}
 	
 
@@ -59,15 +63,6 @@ export class OrganizationDashboard extends React.Component {
 						<div className="organizationInstructorDiv">
 							<h4>All Instructors</h4>
 							<div className="scrollInstructorList">
-								<form>
-									Add Instructor: <br />
-									<input type="text" name="instructor" />
-									<input
-										className="smallOrganizationButton buttonRound btn-primary"
-										type="submit"
-										value="+"
-									/>
-								</form>
 								<ListGroup>
 									{instructors.map((instructor,index) => 
 										<InstructorRow key={index} instructor={instructor} onClick={this.onInstructorClick}/>)
@@ -79,7 +74,7 @@ export class OrganizationDashboard extends React.Component {
 							<h4>All Lessons</h4>
 							<ListGroup>
 								{lessons.map((lesson, index) => 
-									<LessonRow key={index} lesson={lesson} onClick={this.onLessonClick}/>)
+									<LessonRow {...this.props} key={index} lesson={lesson} onClick={this.onLessonClick}/>)
 								}
 							</ListGroup>
 						</div>
@@ -87,6 +82,14 @@ export class OrganizationDashboard extends React.Component {
 				</div>
 			</div>
 		);
+	}
+
+	parseResponse = (data) => {
+		const organizationInfo = {
+			instructors: data.instructors,
+			lessons: data.lessons
+		};
+		this.setState({organizationInfo});
 	}
 
 	onInstructorClick = (instructor) =>  {

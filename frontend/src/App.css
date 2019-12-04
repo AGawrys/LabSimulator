@@ -28,3 +28,12 @@
 .input-range {
 	width: 90% !important;
 }
+
+.remove-button {
+	color: black;
+	opacity: .4;
+}
+
+.remove-button:hover {
+	opacity:.8;
+}

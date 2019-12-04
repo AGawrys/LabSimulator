@@ -1,12 +1,13 @@
 import React from 'react';
 import { Button, ListGroup } from 'react-bootstrap';
 import Routes from '../utils/RouteConstants.js';
+import RemoveButton from './RemoveButton.jsx';
 
 function LessonRow(props) {
 	const {lesson, onClick, canDelete} = props;
 	const {name, lessonId} = lesson;
 	const deleteButton = canDelete ? (
-			<Button className="buttonRound btn-danger" onClick={onClick}> - </Button>
+			<RemoveButton onClick={onClick}/>
 		) : null;
 
 	return (
