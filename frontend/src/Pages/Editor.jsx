@@ -164,7 +164,7 @@ class Editor extends Component {
 								<button type="button" className="btn btn-secondary">
 									Simulate
 								</button>
-								<button type="button" className="btn btn-info">
+								<button type="button" className="btn btn-info" onClick={this.cloneLesson}>
 									Duplicate
 								</button>
 							</Col>
@@ -176,7 +176,7 @@ class Editor extends Component {
 								>
 									<i className="fas fa-trash-alt" />
 								</Button>
-								<Button type="button" variant="success" onClick={this.saveLesson}>
+								<Button type="button" variant="success" onClick={this.onSaveLesson}>
 									<i className="fas fa-save" />
 								</Button>
 							</Col>
@@ -266,16 +266,21 @@ class Editor extends Component {
 		);
 	}
 
-	saveLesson = (e) => {
+	onSaveLesson = (e) => {
+		e.preventDefault();
+		const lessonId = this.state.lesson.id;
 		const lessonInformation = {
 			lesson: {
-				lessonId: this.state.lesson.id,
+				lessonId: lessonId,
 				instructorEmail: this.props.email,
 				name: this.state.lesson.name
 			},
-			stepInformation: this.constructSaveStepObject()
+			stepInformation: this.constructSaveStepObject(lessonId)
 		};
-		e.preventDefault();
+		this.saveLesson(lessonInformation);
+	}
+
+	saveLesson = (lessonInformation) => {
 		axios.post('http://localhost:8080/updateLessonName', lessonInformation).then(
 			(response) => {
 				console.log(response);
@@ -286,14 +291,14 @@ class Editor extends Component {
 		);
 	};
 
-	constructSaveStepObject() {
+	constructSaveStepObject(lessonId) {
 		const { steps } = this.state;
 		return steps.map((step, index) => {
-			const toolList = this.constructToolListObject(step.tools, index);
+			const toolList = this.constructToolListObject(step.tools, index, lessonId);
 			return {
 				step: {
 					stepIdentity: {
-						lessonId: this.state.lesson.id,
+						lessonId: lessonId,
 						stepNumber: index
 					},
 					name: step.name,
@@ -308,13 +313,13 @@ class Editor extends Component {
 		});
 	}
 
-	constructToolListObject(tools, stepNumber) {
+	constructToolListObject(tools, stepNumber, lessonId) {
 		return tools.map((tool, index) => {
 			return {
 				toolIdentity: {
 					layer: tool.layer,
 					stepNumber: stepNumber,
-					lessonId: this.state.lesson.id
+					lessonId: lessonId,
 				},
 				toolType: tool.type,
 				x: tool.position.getX(),
@@ -505,6 +510,29 @@ class Editor extends Component {
 				this.setState({showSuccessfullyPublished:  true});
 			},
 			(error) => console.log(error)
+		);
+	}
+
+	cloneLesson = () => {
+		const { lesson } = this.state;
+		const clonedLessonName = "Copy of " + lesson.name;
+		const body = {
+			name: clonedLessonName,
+			instructorEmail: this.props.email,
+		};
+		axios.post(Routes.SERVER + 'addLesson', body).then(
+			(response) => {
+				const lessonInformation = {
+					lesson: {
+						lessonId: response.data,
+						instructorEmail: this.props.email,
+						name: clonedLessonName,
+					},
+					stepInformation: this.constructSaveStepObject(response.data)
+				};
+				this.saveLesson(lessonInformation);
+			},
+			(error) => console.log(error),
 		);
 	}
 
