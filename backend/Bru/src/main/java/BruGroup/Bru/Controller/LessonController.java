@@ -105,6 +105,7 @@ public class LessonController {
         if (lesson == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+        boolean isPublished = organizationRepository.findByLessonId(lessonId) != null;
         List<Step> stepList = stepRepository.findByStepIdentityLessonId(lessonId);
         List<StepInformation> stepInformationList = new ArrayList<>();
 
@@ -116,8 +117,7 @@ public class LessonController {
             stepInformationList.add(stepInformation);
         }
 
-        LessonInformation lessonInformation = new LessonInformation(lesson, stepInformationList);
-
+        LessonInformation lessonInformation = new LessonInformation(lesson,stepInformationList, isPublished);
         return ResponseEntity.ok(lessonInformation);
     }
 
@@ -204,13 +204,23 @@ class PotentialLessonParameters {
 class LessonInformation {
 
     private Lesson lesson;
+    private boolean isPublished;
     private List<StepInformation> stepInformation;
 
     public LessonInformation(){}
 
-    public LessonInformation(Lesson lesson, List<StepInformation> stepInformation) {
+    public LessonInformation(Lesson lesson, List<StepInformation> stepInformation, boolean isPublished) {
         this.lesson = lesson;
         this.stepInformation = stepInformation;
+        this.isPublished = isPublished;
+    }
+
+    public boolean isPublished() {
+        return isPublished;
+    }
+
+    public void setPublished(boolean published) {
+        isPublished = published;
     }
 
     public Lesson getLesson() {

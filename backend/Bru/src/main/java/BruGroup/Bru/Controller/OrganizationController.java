@@ -1,6 +1,8 @@
 package BruGroup.Bru.Controller;
 
+import BruGroup.Bru.Entity.Account;
 import BruGroup.Bru.Entity.Organization;
+import BruGroup.Bru.Repository.AccountRepository;
 import BruGroup.Bru.Repository.OrganizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,9 @@ public class OrganizationController {
 
     @Autowired
     OrganizationRepository organizationRepository;
+
+    @Autowired
+    AccountRepository accountRepository;
 
     @GetMapping (path = "/allOrganization")
     @CrossOrigin(origins = "*")
@@ -42,9 +47,11 @@ public class OrganizationController {
      */
 
     //add lessons to an organization
-    @PostMapping (path = "/addLessonOrganization")
+    @PostMapping (path = "/publishLesson")
     @CrossOrigin(origins = "*")
     public ResponseEntity addLessonOrganization (@RequestBody Organization organization) {
+        Account instructorAccount = accountRepository.findByEmail(organization.getEmail());
+        organization.setEmail(instructorAccount.getOrganizationEmail());
         organizationRepository.save(organization);
         return ResponseEntity.ok(null);
     }

@@ -28,6 +28,7 @@ import Position from '../Objects/Position.js';
 import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import ConfirmationModal from '../Components/ConfirmationModal.jsx';
+import InformationModal from '../Components/InformationModal.jsx';
 import StringUtils from '../utils/StringUtils.js';
 import { IMAGES, createImage } from '../Components/Tools.jsx';
 import { SortableContainer, SortableStep} from '../Components/StepItem.jsx';
@@ -51,6 +52,7 @@ class Editor extends Component {
 			currentStep: null,
 			steps: null,
 			showDeleteLessonModal: false,
+			showSuccessfullyPublished: false,
 			showActionMenu: true,
 		};
 
@@ -76,9 +78,14 @@ class Editor extends Component {
 	}
 
 	loadLesson = (response) => {
-		const {stepInformation, lesson} = response.data;
+		const {stepInformation, lesson, published} = response.data;
+		const {instructorEmail, name, lessonId} = lesson;
+		if (instructorEmail !== this.props.email) {
+			this.props.history.push(Routes.NOT_FOUND);
+		}
+
 		const loadedSteps = stepInformation.map((stepData) => this.loadStep(stepData));
-		const currentLesson = new Lesson(lesson.name, lesson.lessonId);
+		const currentLesson = new Lesson(name, lessonId, published);
 		const steps = loadedSteps.length === 0 ? [new Step()] : loadedSteps;
 
 		this.setState({
@@ -112,12 +119,14 @@ class Editor extends Component {
 	};
 
 	render() {
-		const { currentStep, steps, showDeleteLessonModal } = this.state;
+		const { lesson, currentStep, steps, showDeleteLessonModal, showSuccessfullyPublished } = this.state;
 		if (steps == null) {
 			return null;
 		}
 		const toolOptions = currentStep.tools.map((tool) => tool.toSelectOption());
-
+		const publishBtn = lesson.isPublished 
+			? null 
+			: (<Button variant="primary" onClick={this.publishLesson}>Publish</Button>);
 		return (
 			<div>
 				<HeaderBru {...this.props} home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
@@ -127,6 +136,12 @@ class Editor extends Component {
 					onHide={() => this.setState({ showDeleteLessonModal: false })}
 					show={showDeleteLessonModal}
 					onDelete={this.deleteLesson}
+				/>
+				<InformationModal
+					title={GeneralConstants.SUCCESSFUL_PUBLISH_LESSON_TITLE}
+					message={GeneralConstants.SUCCESSFUL_PUBLISH_LESSON_MESSAGE}
+					onHide={() => this.setState({ showSuccessfullyPublished: false })}
+					show={showSuccessfullyPublished}
 				/>
 
 				<Container fluid={true} className="instructorContainer">
@@ -138,16 +153,14 @@ class Editor extends Component {
 									className="editorControlName"
 									autoFocus
 									type="text"
-									defaultValue={this.state.lesson.name}
+									defaultValue={lesson.name}
 									required
 								/>
 							</Col>
 						</Row>
 						<Row>
 							<Col className="editorToolBarButton alignLeft" lg={7}>
-								<button type="button" className="btn btn-primary">
-									Publish
-								</button>
+								{publishBtn}
 								<button type="button" className="btn btn-secondary">
 									Simulate
 								</button>
@@ -187,7 +200,7 @@ class Editor extends Component {
 						<Col lg={2}>
 							<div className="brownBorder editorRightScroll">
 								<Card>
-									<Card.Header><h6 class="m-0 font-weight-bold text-primary headings">ACTION MANAGER</h6>
+									<Card.Header><h6 className="m-0 font-weight-bold text-primary headings">ACTION MANAGER</h6>
 							</Card.Header>
 									<Select
 										className="editorSelect"
@@ -479,6 +492,18 @@ class Editor extends Component {
 			(error) => console.log(error)
 		);
 	};
+
+	publishLesson = () => {
+		const { lesson_id } = this.props.computedMatch.params;
+		const body = {
+			lessonId: lesson_id,
+			email: this.props.email,
+		};
+		axios.post(Routes.SERVER + 'publishLesson', body).then(
+			(response) => this.setState({showSuccessfullyPublished:  true}),
+			(error) => console.log(error)
+		);
+	}
 
 }
 
