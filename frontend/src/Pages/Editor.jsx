@@ -120,7 +120,7 @@ class Editor extends Component {
 
 		return (
 			<div>
-				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
+				<HeaderBru {...this.props} home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
 				<ConfirmationModal
 					title={GeneralConstants.DELETE_LESSON_TITLE}
 					message={GeneralConstants.DELETE_LESSON_MESSAGE}
