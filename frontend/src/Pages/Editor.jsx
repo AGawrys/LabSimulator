@@ -14,7 +14,6 @@ import {
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { Container, Row, Col } from 'react-grid-system';
 import Select from 'react-select';
-import 'react-sticky-header/styles.css';
 import SimpleInput from 'react-simple-input';
 import HeaderBru from '../Components/Header.jsx';
 import Catalog from '../Components/Catalog.jsx';
@@ -29,12 +28,9 @@ import Position from '../Objects/Position.js';
 import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import ConfirmationModal from '../Components/ConfirmationModal.jsx';
-import '../App.css';
-import '../Styles/HomeStyle.css';
-import '../Styles/EditorStyle.css';
 import StringUtils from '../utils/StringUtils.js';
-import { IMAGES } from '../Components/Tools.jsx';
-import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
+import { IMAGES, createImage } from '../Components/Tools.jsx';
+import { SortableContainer, SortableStep} from '../Components/StepItem.jsx';
 import { swapElements } from '../LilacArray.js';
 import axios from 'axios';
 import ReactTooltip from 'react-tooltip';
@@ -53,11 +49,9 @@ class Editor extends Component {
 		this.state = {
 			lesson: lesson,
 			currentStep: null,
-			currentTool: null,
 			steps: null,
 			showDeleteLessonModal: false,
 			showActionMenu: true,
-			currentTool: ''
 		};
 
 		this.onDropTool = this.onDropTool.bind(this);
@@ -104,7 +98,7 @@ class Editor extends Component {
 	loadTool = (toolData) => {
 		const {toolType, x, y, width, height, toolIdentity, color, amount, name} = toolData;
 		const {layer} = toolIdentity;
-		const image = this.createImage(toolType);
+		const image = createImage(toolType);
 		image.properties.Fill = amount;
 		image.properties.Color = color;
 		const position = new Position(x, y);
@@ -118,7 +112,7 @@ class Editor extends Component {
 	};
 
 	render() {
-		const { currentStep, steps, currentTool, showDeleteLessonModal } = this.state;
+		const { currentStep, steps, showDeleteLessonModal } = this.state;
 		if (steps == null) {
 			return null;
 		}
@@ -151,13 +145,13 @@ class Editor extends Component {
 						</Row>
 						<Row>
 							<Col className="editorToolBarButton alignLeft" lg={7}>
-								<button type="button" class="btn btn-primary">
+								<button type="button" className="btn btn-primary">
 									Publish
 								</button>
-								<button type="button" class="btn btn-secondary">
+								<button type="button" className="btn btn-secondary">
 									Simulate
 								</button>
-								<button type="button" class="btn btn-info">
+								<button type="button" className="btn btn-info">
 									Duplicate
 								</button>
 							</Col>
@@ -178,7 +172,7 @@ class Editor extends Component {
 					<Row>
 						<Col lg={2}>
 							<div className="editorLeftScroll brownBorder">
-								<Card.Header><h6 class="m-0 font-weight-bold text-primary headings"> TOOLS </h6> </Card.Header>
+								<Card.Header><h6 className="m-0 font-weight-bold text-primary headings"> TOOLS </h6> </Card.Header>
 								<Catalog />
 								<Catalog />
 							</div>
@@ -332,6 +326,7 @@ class Editor extends Component {
 				isActive={isActive}
 				onStepClick={this.onStepClick}
 				onStepNameChange={this.onStepNameChange}
+				onCloneStep={this.onCloneStep}
 				onDeleteStep={this.onDeleteStep}
 				onFieldBlur={this.onFieldBlur}
 				value={step}
@@ -364,7 +359,7 @@ class Editor extends Component {
 		}
 
 		const position = new Position(x, y);
-		const image = this.createImage(data.tool);
+		const image = createImage(data.tool);
 		const layer = this.state.currentStep.getTools().length;
 		const tool = new Tool(data.tool, image, position, length, length, layer);
 		let currentStep = this.state.currentStep;
@@ -381,10 +376,12 @@ class Editor extends Component {
 	};
 
 	addStep = () => {
-		const { steps } = this.state;
-		const currentStep = new Step();
-		steps.push(currentStep);
-		this.setState({ currentStep, steps, currentTool: null });
+
+		const { steps, currentStep } = this.state;
+		const index = steps.indexOf(currentStep);
+		const newStep = new Step();
+		steps.splice(index + 1,0, newStep);
+		this.setState({ currentStep: newStep, steps});
 	};
 
 	onStepClick = (e) => {
@@ -422,6 +419,22 @@ class Editor extends Component {
 		const currentStep = steps[newIndex];
 		this.setState({ currentStep });
 	};
+
+	onCloneStep = (e, step) => {
+		e.cancelBubble = true;
+		if (e.stopPropagation) {
+			e.stopPropagation();
+		}
+		this.cloneStep(step);
+	}
+
+	cloneStep = (step) => {
+		const clonedStep = step.clone();
+		const {steps} = this.state;
+		const index = steps.indexOf(step);
+		steps.splice(index + 1,0,clonedStep);
+		this.setState({steps});
+	}
 
 	updateCurrentAction = (action) => {
 		const { currentStep } = this.state;
@@ -467,38 +480,6 @@ class Editor extends Component {
 		);
 	};
 
-	createImage = (toolType) => {
-		const image = {};
-		image.draw = IMAGES[toolType].draw;
-		image.properties = {};
-		Object.keys(IMAGES[toolType].properties).map((key) => {
-			image.properties[key] = IMAGES[toolType].properties[key];
-		});
-		return image;
-	}
-
-
 }
-
-const DragHandle = sortableHandle(() => <span className="step-drag" />);
-const SortableContainer = sortableContainer(({ children }) => <ListGroup variant="flush">{children}</ListGroup>);
-const SortableStep = sortableElement((props) => {
-	const { stepIndex, isActive, onStepClick, onStepNameChange, onDeleteStep, onFieldBlur, value, isDisabled } = props;
-	const deleteButton = isDisabled ? null : <Button className="close" onClick={(e) => onDeleteStep(e, value)} />;
-	return (
-		<ListGroup.Item active={isActive} key={stepIndex} index={stepIndex} onClick={onStepClick} as="li">
-			<DragHandle />
-			<div index={stepIndex} className="divider" />
-			<Form.Control
-				index={stepIndex}
-				className="step-name-form"
-				onBlur={(e) => onFieldBlur(e, value)}
-				onChange={onStepNameChange}
-				value={value.toString()}
-			/>
-			{deleteButton}
-		</ListGroup.Item>
-	);
-});
 
 export default Editor;

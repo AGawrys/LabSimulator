@@ -1,12 +1,12 @@
 import {LineCalculator} from "../utils/LilacAlgebra.js"
 
-export const CATEGORIES = {
+const CATEGORIES = {
     Cups: [
         "TaperedCup"
     ]
 };
 
-export const IMAGES = {
+const IMAGES = {
     TaperedCup: {
         draw: (canvas, width, height, properties) => {
             if (canvas.getContext) {
@@ -43,3 +43,15 @@ export const IMAGES = {
         }
     }
 }
+
+function createImage(toolType) {
+    const image = {};
+    image.draw = IMAGES[toolType].draw;
+    image.properties = {};
+    Object.keys(IMAGES[toolType].properties).map((key) => {
+        image.properties[key] = IMAGES[toolType].properties[key];
+    });
+    return image;
+}
+
+export {CATEGORIES, IMAGES, createImage};

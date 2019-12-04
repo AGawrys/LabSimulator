@@ -76,6 +76,12 @@ class Step {
 		this.actionMeasurement = actionMeasurement;
 	}
 
+	clone() {
+		const clonedTools = this.tools.map((tool) => tool.clone());
+		const {name, description, action, source, target, actionMeasurement} = this;
+		return new Step(name,description,clonedTools,action,source,target,actionMeasurement);
+	}
+
 	toString() {
 		return this.name;
 	}

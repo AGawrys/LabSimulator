@@ -144,11 +144,11 @@
 }
 
 .editorRightScroll {
-	height: 550px;
+	height: 100%;
 }
 
 .scrollableStep {
-	max-height: 230px;
+	height: 350px;
 	overflow-y: auto;
 }
 
