@@ -500,7 +500,10 @@ class Editor extends Component {
 			email: this.props.email,
 		};
 		axios.post(Routes.SERVER + 'publishLesson', body).then(
-			(response) => this.setState({showSuccessfullyPublished:  true}),
+			(response) => {
+				this.state.lesson.isPublished = true;
+				this.setState({showSuccessfullyPublished:  true});
+			},
 			(error) => console.log(error)
 		);
 	}
