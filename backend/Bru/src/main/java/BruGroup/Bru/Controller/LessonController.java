@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Null;
+import javax.xml.ws.Response;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -121,9 +122,32 @@ public class LessonController {
         return ResponseEntity.ok(lessonInformation);
     }
 
+    @PostMapping(path = "/canStudentComplete")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity canStudentComplete(@RequestBody VerifyStudentLessonParams params) {
+        AssignmentIdentity identity = new AssignmentIdentity(params.getEmail(), params.getCourseId(),params.getLessonId());
+        boolean isCompleted = assignmentRepository.existsById(identity);
+        if (isCompleted) {
+            return ResponseEntity.ok(null);
+        }
+
+        List<CourseLesson> curriculum = curriculumRepository.findByCourseLessonIdentityCourseId(params.getCourseId());
+        for (CourseLesson courseLesson : curriculum) {
+            identity = new AssignmentIdentity(params.getEmail(),params.getCourseId(), courseLesson.getCourseLessonIdentity().getLessonId());
+            if (!assignmentRepository.existsById(identity)) { //if assignment has not been completed by student
+                ResponseEntity canStudentComplete = identity.getLessonId() == params.getLessonId()
+                        ? ResponseEntity.ok(null)
+                        : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                return canStudentComplete;
+            }
+        }
+        return ResponseEntity.ok(null);
+
+    }
+
     @PostMapping(path = "/cloneLesson")
     @CrossOrigin(origins = "*")
-    public ResponseEntity cloneLesson(@RequestBody CloneLessonParams params) {
+    public ResponseEntity cloneLesson(@RequestBody AccountLessonParams params) {
         Lesson existingLesson = lessonRepository.findByLessonId(params.getLessonId());
         String clonedLessonName = "Copy of " + existingLesson.getName();
         Lesson clonedLesson = new Lesson(clonedLessonName, existingLesson.getInstructorEmail());
@@ -219,17 +243,17 @@ class PotentialLessonParameters {
     }
 }
 
-class CloneLessonParams {
+class AccountLessonParams {
     private int lessonId;
-    private String instructorEmail;
+    private String email;
 
-    public CloneLessonParams() {
+    public AccountLessonParams() {
 
     }
 
-    public CloneLessonParams(int lessonId, String instructorEmail) {
+    public AccountLessonParams(int lessonId, String email) {
         this.lessonId = lessonId;
-        this.instructorEmail = instructorEmail;
+        this.email = email;
     }
 
     public int getLessonId() {
@@ -240,12 +264,50 @@ class CloneLessonParams {
         this.lessonId = lessonId;
     }
 
-    public String getInstructorEmail() {
-        return instructorEmail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setInstructorEmail(String instructorEmail) {
-        this.instructorEmail = instructorEmail;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+}
+
+class VerifyStudentLessonParams {
+    private String courseId;
+    private String email;
+    private int lessonId;
+
+    public VerifyStudentLessonParams() {}
+
+    public VerifyStudentLessonParams(String courseId, String email, int lessonId) {
+        this.courseId = courseId;
+        this.email = email;
+        this.lessonId = lessonId;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getLessonId() {
+        return lessonId;
+    }
+
+    public void setLessonId(int lessonId) {
+        this.lessonId = lessonId;
     }
 }
 
