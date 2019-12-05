@@ -121,6 +121,31 @@ public class LessonController {
         return ResponseEntity.ok(lessonInformation);
     }
 
+    @PostMapping(path = "/cloneLesson")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity cloneLesson(@RequestBody CloneLessonParams params) {
+        Lesson existingLesson = lessonRepository.findByLessonId(params.getLessonId());
+        String clonedLessonName = "Copy of " + existingLesson.getName();
+        Lesson clonedLesson = new Lesson(clonedLessonName, existingLesson.getInstructorEmail());
+        lessonRepository.save(clonedLesson);
+
+        List<Step> steps = stepRepository.findByStepIdentityLessonId(params.getLessonId());
+        List<Step> clonedSteps = steps
+                .stream()
+                .map(step -> step.clone(clonedLesson.getLessonId()))
+                .collect(Collectors.toList());
+
+        List<Tool> tools  = toolRepository.findByToolIdentityLessonId(existingLesson.getLessonId());
+        List<Tool> clonedTools = tools
+                .stream()
+                .map(tool -> tool.clone(clonedLesson.getLessonId()))
+                .collect(Collectors.toList());
+
+        stepRepository.saveAll(clonedSteps);
+        toolRepository.saveAll(clonedTools);
+        return ResponseEntity.ok(null);
+    }
+
     @PostMapping(path = "/updateLessonName")        //SAVE
     @CrossOrigin(origins = "*")
     public ResponseEntity updateLessonName(@RequestBody LessonInformation lessonInformation) {
@@ -162,13 +187,6 @@ public class LessonController {
             saveToolTable(stepInformation.getToolList());
         }
     }
-
-    public void deleteAllReferences(JpaRepository repository,List references) {
-        for (Object reference: references) {
-            repository.delete(reference);
-        }
-    }
-
 }
 
 class PotentialLessonParameters {
@@ -190,6 +208,36 @@ class PotentialLessonParameters {
 
     public void setCourseId(String courseId) {
         this.courseId = courseId;
+    }
+
+    public String getInstructorEmail() {
+        return instructorEmail;
+    }
+
+    public void setInstructorEmail(String instructorEmail) {
+        this.instructorEmail = instructorEmail;
+    }
+}
+
+class CloneLessonParams {
+    private int lessonId;
+    private String instructorEmail;
+
+    public CloneLessonParams() {
+
+    }
+
+    public CloneLessonParams(int lessonId, String instructorEmail) {
+        this.lessonId = lessonId;
+        this.instructorEmail = instructorEmail;
+    }
+
+    public int getLessonId() {
+        return lessonId;
+    }
+
+    public void setLessonId(int lessonId) {
+        this.lessonId = lessonId;
     }
 
     public String getInstructorEmail() {

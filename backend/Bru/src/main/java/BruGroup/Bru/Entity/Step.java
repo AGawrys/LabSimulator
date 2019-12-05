@@ -75,9 +75,21 @@ public class Step {
         return stepIdentity;
     }
 
-    public int getactionMeasurement() { return actionMeasurement;}
+    public int getActionMeasurement() { return actionMeasurement;}
 
     public void setActionMeasurement() {this.actionMeasurement = actionMeasurement;}
+
+    public Step clone(int lessonId) {
+        StepIdentity clonedStepIdentity = this.stepIdentity.clone(lessonId);
+        return new Step(
+                clonedStepIdentity,
+                this.getName(),
+                this.getDescription(),
+                this.getActionType(),
+                this.getSource(),
+                this.getTarget(),
+                this.getActionMeasurement());
+    }
 
     @Override
     public String toString() {

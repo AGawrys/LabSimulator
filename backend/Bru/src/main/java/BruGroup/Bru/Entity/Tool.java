@@ -28,8 +28,9 @@ public class Tool {
 
     }
 
-    public Tool(ToolIdentity toolIdentity, double x, double y, double amount, String color, String name, double width, double height) {
+    public Tool(ToolIdentity toolIdentity, String toolType, double x, double y, double amount, String color, String name, double width, double height) {
         this.toolIdentity = toolIdentity;
+        this.toolType = toolType;
         this.x = x;
         this.y = y;
         this.name = name;
@@ -37,6 +38,21 @@ public class Tool {
         this.color = color;
         this.height = height;
         this.width = width;
+    }
+
+    public Tool clone(int lessonId) {
+        ToolIdentity clonedIdentity = this.toolIdentity.clone(lessonId);
+        return new Tool(
+                clonedIdentity,
+                this.toolType,
+                this.x,
+                this.y,
+                this.amount,
+                this.color,
+                this.name,
+                this.width,
+                this.height
+        );
     }
 
     public ToolIdentity getToolIdentity() {

@@ -268,37 +268,32 @@ class Editor extends Component {
 
 	onSaveLesson = (e) => {
 		e.preventDefault();
-		const lessonId = this.state.lesson.id;
 		const lessonInformation = {
 			lesson: {
-				lessonId: lessonId,
+				lessonId: this.state.lesson.id,
 				instructorEmail: this.props.email,
 				name: this.state.lesson.name
 			},
-			stepInformation: this.constructSaveStepObject(lessonId)
+			stepInformation: this.constructSaveStepObject(),
 		};
 		this.saveLesson(lessonInformation);
 	}
 
 	saveLesson = (lessonInformation) => {
 		axios.post('http://localhost:8080/updateLessonName', lessonInformation).then(
-			(response) => {
-				console.log(response);
-			},
-			(error) => {
-				console.log(error);
-			}
+			(response) => console.log(response),
+			(error) => console.log(error),
 		);
 	};
 
-	constructSaveStepObject(lessonId) {
-		const { steps } = this.state;
+	constructSaveStepObject() {
+		const { steps, lesson } = this.state;
 		return steps.map((step, index) => {
-			const toolList = this.constructToolListObject(step.tools, index, lessonId);
+			const toolList = this.constructToolListObject(step.tools, index);
 			return {
 				step: {
 					stepIdentity: {
-						lessonId: lessonId,
+						lessonId: lesson.id,
 						stepNumber: index
 					},
 					name: step.name,
@@ -313,13 +308,13 @@ class Editor extends Component {
 		});
 	}
 
-	constructToolListObject(tools, stepNumber, lessonId) {
+	constructToolListObject(tools, stepNumber) {
 		return tools.map((tool, index) => {
 			return {
 				toolIdentity: {
 					layer: tool.layer,
 					stepNumber: stepNumber,
-					lessonId: lessonId,
+					lessonId: this.state.lesson.id,
 				},
 				toolType: tool.type,
 				x: tool.position.getX(),
@@ -515,23 +510,12 @@ class Editor extends Component {
 
 	cloneLesson = () => {
 		const { lesson } = this.state;
-		const clonedLessonName = "Copy of " + lesson.name;
 		const body = {
-			name: clonedLessonName,
+			lessonId: lesson.id,
 			instructorEmail: this.props.email,
 		};
-		axios.post(Routes.SERVER + 'addLesson', body).then(
-			(response) => {
-				const lessonInformation = {
-					lesson: {
-						lessonId: response.data,
-						instructorEmail: this.props.email,
-						name: clonedLessonName,
-					},
-					stepInformation: this.constructSaveStepObject(response.data)
-				};
-				this.saveLesson(lessonInformation);
-			},
+		axios.post(Routes.SERVER + 'cloneLesson/', body).then(
+			(response) => console.log(response),
 			(error) => console.log(error),
 		);
 	}

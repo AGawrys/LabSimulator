@@ -20,6 +20,10 @@ public class StepIdentity implements Serializable {
         this.stepNumber = stepNumber;
     }
 
+    public StepIdentity clone(int lessonId) {
+        return new StepIdentity(lessonId, this.stepNumber);
+    }
+
     public int getLessonId() {
         return lessonId;
     }
