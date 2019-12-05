@@ -65,7 +65,7 @@ class HeaderBru extends React.Component {
 
 		const navLinks = this.renderLinks();
 		return (
-			<Navbar bg="#69CB9A" className="justify-content-between">
+			<Navbar bg="#69CB9A" className="justify-content-between" sticky="top">
 				<Navbar.Brand href={this.props.dashboard}>
 					<Link to="/">
 						<img src={title} className="Home-header-logo" style={{ height: '50px' }} alt="logo" />
