@@ -13,12 +13,16 @@ public class AssignmentIdentity implements Serializable {
     @NotNull
     private int lessonId;
 
+    @NotNull
+    private String courseId;
+
     public AssignmentIdentity() {
 
     }
 
-    public AssignmentIdentity(String email, int lessonId) {
+    public AssignmentIdentity(String email, String courseId, int lessonId) {
         this.email = email;
+        this.courseId = courseId;
         this.lessonId = lessonId;
     }
 
@@ -36,5 +40,13 @@ public class AssignmentIdentity implements Serializable {
 
     public void setLessonId(int lessonId) {
         this.lessonId = lessonId;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 }
