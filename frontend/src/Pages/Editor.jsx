@@ -21,6 +21,7 @@ import Canvas from '../Components/Canvas.jsx';
 import Routes from '../utils/RouteConstants.js';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import EditorConstants from '../utils/EditorConstants.js';
+import { loadLesson } from '../utils/LoadUtils.js';
 import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
 import Tool from '../Objects/Tool.js';
@@ -78,40 +79,12 @@ class Editor extends Component {
 	}
 
 	loadLesson = (response) => {
-		const {stepInformation, lesson, published} = response.data;
-		const {instructorEmail, name, lessonId} = lesson;
+		const {instructorEmail} = response.data.lesson;
 		if (instructorEmail !== this.props.email) {
 			this.props.history.push(Routes.NOT_FOUND);
 		}
-
-		const loadedSteps = stepInformation.map((stepData) => this.loadStep(stepData));
-		const currentLesson = new Lesson(name, lessonId, published);
-		const steps = loadedSteps.length === 0 ? [new Step()] : loadedSteps;
-
-		this.setState({
-			lesson: currentLesson,
-			steps: steps,
-			currentStep: steps[0],
-		});
-	}
-
-	loadStep = (stepData) => {
-		const {toolList, step} = stepData;
-		const {name, description, actionType, source, target, actionMeasurement} = step;
-		const loadedTools = toolList.map((tool) => this.loadTool(tool));
-		return new Step(name, description, loadedTools, actionType, source, target, actionMeasurement);
-	}
-
-	loadTool = (toolData) => {
-		const {toolType, x, y, width, height, toolIdentity, color, amount, name} = toolData;
-		const {layer} = toolIdentity;
-		const image = createImage(toolType);
-		image.properties.Fill = amount;
-		image.properties.Color = color;
-		const position = new Position(x, y);
-		const loadedTool = new Tool(toolType, image, position, width, height, layer, color, amount);
-		loadedTool.setName(name);
-		return loadedTool;
+		const loadedLesson = loadLesson(response.data);
+		this.setState(loadedLesson);
 	}
 
 	handleFieldChange = (e) => {
