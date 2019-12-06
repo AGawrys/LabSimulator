@@ -121,23 +121,42 @@ class Canvas extends React.Component {
             );
         }
 
+        let canvasComponent;
+        if (instructor) {
+            canvasComponent = (
+                <ContextMenuTrigger id={CONTEXT_MENU_ID + "-2"} holdToDisplay={-1}>
+                    <div
+                        id={"canvas"} 
+                        style={{width: "100%", height: '80vh', position: 'relative'}}
+                        ref={this.ref}
+                        onClick={this.resetCurrentTool}
+                    >
+                        {ToolComponents}         
+                    </div>
+                </ContextMenuTrigger>  
+            );
+        }
+        else {
+            canvasComponent = (
+                <div
+                    id={"canvas"} 
+                    style={{width: "100%", height: '80vh', position: 'relative'}}
+                    ref={this.ref}
+                    onClick={this.resetCurrentTool}
+                >
+                    {ToolComponents}
+                    
+                </div>
+            );
+        }
+
         return (
             <React.Fragment>
                 <Droppable 
                     types={["tool"]}
                     onDrop={onDrop}
                 >
-                    <ContextMenuTrigger id={CONTEXT_MENU_ID + "-2"} holdToDisplay={-1}>
-                        <div
-                            id={"canvas"} 
-                            style={{width: "100%", height: '80vh', position: 'relative'}}
-                            ref={this.ref}
-                            onClick={this.resetCurrentTool}
-                        >
-                            {ToolComponents}
-                            
-                        </div>
-                    </ContextMenuTrigger>  
+                    {canvasComponent} 
                 </Droppable>
 
                 <ContextMenu
