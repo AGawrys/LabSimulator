@@ -53,6 +53,7 @@ class Editor extends Component {
 			showDeleteLessonModal: false,
 			showSuccessfullyPublished: false,
 			showActionMenu: true,
+			copiedTool: null,
 		};
 
 		this.onDropTool = this.onDropTool.bind(this);
@@ -90,7 +91,7 @@ class Editor extends Component {
 	};
 
 	render() {
-		const { lesson, currentStep, steps, showDeleteLessonModal, showSuccessfullyPublished } = this.state;
+		const { lesson, currentStep, steps, showDeleteLessonModal, showSuccessfullyPublished, copiedTool} = this.state;
 		if (steps == null) {
 			return null;
 		}
@@ -164,7 +165,12 @@ class Editor extends Component {
 
 						<Col lg={8}>
 							<div className="brownBorder">
-							<Canvas instructor={true} onDrop={this.onDropTool} tools={currentStep.getTools()} />
+							<Canvas 
+								instructor={true} 
+								onDrop={this.onDropTool} 
+								tools={currentStep.getTools()} 
+								setCopiedTool={this.setCopiedTool}
+								copiedTool={copiedTool} />
 							</div>
 						</Col>
 
@@ -468,6 +474,10 @@ class Editor extends Component {
 			(response) => console.log(response),
 			(error) => console.log(error),
 		);
+	}
+
+	setCopiedTool = (tool) => {
+		this.setState({copiedTool: tool});
 	}
 
 }

@@ -60,28 +60,28 @@ class Canvas extends React.Component {
     }
 
     onCopyTool = () => {
-        this.setState({copiedTool: this.state.currentTool.clone()});
+        this.props.setCopiedTool(this.state.currentTool.clone());
     }
 
     onPasteTool = () => {
-        const {copiedTool} = this.state;
-        const {tools} = this.props;
+        const {copiedTool, tools, setCopiedTool} = this.props;
         const newCopy = copiedTool.clone();         // must deep copy again so subsequential pastes will not have properties effected
 
         const {x,y} = determineToolPosition(copiedTool.height);
         const position = new Position(x,y);
         copiedTool.layer = tools.length;
         copiedTool.position = position;
-        tools.push(copiedTool)
+        tools.push(copiedTool);
 
-        this.setState({copiedTool: newCopy});
+        setCopiedTool(newCopy);
     }
 
     render() {
-        const {currentTool, copiedTool, isEditingTool} = this.state;
-        const ToolComponents = this.props.tools.map((tool, index) => {
+        const {currentTool, isEditingTool} = this.state;
+        const {copiedTool, tools, instructor, onDrop} = this.props;
+        const ToolComponents = tools.map((tool, index) => {
             let ToolComponent;
-            if (currentTool === tool && this.props.instructor) {
+            if (currentTool === tool && instructor) {
                 ToolComponent = (
                     <ContextMenuTrigger id={CONTEXT_MENU_ID} holdToDisplay={-1}>
                         <Tool
@@ -125,7 +125,7 @@ class Canvas extends React.Component {
             <React.Fragment>
                 <Droppable 
                     types={["tool"]}
-                    onDrop={this.props.onDrop}
+                    onDrop={onDrop}
                 >
                     <ContextMenuTrigger id={CONTEXT_MENU_ID + "-2"} holdToDisplay={-1}>
                         <div
