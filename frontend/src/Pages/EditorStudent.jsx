@@ -145,6 +145,7 @@ class EditorStudent extends Component {
 			<div>
 				<HeaderBru
 					links={links}
+					isLoggedIn
 					btn="Exit"
 					color="#01AFD8"
 				/>

@@ -1,7 +1,7 @@
-import EditorConstants from '../utils/EditorConstants.js';
+import {DEFAULT_LESSON_NAME} from '../utils/EditorConstants.js';
 
 class Lesson {
-	constructor(name = EditorConstants.DEFAULT_LESSON_NAME, id, isPublished = false) {
+	constructor(name = DEFAULT_LESSON_NAME, id, isPublished = false) {
 		this.name = name;
 		this.id = id;
 		this.isPublished = isPublished;

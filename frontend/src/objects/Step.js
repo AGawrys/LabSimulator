@@ -1,9 +1,9 @@
-import EditorConstants from '../utils/EditorConstants.js';
+import {DEFAULT_STEP_NAME} from '../utils/EditorConstants.js';
 import Tool from './Tool.js';
 
 class Step {
 	constructor(
-		name = EditorConstants.DEFAULT_STEP_NAME,
+		name = DEFAULT_STEP_NAME,
 		description = null,
 		tools = [],
 		action = null,

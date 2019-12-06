@@ -1,15 +1,26 @@
 const EditorConstants = {
 	DEFAULT_LESSON_NAME: "Untitled Lesson",
 	DEFAULT_STEP_NAME: "Untitled Step",
-	CANNOT_DELETE_STEP_MESSAGE: "Unable to delete! There must be at least one existing step in a lab.",
-	CANNOT_DELETE_STEP_TITLE: "Cannot Delete Step",
 	ACTIONS: [
 		{value: "Shake", label: "Shake"}, 
 		{value: "Pour", label: "Pour"}, 
 		{value: "Stir", label: "Stir"}, 
 		{value: "Blend", label: "Blend"},
 	],
-	CONTEXT_MENU_ID: "tool-context-menu"
+	CONTEXT_MENU_ID: "tool-context-menu",
+	DEFAULT_TOOL_SIZE: 125
 };
 
-export default EditorConstants;
+
+const DEFAULT_LESSON_NAME = "Untitled Lesson";
+const DEFAULT_STEP_NAME = "Untitled Step";
+const CONTEXT_MENU_ID = "tool-context-menu";
+const DEFAULT_TOOL_SIZE = 125;
+const ACTIONS = [
+	{value: "Shake", label: "Shake"}, 
+	{value: "Pour", label: "Pour"}, 
+	{value: "Stir", label: "Stir"}, 
+	{value: "Blend", label: "Blend"},
+];
+
+export {DEFAULT_LESSON_NAME, DEFAULT_STEP_NAME, CONTEXT_MENU_ID, DEFAULT_TOOL_SIZE, ACTIONS};

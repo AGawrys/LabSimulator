@@ -43,7 +43,7 @@ class Tool extends React.Component {
 
         const {tool} = this.props;
         let style = this.selected?
-            {border: "1px green solid"} :
+            {border: "2px #7fb3d8 solid"} :
             {border: "1px #f3f3f3 solid"}
         const ToolCanvas = (
             <canvas

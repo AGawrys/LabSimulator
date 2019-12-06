@@ -11,17 +11,16 @@ import {
 	Tooltip,
 	FormControl
 } from 'react-bootstrap';
-import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { Container, Row, Col } from 'react-grid-system';
 import Select from 'react-select';
-import SimpleInput from 'react-simple-input';
 import HeaderBru from '../Components/Header.jsx';
 import Catalog from '../Components/Catalog.jsx';
 import Canvas from '../Components/Canvas.jsx';
 import Routes from '../utils/RouteConstants.js';
 import GeneralConstants from '../utils/GeneralConstants.js';
-import EditorConstants from '../utils/EditorConstants.js';
+import {ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME} from '../utils/EditorConstants.js';
 import { loadLesson } from '../utils/LoadUtils.js';
+import { determineToolPosition } from '../utils/CanvasUtils.js';
 import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
 import Tool from '../Objects/Tool.js';
@@ -35,7 +34,6 @@ import { IMAGES, createImage } from '../Components/Tools.jsx';
 import { SortableContainer, SortableStep} from '../Components/StepItem.jsx';
 import { swapElements } from '../LilacArray.js';
 import axios from 'axios';
-import ReactTooltip from 'react-tooltip';
 import plus from '../Styles/Images/icons8-plus.svg';
 
 //UNDO REDO PUBLISH DELETE SIMULATE
@@ -166,7 +164,7 @@ class Editor extends Component {
 
 						<Col lg={8}>
 							<div className="brownBorder">
-							<Canvas isInstructor={true} onDrop={this.onDropTool} tools={currentStep.getTools()} />
+							<Canvas instructor={true} onDrop={this.onDropTool} tools={currentStep.getTools()} />
 							</div>
 						</Col>
 
@@ -180,7 +178,7 @@ class Editor extends Component {
 										placeholder="Action"
 										isSearchable={true}
 										name="actions"
-										options={EditorConstants.ACTIONS}
+										options={ACTIONS}
 										onChange={(action) => this.updateCurrentAction(action)}
 										value={
 											currentStep.action ? (
@@ -322,32 +320,11 @@ class Editor extends Component {
 	};
 
 	onDropTool(data) {
-		const canvas = document.getElementById('canvas');
-		const { left, top, width, height } = canvas.getBoundingClientRect();
-		const { pageX, pageY } = window.event;
-		const length = 125;
-
-		let x, y;
-		if (pageX - length / 2 < left) {
-			x = 0;
-		} else if (pageX + length / 2 > width + left) {
-			x = width - length;
-		} else {
-			x = pageX - left - length / 2;
-		}
-
-		if (pageY - length / 2 < top) {
-			y = 0;
-		} else if (pageY + length / 2 > height + top) {
-			y = height - length;
-		} else {
-			y = pageY - top - length / 2;
-		}
-
+		const {x,y} = determineToolPosition(DEFAULT_TOOL_SIZE);
 		const position = new Position(x, y);
 		const image = createImage(data.tool);
 		const layer = this.state.currentStep.getTools().length;
-		const tool = new Tool(data.tool, image, position, length, length, layer);
+		const tool = new Tool(data.tool, image, position,DEFAULT_TOOL_SIZE,DEFAULT_TOOL_SIZE,layer);
 		let currentStep = this.state.currentStep;
 		currentStep.addTool(tool);
 		this.setState({
@@ -384,7 +361,7 @@ class Editor extends Component {
 
 	onFieldBlur = (e, step) => {
 		if (StringUtils.isEmpty(e.target.value)) {
-			step.name = EditorConstants.DEFAULT_STEP_NAME;
+			step.name = DEFAULT_STEP_NAME;
 			this.setState({ steps: this.state.steps });
 		}
 	};
