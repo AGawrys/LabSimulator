@@ -156,7 +156,7 @@
 	padding: 5px 20px !important;
 	margin-bottom: 15px;
 	margin-top: 5px;
-	}
+}
 
 .editorToolBarSpacing {
 	padding: 5px !important;
@@ -192,4 +192,40 @@
 .editorLeftScroll {
 	max-height: 550px;
 	overflow-y: auto;
+}
+
+#largerCircle {
+	position: relative;
+	width: 300px;
+	height: 300px;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 50%;
+	transform: rotate(0deg);
+	transition: transform 0.7s linear;
+	margin: 40px auto;
+}
+
+#largerCircle:focus {
+	outline: none;
+	outline-width: 0;
+}
+
+.centerCircle {
+	height: 400px;
+	text-align: center;
+}
+
+#smallerCircle {
+	position: absolute;
+	width: 80px;
+	height: 80px;
+	transform: rotate(0deg);
+	transition: transform 0.7s linear;
+	top: -40px; /* -child size/2 */
+	left: 110px; /* parent size/2 - child size/2 */
+}
+
+#smallerCircle img {
+	max-width: 100%;
+	border-radius: 50%;
 }
