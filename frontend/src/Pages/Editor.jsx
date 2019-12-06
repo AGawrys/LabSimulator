@@ -31,13 +31,11 @@ import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
 import StringUtils from '../utils/StringUtils.js';
 import { IMAGES, createImage } from '../Components/Tools.jsx';
-import { SortableContainer, SortableStep} from '../Components/StepItem.jsx';
+import { SortableContainer, SortableStep } from '../Components/StepItem.jsx';
 import { swapElements } from '../LilacArray.js';
 import axios from 'axios';
 import ReactTooltip from 'react-tooltip';
 import plus from '../Styles/Images/icons8-plus.svg';
-
-//UNDO REDO PUBLISH DELETE SIMULATE
 
 const links = {
 	Account: '/instructor/dashboard'
@@ -53,7 +51,7 @@ class Editor extends Component {
 			steps: null,
 			showDeleteLessonModal: false,
 			showSuccessfullyPublished: false,
-			showActionMenu: true,
+			showActionMenu: true
 		};
 
 		this.onDropTool = this.onDropTool.bind(this);
@@ -78,33 +76,34 @@ class Editor extends Component {
 	}
 
 	loadLesson = (response) => {
-		const {stepInformation, lesson, published} = response.data;
-		const {instructorEmail, name, lessonId} = lesson;
+		const { stepInformation, lesson, published } = response.data;
+		const { instructorEmail, name, lessonId } = lesson;
 		if (instructorEmail !== this.props.email) {
 			this.props.history.push(Routes.NOT_FOUND);
 		}
 
 		const loadedSteps = stepInformation.map((stepData) => this.loadStep(stepData));
 		const currentLesson = new Lesson(name, lessonId, published);
-		const steps = loadedSteps.length === 0 ? [new Step()] : loadedSteps;
+		const steps = loadedSteps.length === 0 ? [ new Step() ] : loadedSteps;
 
 		this.setState({
 			lesson: currentLesson,
 			steps: steps,
-			currentStep: steps[0],
+			currentStep: steps[0]
 		});
-	}
+	};
 
 	loadStep = (stepData) => {
-		const {toolList, step} = stepData;
-		const {name, description, actionType, source, target, actionMeasurement} = step;
+		const { toolList, step } = stepData;
+		const { name, description, actionType, source, target, actionMeasurement } = step;
 		const loadedTools = toolList.map((tool) => this.loadTool(tool));
+		console.log(actionMeasurement);
 		return new Step(name, description, loadedTools, actionType, source, target, actionMeasurement);
-	}
+	};
 
 	loadTool = (toolData) => {
-		const {toolType, x, y, width, height, toolIdentity, color, amount, name} = toolData;
-		const {layer} = toolIdentity;
+		const { toolType, x, y, width, height, toolIdentity, color, amount, name } = toolData;
+		const { layer } = toolIdentity;
 		const image = createImage(toolType);
 		image.properties.Fill = amount;
 		image.properties.Color = color;
@@ -112,7 +111,7 @@ class Editor extends Component {
 		const loadedTool = new Tool(toolType, image, position, width, height, layer, color, amount);
 		loadedTool.setName(name);
 		return loadedTool;
-	}
+	};
 
 	handleFieldChange = (e) => {
 		this.state.lesson.setName(e.target.value);
@@ -124,9 +123,11 @@ class Editor extends Component {
 			return null;
 		}
 		const toolOptions = currentStep.tools.map((tool) => tool.toSelectOption());
-		const publishBtn = lesson.isPublished 
-			? null 
-			: (<Button variant="primary" onClick={this.publishLesson}>Publish</Button>);
+		const publishBtn = lesson.isPublished ? null : (
+			<Button variant="primary" onClick={this.publishLesson}>
+				Publish
+			</Button>
+		);
 		return (
 			<div>
 				<HeaderBru {...this.props} home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
@@ -185,7 +186,9 @@ class Editor extends Component {
 					<Row>
 						<Col lg={2}>
 							<div className="editorLeftScroll brownBorder">
-								<Card.Header><h6 className="m-0 font-weight-bold text-primary headings"> TOOLS </h6> </Card.Header>
+								<Card.Header>
+									<h6 className="m-0 font-weight-bold text-primary headings"> TOOLS </h6>{' '}
+								</Card.Header>
 								<Catalog />
 								<Catalog />
 							</div>
@@ -193,15 +196,16 @@ class Editor extends Component {
 
 						<Col lg={8}>
 							<div className="brownBorder">
-							<Canvas onDrop={this.onDropTool} tools={currentStep.getTools()} />
+								<Canvas onDrop={this.onDropTool} tools={currentStep.getTools()} />
 							</div>
 						</Col>
 
 						<Col lg={2}>
 							<div className="brownBorder editorRightScroll">
 								<Card>
-									<Card.Header><h6 className="m-0 font-weight-bold text-primary headings">ACTION MANAGER</h6>
-							</Card.Header>
+									<Card.Header>
+										<h6 className="m-0 font-weight-bold text-primary headings">ACTION MANAGER</h6>
+									</Card.Header>
 									<Select
 										className="editorSelect"
 										placeholder="Action"
@@ -237,19 +241,23 @@ class Editor extends Component {
 										onChange={(tool) => this.updateCurrentTarget(tool.value)}
 										value={currentStep.target ? currentStep.target.toSelectOption() : ''}
 									/>
+									<input
+										className="actionMeasurementControl"
+										type="number"
+										min="1"
+										placeholder="Action Measurement"
+										onChange={(e) => this.updateActionMeasurement(e)}
+										value={currentStep.actionMeasurement ? currentStep.actionMeasurement : ''}
+									/>
 								</Card>
 								<div className="divider" />
 								<Card>
 									<Card.Header>
-										<Row style={{justifyContent: 'space-evenly'}}>
-									<h6 class="m-0 font-weight-bold text-primary headings"> STEPS </h6>
-										<button
-											title="Add Step"
-											className="clearButton"
-											onClick={this.addStep}
-										>
-											<img src={plus} />
-										</button>
+										<Row style={{ justifyContent: 'space-evenly' }}>
+											<h6 class="m-0 font-weight-bold text-primary headings"> STEPS </h6>
+											<button title="Add Step" className="clearButton" onClick={this.addStep}>
+												<img src={plus} />
+											</button>
 										</Row>
 									</Card.Header>
 									<div className="scrollableStep">
@@ -274,16 +282,15 @@ class Editor extends Component {
 				instructorEmail: this.props.email,
 				name: this.state.lesson.name
 			},
-			stepInformation: this.constructSaveStepObject(),
+			stepInformation: this.constructSaveStepObject()
 		};
 		this.saveLesson(lessonInformation);
-	}
+	};
 
 	saveLesson = (lessonInformation) => {
-		axios.post('http://localhost:8080/updateLessonName', lessonInformation).then(
-			(response) => console.log(response),
-			(error) => console.log(error),
-		);
+		axios
+			.post('http://localhost:8080/updateLessonName', lessonInformation)
+			.then((response) => console.log(response), (error) => console.log(error));
 	};
 
 	constructSaveStepObject() {
@@ -314,7 +321,7 @@ class Editor extends Component {
 				toolIdentity: {
 					layer: tool.layer,
 					stepNumber: stepNumber,
-					lessonId: this.state.lesson.id,
+					lessonId: this.state.lesson.id
 				},
 				toolType: tool.type,
 				x: tool.position.getX(),
@@ -389,12 +396,11 @@ class Editor extends Component {
 	};
 
 	addStep = () => {
-
 		const { steps, currentStep } = this.state;
 		const index = steps.indexOf(currentStep);
 		const newStep = new Step();
-		steps.splice(index + 1,0, newStep);
-		this.setState({ currentStep: newStep, steps});
+		steps.splice(index + 1, 0, newStep);
+		this.setState({ currentStep: newStep, steps });
 	};
 
 	onStepClick = (e) => {
@@ -439,15 +445,15 @@ class Editor extends Component {
 			e.stopPropagation();
 		}
 		this.cloneStep(step);
-	}
+	};
 
 	cloneStep = (step) => {
 		const clonedStep = step.clone();
-		const {steps} = this.state;
+		const { steps } = this.state;
 		const index = steps.indexOf(step);
-		steps.splice(index + 1,0,clonedStep);
-		this.setState({steps});
-	}
+		steps.splice(index + 1, 0, clonedStep);
+		this.setState({ steps });
+	};
 
 	updateCurrentAction = (action) => {
 		const { currentStep } = this.state;
@@ -466,6 +472,13 @@ class Editor extends Component {
 		const { currentStep } = this.state;
 		currentStep.target = tool;
 		currentStep.source = currentStep.source === currentStep.target ? null : currentStep.source;
+		this.setState({ currentStep });
+	};
+
+	updateActionMeasurement = (e) => {
+		const { currentStep } = this.state;
+		currentStep.actionMeasurement = e.target.value;
+		console.log(e.target.value);
 		this.setState({ currentStep });
 	};
 
@@ -497,29 +510,27 @@ class Editor extends Component {
 		const { lesson_id } = this.props.computedMatch.params;
 		const body = {
 			lessonId: lesson_id,
-			email: this.props.email,
+			email: this.props.email
 		};
 		axios.post(Routes.SERVER + 'publishLesson', body).then(
 			(response) => {
 				this.state.lesson.isPublished = true;
-				this.setState({showSuccessfullyPublished:  true});
+				this.setState({ showSuccessfullyPublished: true });
 			},
 			(error) => console.log(error)
 		);
-	}
+	};
 
 	cloneLesson = () => {
 		const { lesson } = this.state;
 		const body = {
 			lessonId: lesson.id,
-			instructorEmail: this.props.email,
+			instructorEmail: this.props.email
 		};
-		axios.post(Routes.SERVER + 'cloneLesson/', body).then(
-			(response) => console.log(response),
-			(error) => console.log(error),
-		);
-	}
-
+		axios
+			.post(Routes.SERVER + 'cloneLesson/', body)
+			.then((response) => console.log(response), (error) => console.log(error));
+	};
 }
 
 export default Editor;
