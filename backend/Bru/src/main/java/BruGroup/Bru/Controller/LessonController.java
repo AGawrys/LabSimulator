@@ -124,25 +124,23 @@ public class LessonController {
 
     @PostMapping(path = "/canStudentComplete")
     @CrossOrigin(origins = "*")
-    public ResponseEntity canStudentComplete(@RequestBody VerifyStudentLessonParams params) {
-        AssignmentIdentity identity = new AssignmentIdentity(params.getEmail(), params.getCourseId(),params.getLessonId());
+    public ResponseEntity canStudentComplete(@RequestBody AssignmentIdentity identity) {
+        List<CourseLesson> curriculum = curriculumRepository.findByCourseLessonIdentityCourseId(identity.getCourseId());
         boolean isCompleted = assignmentRepository.existsById(identity);
         if (isCompleted) {
-            return ResponseEntity.ok(null);
+            return ResponseEntity.ok(curriculum);
         }
 
-        List<CourseLesson> curriculum = curriculumRepository.findByCourseLessonIdentityCourseId(params.getCourseId());
         for (CourseLesson courseLesson : curriculum) {
-            identity = new AssignmentIdentity(params.getEmail(),params.getCourseId(), courseLesson.getCourseLessonIdentity().getLessonId());
+            identity = new AssignmentIdentity(identity.getEmail(),identity.getCourseId(), courseLesson.getCourseLessonIdentity().getLessonId());
             if (!assignmentRepository.existsById(identity)) { //if assignment has not been completed by student
-                ResponseEntity canStudentComplete = identity.getLessonId() == params.getLessonId()
-                        ? ResponseEntity.ok(null)
+                ResponseEntity canStudentComplete = identity.getLessonId() == identity.getLessonId()
+                        ? ResponseEntity.ok(curriculum)
                         : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
                 return canStudentComplete;
             }
         }
-        return ResponseEntity.ok(null);
-
+        return ResponseEntity.ok(curriculum);
     }
 
     @PostMapping(path = "/cloneLesson")
@@ -270,44 +268,6 @@ class AccountLessonParams {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-}
-
-class VerifyStudentLessonParams {
-    private String courseId;
-    private String email;
-    private int lessonId;
-
-    public VerifyStudentLessonParams() {}
-
-    public VerifyStudentLessonParams(String courseId, String email, int lessonId) {
-        this.courseId = courseId;
-        this.email = email;
-        this.lessonId = lessonId;
-    }
-
-    public String getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public int getLessonId() {
-        return lessonId;
-    }
-
-    public void setLessonId(int lessonId) {
-        this.lessonId = lessonId;
     }
 }
 

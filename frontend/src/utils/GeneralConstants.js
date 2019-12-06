@@ -11,6 +11,8 @@ const GeneralConstants = {
 	CANNOT_DELETE_STEP_TOOLTIP: "There must be at least one step in a lesson!",
 	SUCCESSFUL_PUBLISH_LESSON_TITLE: "Lesson Successfully Published",
 	SUCCESSFUL_PUBLISH_LESSON_MESSAGE: "Lesson has been successfully published to the your organization!",
+	SUCCESSFUL_COMPLETE_LESSON_TITLE: "Lesson Successfully Completed!",
+	SUCCESSFUL_COMPLETE_LESSON_MESSAGE: "Lesson has been successfully completed! Close to navigate back to student dashboard",
 	ADD_STUDENT_TITLE: "Add Student to Course",
 	ADD_INSTRUCTOR_TITLE: "Add Instructor",
 	ADD_LESSON_TITLE: "Add Lesson to Course",

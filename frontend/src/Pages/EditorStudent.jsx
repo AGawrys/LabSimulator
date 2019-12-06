@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Dropdown, DropdownButton, Card } from 'react-bootstrap';
+import { Button, Dropdown, DropdownButton, Card, ListGroup } from 'react-bootstrap';
 import Collapsible from 'react-collapsible';
 import { Container, Row, Col } from 'react-grid-system';
 import Draggable, { DraggableCore } from 'react-draggable';
@@ -9,6 +9,12 @@ import 'react-sticky-header/styles.css';
 import HeaderBru from '../Components/Header.jsx';
 import Routes from '../utils/RouteConstants.js';
 import axios from 'axios';
+import Canvas from '../Components/Canvas.jsx';
+import InformationModal from '../Components/InformationModal.jsx';
+import GeneralConstants from '../utils/GeneralConstants.js';
+import { Redirect } from 'react-router-dom';
+
+
 
 import { isAbsolute } from 'path';
 
@@ -24,12 +30,11 @@ class EditorStudent extends Component {
 		super(props);
 		this.state = {
 			currentStep: null,
+			isCurrentStepComplete: false,
+			isLessonComplete: false,
 			steps: null,
 			lesson: null,
-			disable: 'true',
-			feedback: 'false',
-			feedbackColor: green,
-			feedbackMsg: ''
+			showSuccesfullyComplete: false,
 		};
 	}
 
@@ -42,7 +47,7 @@ class EditorStudent extends Component {
 		};
 		
 		axios.post(Routes.SERVER + 'canStudentComplete', body).then(
-			(response) => this.getLesson(lesson_id),
+			(response) => this.getLesson(lesson_id, response.data),
 			(error) => {
 				console.log(error);
 				this.props.history.push(Routes.NOT_FOUND);
@@ -50,11 +55,10 @@ class EditorStudent extends Component {
 		);
 	}
 
-	getLesson(lesson_id) {
+	getLesson(lesson_id, curriculum) {
+		this.setState({curriculum});
 		axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
-			(response) => {
-				this.setState(loadLesson(response.data))
-			},
+			(response) => this.setState(loadLesson(response.data)),
 			(error) => console.log(error),
 		);
 	}
@@ -112,24 +116,25 @@ class EditorStudent extends Component {
 	//console.log(lessons);
 	//console.log("x: " + lessons[currentLesson].steps[currentStep].tools[0].x + " y: " +lessons[currentLesson].steps[currentStep].tools[0].y);
 	handleClick() {
-		const { currentLesson, currentStep, lessons } = this.state;
-		if (currentStep + 1 >= lessons[currentLesson].steps.length) {
-			this.setState({ currentStep: 0 });
-			const next = currentLesson + 1;
-			this.setState({ currentLesson: next });
-		} else {
-			const nextStep = currentStep + 1;
-			this.setState({ currentStep: nextStep });
+		const {currentStep, steps} = this.state;
+		const index = steps.indexOf(currentStep);
+		if (index == steps.length - 1) {
+			this.setLessonComplete()
 		}
-		this.setState({ disable: 'true' });
-		this.setState({ feedback: false });
+		else {
+			this.setState({
+				currentStep: steps[index + 1],
+			});
+		}
 	}
 
 	render() {
-		const { lesson, steps, currentStep, disable, feedback, feedbackColor, feedbackMsg } = this.state;
-		
+		const { lesson, steps, currentStep, curriculum, showSuccesfullyComplete, isLessonComplete} = this.state;
 		if (lesson == null) {
 			return null;
+		}
+		if (isLessonComplete && !showSuccesfullyComplete) {
+			return <Redirect exact to ={Routes.STUDENT_DASHBOARD}/>;
 		}
 
 		return (
@@ -139,48 +144,34 @@ class EditorStudent extends Component {
 					btn="Exit"
 					color="#01AFD8"
 				/>
+				<InformationModal
+					title={GeneralConstants.SUCCESSFUL_COMPLETE_LESSON_TITLE}
+					message={GeneralConstants.SUCCESSFUL_COMPLETE_LESSON_MESSAGE}
+					onHide={() => this.setState({ showSuccesfullyComplete: false })}
+					show={showSuccesfullyComplete}
+				/>
 				<div className="Editor">
 					<Row>
-						<Col col-sm={2}>
+						<Col col-sm={3}>
 							<div className="divider"> </div>
 							<div className="step-column" style={{ overflowY: 'scroll' }}>
-								<p style={{ margin: 1, padding: 0, color: 'grey', fontWeight: 'bold' }}>
-									Seasonal Training{' '}
-								</p>
-								<p style={{ margin: 0, padding: 0, color: 'grey', fontSize: 13 }}>3 Lessons </p>
-								<div className="list-entry">
-									<Collapsible
-										open
-										trigger={lesson.name}
-										classParentString="collapsible-list"
-									>
-										<ol style={{ margin: 0, padding: 0 }}>
-											{steps.map((step, j) => (
-												<li className="step-entry">
+									<Card>
+										<Card.Header> {lesson.name} </Card.Header>
+										<ListGroup >
+											{steps.map((step, index) => (
+												<ListGroup.Item key={index} active={currentStep == step} as="li">
 													{step.name}
-												</li>
+												</ListGroup.Item>
 											))}
-										</ol>
-									</Collapsible>
-								</div>
+										</ListGroup>
+									</Card>
 							</div>
 						</Col>
 						<Col sm={8}>
 							<div className="divider" />
-							<Card>
-								<Card.Body
-									id="canvas"
-									style={{ flex: 1, height: '65vh', width: '165vh', justifyContent: 'center' }}
-								>
-									<p> {currentStep.name}</p>
-									<div style={{ height: '65vh', width: '70vh' }}>
-									</div>
-									{feedback ? <p style={{ color: feedbackColor }}> {feedbackMsg} </p> : <div />}
-								</Card.Body>
-							</Card>
+							<Canvas isInstructor={false} onDrop={this.onDropTool} tools={currentStep.getTools()} />
 							<Button
 								style={{ backgroundColor: 'black', width: '40vh', justifySelf: 'flex-end' }}
-								disabled={disable}
 								onClick={this.handleClick.bind(this)}
 								block
 								bsSize="small"
@@ -196,6 +187,24 @@ class EditorStudent extends Component {
 				</div>
 			</div>
 		);
+	}
+
+	setLessonComplete = () => {
+		const {lesson_id, course_id} = this.props.computedMatch.params;
+		const body = {
+			email: this.props.email,
+			courseId: course_id,
+			lessonId: lesson_id,
+		};
+
+		axios.post(Routes.SERVER + "markAsComplete", body).then(
+			(response) => console.log(response),
+			(error) => console.log(error),
+		);
+		this.setState({
+			isLessonComplete: true,
+			showSuccesfullyComplete: true,
+		});
 	}
 }
 export default EditorStudent;

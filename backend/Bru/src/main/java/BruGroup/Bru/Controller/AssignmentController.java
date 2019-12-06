@@ -41,7 +41,7 @@ public class AssignmentController {
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping(path = "/addAssignment")
+    @PostMapping(path = "/markAsComplete")
     @CrossOrigin(origins = "*")
     public ResponseEntity addAssignment(@RequestBody AssignmentIdentity assignmentIdentity) {
         Assignment assignment = new Assignment(assignmentIdentity);

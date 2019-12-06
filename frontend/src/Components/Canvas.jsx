@@ -59,7 +59,7 @@ class Canvas extends React.Component {
     render() {
         const ToolComponents = this.props.tools.map((tool, index) => {
             let ToolComponent;
-            if (this.state.currentTool === tool) {
+            if (this.state.currentTool === tool && this.props.instructor) {
                 ToolComponent = (
                     <ContextMenuTrigger
                         id={EditorConstants.CONTEXT_MENU_ID}

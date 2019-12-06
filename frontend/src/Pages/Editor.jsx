@@ -166,7 +166,7 @@ class Editor extends Component {
 
 						<Col lg={8}>
 							<div className="brownBorder">
-							<Canvas onDrop={this.onDropTool} tools={currentStep.getTools()} />
+							<Canvas isInstructor={true} onDrop={this.onDropTool} tools={currentStep.getTools()} />
 							</div>
 						</Col>
 
