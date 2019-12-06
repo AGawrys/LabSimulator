@@ -104,7 +104,7 @@ class Canvas extends React.Component {
         return (
             <React.Fragment>
                 <Droppable 
-                    style={{width: "100%", height: "100%"}}
+                    style={{}}
                     types={["tool"]}
                     onDrop={this.props.onDrop}
                 >

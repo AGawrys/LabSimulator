@@ -29,7 +29,7 @@ class EditorStudent extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			currentStep: null,
+			currentStepIndex: 0,
 			isCurrentStepComplete: false,
 			isLessonComplete: false,
 			steps: null,
@@ -58,7 +58,10 @@ class EditorStudent extends Component {
 	getLesson(lesson_id, curriculum) {
 		this.setState({curriculum});
 		axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
-			(response) => this.setState(loadLesson(response.data)),
+			(response) => {
+				const {steps, lesson} = loadLesson(response.data);
+				this.setState({steps,lesson});
+			},
 			(error) => console.log(error),
 		);
 	}
@@ -116,23 +119,24 @@ class EditorStudent extends Component {
 	//console.log(lessons);
 	//console.log("x: " + lessons[currentLesson].steps[currentStep].tools[0].x + " y: " +lessons[currentLesson].steps[currentStep].tools[0].y);
 	handleClick() {
-		const {currentStep, steps} = this.state;
-		const index = steps.indexOf(currentStep);
-		if (index == steps.length - 1) {
+		const {steps, currentStepIndex} = this.state;
+		if (currentStepIndex == steps.length - 1) {
 			this.setLessonComplete()
 		}
 		else {
 			this.setState({
-				currentStep: steps[index + 1],
+				currentStep: steps[currentStepIndex + 1],
+				currentStepIndex: currentStepIndex + 1,
 			});
 		}
 	}
 
 	render() {
-		const { lesson, steps, currentStep, curriculum, showSuccesfullyComplete, isLessonComplete} = this.state;
+		const { lesson, steps, currentStepIndex, curriculum, showSuccesfullyComplete, isLessonComplete} = this.state;
 		if (lesson == null) {
 			return null;
 		}
+		const currentStep = steps[currentStepIndex].clone();
 		if (isLessonComplete && !showSuccesfullyComplete) {
 			return <Redirect exact to ={Routes.STUDENT_DASHBOARD}/>;
 		}
@@ -159,7 +163,7 @@ class EditorStudent extends Component {
 										<Card.Header> {lesson.name} </Card.Header>
 										<ListGroup >
 											{steps.map((step, index) => (
-												<ListGroup.Item key={index} active={currentStep == step} as="li">
+												<ListGroup.Item key={index} active={currentStepIndex == index} as="li">
 													{step.name}
 												</ListGroup.Item>
 											))}
@@ -171,13 +175,25 @@ class EditorStudent extends Component {
 							<div className="divider" />
 							<Canvas isInstructor={false} onDrop={this.onDropTool} tools={currentStep.getTools()} />
 							<Button
-								style={{ backgroundColor: 'black', width: '40vh', justifySelf: 'flex-end' }}
+								style={{float:"left", "margin-right": "10px"}}
+								variant="dark"
 								onClick={this.handleClick.bind(this)}
-								block
-								bsSize="small"
 								type="button"
 							>
 								NEXT STEP
+							</Button>
+							<Button 
+								style={{float:"left", "margin-right": "10px"}}
+								variant="dark" 
+								onClick={this.resetStep}>
+								RESET STEP
+							</Button>
+							<Button
+								style={{float:"left"}}
+								variant="dark"
+								onClick={this.resetLesson}
+							>
+								RESET LESSON
 							</Button>
 						</Col>
 						<Col>
@@ -206,5 +222,14 @@ class EditorStudent extends Component {
 			showSuccesfullyComplete: true,
 		});
 	}
+
+	resetLesson = () => {
+		this.setState({currentStepIndex: 0});
+	}
+
+	resetStep = () => {
+		this.setState({isCurrentStepComplete: false});
+	}
+
 }
 export default EditorStudent;
