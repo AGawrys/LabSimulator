@@ -247,3 +247,7 @@
 	border-color: #2684ff;
 	box-shadow: 0 0 0 1px #2684ff;
 }
+
+.displayNone {
+	display: none;
+}

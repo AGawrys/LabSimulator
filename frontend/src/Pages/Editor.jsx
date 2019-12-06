@@ -233,7 +233,7 @@ class Editor extends Component {
 									/>
 
 									<Select
-										className="editorSelect"
+										className={currentStep.action === 'Pour' ? 'editorSelect' : 'displayNone'}
 										placeholder="Target"
 										isSearchable={true}
 										name="targets"
@@ -248,6 +248,11 @@ class Editor extends Component {
 										placeholder="Action Measurement"
 										onChange={(e) => this.updateActionMeasurement(e)}
 										value={currentStep.actionMeasurement ? currentStep.actionMeasurement : ''}
+									/>
+									<input
+										className="actionMeasurementControl"
+										type="time"
+										placeholder="Action Measurement"
 									/>
 								</Card>
 								<div className="divider" />
