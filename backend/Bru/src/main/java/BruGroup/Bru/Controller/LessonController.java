@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+
 @RestController
 public class LessonController {
 
@@ -40,6 +42,8 @@ public class LessonController {
     @Autowired
     AssignmentRepository assignmentRepository;
 
+    private static final double DEFAULT_CANVAS_SIZE = 1000;
+
     @GetMapping(path = "/allLessons")
     @CrossOrigin(origins = "*")
     public List<Lesson> allLessons() {
@@ -48,8 +52,9 @@ public class LessonController {
 
     @PostMapping(path = "/addLesson")
     @CrossOrigin(origins = "*")
-    public ResponseEntity addLesson(@RequestBody CreateLessonParams lessonParams) {
-        Lesson lesson = new Lesson(lessonParams.getName(), lessonParams.getInstructorEmail());
+    public ResponseEntity addLesson(@RequestBody Lesson lesson) {
+        lesson.setCanvasHeight(DEFAULT_CANVAS_SIZE);
+        lesson.setCanvasWidth(DEFAULT_CANVAS_SIZE);
         lessonRepository.save(lesson);
         return ResponseEntity.ok(lesson.getLessonId());
     }
@@ -148,7 +153,11 @@ public class LessonController {
     public ResponseEntity cloneLesson(@RequestBody AccountLessonParams params) {
         Lesson existingLesson = lessonRepository.findByLessonId(params.getLessonId());
         String clonedLessonName = "Copy of " + existingLesson.getName();
-        Lesson clonedLesson = new Lesson(clonedLessonName, existingLesson.getInstructorEmail());
+        Lesson clonedLesson = new Lesson(
+                clonedLessonName,
+                existingLesson.getInstructorEmail(),
+                existingLesson.getCanvasHeight(),
+                existingLesson.getCanvasWidth());
         lessonRepository.save(clonedLesson);
 
         List<Step> steps = stepRepository.findByStepIdentityLessonId(params.getLessonId());
@@ -307,36 +316,6 @@ class LessonInformation {
 
     public void setStepInformation(List<StepInformation> stepInformation) {
         this.stepInformation = stepInformation;
-    }
-}
-
-class CreateLessonParams {
-    private String instructorEmail;
-    private String name;
-
-    public CreateLessonParams() {
-
-    }
-
-    public CreateLessonParams(String instructorEmail, String name) {
-        this.instructorEmail = instructorEmail;
-        this.name = name;
-    }
-
-    public String getInstructorEmail() {
-        return instructorEmail;
-    }
-
-    public void setInstructorEmail(String instructorEmail) {
-        this.instructorEmail = instructorEmail;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }
 
