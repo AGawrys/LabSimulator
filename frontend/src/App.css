@@ -37,3 +37,19 @@
 .remove-button:hover {
 	opacity:.8;
 }
+
+.success-notif {
+	position: absolute;
+	top: 10vh;
+	right:40vw;
+	z-index: 1000;
+	background-color: #43a047 !important;
+	height:60px;
+}
+
+.success-notif-body {
+	background-color: #43a047 !important;
+	height:60px;
+	z-index: 1000;
+	color: white !important;
+}

@@ -29,6 +29,7 @@ import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
+import SuccessNotification from '../Components/SuccessNotification.jsx';
 import StringUtils from '../utils/StringUtils.js';
 import { IMAGES, createImage } from '../Components/Tools.jsx';
 import { SortableContainer, SortableStep} from '../Components/StepItem.jsx';
@@ -52,10 +53,12 @@ class Editor extends Component {
 			steps: null,
 			showDeleteLessonModal: false,
 			showSuccessfullyPublished: false,
+			showSuccessfulDuplicate: false,
+			showSuccessfulSave:false,
 			showActionMenu: true,
 			copiedTool: null,
 			areToolsPlaced: false,
-			canvasSize: {height: 1000, width: 1000}
+			canvasSize: {height: 1000, width: 1000},
 		};
 
 		this.onDropTool = this.onDropTool.bind(this);
@@ -112,7 +115,8 @@ class Editor extends Component {
 	};
 
 	render() {
-		const { lesson, currentStep, steps, showDeleteLessonModal, showSuccessfullyPublished, copiedTool} = this.state;
+		const { lesson, currentStep, steps, copiedTool} = this.state;
+		const {showSuccessfulDuplicate, showDeleteLessonModal, showSuccessfullyPublished, showSuccessfulSave } = this.state;
 		if (steps == null) {
 			return null;
 		}
@@ -135,6 +139,22 @@ class Editor extends Component {
 					message={GeneralConstants.SUCCESSFUL_PUBLISH_LESSON_MESSAGE}
 					onHide={() => this.setState({ showSuccessfullyPublished: false })}
 					show={showSuccessfullyPublished}
+				/>
+				<SuccessNotification
+					message={"Lesson successfully duplicated!"}
+					onClose={() => this.setState({showSuccessfulDuplicate: false})}
+					show={showSuccessfulDuplicate}
+					isSuccess
+					autohide
+					delay={1000}
+				/>
+				<SuccessNotification
+					message={"Lesson successfully saved!"}
+					onClose={() => this.setState({showSuccessfulSave: false})}
+					show={showSuccessfulSave}
+					isSuccess
+					autohide
+					delay={1000}
 				/>
 
 				<Container fluid={true} className="instructorContainer">
@@ -283,7 +303,7 @@ class Editor extends Component {
 
 	saveLesson = (lessonInformation) => {
 		axios.post('http://localhost:8080/updateLessonName', lessonInformation).then(
-			(response) => console.log(response),
+			(response) => this.setState({showSuccessfulSave:true}),
 			(error) => console.log(error),
 		);
 	};
@@ -496,7 +516,7 @@ class Editor extends Component {
 			instructorEmail: this.props.email,
 		};
 		axios.post(Routes.SERVER + 'cloneLesson/', body).then(
-			(response) => console.log(response),
+			(response) => this.setState({showSuccessfulDuplicate: true}),
 			(error) => console.log(error),
 		);
 	}
