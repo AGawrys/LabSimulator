@@ -3,6 +3,7 @@ import Step from '../Objects/Step.js';
 import Position from '../Objects/Position.js';
 import Tool from '../Objects/Tool.js';
 import {createImage} from '../Components/Tools.jsx';
+import { toExactPosition } from '../utils/CanvasUtils.js';
 
 
 function loadLesson(data){
@@ -34,7 +35,7 @@ function loadTool(toolData) {
 	const image = createImage(toolType);
 	image.properties.Fill = amount;
 	image.properties.Color = color;
-	const position = new Position(x, y);
+	const position = new Position(x,y);
 	const loadedTool = new Tool(toolType, image, position, width, height, layer, color, amount);
 	loadedTool.setName(name);
 	return loadedTool;

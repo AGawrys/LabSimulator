@@ -20,7 +20,7 @@ import Routes from '../utils/RouteConstants.js';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import {ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME} from '../utils/EditorConstants.js';
 import { loadLesson } from '../utils/LoadUtils.js';
-import { determineToolPosition } from '../utils/CanvasUtils.js';
+import { determineToolPosition, toScaledPosition,placeTools } from '../utils/CanvasUtils.js';
 import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
 import Tool from '../Objects/Tool.js';
@@ -54,6 +54,7 @@ class Editor extends Component {
 			showSuccessfullyPublished: false,
 			showActionMenu: true,
 			copiedTool: null,
+			areToolsPlaced: false,
 		};
 
 		this.onDropTool = this.onDropTool.bind(this);
@@ -75,6 +76,13 @@ class Editor extends Component {
 				this.props.history.push(Routes.NOT_FOUND);
 			}
 		);
+	}
+
+	componentDidUpdate() {
+		if (!this.state.areToolsPlaced) {
+			placeTools(this.state.steps);
+			this.setState({areToolsPlaced: true});
+		}
 	}
 
 	loadLesson = (response) => {
@@ -168,7 +176,8 @@ class Editor extends Component {
 							<Canvas 
 								instructor={true} 
 								onDrop={this.onDropTool} 
-								tools={currentStep.getTools()} 
+								tools={currentStep.getTools()}
+								onUpdateTools={this.updateTools} 
 								setCopiedTool={this.setCopiedTool}
 								copiedTool={copiedTool} />
 							</div>
@@ -287,6 +296,7 @@ class Editor extends Component {
 
 	constructToolListObject(tools, stepNumber) {
 		return tools.map((tool, index) => {
+			const position = toScaledPosition(tool.position);
 			return {
 				toolIdentity: {
 					layer: tool.layer,
@@ -294,8 +304,8 @@ class Editor extends Component {
 					lessonId: this.state.lesson.id,
 				},
 				toolType: tool.type,
-				x: tool.position.getX(),
-				y: tool.position.getY(),
+				x: position.x,
+				y: position.y,
 				name: tool.name,
 				amount: tool.amount,
 				color: tool.color,
@@ -478,6 +488,18 @@ class Editor extends Component {
 
 	setCopiedTool = (tool) => {
 		this.setState({copiedTool: tool});
+	}
+
+	updateTools = (tools) => {
+		const {currentStep} = this.state;
+		if (tools.indexOf(currentStep.source) == -1) {
+			currentStep.source = null;
+		}
+		if (tools.indexOf(currentStep.target) == -1) {
+			currentStep.target = null;
+		}
+		currentStep.tools = tools;
+		this.setState({currentStep});
 	}
 
 }

@@ -24,15 +24,22 @@ class Canvas extends React.Component {
     }
 
     setCurrentTool(tool) {
+        tool.position.x -= 1;
+        tool.position.y -= 1;
         this.setState({
             currentTool: tool
         });
     }
 
     resetCurrentTool() {
-        this.setState({
-            currentTool: null
-        })
+        const {currentTool} = this.state;
+        if (currentTool) {
+            currentTool.position.x += 1;
+            currentTool.position.y += 1;
+            this.setState({
+                currentTool: null
+            });
+        }
     }
 
     onClickEdit() {
@@ -48,15 +55,14 @@ class Canvas extends React.Component {
     }
 
     onDeleteTool = () => {
-        const {tools} = this.props;
+        const {tools, onUpdateTools} = this.props;
         const index = tools.indexOf(this.state.currentTool);
         tools.splice(index, 1);
         for (let i = 0; i < tools.length; i++) {
             tools[i].layer = i;
         }
-        this.setState({
-            currentTool: null,
-        });
+        onUpdateTools(tools);
+        this.setState({currentTool: null});
     }
 
     onCopyTool = () => {

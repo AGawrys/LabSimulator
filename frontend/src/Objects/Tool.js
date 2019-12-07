@@ -116,6 +116,17 @@ class Tool {
 			value: this
 		};
 	}
+
+	toScaledPosition() {
+		const {x,y} = this.position;
+		const canvas = document.getElementById('canvas');
+		const {width, height} = canvas.getBoundingClientRect();
+		const scaledX = x / width;
+		const scaledY = y / height;
+		return {x: scaledX, y: scaledY};
+	}
+
+
 }
 
 export default Tool;

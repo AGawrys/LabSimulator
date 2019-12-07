@@ -1,3 +1,5 @@
+import Position from '../Objects/Position.js';
+
 function determineToolPosition(size) {
 	const canvas = document.getElementById('canvas');
 	const { left, top, width, height } = canvas.getBoundingClientRect();
@@ -23,4 +25,32 @@ function determineToolPosition(size) {
 	return {x,y};
 }
 
-export {determineToolPosition};
+function toScaledPosition(position) {
+	const {x,y} = position;
+	const canvas = document.getElementById('canvas');
+	const {width, height} = canvas.getBoundingClientRect();
+	const scaledX = x / width;
+	const scaledY = y / height;
+	return {x: scaledX, y: scaledY};
+}
+
+function toExactPosition(position) {
+	const {x, y} = position;
+	const canvas = document.getElementById('canvas');
+	const {width, height} = canvas.getBoundingClientRect();
+	const exactX = x * width;
+	const exactY = y * height;
+	return {x: exactX, y: exactY};
+}
+
+function placeTools(steps) {
+	steps.map((step) => {
+		step.tools.map((tool) => {
+			const {x,y} = toExactPosition(tool.position);
+			const newPosition =  new Position(x,y);
+			tool.position = newPosition;
+		});
+	});
+}
+
+export {determineToolPosition, toScaledPosition, placeTools};

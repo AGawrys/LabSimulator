@@ -42,9 +42,8 @@ class Tool extends React.Component {
     render() {
 
         const {tool} = this.props;
-        let style = this.selected?
-            {border: "2px #7fb3d8 solid"} :
-            {border: "1px #f3f3f3 solid"}
+        let style = this.selected ?
+            {border: "1px #7fb3d8 solid"} : null;
         const ToolCanvas = (
             <canvas
                 width={tool.getWidth()}

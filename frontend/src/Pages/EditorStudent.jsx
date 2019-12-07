@@ -5,6 +5,7 @@ import { Container, Row, Col } from 'react-grid-system';
 import Draggable, { DraggableCore } from 'react-draggable';
 import { getLessons } from '../Validation/StudentEditorValidation.js';
 import { loadLesson } from '../utils/LoadUtils.js';
+import { placeTools } from '../utils/CanvasUtils.js';
 import 'react-sticky-header/styles.css';
 import HeaderBru from '../Components/Header.jsx';
 import Routes from '../utils/RouteConstants.js';
@@ -35,6 +36,7 @@ class EditorStudent extends Component {
 			steps: null,
 			lesson: null,
 			showSuccesfullyComplete: false,
+			areToolsPlaced: false,
 		};
 	}
 
@@ -55,12 +57,18 @@ class EditorStudent extends Component {
 		);
 	}
 
+	componentDidUpdate() {
+		if (!this.state.areToolsPlaced) {
+			placeTools(this.state.steps);
+			this.setState({areToolsPlaced: true});
+		}
+	}
+
 	getLesson(lesson_id, curriculum) {
-		this.setState({curriculum});
 		axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
 			(response) => {
 				const {steps, lesson} = loadLesson(response.data);
-				this.setState({steps,lesson});
+				this.setState({curriculum,steps,lesson});
 			},
 			(error) => console.log(error),
 		);
@@ -155,9 +163,9 @@ class EditorStudent extends Component {
 					onHide={() => this.setState({ showSuccesfullyComplete: false })}
 					show={showSuccesfullyComplete}
 				/>
-				<div className="Editor">
-					<Row>
-						<Col col-sm={3}>
+				<Container fluid>
+					<Row >
+						<Col sm={3}>
 							<div className="divider"> </div>
 							<div className="step-column" style={{ overflowY: 'scroll' }}>
 									<Card>
@@ -172,7 +180,7 @@ class EditorStudent extends Component {
 									</Card>
 							</div>
 						</Col>
-						<Col sm={8}>
+						<Col sm={9}>
 							<div className="divider" />
 							<Canvas isInstructor={false} onDrop={this.onDropTool} tools={currentStep.getTools()} />
 							<Button
@@ -197,11 +205,8 @@ class EditorStudent extends Component {
 								RESET LESSON
 							</Button>
 						</Col>
-						<Col>
-							<div className="divider" />
-						</Col>
 					</Row>
-				</div>
+				</Container>
 			</div>
 		);
 	}
