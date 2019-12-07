@@ -25,9 +25,18 @@ function loadLesson(data){
 
 function loadStep(stepData) {
 	const {toolList, step} = stepData;
-	const {name, description, actionType, source, target, actionMeasurement} = step;
+	const { name, description, actionType, source, target, actionMeasurement, timer } = step;
 	const loadedTools = toolList.map((tool) => loadTool(tool));
-	return new Step(name, description, loadedTools, actionType, source, target, actionMeasurement);
+	return new Step(
+			name,
+			description,
+			loadedTools,
+			actionType,
+			loadedTools[source],
+			loadedTools[target],
+			actionMeasurement,
+			timer
+	);
 }
 
 function loadTool(toolData) {
