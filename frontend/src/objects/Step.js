@@ -9,7 +9,8 @@ class Step {
 		action = null,
 		source = null,
 		target = null,
-		actionMeasurement = null
+		actionMeasurement = null,
+		timer = null
 	) {
 		this.name = name;
 		this.description = description;
@@ -18,6 +19,7 @@ class Step {
 		this.target = target;
 		this.tools = tools;
 		this.actionMeasurement = actionMeasurement;
+		this.timer = timer;
 	}
 
 	getName() {
@@ -78,8 +80,8 @@ class Step {
 
 	clone() {
 		const clonedTools = this.tools.map((tool) => tool.clone());
-		const {name, description, action, source, target, actionMeasurement} = this;
-		return new Step(name,description,clonedTools,action,source,target,actionMeasurement);
+		const { name, description, action, source, target, actionMeasurement, timer } = this;
+		return new Step(name, description, clonedTools, action, source, target, actionMeasurement, timer);
 	}
 
 	toString() {

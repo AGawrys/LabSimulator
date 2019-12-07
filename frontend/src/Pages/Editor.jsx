@@ -32,12 +32,10 @@ import InformationModal from '../Components/InformationModal.jsx';
 import SuccessNotification from '../Components/SuccessNotification.jsx';
 import StringUtils from '../utils/StringUtils.js';
 import { IMAGES, createImage } from '../Components/Tools.jsx';
-import { SortableContainer, SortableStep} from '../Components/StepItem.jsx';
+import { SortableContainer, SortableStep } from '../Components/StepItem.jsx';
 import { swapElements } from '../LilacArray.js';
 import axios from 'axios';
 import plus from '../Styles/Images/icons8-plus.svg';
-
-//UNDO REDO PUBLISH DELETE SIMULATE
 
 const links = {
 	Account: '/instructor/dashboard'
@@ -69,7 +67,6 @@ class Editor extends Component {
 	};
 	handleNext() {}
 	handleSimulate() {}
-
 
 	componentDidMount() {
 		window.addEventListener("resize", this.onCanvasResize);
@@ -121,9 +118,11 @@ class Editor extends Component {
 			return null;
 		}
 		const toolOptions = currentStep.tools.map((tool) => tool.toSelectOption());
-		const publishBtn = lesson.isPublished 
-			? null 
-			: (<Button variant="primary" onClick={this.publishLesson}>Publish</Button>);
+		const publishBtn = lesson.isPublished ? null : (
+			<Button variant="primary" onClick={this.publishLesson}>
+				Publish
+			</Button>
+		);
 		return (
 			<div>
 				<HeaderBru {...this.props} home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
@@ -198,7 +197,9 @@ class Editor extends Component {
 					<Row>
 						<Col lg={2}>
 							<div className="editorLeftScroll brownBorder">
-								<Card.Header><h6 className="m-0 font-weight-bold text-primary headings"> TOOLS </h6> </Card.Header>
+								<Card.Header>
+									<h6 className="m-0 font-weight-bold text-primary headings"> TOOLS </h6>{' '}
+								</Card.Header>
 								<Catalog />
 								<Catalog />
 							</div>
@@ -218,57 +219,85 @@ class Editor extends Component {
 
 						<Col lg={2}>
 							<div className="brownBorder editorRightScroll">
-								<Card>
-									<Card.Header><h6 className="m-0 font-weight-bold text-primary headings">ACTION MANAGER</h6>
-							</Card.Header>
-									<Select
-										className="editorSelect"
-										placeholder="Action"
-										isSearchable={true}
-										name="actions"
-										options={ACTIONS}
-										onChange={(action) => this.updateCurrentAction(action)}
-										value={
-											currentStep.action ? (
-												{ label: currentStep.action, value: currentStep.action }
-											) : (
-												''
-											)
-										}
-									/>
-
-									<Select
-										className="editorSelect"
-										placeholder="Source"
-										isSearchable={true}
-										name="sources"
-										options={toolOptions}
-										onChange={(tool) => this.updateCurrentSource(tool.value)}
-										value={currentStep.source ? currentStep.source.toSelectOption() : ''}
-									/>
-
-									<Select
-										className="editorSelect"
-										placeholder="Target"
-										isSearchable={true}
-										name="targets"
-										options={toolOptions}
-										onChange={(tool) => this.updateCurrentTarget(tool.value)}
-										value={currentStep.target ? currentStep.target.toSelectOption() : ''}
-									/>
-								</Card>
-								<div className="divider" />
-								<Card>
+								<Card className="stepCard">
 									<Card.Header>
-										<Row style={{justifyContent: 'space-evenly'}}>
-									<h6 className="m-0 font-weight-bold text-primary headings"> STEPS </h6>
-										<button
-											title="Add Step"
-											className="clearButton"
-											onClick={this.addStep}
-										>
-											<img src={plus} />
-										</button>
+										<h6 className="m-0 font-weight-bold text-primary headings">ACTION MANAGER</h6>
+									</Card.Header>
+									<div className="scrollableStep">
+										<Select
+											className="editorSelect"
+											placeholder="Action"
+											isSearchable={true}
+											name="actions"
+											options={EditorConstants.ACTIONS}
+											onChange={(action) => this.updateCurrentAction(action)}
+											value={
+												currentStep.action ? (
+													{ label: currentStep.action, value: currentStep.action }
+												) : (
+													''
+												)
+											}
+										/>
+
+										<Select
+											className="editorSelect"
+											classNamePrefix="editorSelect2"
+											placeholder="Source"
+											isSearchable={true}
+											name="sources"
+											options={toolOptions}
+											onChange={(tool) => this.updateCurrentSource(tool.value)}
+											value={currentStep.source ? currentStep.source.toSelectOption() : ''}
+										/>
+
+										<Select
+											className="editorSelect"
+											classNamePrefix="editorSelect2"
+											placeholder="Target"
+											isSearchable={true}
+											name="targets"
+											isDisabled={currentStep.action !== 'Pour'}
+											options={toolOptions}
+											onChange={(tool) => this.updateCurrentTarget(tool.value)}
+											value={currentStep.target ? currentStep.target.toSelectOption() : ''}
+										/>
+										<input
+											className="actionMeasurementControl"
+											type="number"
+											min="1"
+											placeholder="Action Measurement"
+											onChange={(e) => this.updateActionMeasurement(e)}
+											value={
+												currentStep.actionMeasurement ? currentStep.actionMeasurement > 0 ? (
+													currentStep.actionMeasurement
+												) : (
+													''
+												) : (
+													''
+												)
+											}
+										/>
+										<input
+											className="actionMeasurementControl"
+											type="number"
+											min="1"
+											placeholder="Timer (Seconds)"
+											onChange={(e) => this.updateTimer(e)}
+											value={
+												currentStep.timer ? currentStep.timer > 0 ? currentStep.timer : '' : ''
+											}
+										/>
+									</div>
+								</Card>
+
+								<Card className="stepCard">
+									<Card.Header>
+										<Row style={{ justifyContent: 'space-evenly' }}>
+											<h6 class="m-0 font-weight-bold text-primary headings"> STEPS </h6>
+											<button title="Add Step" className="clearButton" onClick={this.addStep}>
+												<img src={plus} />
+											</button>
 										</Row>
 									</Card.Header>
 									<div className="scrollableStep">
@@ -296,10 +325,10 @@ class Editor extends Component {
 				canvasWidth: width,
 				canvasHeight: height,
 			},
-			stepInformation: this.constructSaveStepObject(),
+			stepInformation: this.constructSaveStepObject()
 		};
 		this.saveLesson(lessonInformation);
-	}
+	};
 
 	saveLesson = (lessonInformation) => {
 		axios.post('http://localhost:8080/updateLessonName', lessonInformation).then(
@@ -310,6 +339,7 @@ class Editor extends Component {
 
 	constructSaveStepObject() {
 		const { steps, lesson } = this.state;
+		console.log(steps);
 		return steps.map((step, index) => {
 			const toolList = this.constructToolListObject(step.tools, index);
 			return {
@@ -321,9 +351,10 @@ class Editor extends Component {
 					name: step.name,
 					description: step.description,
 					actionType: step.action,
-					source: step.source,
-					target: step.target,
-					actionMeasurement: step.actionMeasurement
+					source: step.tools.indexOf(step.source),
+					target: step.tools.indexOf(step.target),
+					actionMeasurement: step.actionMeasurement,
+					timer: step.timer
 				},
 				toolList: toolList
 			};
@@ -336,7 +367,7 @@ class Editor extends Component {
 				toolIdentity: {
 					layer: tool.layer,
 					stepNumber: stepNumber,
-					lessonId: this.state.lesson.id,
+					lessonId: this.state.lesson.id
 				},
 				toolType: tool.type,
 				x: tool.position.x,
@@ -390,12 +421,11 @@ class Editor extends Component {
 	};
 
 	addStep = () => {
-
 		const { steps, currentStep } = this.state;
 		const index = steps.indexOf(currentStep);
 		const newStep = new Step();
-		steps.splice(index + 1,0, newStep);
-		this.setState({ currentStep: newStep, steps});
+		steps.splice(index + 1, 0, newStep);
+		this.setState({ currentStep: newStep, steps });
 	};
 
 	onStepClick = (e) => {
@@ -440,19 +470,22 @@ class Editor extends Component {
 			e.stopPropagation();
 		}
 		this.cloneStep(step);
-	}
+	};
 
 	cloneStep = (step) => {
 		const clonedStep = step.clone();
-		const {steps} = this.state;
+		const { steps } = this.state;
 		const index = steps.indexOf(step);
-		steps.splice(index + 1,0,clonedStep);
-		this.setState({steps});
-	}
+		steps.splice(index + 1, 0, clonedStep);
+		this.setState({ steps });
+	};
 
 	updateCurrentAction = (action) => {
 		const { currentStep } = this.state;
 		currentStep.action = action.value;
+		if (action.value != 'Pour') {
+			currentStep.target = null;
+		}
 		this.setState({ currentStep });
 	};
 
@@ -468,6 +501,28 @@ class Editor extends Component {
 		currentStep.target = tool;
 		currentStep.source = currentStep.source === currentStep.target ? null : currentStep.source;
 		this.setState({ currentStep });
+	};
+
+	updateActionMeasurement = (e) => {
+		const { currentStep } = this.state;
+		if (e.target.value > 0) {
+			currentStep.actionMeasurement = e.target.value;
+			this.setState({ currentStep });
+		} else {
+			currentStep.actionMeasurement = null;
+			this.setState({ currentStep });
+		}
+	};
+
+	updateTimer = (e) => {
+		const { currentStep } = this.state;
+		if (e.target.value > 0) {
+			currentStep.timer = e.target.value;
+			this.setState({ currentStep });
+		} else {
+			currentStep.timer = null;
+			this.setState({ currentStep });
+		}
 	};
 
 	handleMenuSource = (e, data) => {
@@ -498,22 +553,22 @@ class Editor extends Component {
 		const { lesson_id } = this.props.computedMatch.params;
 		const body = {
 			lessonId: lesson_id,
-			email: this.props.email,
+			email: this.props.email
 		};
 		axios.post(Routes.SERVER + 'publishLesson', body).then(
 			(response) => {
 				this.state.lesson.isPublished = true;
-				this.setState({showSuccessfullyPublished:  true});
+				this.setState({ showSuccessfullyPublished: true });
 			},
 			(error) => console.log(error)
 		);
-	}
+	};
 
 	cloneLesson = () => {
 		const { lesson } = this.state;
 		const body = {
 			lessonId: lesson.id,
-			instructorEmail: this.props.email,
+			instructorEmail: this.props.email
 		};
 		axios.post(Routes.SERVER + 'cloneLesson/', body).then(
 			(response) => this.setState({showSuccessfulDuplicate: true}),

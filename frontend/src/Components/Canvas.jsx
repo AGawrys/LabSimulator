@@ -1,3 +1,5 @@
+import React from 'react';
+import { Droppable } from 'react-drag-and-drop';
 import React from "react";
 import {Droppable} from "react-drag-and-drop";
 import { Form } from 'react-bootstrap';
@@ -17,17 +19,17 @@ class Canvas extends React.Component {
             copiedTool: null,
         }
 
-        this.setCurrentTool = this.setCurrentTool.bind(this);
-        this.resetCurrentTool = this.resetCurrentTool.bind(this);
-        this.onClickEdit = this.onClickEdit.bind(this);
-        this.onHide = this.onHide.bind(this);
-    }
+		this.setCurrentTool = this.setCurrentTool.bind(this);
+		this.resetCurrentTool = this.resetCurrentTool.bind(this);
+		this.onClickEdit = this.onClickEdit.bind(this);
+		this.onHide = this.onHide.bind(this);
+	}
 
-    setCurrentTool(tool) {
-        this.setState({
-            currentTool: tool
-        });
-    }
+	setCurrentTool(tool) {
+		this.setState({
+			currentTool: tool
+		});
+	}
 
     resetCurrentTool() {
         if (this.state.currentTool) {
@@ -37,17 +39,17 @@ class Canvas extends React.Component {
         }
     }
 
-    onClickEdit() {
-        this.setState({
-            isEditingTool: true
-        });
-    }
+	onClickEdit() {
+		this.setState({
+			isEditingTool: true
+		});
+	}
 
-    onHide() {
-        this.setState({
-            isEditingTool: false
-        });
-    }
+	onHide() {
+		this.setState({
+			isEditingTool: false
+		});
+	}
 
     onDeleteTool = () => {
         const {tools, onUpdateTools} = this.props;
@@ -103,12 +105,18 @@ class Canvas extends React.Component {
                 );
             }
 
-            return (
-                <div key={index}>
-                    {ToolComponent}
-                </div>
-            );
-        });
+	render() {
+		const ToolComponents = this.props.tools.map((tool, index) => {
+			let ToolComponent;
+			if (this.state.currentTool === tool) {
+				ToolComponent = (
+					<ContextMenuTrigger id={EditorConstants.CONTEXT_MENU_ID}>
+						<Tool draggable selected tool={tool} setCurrentTool={this.setCurrentTool} />
+					</ContextMenuTrigger>
+				);
+			} else {
+				ToolComponent = <Tool draggable tool={tool} setCurrentTool={this.setCurrentTool} />;
+			}
 
         let ToolEditorComponent;
         if (currentTool) {

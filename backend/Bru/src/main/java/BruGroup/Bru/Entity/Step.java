@@ -16,12 +16,13 @@ public class Step {
     private int source;
     private int target;
     private int actionMeasurement;
+    private int timer;
 
     public Step(){
 
     }
 
-    public Step(StepIdentity stepIdentity, String name, String description, String actionType, int source, int target, int actionMeasurement) {
+    public Step(StepIdentity stepIdentity, String name, String description, String actionType, int source, int target, int actionMeasurement, int timer) {
         this.stepIdentity = stepIdentity;
         this.name = name;
         this.description = description;
@@ -29,6 +30,7 @@ public class Step {
         this.source = source;
         this.target = target;
         this.actionMeasurement = actionMeasurement;
+        this.timer = timer;
     }
 
     public String getName() {
@@ -88,7 +90,8 @@ public class Step {
                 this.getActionType(),
                 this.getSource(),
                 this.getTarget(),
-                this.getActionMeasurement());
+                this.getActionMeasurement(),
+                this.getTimer());
     }
 
     @Override
@@ -101,6 +104,15 @@ public class Step {
                 ", actionType = " + actionType +
                 ", source = " + source +
                 ", target = " + target +
-                ", actionMeasurement = " + actionMeasurement + "}";
+                ", actionMeasurement = " + actionMeasurement +
+                ", timer = " + timer + "}";
+    }
+
+    public int getTimer() {
+        return timer;
+    }
+
+    public void setTimer(int timer) {
+        this.timer = timer;
     }
 }
