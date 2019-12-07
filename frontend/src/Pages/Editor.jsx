@@ -20,7 +20,7 @@ import Routes from '../utils/RouteConstants.js';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import {ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME} from '../utils/EditorConstants.js';
 import { loadLesson } from '../utils/LoadUtils.js';
-import { determineToolPosition, toScaledPosition,placeTools } from '../utils/CanvasUtils.js';
+import { determineToolPosition, toScaledPosition,placeTools, getCanvasSize, resizeTools } from '../utils/CanvasUtils.js';
 import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
 import Tool from '../Objects/Tool.js';
@@ -58,6 +58,7 @@ class Editor extends Component {
 		};
 
 		this.onDropTool = this.onDropTool.bind(this);
+		this.canvasSize = {height: 1000, width: 1000};
 	}
 
 	handleToolClick = () => {
@@ -66,7 +67,22 @@ class Editor extends Component {
 	handleNext() {}
 	handleSimulate() {}
 
+
 	componentDidMount() {
+		window.addEventListener("resize", this.onCanvasResize);
+		this.fetchData();
+	}
+
+	componentDidUpdate() {
+		if (!this.state.areToolsPlaced) {
+			const {width, height} = getCanvasSize();
+			this.canvasSize = {width,height};
+			placeTools(this.state.steps);
+			this.setState({areToolsPlaced: true});
+		}
+	}
+
+	fetchData = () => {
 		const lesson_id = this.props.computedMatch.params.lesson_id;
 		this.state.lesson.setId(lesson_id);
 		axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
@@ -76,13 +92,6 @@ class Editor extends Component {
 				this.props.history.push(Routes.NOT_FOUND);
 			}
 		);
-	}
-
-	componentDidUpdate() {
-		if (!this.state.areToolsPlaced) {
-			placeTools(this.state.steps);
-			this.setState({areToolsPlaced: true});
-		}
 	}
 
 	loadLesson = (response) => {
@@ -500,6 +509,13 @@ class Editor extends Component {
 		}
 		currentStep.tools = tools;
 		this.setState({currentStep});
+	}
+
+	onCanvasResize = () => {
+		resizeTools(this.canvasSize, this.state.steps);
+		const {width, height} = getCanvasSize();
+		this.canvasSize = {width,height};
+		this.setState({steps: this.state.steps});
 	}
 
 }

@@ -27,8 +27,7 @@ function determineToolPosition(size) {
 
 function toScaledPosition(position) {
 	const {x,y} = position;
-	const canvas = document.getElementById('canvas');
-	const {width, height} = canvas.getBoundingClientRect();
+	const {width, height} =  getCanvasSize();
 	const scaledX = x / width;
 	const scaledY = y / height;
 	return {x: scaledX, y: scaledY};
@@ -36,8 +35,7 @@ function toScaledPosition(position) {
 
 function toExactPosition(position) {
 	const {x, y} = position;
-	const canvas = document.getElementById('canvas');
-	const {width, height} = canvas.getBoundingClientRect();
+	const {width, height} = getCanvasSize();
 	const exactX = x * width;
 	const exactY = y * height;
 	return {x: exactX, y: exactY};
@@ -53,4 +51,31 @@ function placeTools(steps) {
 	});
 }
 
-export {determineToolPosition, toScaledPosition, placeTools};
+function getCanvasSize() {
+	const canvas = document.getElementById('canvas');
+	return canvas.getBoundingClientRect();
+}
+
+function resizeTools(prevCanvasSize, steps) {
+	const {width, height} = getCanvasSize();
+	const widthRatio = width / prevCanvasSize.width;
+	const heightRatio = height / prevCanvasSize.height;
+	steps.map((step) => {
+		step.tools.map((tool) => resizeTool(tool,widthRatio, heightRatio));	
+	});
+}
+
+function resizeTool(tool, widthRatio, heightRatio) {
+	const {x,y} = tool.position;
+	const {width, height} = tool;
+	const scaledX = x * widthRatio;
+	const scaledY = y * heightRatio;
+	const scaledWidth = width * widthRatio;
+	const scaledHeight = height * heightRatio;
+
+	tool.position = new Position(scaledX, scaledY);
+	tool.width = scaledWidth;
+	tool.height = scaledHeight;
+}
+
+export {determineToolPosition, toScaledPosition, placeTools, getCanvasSize, resizeTools};
