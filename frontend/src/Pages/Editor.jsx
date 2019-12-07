@@ -97,8 +97,16 @@ class Editor extends Component {
 		const { toolList, step } = stepData;
 		const { name, description, actionType, source, target, actionMeasurement, timer } = step;
 		const loadedTools = toolList.map((tool) => this.loadTool(tool));
-		console.log(actionMeasurement);
-		return new Step(name, description, loadedTools, actionType, source, target, actionMeasurement, timer);
+		return new Step(
+			name,
+			description,
+			loadedTools,
+			actionType,
+			loadedTools[source],
+			loadedTools[target],
+			actionMeasurement,
+			timer
+		);
 	};
 
 	loadTool = (toolData) => {
@@ -304,6 +312,7 @@ class Editor extends Component {
 	};
 
 	saveLesson = (lessonInformation) => {
+		console.log(lessonInformation);
 		axios
 			.post('http://localhost:8080/updateLessonName', lessonInformation)
 			.then((response) => console.log(response), (error) => console.log(error));
@@ -311,6 +320,7 @@ class Editor extends Component {
 
 	constructSaveStepObject() {
 		const { steps, lesson } = this.state;
+		console.log(steps);
 		return steps.map((step, index) => {
 			const toolList = this.constructToolListObject(step.tools, index);
 			return {
@@ -322,8 +332,8 @@ class Editor extends Component {
 					name: step.name,
 					description: step.description,
 					actionType: step.action,
-					source: step.source,
-					target: step.target,
+					source: step.tools.indexOf(step.source),
+					target: step.tools.indexOf(step.target),
 					actionMeasurement: step.actionMeasurement,
 					timer: step.timer
 				},
@@ -475,6 +485,9 @@ class Editor extends Component {
 	updateCurrentAction = (action) => {
 		const { currentStep } = this.state;
 		currentStep.action = action.value;
+		if (action.value != 'Pour') {
+			currentStep.target = null;
+		}
 		this.setState({ currentStep });
 	};
 

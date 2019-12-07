@@ -149,6 +149,7 @@ public class LessonController {
     @PostMapping(path = "/updateLessonName")        //SAVE
     @CrossOrigin(origins = "*")
     public ResponseEntity updateLessonName(@RequestBody LessonInformation lessonInformation) {
+        System.out.print(lessonInformation);
         Lesson lesson = lessonInformation.getLesson();
         lessonRepository.save(lesson);
         saveStepTable(lessonInformation.getStepInformation(), lesson.getLessonId());
