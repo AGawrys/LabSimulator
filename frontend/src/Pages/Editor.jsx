@@ -95,10 +95,10 @@ class Editor extends Component {
 
 	loadStep = (stepData) => {
 		const { toolList, step } = stepData;
-		const { name, description, actionType, source, target, actionMeasurement } = step;
+		const { name, description, actionType, source, target, actionMeasurement, timer } = step;
 		const loadedTools = toolList.map((tool) => this.loadTool(tool));
 		console.log(actionMeasurement);
-		return new Step(name, description, loadedTools, actionType, source, target, actionMeasurement);
+		return new Step(name, description, loadedTools, actionType, source, target, actionMeasurement, timer);
 	};
 
 	loadTool = (toolData) => {
@@ -247,12 +247,23 @@ class Editor extends Component {
 										min="1"
 										placeholder="Action Measurement"
 										onChange={(e) => this.updateActionMeasurement(e)}
-										value={currentStep.actionMeasurement ? currentStep.actionMeasurement : ''}
+										value={
+											currentStep.actionMeasurement ? currentStep.actionMeasurement > 0 ? (
+												currentStep.actionMeasurement
+											) : (
+												''
+											) : (
+												''
+											)
+										}
 									/>
 									<input
 										className="actionMeasurementControl"
-										type="time"
-										placeholder="Action Measurement"
+										type="number"
+										min="1"
+										placeholder="Timer (Seconds)"
+										onChange={(e) => this.updateTimer(e)}
+										value={currentStep.timer ? currentStep.timer > 0 ? currentStep.timer : '' : ''}
 									/>
 								</Card>
 								<div className="divider" />
@@ -313,7 +324,8 @@ class Editor extends Component {
 					actionType: step.action,
 					source: step.source,
 					target: step.target,
-					actionMeasurement: step.actionMeasurement
+					actionMeasurement: step.actionMeasurement,
+					timer: step.timer
 				},
 				toolList: toolList
 			};
@@ -482,9 +494,24 @@ class Editor extends Component {
 
 	updateActionMeasurement = (e) => {
 		const { currentStep } = this.state;
-		currentStep.actionMeasurement = e.target.value;
-		console.log(e.target.value);
-		this.setState({ currentStep });
+		if (e.target.value > 0) {
+			currentStep.actionMeasurement = e.target.value;
+			this.setState({ currentStep });
+		} else {
+			currentStep.actionMeasurement = null;
+			this.setState({ currentStep });
+		}
+	};
+
+	updateTimer = (e) => {
+		const { currentStep } = this.state;
+		if (e.target.value > 0) {
+			currentStep.timer = e.target.value;
+			this.setState({ currentStep });
+		} else {
+			currentStep.timer = null;
+			this.setState({ currentStep });
+		}
 	};
 
 	handleMenuSource = (e, data) => {
