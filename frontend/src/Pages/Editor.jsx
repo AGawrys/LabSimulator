@@ -210,72 +210,79 @@ class Editor extends Component {
 
 						<Col lg={2}>
 							<div className="brownBorder editorRightScroll">
-								<Card>
+								<Card className="stepCard">
 									<Card.Header>
 										<h6 className="m-0 font-weight-bold text-primary headings">ACTION MANAGER</h6>
 									</Card.Header>
-									<Select
-										className="editorSelect"
-										placeholder="Action"
-										isSearchable={true}
-										name="actions"
-										options={EditorConstants.ACTIONS}
-										onChange={(action) => this.updateCurrentAction(action)}
-										value={
-											currentStep.action ? (
-												{ label: currentStep.action, value: currentStep.action }
-											) : (
-												''
-											)
-										}
-									/>
+									<div className="scrollableStep">
+										<Select
+											className="editorSelect"
+											placeholder="Action"
+											isSearchable={true}
+											name="actions"
+											options={EditorConstants.ACTIONS}
+											onChange={(action) => this.updateCurrentAction(action)}
+											value={
+												currentStep.action ? (
+													{ label: currentStep.action, value: currentStep.action }
+												) : (
+													''
+												)
+											}
+										/>
 
-									<Select
-										className="editorSelect"
-										placeholder="Source"
-										isSearchable={true}
-										name="sources"
-										options={toolOptions}
-										onChange={(tool) => this.updateCurrentSource(tool.value)}
-										value={currentStep.source ? currentStep.source.toSelectOption() : ''}
-									/>
+										<Select
+											className="editorSelect"
+											classNamePrefix="editorSelect2"
+											placeholder="Source"
+											isSearchable={true}
+											name="sources"
+											options={toolOptions}
+											onChange={(tool) => this.updateCurrentSource(tool.value)}
+											value={currentStep.source ? currentStep.source.toSelectOption() : ''}
+										/>
 
-									<Select
-										className={currentStep.action === 'Pour' ? 'editorSelect' : 'displayNone'}
-										placeholder="Target"
-										isSearchable={true}
-										name="targets"
-										options={toolOptions}
-										onChange={(tool) => this.updateCurrentTarget(tool.value)}
-										value={currentStep.target ? currentStep.target.toSelectOption() : ''}
-									/>
-									<input
-										className="actionMeasurementControl"
-										type="number"
-										min="1"
-										placeholder="Action Measurement"
-										onChange={(e) => this.updateActionMeasurement(e)}
-										value={
-											currentStep.actionMeasurement ? currentStep.actionMeasurement > 0 ? (
-												currentStep.actionMeasurement
-											) : (
-												''
-											) : (
-												''
-											)
-										}
-									/>
-									<input
-										className="actionMeasurementControl"
-										type="number"
-										min="1"
-										placeholder="Timer (Seconds)"
-										onChange={(e) => this.updateTimer(e)}
-										value={currentStep.timer ? currentStep.timer > 0 ? currentStep.timer : '' : ''}
-									/>
+										<Select
+											className="editorSelect"
+											classNamePrefix="editorSelect2"
+											placeholder="Target"
+											isSearchable={true}
+											name="targets"
+											isDisabled={currentStep.action !== 'Pour'}
+											options={toolOptions}
+											onChange={(tool) => this.updateCurrentTarget(tool.value)}
+											value={currentStep.target ? currentStep.target.toSelectOption() : ''}
+										/>
+										<input
+											className="actionMeasurementControl"
+											type="number"
+											min="1"
+											placeholder="Action Measurement"
+											onChange={(e) => this.updateActionMeasurement(e)}
+											value={
+												currentStep.actionMeasurement ? currentStep.actionMeasurement > 0 ? (
+													currentStep.actionMeasurement
+												) : (
+													''
+												) : (
+													''
+												)
+											}
+										/>
+										<input
+											className="actionMeasurementControl"
+											type="number"
+											min="1"
+											placeholder="Timer (Seconds)"
+											onChange={(e) => this.updateTimer(e)}
+											value={
+												currentStep.timer ? currentStep.timer > 0 ? currentStep.timer : '' : ''
+											}
+										/>
+									</div>
 								</Card>
-								<div className="divider" />
-								<Card>
+
+								<Card className="stepCard">
 									<Card.Header>
 										<Row style={{ justifyContent: 'space-evenly' }}>
 											<h6 class="m-0 font-weight-bold text-primary headings"> STEPS </h6>

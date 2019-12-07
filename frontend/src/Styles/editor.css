@@ -144,11 +144,20 @@
 }
 
 .editorRightScroll {
-	height: 100%;
+	height: 90vh;
 }
 
 .scrollableStep {
-	height: 350px;
+	height: 40vh;
+	overflow-y: auto;
+}
+
+.stepCard {
+	height: 45vh;
+}
+
+.editorSelect2__menu {
+	height: 100px;
 	overflow-y: auto;
 }
 
@@ -231,7 +240,8 @@
 }
 
 .actionMeasurementControl {
-	margin: 10px 5px;
+	margin: 5px 0px;
+	width: 95%;
 	padding: 5px 10px;
 	align-items: center;
 	background-color: hsl(0, 0%, 100%);
@@ -246,8 +256,4 @@
 	outline: none;
 	border-color: #2684ff;
 	box-shadow: 0 0 0 1px #2684ff;
-}
-
-.displayNone {
-	display: none;
 }

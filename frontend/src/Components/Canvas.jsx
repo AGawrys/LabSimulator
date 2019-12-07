@@ -90,7 +90,7 @@ class Canvas extends React.Component {
 				<Droppable style={{ width: '100%', height: '100%' }} types={[ 'tool' ]} onDrop={this.props.onDrop}>
 					<div
 						id={'canvas'}
-						style={{ width: '100%', height: '80vh', position: 'relative' }}
+						style={{ width: '100%', height: '90vh', position: 'relative' }}
 						ref={this.ref}
 						onClick={this.resetCurrentTool}
 					>
