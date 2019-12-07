@@ -20,7 +20,7 @@ import Routes from '../utils/RouteConstants.js';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import {ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME} from '../utils/EditorConstants.js';
 import { loadLesson } from '../utils/LoadUtils.js';
-import { determineToolPosition, toScaledPosition,placeTools, getCanvasSize, resizeTools } from '../utils/CanvasUtils.js';
+import { determineToolPosition, getCanvasSize, resizeTools } from '../utils/CanvasUtils.js';
 import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
 import Tool from '../Objects/Tool.js';
@@ -55,10 +55,10 @@ class Editor extends Component {
 			showActionMenu: true,
 			copiedTool: null,
 			areToolsPlaced: false,
+			canvasSize: {height: 1000, width: 1000}
 		};
 
 		this.onDropTool = this.onDropTool.bind(this);
-		this.canvasSize = {height: 1000, width: 1000};
 	}
 
 	handleToolClick = () => {
@@ -74,11 +74,15 @@ class Editor extends Component {
 	}
 
 	componentDidUpdate() {
-		if (!this.state.areToolsPlaced) {
+		const {areToolsPlaced, steps, canvasSize} = this.state;
+		if (!areToolsPlaced) {
+			resizeTools(canvasSize,steps);
 			const {width, height} = getCanvasSize();
-			this.canvasSize = {width,height};
-			placeTools(this.state.steps);
-			this.setState({areToolsPlaced: true});
+			this.setState({
+				areToolsPlaced: true,
+				steps: steps,
+				canvasSize: {width, height}, 
+			});
 		}
 	}
 
@@ -237,7 +241,7 @@ class Editor extends Component {
 								<Card>
 									<Card.Header>
 										<Row style={{justifyContent: 'space-evenly'}}>
-									<h6 class="m-0 font-weight-bold text-primary headings"> STEPS </h6>
+									<h6 className="m-0 font-weight-bold text-primary headings"> STEPS </h6>
 										<button
 											title="Add Step"
 											className="clearButton"
@@ -263,11 +267,14 @@ class Editor extends Component {
 
 	onSaveLesson = (e) => {
 		e.preventDefault();
+		const {width, height} = getCanvasSize();
 		const lessonInformation = {
 			lesson: {
 				lessonId: this.state.lesson.id,
 				instructorEmail: this.props.email,
-				name: this.state.lesson.name
+				name: this.state.lesson.name,
+				canvasWidth: width,
+				canvasHeight: height,
 			},
 			stepInformation: this.constructSaveStepObject(),
 		};
@@ -305,7 +312,6 @@ class Editor extends Component {
 
 	constructToolListObject(tools, stepNumber) {
 		return tools.map((tool, index) => {
-			const position = toScaledPosition(tool.position);
 			return {
 				toolIdentity: {
 					layer: tool.layer,
@@ -313,8 +319,8 @@ class Editor extends Component {
 					lessonId: this.state.lesson.id,
 				},
 				toolType: tool.type,
-				x: position.x,
-				y: position.y,
+				x: tool.position.x,
+				y: tool.position.y,
 				name: tool.name,
 				amount: tool.amount,
 				color: tool.color,
@@ -512,10 +518,13 @@ class Editor extends Component {
 	}
 
 	onCanvasResize = () => {
-		resizeTools(this.canvasSize, this.state.steps);
+		const {canvasSize, steps} = this.state;
+		resizeTools(canvasSize, steps);
 		const {width, height} = getCanvasSize();
-		this.canvasSize = {width,height};
-		this.setState({steps: this.state.steps});
+		this.setState({
+			steps: steps,
+			canvasSize: {width,height},
+		});
 	}
 
 }

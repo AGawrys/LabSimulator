@@ -8,7 +8,7 @@ import { toExactPosition } from '../utils/CanvasUtils.js';
 
 function loadLesson(data){
 	const {stepInformation, lesson, published} = data;
-	const {instructorEmail, name, lessonId} = lesson;
+	const {instructorEmail, name, lessonId, canvasWidth, canvasHeight} = lesson;
 
 	const loadedSteps = stepInformation.map((stepData) => loadStep(stepData));
 	const currentLesson = new Lesson(name, lessonId, published);
@@ -18,6 +18,7 @@ function loadLesson(data){
 		lesson: currentLesson,
 		steps: steps,
 		currentStep: steps[0],
+		canvasSize: {width: canvasWidth, height: canvasHeight }
 	};
 }
 

@@ -5,7 +5,7 @@ import { Container, Row, Col } from 'react-grid-system';
 import Draggable, { DraggableCore } from 'react-draggable';
 import { getLessons } from '../Validation/StudentEditorValidation.js';
 import { loadLesson } from '../utils/LoadUtils.js';
-import { placeTools } from '../utils/CanvasUtils.js';
+import { resizeTools, getCanvasSize } from '../utils/CanvasUtils.js';
 import 'react-sticky-header/styles.css';
 import HeaderBru from '../Components/Header.jsx';
 import Routes from '../utils/RouteConstants.js';
@@ -41,6 +41,24 @@ class EditorStudent extends Component {
 	}
 
 	componentDidMount() {
+		window.addEventListener("resize", this.onCanvasResize);
+		this.fetchData();
+	}
+
+	componentDidUpdate() {
+		const {areToolsPlaced, steps, canvasSize} = this.state;
+		if (!areToolsPlaced) {
+			resizeTools(canvasSize,steps);
+			const {width, height} = getCanvasSize();
+			this.setState({
+				areToolsPlaced: true,
+				steps: steps,
+				canvasSize: {width,height},
+			});
+		}
+	}
+
+	fetchData = () =>  {
 		const {lesson_id, course_id} = this.props.computedMatch.params;
 		const body = {
 			courseId: course_id,
@@ -57,18 +75,11 @@ class EditorStudent extends Component {
 		);
 	}
 
-	componentDidUpdate() {
-		if (!this.state.areToolsPlaced) {
-			placeTools(this.state.steps);
-			this.setState({areToolsPlaced: true});
-		}
-	}
-
 	getLesson(lesson_id, curriculum) {
 		axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
 			(response) => {
-				const {steps, lesson} = loadLesson(response.data);
-				this.setState({curriculum,steps,lesson});
+				const {steps, lesson, canvasSize} = loadLesson(response.data);
+				this.setState({curriculum,steps,lesson,canvasSize});
 			},
 			(error) => console.log(error),
 		);
@@ -184,7 +195,7 @@ class EditorStudent extends Component {
 							<div className="divider" />
 							<Canvas isInstructor={false} onDrop={this.onDropTool} tools={currentStep.getTools()} />
 							<Button
-								style={{float:"left", "margin-right": "10px"}}
+								style={{float:"left", "marginRight": "10px"}}
 								variant="dark"
 								onClick={this.handleClick.bind(this)}
 								type="button"
@@ -192,7 +203,7 @@ class EditorStudent extends Component {
 								NEXT STEP
 							</Button>
 							<Button 
-								style={{float:"left", "margin-right": "10px"}}
+								style={{float:"left", "marginRight": "10px"}}
 								variant="dark" 
 								onClick={this.resetStep}>
 								RESET STEP
@@ -235,6 +246,16 @@ class EditorStudent extends Component {
 
 	resetStep = () => {
 		this.setState({isCurrentStepComplete: false});
+	}
+
+	onCanvasResize = () => {
+		const {canvasSize, steps} = this.state;
+		resizeTools(canvasSize, steps);
+		const {width, height} = getCanvasSize();
+		this.setState({
+			steps: steps,
+			canvasSize: {width,height},
+		});
 	}
 
 }

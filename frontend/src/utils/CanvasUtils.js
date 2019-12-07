@@ -25,32 +25,6 @@ function determineToolPosition(size) {
 	return {x,y};
 }
 
-function toScaledPosition(position) {
-	const {x,y} = position;
-	const {width, height} =  getCanvasSize();
-	const scaledX = x / width;
-	const scaledY = y / height;
-	return {x: scaledX, y: scaledY};
-}
-
-function toExactPosition(position) {
-	const {x, y} = position;
-	const {width, height} = getCanvasSize();
-	const exactX = x * width;
-	const exactY = y * height;
-	return {x: exactX, y: exactY};
-}
-
-function placeTools(steps) {
-	steps.map((step) => {
-		step.tools.map((tool) => {
-			const {x,y} = toExactPosition(tool.position);
-			const newPosition =  new Position(x,y);
-			tool.position = newPosition;
-		});
-	});
-}
-
 function getCanvasSize() {
 	const canvas = document.getElementById('canvas');
 	return canvas.getBoundingClientRect();
@@ -78,4 +52,4 @@ function resizeTool(tool, widthRatio, heightRatio) {
 	tool.height = scaledHeight;
 }
 
-export {determineToolPosition, toScaledPosition, placeTools, getCanvasSize, resizeTools};
+export {determineToolPosition, getCanvasSize, resizeTools};

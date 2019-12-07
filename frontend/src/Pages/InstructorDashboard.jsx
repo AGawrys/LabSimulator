@@ -65,7 +65,7 @@ export class InstructorDashboard extends Component {
 					<div className="teacherDashboardContents">
 						<div className="recentDrinksDiv cardBorder">
 							<div className="recentDrinkTop">
-							<h5 class="m-0 font-weight-bold text-secondary headings">LESSONS</h5>
+							<h5 className="m-0 font-weight-bold text-secondary headings">LESSONS</h5>
 								<button
 									className="clearButton"
 									onClick={() => {
@@ -95,7 +95,7 @@ export class InstructorDashboard extends Component {
 						</div>
 						<div className="recentLessonsDiv cardBorder">
 							<div className="recentLessonsTop">
-							<h5 class="m-0 font-weight-bold text-secondary headings">COURSES</h5>
+							<h5 className="m-0 font-weight-bold text-secondary headings">COURSES</h5>
 								<button
 									className="clearButton"
 									onClick={() => {
