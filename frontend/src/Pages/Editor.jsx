@@ -229,7 +229,7 @@ class Editor extends Component {
 											placeholder="Action"
 											isSearchable={true}
 											name="actions"
-											options={EditorConstants.ACTIONS}
+											options={ACTIONS}
 											onChange={(action) => this.updateCurrentAction(action)}
 											value={
 												currentStep.action ? (

@@ -40,7 +40,7 @@
 
 .success-notif {
 	position: absolute;
-	top: 10vh;
+	top: 20vh;
 	right:40vw;
 	z-index: 1000;
 	background-color: #43a047 !important;
