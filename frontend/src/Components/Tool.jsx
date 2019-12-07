@@ -23,7 +23,8 @@ class Tool extends React.Component {
 
     onDragStop(e, data) {
         const {tool} = this.props;
-        tool.setPosition(data.x, data.y);
+        const {x,y} = data;
+        tool.setPosition(x,y);
     }
 
     componentDidMount() {
@@ -43,7 +44,7 @@ class Tool extends React.Component {
 
         const {tool} = this.props;
         let style = this.selected ?
-            {border: "1px #7fb3d8 solid"} : null;
+            {border: "1px #7fb3d8 solid"} : {border: "1px transparent solid"};
         const ToolCanvas = (
             <canvas
                 width={tool.getWidth()}

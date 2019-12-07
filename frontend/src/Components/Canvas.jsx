@@ -24,18 +24,13 @@ class Canvas extends React.Component {
     }
 
     setCurrentTool(tool) {
-        tool.position.x -= 1;
-        tool.position.y -= 1;
         this.setState({
             currentTool: tool
         });
     }
 
     resetCurrentTool() {
-        const {currentTool} = this.state;
-        if (currentTool) {
-            currentTool.position.x += 1;
-            currentTool.position.y += 1;
+        if (this.state.currentTool) {
             this.setState({
                 currentTool: null
             });

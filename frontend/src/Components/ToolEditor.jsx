@@ -17,12 +17,8 @@ class ToolEditor extends React.Component {
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangeX = this.onChangeX.bind(this);
         this.onChangeY = this.onChangeY.bind(this);
-        this.onChangeWidth = this.onChangeWidth.bind(this);
-        this.onChangeHeight = this.onChangeHeight.bind(this);
 
         this.nameRef = React.createRef();
-        this.widthRef = React.createRef();
-        this.heightRef = React.createRef();
     }
     
     onChangeName() {
@@ -54,31 +50,6 @@ class ToolEditor extends React.Component {
             y = 0
         }
         this.tool.setPosition(this.tool.getPosition().getX(), y)
-        this.props.setCurrentTool(this.tool);
-    }
-
-    onChangeWidth() {
-        const canvas = document.getElementById("canvas")
-        const bounds = canvas.getBoundingClientRect();
-        let width = parseInt(this.widthRef.current.value, 10)
-        if (width > bounds.width) {
-            width = bounds.width
-            if (this.tool.getPosition().getX() + width > bounds.width) {
-                const x = bounds.width - width;
-                this.tool.setPosition(x, this.tool.getPosition().getY());
-                this.xRef.current.value = x;
-            }
-            this.widthRef.current.value = width;
-        } else if (width < 0) {
-            width = 0
-            this.widthRef.current.value = 0;
-        }
-        this.tool.setWidth(width)
-        this.props.setCurrentTool(this.tool);
-    }
-
-    onChangeHeight() {
-        this.tool.setHeight(parseInt(this.heightRef.current.value, 10))
         this.props.setCurrentTool(this.tool);
     }
 
@@ -151,28 +122,6 @@ class ToolEditor extends React.Component {
                                 maxValue={bounds.height - this.tool.getHeight()} 
                                 onChange={this.onChangeY} 
                                 value={this.tool ? this.tool.getPosition().getY() : null}/>
-                        </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row}>
-                        <Form.Label column md={2}>Width</Form.Label>
-                        <Col>
-                            <Form.Control
-                                onChange={this.onChangeWidth} 
-                                type={"number"}
-                                defaultValue={this.tool? this.tool.getWidth() : null}
-                                ref={this.widthRef}
-                            />
-                        </Col>
-
-                        <Form.Label column md={2}>Height</Form.Label>
-                        <Col>
-                            <Form.Control
-                                onChange={this.onChangeHeight} 
-                                type={"number"}
-                                defaultValue={this.tool? this.tool.getHeight() : null}
-                                ref={this.heightRef}
-                            />
                         </Col>
                     </Form.Group>
                     {supplementalControls} 
