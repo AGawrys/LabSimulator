@@ -1,4 +1,5 @@
 import Position from '../Objects/Position.js';
+import {DEFAULT_TOOL_SIZE} from './EditorConstants.js';
 
 function determineToolPosition(size) {
 	const canvas = document.getElementById('canvas');
@@ -23,6 +24,18 @@ function determineToolPosition(size) {
 	}
 
 	return {x,y};
+}
+
+function determineToolSize(toolType, tools) {
+	if (tools.length === 0) {
+		return {width: DEFAULT_TOOL_SIZE, height: DEFAULT_TOOL_SIZE};
+	}
+	for (const tool of tools) {
+		if (tool.type == toolType) {
+			return {width: tool.width, height: tool.height};
+		}
+	}
+	return {width: tools[0].width, height: tools[0].height};
 }
 
 function getCanvasSize() {
@@ -52,4 +65,4 @@ function resizeTool(tool, widthRatio, heightRatio) {
 	tool.height = scaledHeight;
 }
 
-export {determineToolPosition, getCanvasSize, resizeTools};
+export {determineToolPosition, determineToolSize, getCanvasSize, resizeTools};

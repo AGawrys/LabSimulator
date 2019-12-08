@@ -193,7 +193,7 @@ class EditorStudent extends Component {
 						</Col>
 						<Col sm={9}>
 							<div className="divider" />
-							<Canvas isInstructor={false} onDrop={this.onDropTool} tools={currentStep.getTools()} />
+							<Canvas isInstructor={false} tools={currentStep.getTools()} />
 							<Button
 								style={{float:"left", "marginRight": "10px"}}
 								variant="dark"

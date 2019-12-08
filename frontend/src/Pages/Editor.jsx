@@ -20,7 +20,7 @@ import Routes from '../utils/RouteConstants.js';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import {ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME} from '../utils/EditorConstants.js';
 import { loadLesson } from '../utils/LoadUtils.js';
-import { determineToolPosition, getCanvasSize, resizeTools } from '../utils/CanvasUtils.js';
+import { determineToolPosition, determineToolSize, getCanvasSize, resizeTools } from '../utils/CanvasUtils.js';
 import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
 import Tool from '../Objects/Tool.js';
@@ -403,10 +403,12 @@ class Editor extends Component {
 
 	onDropTool(data) {
 		const {x,y} = determineToolPosition(DEFAULT_TOOL_SIZE);
+		const {width, height} = determineToolSize(data.tool,this.state.currentStep.tools);
 		const position = new Position(x, y);
 		const image = createImage(data.tool);
 		const layer = this.state.currentStep.getTools().length;
-		const tool = new Tool(data.tool, image, position,DEFAULT_TOOL_SIZE,DEFAULT_TOOL_SIZE,layer);
+
+		const tool = new Tool(data.tool, image, position,width,height,layer);
 		let currentStep = this.state.currentStep;
 		currentStep.addTool(tool);
 		this.setState({
