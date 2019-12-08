@@ -331,7 +331,7 @@ class Editor extends Component {
 	};
 
 	saveLesson = (lessonInformation) => {
-		axios.post('http://localhost:8080/updateLessonName', lessonInformation).then(
+		axios.post(Routes.SERVER + 'updateLessonName', lessonInformation).then(
 			(response) => this.setState({showSuccessfulSave:true}),
 			(error) => console.log(error),
 		);
@@ -339,7 +339,6 @@ class Editor extends Component {
 
 	constructSaveStepObject() {
 		const { steps, lesson } = this.state;
-		console.log(steps);
 		return steps.map((step, index) => {
 			const toolList = this.constructToolListObject(step.tools, index);
 			return {
