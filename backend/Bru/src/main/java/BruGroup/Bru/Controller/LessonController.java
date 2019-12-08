@@ -3,6 +3,7 @@ package BruGroup.Bru.Controller;
 import BruGroup.Bru.Entity.*;
 import BruGroup.Bru.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +30,6 @@ public class LessonController {
 
     @Autowired
     OrganizationRepository organizationRepository;
-
-    @Autowired
-    AccountRepository accountRepository;
 
     @Autowired
     ToolRepository toolRepository;
@@ -125,6 +123,18 @@ public class LessonController {
 
         LessonInformation lessonInformation = new LessonInformation(lesson,stepInformationList, isPublished);
         return ResponseEntity.ok(lessonInformation);
+    }
+
+    @GetMapping(path ="/searchLesson")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity searchLessons(@RequestParam(value="name") String name,
+                                        @RequestParam(value="email") String email) {
+        List<Lesson> lessons = lessonRepository.findByNameContainingIgnoreCaseAndInstructorEmailNot(name,email);
+        List<Lesson> publishedLessons = lessons
+                .stream()
+                .filter(lesson -> organizationRepository.findByLessonId(lesson.getLessonId()) != null)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(publishedLessons);
     }
 
     @PostMapping(path = "/canStudentComplete")
