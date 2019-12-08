@@ -1,6 +1,5 @@
 package BruGroup.Bru.Entity;
 
-import com.sun.xml.internal.xsom.impl.scd.Step;
 
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
