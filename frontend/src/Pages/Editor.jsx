@@ -29,7 +29,7 @@ import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
-import SuccessNotification from '../Components/SuccessNotification.jsx';
+import EditorNotification from '../Components/EditorNotification.jsx';
 import StringUtils from '../utils/StringUtils.js';
 import { IMAGES, createImage } from '../Components/Tools.jsx';
 import { SortableContainer, SortableStep } from '../Components/StepItem.jsx';
@@ -52,7 +52,9 @@ class Editor extends Component {
 			showDeleteLessonModal: false,
 			showSuccessfullyPublished: false,
 			showSuccessfulDuplicate: false,
+			showIncompleteSteps: false,
 			showSuccessfulSave:false,
+			showSaveBeforePublish: false,
 			showActionMenu: true,
 			copiedTool: null,
 			areToolsPlaced: false,
@@ -65,7 +67,7 @@ class Editor extends Component {
 	handleToolClick = () => {
 		this.setState({ showActionMenu: !this.showActionMenu });
 	};
-	handleNext() {}
+
 	handleSimulate() {}
 
 	componentDidMount() {
@@ -113,13 +115,13 @@ class Editor extends Component {
 
 	render() {
 		const { lesson, currentStep, steps, copiedTool} = this.state;
-		const {showSuccessfulDuplicate, showDeleteLessonModal, showSuccessfullyPublished, showSuccessfulSave } = this.state;
+		const {showSuccessfulDuplicate, showDeleteLessonModal, showSuccessfullyPublished, showSuccessfulSave, showIncompleteSteps, showSaveBeforePublish } = this.state;
 		if (steps == null) {
 			return null;
 		}
 		const toolOptions = currentStep.tools.map((tool) => tool.toSelectOption());
 		const publishBtn = lesson.isPublished ? null : (
-			<Button variant="primary" onClick={this.publishLesson}>
+			<Button variant="primary" onClick={this.onPublishLesson}>
 				Publish
 			</Button>
 		);
@@ -133,29 +135,44 @@ class Editor extends Component {
 					show={showDeleteLessonModal}
 					onDelete={this.deleteLesson}
 				/>
-				<InformationModal
-					title={GeneralConstants.SUCCESSFUL_PUBLISH_LESSON_TITLE}
+				<EditorNotification
 					message={GeneralConstants.SUCCESSFUL_PUBLISH_LESSON_MESSAGE}
-					onHide={() => this.setState({ showSuccessfullyPublished: false })}
+					onClose={() => this.setState({ showSuccessfullyPublished: false })}
 					show={showSuccessfullyPublished}
+					isSuccess
+					autohide
+					delay={1250}
 				/>
-				<SuccessNotification
-					message={"Lesson successfully duplicated!"}
+				<EditorNotification
+					message={GeneralConstants.SUCCESSFUL_DUPLICATE_MESSAGE}
 					onClose={() => this.setState({showSuccessfulDuplicate: false})}
 					show={showSuccessfulDuplicate}
 					isSuccess
 					autohide
-					delay={1000}
+					delay={1250}
 				/>
-				<SuccessNotification
-					message={"Lesson successfully saved!"}
+				<EditorNotification
+					message={GeneralConstants.SUCCESSFUL_SAVE_MESSAGE}
 					onClose={() => this.setState({showSuccessfulSave: false})}
 					show={showSuccessfulSave}
 					isSuccess
 					autohide
-					delay={1000}
+					delay={1250}
 				/>
-
+				<EditorNotification
+					message={GeneralConstants.CANNOT_PUBLISH_MESSAGE}
+					onClose={() => this.setState({showIncompleteSteps: false})}
+					show={showIncompleteSteps}
+					autohide
+					delay={1250}
+				/>
+				<EditorNotification
+					message={GeneralConstants.SAVE_BEFORE_PUBLISH_MESSAGE}
+					onClose={() => this.setState({showSaveBeforePublish: false})}
+					show={showSaveBeforePublish}
+					autohide
+					delay={1250}
+				/>
 				<Container fluid={true} className="instructorContainer">
 					<Col className="instructorEditorToolBar brownBorder">
 						<Row>
@@ -188,7 +205,10 @@ class Editor extends Component {
 								>
 									<i className="fas fa-trash-alt" />
 								</Button>
-								<Button type="button" variant="success" onClick={this.onSaveLesson}>
+								<Button type="button" variant="success" onClick={
+									() => this.saveLesson(
+										() => this.setState({showSuccessfulSave: true})
+									)}>
 									<i className="fas fa-save" />
 								</Button>
 							</Col>
@@ -294,7 +314,7 @@ class Editor extends Component {
 								<Card className="stepCard">
 									<Card.Header>
 										<Row style={{ justifyContent: 'space-evenly' }}>
-											<h6 class="m-0 font-weight-bold text-primary headings"> STEPS </h6>
+											<h6 className="m-0 font-weight-bold text-primary headings"> STEPS </h6>
 											<button title="Add Step" className="clearButton" onClick={this.addStep}>
 												<img src={plus} />
 											</button>
@@ -314,10 +334,17 @@ class Editor extends Component {
 		);
 	}
 
-	onSaveLesson = (e) => {
-		e.preventDefault();
+	saveLesson = (callback) => {
+		const lessonInformation = this.getLessonInformation();
+		axios.post(Routes.SERVER + 'updateLessonName', lessonInformation).then(
+			(response) => callback(),
+			(error) => console.log(error),
+		);
+	};
+
+	getLessonInformation = () => {
 		const {width, height} = getCanvasSize();
-		const lessonInformation = {
+		return {
 			lesson: {
 				lessonId: this.state.lesson.id,
 				instructorEmail: this.props.email,
@@ -327,15 +354,7 @@ class Editor extends Component {
 			},
 			stepInformation: this.constructSaveStepObject()
 		};
-		this.saveLesson(lessonInformation);
-	};
-
-	saveLesson = (lessonInformation) => {
-		axios.post(Routes.SERVER + 'updateLessonName', lessonInformation).then(
-			(response) => this.setState({showSuccessfulSave:true}),
-			(error) => console.log(error),
-		);
-	};
+	}
 
 	constructSaveStepObject() {
 		const { steps, lesson } = this.state;
@@ -550,6 +569,16 @@ class Editor extends Component {
 		);
 	};
 
+	onPublishLesson = () => {
+		const incompleteSteps = this.state.steps.filter(step => !step.isComplete());
+		if (incompleteSteps.length !== 0) {
+			this.setState({showIncompleteSteps: true});
+		}
+		else {
+			this.publishLesson();
+		}
+	}
+
 	publishLesson = () => {
 		const { lesson_id } = this.props.computedMatch.params;
 		const body = {
@@ -561,7 +590,7 @@ class Editor extends Component {
 				this.state.lesson.isPublished = true;
 				this.setState({ showSuccessfullyPublished: true });
 			},
-			(error) => console.log(error)
+			(error) => this.setState({"showSaveBeforePublish": true})
 		);
 	};
 
@@ -602,7 +631,6 @@ class Editor extends Component {
 			canvasSize: {width,height},
 		});
 	}
-
 }
 
 export default Editor;

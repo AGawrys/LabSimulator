@@ -53,3 +53,19 @@
 	z-index: 1000;
 	color: white !important;
 }
+
+.unsuccessful-notif {
+	position: absolute;
+	top: 20vh;
+	right:35vw;
+	z-index: 1000;
+	background-color: #dc3545 !important;
+	height:60px;
+}
+
+.unsuccessful-notif-body {
+	background-color: #dc3545 !important;
+	height:60px;
+	z-index: 1000;
+	color: white !important;
+}

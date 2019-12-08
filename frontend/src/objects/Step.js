@@ -1,4 +1,4 @@
-import {DEFAULT_STEP_NAME} from '../utils/EditorConstants.js';
+import {DEFAULT_STEP_NAME, ACTIONS} from '../utils/EditorConstants.js';
 import Tool from './Tool.js';
 
 class Step {
@@ -82,6 +82,23 @@ class Step {
 		const clonedTools = this.tools.map((tool) => tool.clone());
 		const { name, description, action, source, target, actionMeasurement, timer } = this;
 		return new Step(name, description, clonedTools, action, source, target, actionMeasurement, timer);
+	}
+
+	isComplete() {
+		if (!this.actionMeasurement || !this.timer || this.tools.length === 0) {
+			return false;
+		}
+		return this.isActionSet();
+	}
+
+	isActionSet() {
+		if (!this.action) {
+			return false;
+		}
+		if (this.action == 'Pour') {
+			return this.source && this.target;
+		}
+		return this.source;
 	}
 
 	toString() {
