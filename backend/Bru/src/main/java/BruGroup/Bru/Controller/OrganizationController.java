@@ -1,11 +1,7 @@
 package BruGroup.Bru.Controller;
 
-import BruGroup.Bru.Entity.Account;
-import BruGroup.Bru.Entity.Lesson;
-import BruGroup.Bru.Entity.Organization;
-import BruGroup.Bru.Repository.AccountRepository;
-import BruGroup.Bru.Repository.LessonRepository;
-import BruGroup.Bru.Repository.OrganizationRepository;
+import BruGroup.Bru.Entity.*;
+import BruGroup.Bru.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +20,12 @@ public class OrganizationController {
 
     @Autowired
     LessonRepository lessonRepository;
+
+    @Autowired
+    StepRepository stepRepository;
+
+    @Autowired
+    ToolRepository toolRepository;
 
     @GetMapping (path = "/allOrganization")
     @CrossOrigin(origins = "*")
@@ -69,10 +71,27 @@ public class OrganizationController {
     @PostMapping (path = "/publishLesson")
     @CrossOrigin(origins = "*")
     public ResponseEntity addLessonOrganization (@RequestBody Organization organization) {
+        List<Step> steps = stepRepository.findByStepIdentityLessonId(organization.getLessonId());
+        List<Step> incompleteSteps = steps.stream().filter(step -> !isStepComplete(step)).collect(Collectors.toList());
+        if (!incompleteSteps.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
         Account instructorAccount = accountRepository.findByEmail(organization.getEmail());
         organization.setEmail(instructorAccount.getOrganizationEmail());
         organizationRepository.save(organization);
         return ResponseEntity.ok(null);
+    }
+
+
+    public boolean isStepComplete(Step step) {
+        if (!step.isComplete()) {
+            return false;
+        }
+        int lessonId = step.getStepIdentity().getLessonId();
+        int stepNumber = step.getStepIdentity().getStepNumber();
+        List<Tool> tools = toolRepository.findByToolIdentityLessonIdAndToolIdentityStepNumber(lessonId, stepNumber);
+        return !tools.isEmpty();
     }
 }
 
