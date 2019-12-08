@@ -106,6 +106,19 @@ class Tool {
 		return clonedTool;
 	}
 
+	resize(widthRatio, heightRatio) {
+		const {x,y} = this.position;
+		const {width, height} = this;
+		const scaledX = x * widthRatio;
+		const scaledY = y * heightRatio;
+		const scaledWidth = width * widthRatio;
+		const scaledHeight = height * heightRatio;
+
+		this.position = new Position(scaledX, scaledY);
+		this.width = scaledWidth;
+		this.height = scaledHeight;
+	}
+
 	toString() {
 		return this.name;
 	}
@@ -115,15 +128,6 @@ class Tool {
 			label: this.name,
 			value: this
 		};
-	}
-
-	toScaledPosition() {
-		const {x,y} = this.position;
-		const canvas = document.getElementById('canvas');
-		const {width, height} = canvas.getBoundingClientRect();
-		const scaledX = x / width;
-		const scaledY = y / height;
-		return {x: scaledX, y: scaledY};
 	}
 
 

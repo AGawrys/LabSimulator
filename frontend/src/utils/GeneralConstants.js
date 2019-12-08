@@ -8,7 +8,6 @@ const GeneralConstants = {
 	DELETE_LESSON_TITLE: "Delete Lesson",
 	DELETE_LESSON_MESSAGE: "Are you sure you want to delete this lesson?\n This action cannot be undone.",
 	CANNOT_REMOVE_INSTRUCTOR_MESSAGE: "There must be at least one instructor teaching a course.",
-	CANNOT_DELETE_STEP_TOOLTIP: "There must be at least one step in a lesson!",
 	SUCCESSFUL_PUBLISH_LESSON_TITLE: "Lesson Successfully Published",
 	SUCCESSFUL_PUBLISH_LESSON_MESSAGE: "Lesson has been successfully published to the your organization!",
 	SUCCESSFUL_COMPLETE_LESSON_TITLE: "Lesson Successfully Completed!",

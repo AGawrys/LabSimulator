@@ -48,21 +48,8 @@ function resizeTools(prevCanvasSize, steps) {
 	const widthRatio = width / prevCanvasSize.width;
 	const heightRatio = height / prevCanvasSize.height;
 	steps.map((step) => {
-		step.tools.map((tool) => resizeTool(tool,widthRatio, heightRatio));	
+		step.tools.map((tool) => tool.resize(widthRatio, heightRatio));	
 	});
-}
-
-function resizeTool(tool, widthRatio, heightRatio) {
-	const {x,y} = tool.position;
-	const {width, height} = tool;
-	const scaledX = x * widthRatio;
-	const scaledY = y * heightRatio;
-	const scaledWidth = width * widthRatio;
-	const scaledHeight = height * heightRatio;
-
-	tool.position = new Position(scaledX, scaledY);
-	tool.width = scaledWidth;
-	tool.height = scaledHeight;
 }
 
 export {determineToolPosition, determineToolSize, getCanvasSize, resizeTools};
