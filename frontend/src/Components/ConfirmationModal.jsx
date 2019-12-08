@@ -29,7 +29,7 @@ class ConfirmationModal extends React.Component {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={onHide}> Cancel </Button>
-                    <Button variant="danger" onClick={deleteAndHide}> Delete </Button>
+                    <Button variant="primary" onClick={deleteAndHide}> Confirm </Button>
                 </Modal.Footer>
             </Modal>
 

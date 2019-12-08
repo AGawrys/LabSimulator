@@ -1,17 +1,18 @@
-import EditorConstants from '../utils/EditorConstants.js';
+import {DEFAULT_LESSON_NAME} from '../utils/EditorConstants.js';
 
 class Lesson {
-	constructor(name = EditorConstants.DEFAULT_LESSON_NAME,id) {
+	constructor(name = DEFAULT_LESSON_NAME, id, isPublished = false) {
 		this.name = name;
 		this.id = id;
+		this.isPublished = isPublished;
 	}
 
 	getName() {
 		return this.name;
 	}
 
-	addTool(tool) {
-		this.tools.push(tool);
+	setName(name) {
+		this.name = name;
 	}
 
 	getId() {

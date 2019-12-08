@@ -19,17 +19,18 @@ public class Tool {
     private double y;
 
     private String name;
-    private int amount;
+    private double amount;
     private String color;
-    private int height;
-    private int width;
+    private double height;
+    private double width;
 
     public Tool() {
 
     }
 
-    public Tool(ToolIdentity toolIdentity, double x, double y, int amount, String color, String name, int width, int height) {
+    public Tool(ToolIdentity toolIdentity, String toolType, double x, double y, double amount, String color, String name, double width, double height) {
         this.toolIdentity = toolIdentity;
+        this.toolType = toolType;
         this.x = x;
         this.y = y;
         this.name = name;
@@ -37,6 +38,21 @@ public class Tool {
         this.color = color;
         this.height = height;
         this.width = width;
+    }
+
+    public Tool clone(int lessonId) {
+        ToolIdentity clonedIdentity = this.toolIdentity.clone(lessonId);
+        return new Tool(
+                clonedIdentity,
+                this.toolType,
+                this.x,
+                this.y,
+                this.amount,
+                this.color,
+                this.name,
+                this.width,
+                this.height
+        );
     }
 
     public ToolIdentity getToolIdentity() {
@@ -71,11 +87,11 @@ public class Tool {
         this.y = y;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
@@ -87,13 +103,13 @@ public class Tool {
         this.color = color;
     }
 
-    public int getHeight() {return height;}
+    public double getHeight() {return height;}
 
-    public int getWidth() {return width;}
+    public double getWidth() {return width;}
 
-    public void setHeight(int height) {this.height = height;}
+    public void setHeight(double height) {this.height = height;}
 
-    public void setWidth(int width) {this.width = width;}
+    public void setWidth(double width) {this.width = width;}
 
     public String getName() {
         return name;

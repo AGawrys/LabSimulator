@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
-import { Button, Modal, Form, Row, ListGroup, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import React from 'react';
+import { Button, ListGroup, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import GeneralConstants from '../utils/GeneralConstants.js';
+import RemoveButton from './RemoveButton.jsx';
 
 function InstructorRow(props) {
 	const {instructor, onClick, disabled} = props;
-	const button = disabled ? <CannotDeleteButton/> : <DeleteButton onClick={onClick}/>;
+	const button = disabled ? <CannotDeleteButton/> : <RemoveButton onClick={onClick}/>;
 	return (
 		<ListGroup.Item>
 			<div className="listRow">
@@ -12,14 +13,6 @@ function InstructorRow(props) {
 				{button}
 			</div>
 		</ListGroup.Item>
-	);
-}
-
-function DeleteButton(props) {
-	return (
-		<Button className="buttonRound btn-danger" onClick={props.onClick}> 
-			-
-		</Button>
 	);
 }
 

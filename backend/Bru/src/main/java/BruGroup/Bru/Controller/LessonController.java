@@ -9,11 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Null;
+import javax.xml.ws.Response;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+
+
 
 @RestController
 public class LessonController {
@@ -39,6 +42,8 @@ public class LessonController {
     @Autowired
     AssignmentRepository assignmentRepository;
 
+    private static final double DEFAULT_CANVAS_SIZE = 1000;
+
     @GetMapping(path = "/allLessons")
     @CrossOrigin(origins = "*")
     public List<Lesson> allLessons() {
@@ -47,8 +52,9 @@ public class LessonController {
 
     @PostMapping(path = "/addLesson")
     @CrossOrigin(origins = "*")
-    public ResponseEntity addLesson(@RequestBody CreateLessonParams lessonParams) {
-        Lesson lesson = new Lesson(lessonParams.getName(), lessonParams.getInstructorEmail());
+    public ResponseEntity addLesson(@RequestBody Lesson lesson) {
+        lesson.setCanvasHeight(DEFAULT_CANVAS_SIZE);
+        lesson.setCanvasWidth(DEFAULT_CANVAS_SIZE);
         lessonRepository.save(lesson);
         return ResponseEntity.ok(lesson.getLessonId());
     }
@@ -105,6 +111,7 @@ public class LessonController {
         if (lesson == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+        boolean isPublished = organizationRepository.findByLessonId(lessonId) != null;
         List<Step> stepList = stepRepository.findByStepIdentityLessonId(lessonId);
         List<StepInformation> stepInformationList = new ArrayList<>();
 
@@ -116,14 +123,64 @@ public class LessonController {
             stepInformationList.add(stepInformation);
         }
 
-        LessonInformation lessonInformation = new LessonInformation(lesson, stepInformationList);
-
+        LessonInformation lessonInformation = new LessonInformation(lesson,stepInformationList, isPublished);
         return ResponseEntity.ok(lessonInformation);
+    }
+
+    @PostMapping(path = "/canStudentComplete")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity canStudentComplete(@RequestBody AssignmentIdentity identity) {
+        List<CourseLesson> curriculum = curriculumRepository.findByCourseLessonIdentityCourseId(identity.getCourseId());
+        boolean isCompleted = assignmentRepository.existsById(identity);
+        if (isCompleted) {
+            return ResponseEntity.ok(curriculum);
+        }
+
+        for (CourseLesson courseLesson : curriculum) {
+            identity = new AssignmentIdentity(identity.getEmail(),identity.getCourseId(), courseLesson.getCourseLessonIdentity().getLessonId());
+            if (!assignmentRepository.existsById(identity)) { //if assignment has not been completed by student
+                ResponseEntity canStudentComplete = identity.getLessonId() == identity.getLessonId()
+                        ? ResponseEntity.ok(curriculum)
+                        : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                return canStudentComplete;
+            }
+        }
+        return ResponseEntity.ok(curriculum);
+    }
+
+    @PostMapping(path = "/cloneLesson")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity cloneLesson(@RequestBody AccountLessonParams params) {
+        Lesson existingLesson = lessonRepository.findByLessonId(params.getLessonId());
+        String clonedLessonName = "Copy of " + existingLesson.getName();
+        Lesson clonedLesson = new Lesson(
+                clonedLessonName,
+                existingLesson.getInstructorEmail(),
+                existingLesson.getCanvasHeight(),
+                existingLesson.getCanvasWidth());
+        lessonRepository.save(clonedLesson);
+
+        List<Step> steps = stepRepository.findByStepIdentityLessonId(params.getLessonId());
+        List<Step> clonedSteps = steps
+                .stream()
+                .map(step -> step.clone(clonedLesson.getLessonId()))
+                .collect(Collectors.toList());
+
+        List<Tool> tools  = toolRepository.findByToolIdentityLessonId(existingLesson.getLessonId());
+        List<Tool> clonedTools = tools
+                .stream()
+                .map(tool -> tool.clone(clonedLesson.getLessonId()))
+                .collect(Collectors.toList());
+
+        stepRepository.saveAll(clonedSteps);
+        toolRepository.saveAll(clonedTools);
+        return ResponseEntity.ok(null);
     }
 
     @PostMapping(path = "/updateLessonName")        //SAVE
     @CrossOrigin(origins = "*")
     public ResponseEntity updateLessonName(@RequestBody LessonInformation lessonInformation) {
+        System.out.print(lessonInformation);
         Lesson lesson = lessonInformation.getLesson();
         lessonRepository.save(lesson);
         saveStepTable(lessonInformation.getStepInformation(), lesson.getLessonId());
@@ -162,13 +219,6 @@ public class LessonController {
             saveToolTable(stepInformation.getToolList());
         }
     }
-
-    public void deleteAllReferences(JpaRepository repository,List references) {
-        for (Object reference: references) {
-            repository.delete(reference);
-        }
-    }
-
 }
 
 class PotentialLessonParameters {
@@ -201,16 +251,56 @@ class PotentialLessonParameters {
     }
 }
 
+class AccountLessonParams {
+    private int lessonId;
+    private String email;
+
+    public AccountLessonParams() {
+
+    }
+
+    public AccountLessonParams(int lessonId, String email) {
+        this.lessonId = lessonId;
+        this.email = email;
+    }
+
+    public int getLessonId() {
+        return lessonId;
+    }
+
+    public void setLessonId(int lessonId) {
+        this.lessonId = lessonId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+}
+
 class LessonInformation {
 
     private Lesson lesson;
+    private boolean isPublished;
     private List<StepInformation> stepInformation;
 
     public LessonInformation(){}
 
-    public LessonInformation(Lesson lesson, List<StepInformation> stepInformation) {
+    public LessonInformation(Lesson lesson, List<StepInformation> stepInformation, boolean isPublished) {
         this.lesson = lesson;
         this.stepInformation = stepInformation;
+        this.isPublished = isPublished;
+    }
+
+    public boolean isPublished() {
+        return isPublished;
+    }
+
+    public void setPublished(boolean published) {
+        isPublished = published;
     }
 
     public Lesson getLesson() {
@@ -227,36 +317,6 @@ class LessonInformation {
 
     public void setStepInformation(List<StepInformation> stepInformation) {
         this.stepInformation = stepInformation;
-    }
-}
-
-class CreateLessonParams {
-    private String instructorEmail;
-    private String name;
-
-    public CreateLessonParams() {
-
-    }
-
-    public CreateLessonParams(String instructorEmail, String name) {
-        this.instructorEmail = instructorEmail;
-        this.name = name;
-    }
-
-    public String getInstructorEmail() {
-        return instructorEmail;
-    }
-
-    public void setInstructorEmail(String instructorEmail) {
-        this.instructorEmail = instructorEmail;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }
 

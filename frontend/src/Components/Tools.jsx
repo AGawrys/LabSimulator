@@ -1,7 +1,6 @@
-import React from "react"
 import {LineCalculator} from "../utils/LilacAlgebra.js"
 
-export const CATEGORIES = {
+const CATEGORIES = {
     Cups: [
         "TaperedCup",
         "Shaker",
@@ -12,7 +11,7 @@ export const CATEGORIES = {
     ]
 };
 
-export const IMAGES = {
+const IMAGES = {
     TaperedCup: {
         draw: (canvas, width, height, properties) => {
             if (canvas.getContext) {
@@ -39,11 +38,13 @@ export const IMAGES = {
                 context.lineTo(width * .2, height * .95)
                 context.lineTo(width * .8, height * .95)
                 context.lineTo(right.x(fillPoint), fillPoint);
-                context.fill()
+                context.fillStyle = properties.Color;
+                context.fill();
             }
         },
         properties: {
-            Fill: 0
+            Fill: 0,
+            Color: "#03a9f4",
         }
     },
     Shaker: {
@@ -218,3 +219,15 @@ export const IMAGES = {
         }
     }
 }
+
+function createImage(toolType) {
+    const image = {};
+    image.draw = IMAGES[toolType].draw;
+    image.properties = {};
+    Object.keys(IMAGES[toolType].properties).map((key) => {
+        image.properties[key] = IMAGES[toolType].properties[key];
+    });
+    return image;
+}
+
+export {CATEGORIES, IMAGES, createImage};

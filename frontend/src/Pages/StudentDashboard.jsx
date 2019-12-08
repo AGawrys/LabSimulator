@@ -65,8 +65,8 @@ export class StudentDashboard extends Component {
 		);
 	}
 
-	navigateToStudentLesson = (lessonId) =>  {
-		const newRoute = Routes.STUDENT_EDITOR + lessonId;
+	navigateToStudentLesson = (courseId, lessonId) =>  {
+		const newRoute = Routes.STUDENT_EDITOR + courseId + "/" + lessonId;
 		this.props.history.push(newRoute);
 	}
 }
@@ -83,7 +83,7 @@ function StudentCourse(props) {
 						if (canComplete && nextOneToComplete) {
 							nextOneToComplete = false;
 						}
-						return <StudentLesson key={index} lessonProgress={lessonProgress} disabled={!canComplete} onClick={onLessonClick}/>
+						return <StudentLesson key={index} course={course} lessonProgress={lessonProgress} disabled={!canComplete} onClick={onLessonClick}/>
 					})
 				}
 			</ListGroup>
@@ -92,11 +92,11 @@ function StudentCourse(props) {
 }
 
 function StudentLesson(props) {
-	const {lessonProgress,disabled, onClick} = props;
+	const {lessonProgress,disabled, onClick, course} = props;
 	const {lesson, isCompleted} = lessonProgress;
 	const variant = isCompleted ? "info" : null;
 	return (
-		<ListGroup.Item as="button" style={{'text-align': "left"}} variant={variant} disabled={disabled} onClick={() => onClick(lesson.lessonId)}>
+		<ListGroup.Item as="button" style={{'text-align': "left"}} variant={variant} disabled={disabled} onClick={() => onClick(course.courseId,lesson.lessonId)}>
 			{lesson.name} 
 		</ListGroup.Item>
 	);

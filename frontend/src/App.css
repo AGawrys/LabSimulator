@@ -24,3 +24,32 @@
 .react-draggable {
   	cursor: move;
 }
+
+.input-range {
+	width: 90% !important;
+}
+
+.remove-button {
+	color: black;
+	opacity: .4;
+}
+
+.remove-button:hover {
+	opacity:.8;
+}
+
+.success-notif {
+	position: absolute;
+	top: 20vh;
+	right:40vw;
+	z-index: 1000;
+	background-color: #43a047 !important;
+	height:60px;
+}
+
+.success-notif-body {
+	background-color: #43a047 !important;
+	height:60px;
+	z-index: 1000;
+	color: white !important;
+}

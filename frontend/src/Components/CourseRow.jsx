@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Button, Modal, Form, Row, ListGroup } from 'react-bootstrap';
+import React from 'react';
+import { ListGroup } from 'react-bootstrap';
 import Routes from '../utils/RouteConstants.js';
 
 function InstructorRow(props) {
@@ -15,10 +15,6 @@ function InstructorRow(props) {
 			</div>
 		</ListGroup.Item>
 	);
-}
-
-function onClick(courseId) {
-
 }
 
 export default InstructorRow;
