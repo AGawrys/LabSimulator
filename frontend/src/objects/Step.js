@@ -78,12 +78,6 @@ class Step {
 		this.actionMeasurement = actionMeasurement;
 	}
 
-	clone() {
-		const clonedTools = this.tools.map((tool) => tool.clone());
-		const { name, description, action, source, target, actionMeasurement, timer } = this;
-		return new Step(name, description, clonedTools, action, source, target, actionMeasurement, timer);
-	}
-
 	isComplete() {
 		if (!this.actionMeasurement || !this.timer || this.tools.length === 0) {
 			return false;
@@ -104,6 +98,48 @@ class Step {
 	toString() {
 		return this.name;
 	}
+
+	clone() {
+		const clonedTools = this.tools.map((tool) => tool.clone());
+		const { name, description, action, source, target, actionMeasurement, timer } = this;
+		return new Step(name, description, clonedTools, action, source, target, actionMeasurement, timer);
+	}
+
+	static load(stepData) {
+		const {toolList, step} = stepData;
+		const { name, description, actionType, source, target, actionMeasurement, timer } = step;
+		const loadedTools = toolList.map((tool) => Tool.load(tool));
+		return new Step(
+				name,
+				description,
+				loadedTools,
+				actionType,
+				loadedTools[source],
+				loadedTools[target],
+				actionMeasurement,
+				timer
+		);
+	}
+
+	save(lessonId, stepNumber) {
+		const savedTools = this.tools.map((tool) => tool.save(lessonId, stepNumber));
+		return {
+			step: {
+				stepIdentity: {
+					lessonId: lessonId,
+					stepNumber: stepNumber
+				},
+				name: this.name,
+				description: this.description,
+				actionType: this.action,
+				source: this.tools.indexOf(this.source),
+				target: this.tools.indexOf(this.target),
+				actionMeasurement: this.actionMeasurement,
+				timer: this.timer
+			},
+			toolList: savedTools
+		};
+	} 
 }
 
 export default Step;

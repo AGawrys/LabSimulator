@@ -130,6 +130,36 @@ class Tool {
 		};
 	}
 
+	static load(toolData) {
+		const {toolType, x, y, width, height, toolIdentity, color, amount, name} = toolData;
+		const {layer} = toolIdentity;
+		const image = createImage(toolType);
+		image.properties.Fill = amount;
+		image.properties.Color = color;
+		const position = new Position(x,y);
+		const loadedTool = new Tool(toolType, image, position, width, height, layer, color, amount);
+		loadedTool.setName(name);
+		return loadedTool;
+	}
+
+	save(lessonId, stepNumber) {
+		return {
+				toolIdentity: {
+					layer: this.layer,
+					stepNumber: stepNumber,
+					lessonId: lessonId
+				},
+				toolType: this.type,
+				x: this.position.x,
+				y: this.position.y,
+				name: this.name,
+				amount: this.amount,
+				color: this.color,
+				height: this.height,
+				width: this.width
+		};
+	}
+
 
 }
 

@@ -19,7 +19,6 @@ import Canvas from '../Components/Canvas.jsx';
 import Routes from '../utils/RouteConstants.js';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import {ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME} from '../utils/EditorConstants.js';
-import { loadLesson } from '../utils/LoadUtils.js';
 import { determineToolPosition, determineToolSize, getCanvasSize, resizeTools } from '../utils/CanvasUtils.js';
 import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
@@ -105,7 +104,7 @@ class Editor extends Component {
 		if (instructorEmail !== this.props.email) {
 			this.props.history.push(Routes.NOT_FOUND);
 		}
-		const loadedLesson = loadLesson(response.data);
+		const loadedLesson = Lesson.load(response.data);
 		this.setState(loadedLesson);
 	}
 
@@ -335,69 +334,13 @@ class Editor extends Component {
 	}
 
 	saveLesson = (callback) => {
-		const lessonInformation = this.getLessonInformation();
-		axios.post(Routes.SERVER + 'updateLessonName', lessonInformation).then(
+		const {lesson, steps} = this.state;
+		const savedLesson = lesson.save(steps);
+		axios.post(Routes.SERVER + 'updateLessonName', savedLesson).then(
 			(response) => callback(),
 			(error) => console.log(error),
 		);
 	};
-
-	getLessonInformation = () => {
-		const {width, height} = getCanvasSize();
-		return {
-			lesson: {
-				lessonId: this.state.lesson.id,
-				instructorEmail: this.props.email,
-				name: this.state.lesson.name,
-				canvasWidth: width,
-				canvasHeight: height,
-			},
-			stepInformation: this.constructSaveStepObject()
-		};
-	}
-
-	constructSaveStepObject() {
-		const { steps, lesson } = this.state;
-		return steps.map((step, index) => {
-			const toolList = this.constructToolListObject(step.tools, index);
-			return {
-				step: {
-					stepIdentity: {
-						lessonId: lesson.id,
-						stepNumber: index
-					},
-					name: step.name,
-					description: step.description,
-					actionType: step.action,
-					source: step.tools.indexOf(step.source),
-					target: step.tools.indexOf(step.target),
-					actionMeasurement: step.actionMeasurement,
-					timer: step.timer
-				},
-				toolList: toolList
-			};
-		});
-	}
-
-	constructToolListObject(tools, stepNumber) {
-		return tools.map((tool, index) => {
-			return {
-				toolIdentity: {
-					layer: tool.layer,
-					stepNumber: stepNumber,
-					lessonId: this.state.lesson.id
-				},
-				toolType: tool.type,
-				x: tool.position.x,
-				y: tool.position.y,
-				name: tool.name,
-				amount: tool.amount,
-				color: tool.color,
-				height: tool.height,
-				width: tool.width
-			};
-		});
-	}
 
 	renderStep = (step, index) => {
 		const { currentStep } = this.state;

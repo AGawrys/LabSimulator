@@ -4,7 +4,7 @@ import Collapsible from 'react-collapsible';
 import { Container, Row, Col } from 'react-grid-system';
 import Draggable, { DraggableCore } from 'react-draggable';
 import { getLessons } from '../Validation/StudentEditorValidation.js';
-import { loadLesson } from '../utils/LoadUtils.js';
+import Lesson from '../Objects/Lesson.js';
 import { resizeTools, getCanvasSize } from '../utils/CanvasUtils.js';
 import 'react-sticky-header/styles.css';
 import HeaderBru from '../Components/Header.jsx';
@@ -78,7 +78,7 @@ class EditorStudent extends Component {
 	getLesson(lesson_id, curriculum) {
 		axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
 			(response) => {
-				const {steps, lesson, canvasSize} = loadLesson(response.data);
+				const {steps, lesson, canvasSize} = Lesson.load(response.data);
 				this.setState({curriculum,steps,lesson,canvasSize});
 			},
 			(error) => console.log(error),
