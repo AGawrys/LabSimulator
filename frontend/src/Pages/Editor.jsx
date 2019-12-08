@@ -81,7 +81,7 @@ class Editor extends Component {
 			this.setState({
 				areToolsPlaced: true,
 				steps: steps,
-				canvasSize: {width, height}, 
+				canvasSize: {width, height},
 			});
 		}
 	}
@@ -207,11 +207,11 @@ class Editor extends Component {
 
 						<Col lg={8}>
 							<div className="brownBorder">
-							<Canvas 
-								instructor={true} 
-								onDrop={this.onDropTool} 
+							<Canvas
+								instructor={true}
+								onDrop={this.onDropTool}
 								tools={currentStep.getTools()}
-								onUpdateTools={this.updateTools} 
+								onUpdateTools={this.updateTools}
 								setCopiedTool={this.setCopiedTool}
 								copiedTool={copiedTool} />
 							</div>
