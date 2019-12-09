@@ -131,8 +131,19 @@ class ToolEditor extends React.Component {
     }
 
     getSupplementalControls = () => {
+        const canvas = document.getElementById("canvas")
+        const bounds = canvas.getBoundingClientRect();
+
         const {tool} = this.props;
         const SUPPLEMENTAL_CONTROLS = {
+            Height: <InputRange
+                        draggableTrack
+                        formatLabel={(value) => value.toFixed(2)} 
+                        minValue={0} 
+                        maxValue={bounds.height - tool.position.y} 
+                        onChange={this.onHeightChange}
+                        step={.01} 
+                        value={tool.height}/>,
             Fill: <InputRange
                         draggableTrack
                         formatLabel={(value) => value.toFixed(2)} 
@@ -141,9 +152,26 @@ class ToolEditor extends React.Component {
                         onChange={this.onFillChange}
                         step={.01} 
                         value={tool.amount}/>,
+            Taper: <InputRange
+                        draggableTrack
+                        formatLabel={(value) => value.toFixed(2)} 
+                        minValue={0} 
+                        maxValue={1} 
+                        onChange={this.onTaperChange}
+                        step={.01} 
+                        value={tool.taper}/>,
             Color: <SketchPicker disableAlpha={true} color={tool.color} onChange={this.onColorChange}/>,
+            
         };
         return SUPPLEMENTAL_CONTROLS;
+    }
+
+    onHeightChange = (value) => {
+        const {tool} = this.props;
+        const properties = tool.getImage().properties;
+        properties["Height"] = value;
+        tool.height = value;
+        this.props.setCurrentTool(this.props.tool);
     }
 
     onFillChange = (value) => {
@@ -151,6 +179,14 @@ class ToolEditor extends React.Component {
         const properties = tool.getImage().properties;
         properties["Fill"] = value;
         tool.amount = value;
+        this.props.setCurrentTool(this.props.tool);
+    }
+
+    onTaperChange = (value) => {
+        const {tool} = this.props;
+        const properties = tool.getImage().properties;
+        properties["Taper"] = value;
+        tool.taper = value;
         this.props.setCurrentTool(this.props.tool);
     }
 

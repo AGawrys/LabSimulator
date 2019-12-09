@@ -2,7 +2,7 @@ import {LineCalculator} from "../utils/LilacAlgebra.js"
 
 const CATEGORIES = {
     Cups: [
-        "TaperedCup",
+        "SmallCup",
         "Shaker",
         "Blender",
         "PumpBottle",
@@ -12,40 +12,53 @@ const CATEGORIES = {
 };
 
 const IMAGES = {
-    TaperedCup: {
+    SmallCup: {
         draw: (canvas, width, height, properties) => {
             if (canvas.getContext) {
                 const context = canvas.getContext("2d");
                 const bounds = canvas.getBoundingClientRect();
-
                 context.clearRect(0, 0, bounds.width, bounds.height);
-    
-                context.beginPath();
-                context.moveTo(width * .1, height * .05);
-                context.lineTo(width * .2, height * .95);
-                context.lineTo(width * .8, height * .95);
-                context.lineTo(width * .9, height * .05);
-                context.stroke()
-    
-                const left = LineCalculator(width * .1, height * .05, width * .2, height * .95)
-                const right = LineCalculator(width * .8, height * .95, width * .9, height * .05)
+
+                const taper = (1 - properties.Taper) / 10
+
+                const leftTop = width * (.05 + taper), rightTop = width * (.95 - taper);
+                const leftBottom = width * (.25 - taper), rightBottom = width * (.75 + taper);
+                const top = height * .05, bottom = height * .95;
+
+                const left = LineCalculator(leftTop, top, leftBottom, bottom);
+                const right = LineCalculator(rightBottom, bottom, rightTop, top);
                 
-                const cupHeight = (height * .95) - (height * .05)
-                const fillPoint = (height * .05) + (cupHeight * (1 - properties.Fill))
+                const cupHeight = bottom - top
+                const fillPoint = top + (cupHeight * (1 - properties.Fill))
+
+                console.log(right.x(fillPoint));
 
                 context.beginPath();
                 context.moveTo(left.x(fillPoint), fillPoint);
-                context.lineTo(width * .2, height * .95)
-                context.lineTo(width * .8, height * .95)
+                context.lineTo(leftBottom, bottom)
+                context.lineTo(rightBottom, bottom)
                 context.lineTo(right.x(fillPoint), fillPoint);
                 context.fillStyle = properties.Color;
                 context.fill();
+    
+                context.beginPath();
+                context.moveTo(leftTop, top);
+                context.lineTo(leftBottom, bottom);
+                context.lineTo(rightBottom, bottom);
+                context.lineTo(rightTop, top);
+                context.lineWidth = 3;
+                context.lineCap = "round";
+                context.lineJoin = "round";
+                context.stroke()
             }
         },
         properties: {
+            Width: 75,
+            Height: 100,
+            Taper: .5,
             Fill: 0,
             Color: "#03a9f4",
-        }
+        },
     },
     Shaker: {
         draw: (canvas, width, height, properties) => {
@@ -55,6 +68,7 @@ const IMAGES = {
                 context.clearRect(0, 0, bounds.width, bounds.height);
     
                 context.beginPath();
+                context.lineJoin = "round";
                 context.moveTo(width * .33, height * .05)
                 context.lineTo(width * .33, height * .13)
                 context.lineTo(width * .25, height * .15);
@@ -100,6 +114,7 @@ const IMAGES = {
                 context.clearRect(0, 0, bounds.width, bounds.height);
     
                 context.beginPath();
+                context.lineJoin = "round";
                 context.strokeRect(width * .35, height * .05, width * .3, height * .01);
                 context.strokeRect(width * .15, height * .06, width * .65, height * .02);
                 context.moveTo(width * .15, height * .08);
@@ -151,6 +166,7 @@ const IMAGES = {
                 context.clearRect(0, 0, bounds.width, bounds.height);
     
                 context.beginPath();
+                context.lineJoin = "round";
                 context.strokeRect(width * .375, height * .05, width * .175, height * .025);
                 context.strokeRect(width * .485, height * .075, width * .03, height * .225);
                 context.strokeRect(width * .450, height * .30, width * .10, height * .05);
@@ -182,6 +198,7 @@ const IMAGES = {
                 path.lineTo(width * .95, height * .55);
                 path.lineTo(width * .90, height * .50);
                 path.lineTo(width * .88, height * .50);
+                context.lineJoin = "round";
                 context.fillStyle = "#F0F0F0";
                 context.strokeStyle = "#000000";
                 context.fill(path);
@@ -203,6 +220,7 @@ const IMAGES = {
                 const right = LineCalculator(width * .8, height * .95, width * .9, height * .05)
 
                 context.beginPath();
+                context.lineJoin = "round";
                 context.moveTo(left.x(height * .35) - width * .025, height * .325);
                 context.lineTo(left.x(height * .65)  - width * .025, height * .675);
                 context.lineTo(right.x(height * .65) + width * .025, height * .675);
