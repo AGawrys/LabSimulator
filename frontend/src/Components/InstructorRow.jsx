@@ -5,7 +5,7 @@ import RemoveButton from './RemoveButton.jsx';
 
 function InstructorRow(props) {
 	const {instructor, onClick, disabled} = props;
-	const button = disabled ? <CannotDeleteButton/> : <RemoveButton onClick={onClick}/>;
+	const button = disabled ? null : <RemoveButton onClick={onClick}/>;
 	return (
 		<ListGroup.Item>
 			<div className="listRow">
@@ -16,15 +16,4 @@ function InstructorRow(props) {
 	);
 }
 
-function CannotDeleteButton(props) {
-	return (
-		<OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{GeneralConstants.CANNOT_REMOVE_INSTRUCTOR_MESSAGE}</Tooltip>}>
-		  <span className="d-inline-block">
-		    <Button className="buttonRound btn-danger" disabled style={{ pointerEvents: 'none' }}>
-		      -
-		    </Button>
-		  </span>
-		</OverlayTrigger>
-	);
-}
 export default InstructorRow;
