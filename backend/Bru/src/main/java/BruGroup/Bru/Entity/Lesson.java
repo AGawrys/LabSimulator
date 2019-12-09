@@ -11,15 +11,18 @@ public class Lesson {
     private int lessonId;
     private String instructorEmail;
     private String name;
+    private double canvasHeight;
+    private double canvasWidth;
 
     public Lesson() {
 
     }
 
-    public Lesson(String name, String instructorEmail) {
+    public Lesson(String name, String instructorEmail, double canvasHeight, double canvasWidth) {
         this.name = name;
         this.instructorEmail = instructorEmail;
-
+        this.canvasHeight = canvasHeight;
+        this.canvasWidth = canvasWidth;
     }
 
     public String getName() {
@@ -47,4 +50,19 @@ public class Lesson {
         this.lessonId = lessonId;
     }
 
+    public double getCanvasHeight() {
+        return canvasHeight;
+    }
+
+    public void setCanvasHeight(double canvasHeight) {
+        this.canvasHeight = canvasHeight;
+    }
+
+    public double getCanvasWidth() {
+        return canvasWidth;
+    }
+
+    public void setCanvasWidth(double canvasWidth) {
+        this.canvasWidth = canvasWidth;
+    }
 }

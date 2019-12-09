@@ -26,6 +26,10 @@ public class ToolIdentity implements Serializable {
         this.lessonId = lessonId;
     }
 
+    public ToolIdentity clone(int lessonId) {
+        return new ToolIdentity(this.layer, this.stepNumber, lessonId);
+    }
+
     public int getLayer() {
         return layer;
     }

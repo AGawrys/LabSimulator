@@ -8,6 +8,7 @@ import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import AddSearchModal from '../Components/AddSearchModal.jsx';
 import InstructorRow from '../Components/InstructorRow.jsx';
 import LessonRow from '../Components/LessonRow.jsx';
+import RemoveButton from '../Components/RemoveButton.jsx';
 import { Button, Modal, Form, Row, ListGroup } from 'react-bootstrap';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import axios from 'axios';
@@ -236,14 +237,9 @@ class CoursePage extends Component {
 			<ListGroup.Item key={index}>
 				<div className="listRow">
 					<p> {student.name} </p>
-					<button
-						className="buttonRound btn-danger"
-						onClick={() => {
+					<RemoveButton onClick={() => {
 							this.setState({ showDeleteStudent: true, selectedStudent: student});
-						}}
-					>
-						-
-					</button>
+					}}/>
 				</div>
 			</ListGroup.Item>
 		);

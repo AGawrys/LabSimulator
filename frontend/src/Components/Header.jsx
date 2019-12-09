@@ -15,7 +15,6 @@ class HeaderBru extends React.Component {
 		super(props);
 		this.state = {
 			showLoginModal: false,
-			showLoginModal: false,
 			email: '',
 			password: '',
 			authenticated: false,
@@ -54,10 +53,14 @@ class HeaderBru extends React.Component {
 	};
 
 	render() {
-		const { authenticated } = this.state;
+		const { authenticated, loggedOut} = this.state;
 		if (authenticated) {
 			const route = this.getCorrectRoute();
 			return <Redirect exact to={route} />;
+		}
+
+		if (loggedOut) {
+			return <Redirect exact to={Routes.DEFAULT}/>;
 		}
 
 		const navLinks = this.renderLinks();
@@ -120,20 +123,15 @@ class HeaderBru extends React.Component {
 
 	renderSignOutBtn() {
 		return (
-			<Link to="/">
-				<Button
-					variant="dark"
-					onClick={() => {
-						this.setState({
-							login: false,
-							errors: ''
-						});
-					}}
-				>
-					Sign Out
-				</Button>
-			</Link>
+			<Button variant="dark" onClick={this.onSignOut}>
+				Sign Out
+			</Button>
 		);
+	}
+
+	onSignOut = () => {
+		localStorage.removeItem('token');
+		this.setState({loggedOut: true});
 	}
 
 	getLoginForm() {

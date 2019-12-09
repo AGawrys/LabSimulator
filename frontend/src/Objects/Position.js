@@ -27,6 +27,10 @@ class Position {
                Position.getY() === this.y;
     }
 
+    clone() {
+        return new Position(this.x,this.y);
+    }
+
     toString() {
         return "(" + this.x + ", " + this.y + ")";
     }

@@ -41,7 +41,7 @@ public class AssignmentController {
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping(path = "/addAssignment")
+    @PostMapping(path = "/markAsComplete")
     @CrossOrigin(origins = "*")
     public ResponseEntity addAssignment(@RequestBody AssignmentIdentity assignmentIdentity) {
         Assignment assignment = new Assignment(assignmentIdentity);
@@ -84,7 +84,7 @@ public class AssignmentController {
         List<LessonProgress> lessonProgresses = lessons
                 .stream()
                 .map(lesson -> {
-                    AssignmentIdentity id = new AssignmentIdentity(email, lesson.getLessonId());
+                    AssignmentIdentity id = new AssignmentIdentity(email,course.getCourseId(),lesson.getLessonId());
                     boolean isCompleted = assignmentRepository.existsById(id);
                     return new LessonProgress(lesson,isCompleted);
                 })

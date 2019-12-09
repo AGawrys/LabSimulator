@@ -1,7 +1,8 @@
 import Position from './Position';
+import { createImage } from '../Components/Tools.jsx';
 
 class Tool {
-	constructor(type, image, position = null, width, height, layer = null, color = 0, amount = 0) {
+	constructor(type, image, position = null, width, height, layer = null, color = "#0077be", amount = 0) {
 		this.name = 'Tool ' + layer;
 		this.type = type;
 		this.image = image;
@@ -94,6 +95,17 @@ class Tool {
 		this.new = false;
 	}
 
+	clone() {
+		const {name,type,width,height,layer,color,amount} = this;
+		const newPosition = this.position.clone();
+		const newImage = createImage(this.type);
+		newImage.properties.Fill = amount;
+		newImage.properties.Color = color;
+		const clonedTool = new Tool(type,newImage,newPosition,width,height,layer,color,amount);
+		clonedTool.setName(name);
+		return clonedTool;
+	}
+
 	toString() {
 		return this.name;
 	}
@@ -104,6 +116,17 @@ class Tool {
 			value: this
 		};
 	}
+
+	toScaledPosition() {
+		const {x,y} = this.position;
+		const canvas = document.getElementById('canvas');
+		const {width, height} = canvas.getBoundingClientRect();
+		const scaledX = x / width;
+		const scaledY = y / height;
+		return {x: scaledX, y: scaledY};
+	}
+
+
 }
 
 export default Tool;

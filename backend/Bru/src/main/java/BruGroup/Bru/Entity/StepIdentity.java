@@ -1,7 +1,5 @@
 package BruGroup.Bru.Entity;
 
-import com.sun.xml.internal.xsom.impl.scd.Step;
-
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -20,6 +18,10 @@ public class StepIdentity implements Serializable {
     public StepIdentity(int lessonId, int stepNumber) {
         this.lessonId = lessonId;
         this.stepNumber = stepNumber;
+    }
+
+    public StepIdentity clone(int lessonId) {
+        return new StepIdentity(lessonId, this.stepNumber);
     }
 
     public int getLessonId() {

@@ -92,11 +92,6 @@ export const getLessons = () => {
 		name: 'Done! Hit exit to return to the dashboard',
 		tools: []
 	};
-	const lesson2 = {
-		name: 'Hot Tea',
-		steps: [ step1, step2, step3, step4 ],
-		status: 'Not Attempted',
-	};
 
 	const step1L2 = {
 		name: 'Move the jar to the right side',
@@ -143,56 +138,9 @@ export const getLessons = () => {
 		status: 'Incomplete'
 	};
 
-	const lessons = [ lesson1, lesson2 ];
+	const lessons = [ lesson1];
 
 	return lessons;
 };
 
-export const getCourses = () => {
-	const lesson2_1 = {
-		name: 'Cafe Mocha',
-		status: 'Complete'
-	}
-	const lesson2_2 = {
-		name: 'Peppermint Mocha',
-		status: 'Complete'
-	}
-	const lesson2_3 = {
-		name: 'Strawberry refresher',
-		status: 'Complete'
-	}
-	const lesson3_1 = {
-		name: 'Acai refresher',
-		status: 'Complete'
-	}
-	const lesson3_2 = {
-		name: 'Strawberry green tea lemonade',
-		status: 'Complete'
-	}
-	const lesson3_3 = {
-		name: 'White Chocolate Mocha',
-		status: 'Complete'
-	}
-	const lessons2 = [lesson2_1, lesson2_2, lesson2_3];
-	const lessons3 = [lesson3_1, lesson3_2, lesson3_3];
-	const lessons1 = getLessons();
-	const Course1 = {
-		lessons: lessons1,
-		instructor: 'John Ham',
-		status: 2
-	}
-	const Course2 = {
-		lessons: lessons2,
-		instructor: 'Mindy St Clair',
-		status: 1
-	} 
-	const Course3 = {
-		lessons: lessons3,
-		instructor: 'Mr Bean',
-		status: 0
-	}
-
-	const courses = [Course1, Course2, Course3, Course1, Course3];
-	return courses;
-};
 export const isMoveCorrect = () => {};

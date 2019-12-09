@@ -4,7 +4,6 @@ import BruGroup.Bru.Entity.Account;
 import BruGroup.Bru.Repository.AccountRepository;
 import BruGroup.Bru.Repository.InstructorRepository;
 import BruGroup.Bru.Repository.LessonRepository;
-import com.oracle.javafx.jmx.json.JSONException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +98,7 @@ public class AccountController {
 
     @PostMapping (path = "/token-auth")
     @CrossOrigin(origins = "*")
-    public ResponseEntity verifyToken(@RequestBody String token) throws JSONException {
+    public ResponseEntity verifyToken(@RequestBody String token) {
         Jws<Claims> jws;
         try {
             jws = Jwts.parser()

@@ -19,19 +19,19 @@ class Catalog extends React.Component {
 
 	render() {
 		const categories = Object.keys(CATEGORIES);
-		const sections = categories.map((category) => {
+		const sections = categories.map((category,index) => {
 			const tools = CATEGORIES[category];
-			const items = tools.map((tool) => {
+			const items = tools.map((tool,index) => {
 				const image = IMAGES[tool];
 				return (
-					<Draggable type="tool" data={tool}>
+					<Draggable key={index} type="tool" data={tool}>
 						<ToolComponent tool={new Tool(tool, image, undefined, 75, 75, undefined)} />
 					</Draggable>
 				);
 			});
 
 			return (
-				<div style={{ overflowY: 'auto', borderBottom: '1px solid black' }}>
+				<div key={index} style={{ overflowY: 'auto', borderBottom: '1px solid black' }}>
 					<Col style={{ margin: 0, padding: '10px' }}>
 						<Collapsible
 							trigger={<CollapsibleTrigger text={category} image={down} alt="expand" />}
