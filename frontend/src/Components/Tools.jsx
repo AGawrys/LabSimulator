@@ -2,7 +2,7 @@ import {LineCalculator} from "../utils/LilacAlgebra.js"
 
 const CATEGORIES = {
     Cups: [
-        "SmallCup",
+        "StraightCup",
         "Shaker",
         "Blender",
         "PumpBottle",
@@ -12,7 +12,7 @@ const CATEGORIES = {
 };
 
 const IMAGES = {
-    SmallCup: {
+    StraightCup: {
         draw: (canvas, width, height, properties) => {
             if (canvas.getContext) {
                 const context = canvas.getContext("2d");
@@ -30,8 +30,6 @@ const IMAGES = {
                 
                 const cupHeight = bottom - top
                 const fillPoint = top + (cupHeight * (1 - properties.Fill))
-
-                console.log(right.x(fillPoint));
 
                 context.beginPath();
                 context.moveTo(left.x(fillPoint), fillPoint);
@@ -53,8 +51,8 @@ const IMAGES = {
             }
         },
         properties: {
-            Width: 75,
-            Height: 100,
+            Width: 100,
+            Height: 120,
             Taper: .5,
             Fill: 0,
             Color: "#03a9f4",
@@ -66,43 +64,75 @@ const IMAGES = {
                 const context = canvas.getContext("2d");
                 const bounds = canvas.getBoundingClientRect();
                 context.clearRect(0, 0, bounds.width, bounds.height);
-    
-                context.beginPath();
-                context.lineJoin = "round";
-                context.moveTo(width * .33, height * .05)
-                context.lineTo(width * .33, height * .13)
-                context.lineTo(width * .25, height * .15);
-                context.lineTo(width * .23, height * .16);
-                context.lineTo(width * .20, height * .23);
-                context.lineTo(width * .80, height * .23);
-                context.lineTo(width * .77, height * .16);
-                context.lineTo(width * .75, height * .15);
-                context.lineTo(width * .67, height * .13);
-                context.lineTo(width * .67, height * .05);
-                context.lineTo(width * .33, height * .05);
 
-                context.moveTo(width * .2, height * .23);
-                context.lineTo(width * .3, height * .95);
-                context.lineTo(width * .7, height * .95);
-                context.lineTo(width * .8, height * .23);
-                context.stroke()
-    
-                const left = LineCalculator(width * .1, height * .05, width * .2, height * .95)
-                const right = LineCalculator(width * .8, height * .95, width * .9, height * .05)
-                
-                const cupHeight = (height * .95) - (height * .05)
-                const fillPoint = (height * .05) + (cupHeight * (1 - properties.Fill))
+                const leftTop = width * .05, rightTop = width * .95;
+                const leftBottom = width * .12, rightBottom = width * .88;
+                const top = height * .28, bottom = height * .95;
+
+                const left = LineCalculator(leftTop, top, leftBottom, bottom);
+                const right = LineCalculator(rightBottom, bottom, rightTop, top);
+                const cupHeight = bottom - top
+                const fillPoint = top + (cupHeight * (1 - properties.Fill))
 
                 context.beginPath();
                 context.moveTo(left.x(fillPoint), fillPoint);
-                context.lineTo(width * .2, height * .95)
-                context.lineTo(width * .8, height * .95)
+                context.lineTo(leftBottom, bottom)
+                context.lineTo(rightBottom, bottom)
                 context.lineTo(right.x(fillPoint), fillPoint);
-                context.fill()
+                context.fillStyle = properties.Color;
+                context.fill();
+
+                context.lineWidth = 3;
+                context.lineCap = "round";
+                context.lineJoin = "round";
+
+                context.beginPath();
+                context.moveTo(leftTop, top);
+                context.lineTo(leftBottom, bottom);
+                context.lineTo(rightBottom, bottom);
+                context.lineTo(rightTop, top);
+                context.stroke()
+                
+                context.beginPath();
+                context.moveTo(width * .25, height * .05)
+                context.lineTo(width * .25, height * .10)
+                context.lineTo(width * .15, height * .13);
+                context.lineTo(width * .10, height * .16);
+                context.lineTo(width * .05, height * .23);
+                context.lineTo(width * .95, height * .23);
+                context.lineTo(width * .90, height * .16);
+                context.lineTo(width * .85, height * .13);
+                context.lineTo(width * .75, height * .10);
+                context.lineTo(width * .75, height * .05);
+                context.quadraticCurveTo(width * .5, height * .03, width * .25, height * .05);
+                context.stroke()
+
+                context.clearRect(width * .03, height * .23, width * .94, height * .05);
+                context.strokeRect(width * .03, height * .23, width * .94, height * .05);
+
+                context.fillStyle = "black"
+                context.font = "bold 12px Arial"
+                context.textBaseline = "middle"
+                for (let i = properties.Max - (properties.Max/properties.Intervals);
+                     i > properties.Min;
+                     i -= properties.Max/properties.Intervals) {
+                    context.beginPath();
+                    context.moveTo(width * .48, top + (cupHeight * ((properties.Max - i)/properties.Max)));
+                    context.lineTo(width * .52, top + (cupHeight * ((properties.Max - i)/properties.Max)));
+                    context.fillText(i, width * .54, top + (cupHeight * ((properties.Max - i)/properties.Max)))
+                    context.stroke();
+                    console.log(top + ((properties.Max - i)/properties.Max * cupHeight))
+                }
             }
         },
         properties: {
-            Fill: 0
+            Width: 100,
+            Height: 250,
+            Fill: 0,
+            Color: "#03a9f4",
+            Min: 0,
+            Max: 10,
+            Intervals: 5
         }
     },
     Blender: {

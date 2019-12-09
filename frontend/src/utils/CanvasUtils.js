@@ -1,25 +1,25 @@
 import Position from '../Objects/Position.js';
 
-function determineToolPosition(size) {
+function determineToolPosition(toolWidth, toolHeight) {
 	const canvas = document.getElementById('canvas');
 	const { left, top, width, height } = canvas.getBoundingClientRect();
 	const { pageX, pageY } = window.event;
 
 	let x,y;
-	if (pageX - size / 2 < left) {
+	if (pageX - toolWidth / 2 < left) {
 		x = 0;
-	} else if (pageX + size / 2 > width + left) {
-		x = width - size;
+	} else if (pageX + toolWidth / 2 > width + left) {
+		x = width - toolWidth;
 	} else {
-		x = pageX - left - size / 2;
+		x = pageX - left - toolWidth / 2;
 	}
 
-	if (pageY - size / 2 < top) {
+	if (pageY - toolHeight / 2 < top) {
 		y = 0;
-	} else if (pageY + size / 2 > height + top) {
-		y = height - size;
+	} else if (pageY + toolHeight / 2 > height + top) {
+		y = height - toolHeight;
 	} else {
-		y = pageY - top - size / 2;
+		y = pageY - top - toolHeight / 2;
 	}
 
 	return {x,y};
