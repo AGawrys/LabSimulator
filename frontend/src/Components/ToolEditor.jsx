@@ -136,6 +136,14 @@ class ToolEditor extends React.Component {
 
         const {tool} = this.props;
         const SUPPLEMENTAL_CONTROLS = {
+            Width: <InputRange
+                        draggableTrack
+                        formatLabel={(value) => value.toFixed(2)} 
+                        minValue={0} 
+                        maxValue={bounds.width - tool.position.x} 
+                        onChange={this.onWidthChange}
+                        step={.01} 
+                        value={tool.width}/>,
             Height: <InputRange
                         draggableTrack
                         formatLabel={(value) => value.toFixed(2)} 
@@ -164,6 +172,14 @@ class ToolEditor extends React.Component {
             
         };
         return SUPPLEMENTAL_CONTROLS;
+    }
+
+    onWidthChange = (value) => {
+        const {tool} = this.props;
+        const properties = tool.getImage().properties;
+        properties["Width"] = value;
+        tool.width = value;
+        this.props.setCurrentTool(this.props.tool);
     }
 
     onHeightChange = (value) => {
