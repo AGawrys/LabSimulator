@@ -125,7 +125,7 @@ class Canvas extends React.Component {
                     tool={currentTool}
                     show={isEditingTool}
                     onHide={this.onHide}
-                    onUpdateTools={this.props.onUpdateTools}
+                    updateTools={this.updateTools}
                     setCurrentTool={this.setCurrentTool}
                 />
             );

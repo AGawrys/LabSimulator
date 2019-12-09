@@ -23,7 +23,6 @@ class ToolEditor extends React.Component {
     
     onChangeName() {
         this.tool.setName(this.nameRef.current.value)
-        this.props.setCurrentTool(this.tool);
     }
 
     onChangeX(value) {
@@ -94,6 +93,7 @@ class ToolEditor extends React.Component {
                             <Form.Control
                                 type={"text"}
                                 defaultValue={this.tool? this.tool.getName() : null}
+                                onBlur={() =>  this.props.updateTools()}
                                 onChange={this.onChangeName}
                                 ref={this.nameRef}
                             />
@@ -109,6 +109,7 @@ class ToolEditor extends React.Component {
                                 minValue={0} 
                                 maxValue={bounds.width - this.tool.getWidth()} 
                                 onChange={this.onChangeX} 
+                                onChangeComplete={() => this.props.updateTools()}
                                 value={this.tool ? this.tool.getPosition().getX() : null}/>
                         </Col>
                     </Form.Group>
@@ -121,6 +122,7 @@ class ToolEditor extends React.Component {
                                 minValue={0} 
                                 maxValue={bounds.height - this.tool.getHeight()} 
                                 onChange={this.onChangeY} 
+                                onChangeComplete={() => this.props.updateTools()}
                                 value={this.tool ? this.tool.getPosition().getY() : null}/>
                         </Col>
                     </Form.Group>
@@ -139,9 +141,14 @@ class ToolEditor extends React.Component {
                         minValue={0} 
                         maxValue={1} 
                         onChange={this.onFillChange}
+                        onChangeComplete={() => this.props.updateTools()}
                         step={.01} 
                         value={tool.amount}/>,
-            Color: <SketchPicker disableAlpha={true} color={tool.color} onChange={this.onColorChange}/>,
+            Color: <SketchPicker 
+                        disableAlpha={true} 
+                        color={tool.color} 
+                        onChange={this.onColorChange}
+                        onChangeComplete={() => this.props.updateTools()}/>,
         };
         return SUPPLEMENTAL_CONTROLS;
     }

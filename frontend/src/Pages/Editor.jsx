@@ -415,13 +415,16 @@ class Editor extends Component {
 	onStepNameChange = (e) => {
 		const { steps, currentStep, history } = this.state;
 		currentStep.name = e.target.value;
-		this.setState({ currentStep }, this.addOperation);
+		this.setState({ currentStep });
 	};
 
 	onFieldBlur = (e, step) => {
 		if (StringUtils.isEmpty(e.target.value)) {
 			step.name = DEFAULT_STEP_NAME;
-			this.setState({ steps: this.state.steps });
+			this.setState({ steps: this.state.steps }, this.addOperation);
+		}
+		else {
+			this.addOperation();
 		}
 	};
 
