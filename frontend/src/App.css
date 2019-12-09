@@ -69,3 +69,12 @@
 	z-index: 1000;
 	color: white !important;
 }
+
+.add-button {
+	color: black;
+	opacity: .6;
+}
+
+.add-button:hover {
+	opacity: .8;
+}

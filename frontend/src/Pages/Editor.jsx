@@ -541,7 +541,7 @@ class Editor extends Component {
 		const { lesson } = this.state;
 		const body = {
 			lessonId: lesson.id,
-			instructorEmail: this.props.email
+			email: this.props.email
 		};
 		axios.post(Routes.SERVER + 'cloneLesson/', body).then(
 			(response) => this.setState({showSuccessfulDuplicate: true}),

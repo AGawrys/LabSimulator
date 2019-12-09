@@ -165,7 +165,7 @@ public class LessonController {
         String clonedLessonName = "Copy of " + existingLesson.getName();
         Lesson clonedLesson = new Lesson(
                 clonedLessonName,
-                existingLesson.getInstructorEmail(),
+                params.getEmail(),
                 existingLesson.getCanvasHeight(),
                 existingLesson.getCanvasWidth());
         lessonRepository.save(clonedLesson);

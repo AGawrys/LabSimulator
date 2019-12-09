@@ -14,6 +14,7 @@ const Routes = {
 	ORGANIZATION_DASHBOARD: '/' + ORGANIZATION + '/' + DASHBOARD,
 	COURSE: '/course/',
 	SIGN_UP: '/signup',
+	SEARCH: '/search/',
 	SERVER: 'http://localhost:8080/',
 	NOT_FOUND: '/404',
 };

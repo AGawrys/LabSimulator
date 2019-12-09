@@ -39,15 +39,6 @@ export class InstructorDashboard extends Component {
 		);
 	}
 
-	handleNext() {}
-	handleGoToCourse () {
-		this.setState({ goToCoursePage: true});
-	};
-
-	handleGoToEditor(){
-		this.setState({ goToLessonEditor: true});
-	};
-
 	render() {
 		const { instructorInfo, loaded } = this.state;
 		if (!loaded) {
@@ -60,7 +51,7 @@ export class InstructorDashboard extends Component {
 				<div className="teacherDashboard">
 					<div className="searchBarDiv">
 					<h1 className="m-0 font-weight-light text-secondary headings">Welcome to your Dashboard</h1>
-						<SearchBar placeHolderText={'Search for Lesson'} />
+						<SearchBar placeHolderText={'Search for Lesson'} onSearchButtonClick={(value) => this.props.history.push(Routes.SEARCH + value)} />
 					</div>
 					<div className="teacherDashboardContents">
 						<div className="recentDrinksDiv cardBorder">
@@ -236,7 +227,7 @@ export class InstructorDashboard extends Component {
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button variant="primary" type="submit" onClick={this.handleGoToEditor.bind(this)}>
+					<Button variant="primary" type="submit">
 						Create
 					</Button>
 				</Modal.Footer>
