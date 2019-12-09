@@ -53,7 +53,6 @@ class Canvas extends React.Component {
 		const { tools, onUpdateTools } = this.props;
 		const index = tools.indexOf(this.state.currentTool);
 		tools.splice(index, 1);
-		console.log(tools);
 		for (let i = 0; i < tools.length; i++) {
 			tools[i].layer = i;
 		}
@@ -104,6 +103,7 @@ class Canvas extends React.Component {
 					show={isEditingTool}
 					onHide={this.onHide}
 					setCurrentTool={this.setCurrentTool}
+					updateNameTool={this.props.onUpdateNameTool}
 				/>
 			);
 		}

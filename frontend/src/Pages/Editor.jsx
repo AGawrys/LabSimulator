@@ -18,7 +18,7 @@ import Catalog from '../Components/Catalog.jsx';
 import Canvas from '../Components/Canvas.jsx';
 import Routes from '../utils/RouteConstants.js';
 import GeneralConstants from '../utils/GeneralConstants.js';
-import {ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME} from '../utils/EditorConstants.js';
+import { ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME } from '../utils/EditorConstants.js';
 import { loadLesson } from '../utils/LoadUtils.js';
 import { determineToolPosition, getCanvasSize, resizeTools } from '../utils/CanvasUtils.js';
 import Lesson from '../Objects/Lesson.js';
@@ -52,11 +52,11 @@ class Editor extends Component {
 			showDeleteLessonModal: false,
 			showSuccessfullyPublished: false,
 			showSuccessfulDuplicate: false,
-			showSuccessfulSave:false,
+			showSuccessfulSave: false,
 			showActionMenu: true,
 			copiedTool: null,
 			areToolsPlaced: false,
-			canvasSize: {height: 1000, width: 1000},
+			canvasSize: { height: 1000, width: 1000 }
 		};
 
 		this.onDropTool = this.onDropTool.bind(this);
@@ -69,19 +69,19 @@ class Editor extends Component {
 	handleSimulate() {}
 
 	componentDidMount() {
-		window.addEventListener("resize", this.onCanvasResize);
+		window.addEventListener('resize', this.onCanvasResize);
 		this.fetchData();
 	}
 
 	componentDidUpdate() {
-		const {areToolsPlaced, steps, canvasSize} = this.state;
+		const { areToolsPlaced, steps, canvasSize } = this.state;
 		if (!areToolsPlaced) {
-			resizeTools(canvasSize,steps);
-			const {width, height} = getCanvasSize();
+			resizeTools(canvasSize, steps);
+			const { width, height } = getCanvasSize();
 			this.setState({
 				areToolsPlaced: true,
 				steps: steps,
-				canvasSize: {width, height},
+				canvasSize: { width, height }
 			});
 		}
 	}
@@ -96,24 +96,29 @@ class Editor extends Component {
 				this.props.history.push(Routes.NOT_FOUND);
 			}
 		);
-	}
+	};
 
 	loadLesson = (response) => {
-		const {instructorEmail} = response.data.lesson;
+		const { instructorEmail } = response.data.lesson;
 		if (instructorEmail !== this.props.email) {
 			this.props.history.push(Routes.NOT_FOUND);
 		}
 		const loadedLesson = loadLesson(response.data);
 		this.setState(loadedLesson);
-	}
+	};
 
 	handleFieldChange = (e) => {
 		this.state.lesson.setName(e.target.value);
 	};
 
 	render() {
-		const { lesson, currentStep, steps, copiedTool} = this.state;
-		const {showSuccessfulDuplicate, showDeleteLessonModal, showSuccessfullyPublished, showSuccessfulSave } = this.state;
+		const { lesson, currentStep, steps, copiedTool } = this.state;
+		const {
+			showSuccessfulDuplicate,
+			showDeleteLessonModal,
+			showSuccessfullyPublished,
+			showSuccessfulSave
+		} = this.state;
 		if (steps == null) {
 			return null;
 		}
@@ -140,16 +145,16 @@ class Editor extends Component {
 					show={showSuccessfullyPublished}
 				/>
 				<SuccessNotification
-					message={"Lesson successfully duplicated!"}
-					onClose={() => this.setState({showSuccessfulDuplicate: false})}
+					message={'Lesson successfully duplicated!'}
+					onClose={() => this.setState({ showSuccessfulDuplicate: false })}
 					show={showSuccessfulDuplicate}
 					isSuccess
 					autohide
 					delay={1000}
 				/>
 				<SuccessNotification
-					message={"Lesson successfully saved!"}
-					onClose={() => this.setState({showSuccessfulSave: false})}
+					message={'Lesson successfully saved!'}
+					onClose={() => this.setState({ showSuccessfulSave: false })}
 					show={showSuccessfulSave}
 					isSuccess
 					autohide
@@ -207,13 +212,15 @@ class Editor extends Component {
 
 						<Col lg={8}>
 							<div className="brownBorder">
-							<Canvas
-								instructor={true}
-								onDrop={this.onDropTool}
-								tools={currentStep.getTools()}
-								onUpdateTools={this.updateTools}
-								setCopiedTool={this.setCopiedTool}
-								copiedTool={copiedTool} />
+								<Canvas
+									instructor={true}
+									onDrop={this.onDropTool}
+									tools={currentStep.getTools()}
+									onUpdateTools={this.updateTools}
+									onUpdateNameTool={this.updateNameTool}
+									setCopiedTool={this.setCopiedTool}
+									copiedTool={copiedTool}
+								/>
 							</div>
 						</Col>
 
@@ -316,14 +323,14 @@ class Editor extends Component {
 
 	onSaveLesson = (e) => {
 		e.preventDefault();
-		const {width, height} = getCanvasSize();
+		const { width, height } = getCanvasSize();
 		const lessonInformation = {
 			lesson: {
 				lessonId: this.state.lesson.id,
 				instructorEmail: this.props.email,
 				name: this.state.lesson.name,
 				canvasWidth: width,
-				canvasHeight: height,
+				canvasHeight: height
 			},
 			stepInformation: this.constructSaveStepObject()
 		};
@@ -331,10 +338,9 @@ class Editor extends Component {
 	};
 
 	saveLesson = (lessonInformation) => {
-		axios.post('http://localhost:8080/updateLessonName', lessonInformation).then(
-			(response) => this.setState({showSuccessfulSave:true}),
-			(error) => console.log(error),
-		);
+		axios
+			.post('http://localhost:8080/updateLessonName', lessonInformation)
+			.then((response) => this.setState({ showSuccessfulSave: true }), (error) => console.log(error));
 	};
 
 	constructSaveStepObject() {
@@ -402,11 +408,11 @@ class Editor extends Component {
 	};
 
 	onDropTool(data) {
-		const {x,y} = determineToolPosition(DEFAULT_TOOL_SIZE);
+		const { x, y } = determineToolPosition(DEFAULT_TOOL_SIZE);
 		const position = new Position(x, y);
 		const image = createImage(data.tool);
 		const layer = this.state.currentStep.getTools().length;
-		const tool = new Tool(data.tool, image, position,DEFAULT_TOOL_SIZE,DEFAULT_TOOL_SIZE,layer);
+		const tool = new Tool(data.tool, image, position, DEFAULT_TOOL_SIZE, DEFAULT_TOOL_SIZE, layer);
 		let currentStep = this.state.currentStep;
 		currentStep.addTool(tool);
 		this.setState({
@@ -570,38 +576,48 @@ class Editor extends Component {
 			lessonId: lesson.id,
 			instructorEmail: this.props.email
 		};
-		axios.post(Routes.SERVER + 'cloneLesson/', body).then(
-			(response) => this.setState({showSuccessfulDuplicate: true}),
-			(error) => console.log(error),
-		);
-	}
+		axios
+			.post(Routes.SERVER + 'cloneLesson/', body)
+			.then((response) => this.setState({ showSuccessfulDuplicate: true }), (error) => console.log(error));
+	};
 
 	setCopiedTool = (tool) => {
-		this.setState({copiedTool: tool});
-	}
+		this.setState({ copiedTool: tool });
+	};
 
 	updateTools = (tools) => {
-		const {currentStep} = this.state;
+		const { currentStep } = this.state;
 		if (tools.indexOf(currentStep.source) == -1) {
 			currentStep.source = null;
 		}
 		if (tools.indexOf(currentStep.target) == -1) {
 			currentStep.target = null;
 		}
+
 		currentStep.tools = tools;
-		this.setState({currentStep});
-	}
+		this.setState({ currentStep });
+	};
+
+	updateNameTool = (tool) => {
+		const { currentStep } = this.state;
+		if (tool === currentStep.source) {
+			currentStep.source = tool;
+		}
+		if (tool === currentStep.target) {
+			currentStep.target = tool;
+		}
+		this.setState({ currentStep });
+	};
 
 	onCanvasResize = () => {
-		const {canvasSize, steps} = this.state;
+		const { canvasSize, steps } = this.state;
 		resizeTools(canvasSize, steps);
-		const {width, height} = getCanvasSize();
+		const { width, height } = getCanvasSize();
 		this.setState({
 			steps: steps,
-			canvasSize: {width,height},
+			canvasSize: { width, height }
 		});
-	}
-
+	};
 }
 
 export default Editor;
