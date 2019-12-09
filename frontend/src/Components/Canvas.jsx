@@ -65,7 +65,7 @@ class Canvas extends React.Component {
     }
 
     onPasteTool = () => {
-        const {copiedTool, tools, setCopiedTool} = this.props;
+        const {copiedTool, tools, setCopiedTool, onUpdateTools} = this.props;
         const newCopy = copiedTool.clone();         // must deep copy again so subsequential pastes will not have properties effected
 
         const {x,y} = determineToolPosition(copiedTool.height);
@@ -74,7 +74,13 @@ class Canvas extends React.Component {
         copiedTool.position = position;
         tools.push(copiedTool);
 
+        onUpdateTools(tools);
         setCopiedTool(newCopy);
+    }
+
+    updateTools = () => {
+        const {tools, onUpdateTools} = this.props;
+        onUpdateTools(tools);
     }
 
     render() {
@@ -90,6 +96,7 @@ class Canvas extends React.Component {
                             selected
                             tool={tool}
                             setCurrentTool={this.setCurrentTool}
+                            updateTools={this.updateTools}
                         />
                     </ContextMenuTrigger>
                 )
@@ -99,6 +106,7 @@ class Canvas extends React.Component {
                         draggable
                         tool={tool}
                         setCurrentTool={this.setCurrentTool}
+                        updateTools={this.updateTools}
                     />
                 );
             }
@@ -117,6 +125,7 @@ class Canvas extends React.Component {
                     tool={currentTool}
                     show={isEditingTool}
                     onHide={this.onHide}
+                    onUpdateTools={this.props.onUpdateTools}
                     setCurrentTool={this.setCurrentTool}
                 />
             );

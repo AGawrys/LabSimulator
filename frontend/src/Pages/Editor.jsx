@@ -58,8 +58,8 @@ class Editor extends Component {
 			copiedTool: null,
 			areToolsPlaced: false,
 			canvasSize: {height: 1000, width: 1000},
+			history: {operations: [], pointer: 0}
 		};
-
 		this.onDropTool = this.onDropTool.bind(this);
 	}
 
@@ -75,7 +75,7 @@ class Editor extends Component {
 	}
 
 	componentDidUpdate() {
-		const {areToolsPlaced, steps, canvasSize} = this.state;
+		const {areToolsPlaced, steps, canvasSize, currentStep} = this.state;
 		if (!areToolsPlaced) {
 			resizeTools(canvasSize,steps);
 			const {width, height} = getCanvasSize();
@@ -84,7 +84,12 @@ class Editor extends Component {
 				steps: steps,
 				canvasSize: {width, height}, 
 			});
+			this.addOperation();
 		}
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener("resize");
 	}
 
 	fetchData = () => {
@@ -113,8 +118,9 @@ class Editor extends Component {
 	};
 
 	render() {
-		const { lesson, currentStep, steps, copiedTool} = this.state;
+		const { lesson, currentStep, steps, copiedTool } = this.state;
 		const {showSuccessfulDuplicate, showDeleteLessonModal, showSuccessfullyPublished, showSuccessfulSave, showIncompleteSteps, showSaveBeforePublish } = this.state;
+		const { operations, pointer} = this.state.history;
 		if (steps == null) {
 			return null;
 		}
@@ -197,6 +203,12 @@ class Editor extends Component {
 								</button>
 							</Col>
 							<Col className="editorToolBarButton alignRight" lg={5}>
+								<Button disabled={pointer === 0} variant="dark" onClick={this.handleUndo}>
+									<i className="fa fa-undo" aria-hidden="true"></i>
+								</Button>
+								<Button disabled={operations.length === 0 || pointer === operations.length - 1} variant="dark" onClick={this.handleRedo}>
+									<i className="fa fa-repeat" aria-hidden="true"></i>
+								</Button>
 								<Button
 									type="button"
 									variant="danger"
@@ -374,13 +386,13 @@ class Editor extends Component {
 		currentStep.addTool(tool);
 		this.setState({
 			currentStep: currentStep
-		});
+		}, this.addOperation);
 	}
 
 	onDropStep = ({ oldIndex, newIndex }) => {
 		const { steps } = this.state;
 		const swappedSteps = swapElements(steps, oldIndex, newIndex);
-		this.setState({ steps: swappedSteps });
+		this.setState({ steps: swappedSteps }, this.addOperation);
 	};
 
 	addStep = () => {
@@ -388,7 +400,10 @@ class Editor extends Component {
 		const index = steps.indexOf(currentStep);
 		const newStep = new Step();
 		steps.splice(index + 1, 0, newStep);
-		this.setState({ currentStep: newStep, steps });
+		this.setState({
+			currentStep: newStep, 
+			steps:steps 
+		}, this.addOperation);
 	};
 
 	onStepClick = (e) => {
@@ -398,9 +413,9 @@ class Editor extends Component {
 	};
 
 	onStepNameChange = (e) => {
-		const { currentStep } = this.state;
+		const { steps, currentStep, history } = this.state;
 		currentStep.name = e.target.value;
-		this.setState({ currentStep });
+		this.setState({ currentStep }, this.addOperation);
 	};
 
 	onFieldBlur = (e, step) => {
@@ -421,10 +436,11 @@ class Editor extends Component {
 	deleteStep = (step) => {
 		const { steps } = this.state;
 		const index = steps.indexOf(step);
+		console.log(step);
 		const newIndex = index === steps.length - 1 ? index - 1 : index;
 		steps.splice(index, 1);
 		const currentStep = steps[newIndex];
-		this.setState({ currentStep });
+		this.setState({ currentStep }, this.addOperation);
 	};
 
 	onCloneStep = (e, step) => {
@@ -440,7 +456,7 @@ class Editor extends Component {
 		const { steps } = this.state;
 		const index = steps.indexOf(step);
 		steps.splice(index + 1, 0, clonedStep);
-		this.setState({ steps });
+		this.setState({ steps }, this.addOperation);
 	};
 
 	updateCurrentAction = (action) => {
@@ -449,21 +465,21 @@ class Editor extends Component {
 		if (action.value != 'Pour') {
 			currentStep.target = null;
 		}
-		this.setState({ currentStep });
+		this.setState({ currentStep },this.addOperation);
 	};
 
 	updateCurrentSource = (tool) => {
 		const { currentStep } = this.state;
 		currentStep.source = tool;
 		currentStep.target = currentStep.source === currentStep.target ? null : currentStep.target;
-		this.setState({ currentStep });
+		this.setState({ currentStep },this.addOperation);
 	};
 
 	updateCurrentTarget = (tool) => {
 		const { currentStep } = this.state;
 		currentStep.target = tool;
 		currentStep.source = currentStep.source === currentStep.target ? null : currentStep.source;
-		this.setState({ currentStep });
+		this.setState({ currentStep },this.addOperation);
 	};
 
 	updateActionMeasurement = (e) => {
@@ -473,7 +489,7 @@ class Editor extends Component {
 			this.setState({ currentStep });
 		} else {
 			currentStep.actionMeasurement = null;
-			this.setState({ currentStep });
+			this.setState({ currentStep },this.addOperation);
 		}
 	};
 
@@ -481,10 +497,10 @@ class Editor extends Component {
 		const { currentStep } = this.state;
 		if (e.target.value > 0) {
 			currentStep.timer = e.target.value;
-			this.setState({ currentStep });
+			this.setState({ currentStep }, this.addOperation);
 		} else {
 			currentStep.timer = null;
-			this.setState({ currentStep });
+			this.setState({ currentStep }, this.addOperation);
 		}
 	};
 
@@ -562,7 +578,7 @@ class Editor extends Component {
 			currentStep.target = null;
 		}
 		currentStep.tools = tools;
-		this.setState({currentStep});
+		this.setState({currentStep}, this.addOperation);
 	}
 
 	onCanvasResize = () => {
@@ -573,6 +589,45 @@ class Editor extends Component {
 			steps: steps,
 			canvasSize: {width,height},
 		});
+	}
+
+	addOperation = () => {
+		const {operations, pointer} = this.state.history;
+		operations.splice(pointer + 1);						// remove all operations after the current one
+		const stepState = this.cloneState(this.state);
+		operations.push(stepState);
+		this.setState({history: {operations: operations, pointer: operations.length - 1}});
+	}
+
+	updateOperation = (field,value) => {
+		const {steps, currentStep, history} = this.state;
+		const {operations, pointer} = history;
+		const index = steps.indexOf(currentStep);
+		const currentOperation = operations[pointer];
+		currentOperation.steps[index][field] = value;
+	}
+
+	handleUndo = () => {
+		const {operations, pointer} = this.state.history;
+		const currentState = operations[pointer - 1];
+		this.state.history.pointer -= 1;
+		const clonedState = this.cloneState(currentState);
+		this.setState(clonedState);
+	}
+
+	handleRedo = () => {
+		const {operations, pointer} = this.state.history;
+		const currentState = operations[pointer + 1];
+		this.state.history.pointer += 1;
+		const clonedState = this.cloneState(currentState);
+		this.setState(clonedState);
+	}
+
+	cloneState = (state) => {
+		const {steps, currentStep} = state;
+		const currentStepIndex = steps.indexOf(currentStep);
+		const clonedSteps = steps.map((step) => step.clone());
+		return {steps: clonedSteps, currentStep: clonedSteps[currentStepIndex]};
 	}
 }
 

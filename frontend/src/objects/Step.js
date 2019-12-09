@@ -102,7 +102,18 @@ class Step {
 	clone() {
 		const clonedTools = this.tools.map((tool) => tool.clone());
 		const { name, description, action, source, target, actionMeasurement, timer } = this;
-		return new Step(name, description, clonedTools, action, source, target, actionMeasurement, timer);
+		
+		let clonedSource = null, clonedTarget = null;
+		if (source != null) {
+			const index = this.tools.indexOf(source);
+			clonedSource = clonedTools[index];
+		}
+		if (target != null) {
+			const index = this.tools.indexOf(target);
+			clonedTarget = clonedTools[index];
+		}
+
+		return new Step(name, description, clonedTools, action, clonedSource,clonedTarget, actionMeasurement, timer);
 	}
 
 	static load(stepData) {
