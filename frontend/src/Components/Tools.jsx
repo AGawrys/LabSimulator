@@ -47,10 +47,9 @@ const IMAGES = {
 				var ctx = canvas.getContext('2d');
 				var imageObj1 = new Image();
 				imageObj1.onload = function() {
-					ctx.drawImage(imageObj1, 0, 0, 50, 65);
+					ctx.drawImage(imageObj1, 0, 0, width, height);
 				};
 				imageObj1.src = 'https://www.pngkey.com/png/full/558-5588414_cute-ice-cube-cartoon.png';
-				console.log(imageObj1.src);
 			}
 		},
 		properties: {}
@@ -61,10 +60,9 @@ const IMAGES = {
 				var ctx = canvas.getContext('2d');
 				var imageObj1 = new Image();
 				imageObj1.onload = function() {
-					ctx.drawImage(imageObj1, 0, 0, 80, 80);
+					ctx.drawImage(imageObj1, 0, 0, width, height);
 				};
 				imageObj1.src = 'https://webstockreview.net/images/bananas-clipart-cute-4.png';
-				console.log(imageObj1.src);
 			}
 		},
 		properties: {}
@@ -75,10 +73,9 @@ const IMAGES = {
 				var ctx = canvas.getContext('2d');
 				var imageObj1 = new Image();
 				imageObj1.onload = function() {
-					ctx.drawImage(imageObj1, 0, 0, 90, 90);
+					ctx.drawImage(imageObj1, 0, 0, width, height);
 				};
 				imageObj1.src = 'https://easydrawingguides.com/wp-content/uploads/2018/10/Milk-Cartoon-10.png';
-				console.log(imageObj1.src);
 			}
 		},
 		properties: {}
@@ -89,10 +86,9 @@ const IMAGES = {
 				var ctx = canvas.getContext('2d');
 				var imageObj1 = new Image();
 				imageObj1.onload = function() {
-					ctx.drawImage(imageObj1, 0, 0, 70, 70);
+					ctx.drawImage(imageObj1, 0, 0, width, height);
 				};
 				imageObj1.src = 'https://cdn140.picsart.com/273156853001211.png?r1024x1024';
-				console.log(imageObj1.src);
 			}
 		},
 		properties: {}
@@ -103,11 +99,10 @@ const IMAGES = {
 				var ctx = canvas.getContext('2d');
 				var imageObj1 = new Image();
 				imageObj1.onload = function() {
-					ctx.drawImage(imageObj1, 0, 0, 70, 70);
+					ctx.drawImage(imageObj1, 0, 0, width, height);
 				};
 				imageObj1.src =
 					'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/46d4d6d5-b829-4f7a-812f-6e1d80822126/d30hw1n-41586600-fc0e-4d78-8b77-16f1788c2b3c.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzQ2ZDRkNmQ1LWI4MjktNGY3YS04MTJmLTZlMWQ4MDgyMjEyNlwvZDMwaHcxbi00MTU4NjYwMC1mYzBlLTRkNzgtOGI3Ny0xNmYxNzg4YzJiM2MucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.K91-BgqVgawLPHg8QCHnC2RLosmYymVgBGdyRjvQDI8';
-				console.log(imageObj1.src);
 			}
 		},
 		properties: {}
@@ -118,10 +113,9 @@ const IMAGES = {
 				var ctx = canvas.getContext('2d');
 				var imageObj1 = new Image();
 				imageObj1.onload = function() {
-					ctx.drawImage(imageObj1, 0, 0, 80, 70);
+					ctx.drawImage(imageObj1, 0, 0, width, height);
 				};
 				imageObj1.src = 'https://image.flaticon.com/icons/png/512/284/284757.png';
-				console.log(imageObj1.src);
 			}
 		},
 		properties: {}
@@ -132,10 +126,9 @@ const IMAGES = {
 				var ctx = canvas.getContext('2d');
 				var imageObj1 = new Image();
 				imageObj1.onload = function() {
-					ctx.drawImage(imageObj1, 0, 0, 75, 75);
+					ctx.drawImage(imageObj1, 0, 0, width, height);
 				};
 				imageObj1.src = 'https://espressoplanet.r.worldssl.net/images/P/Barista-Front.png';
-				console.log(imageObj1.src);
 			}
 		},
 		properties: {}

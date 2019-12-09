@@ -30,7 +30,7 @@ class Tool extends React.Component {
 	componentDidMount() {
 		const { tool } = this.props;
 		const image = tool.getImage();
-		image.draw(this.canvas.current, tool.getWidth(), tool.getHeight(), image.properties);
+		image.draw(this.canvas.current, tool.getWidth(), tool.getHeight(), image.properties, tool.width, tool.height);
 	}
 
 	componentDidUpdate() {
