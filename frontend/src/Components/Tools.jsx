@@ -45,6 +45,8 @@ const IMAGES = {
 		draw: (canvas, width, height) => {
 			if (canvas.getContext) {
 				var ctx = canvas.getContext('2d');
+				const bounds = canvas.getBoundingClientRect();
+				ctx.clearRect(0, 0, bounds.width, bounds.height);
 				var imageObj1 = new Image();
 				imageObj1.onload = function() {
 					ctx.drawImage(imageObj1, 0, 0, width, height);
@@ -58,6 +60,8 @@ const IMAGES = {
 		draw: (canvas, width, height) => {
 			if (canvas.getContext) {
 				var ctx = canvas.getContext('2d');
+				const bounds = canvas.getBoundingClientRect();
+				ctx.clearRect(0, 0, bounds.width, bounds.height);
 				var imageObj1 = new Image();
 				imageObj1.onload = function() {
 					ctx.drawImage(imageObj1, 0, 0, width, height);
@@ -71,6 +75,8 @@ const IMAGES = {
 		draw: (canvas, width, height) => {
 			if (canvas.getContext) {
 				var ctx = canvas.getContext('2d');
+				const bounds = canvas.getBoundingClientRect();
+				ctx.clearRect(0, 0, bounds.width, bounds.height);
 				var imageObj1 = new Image();
 				imageObj1.onload = function() {
 					ctx.drawImage(imageObj1, 0, 0, width, height);
