@@ -37,7 +37,9 @@ public class AssignmentController {
     @PostMapping(path = "/deleteAssignment")
     @CrossOrigin(origins = "*")
     public ResponseEntity deleteAssignment (@RequestBody AssignmentIdentity assignmentIdentity) {
-        assignmentRepository.delete(assignmentRepository.findByAssignmentIdentity(assignmentIdentity));
+        if (assignmentRepository.existsById(assignmentIdentity)) {
+            assignmentRepository.delete(assignmentRepository.findByAssignmentIdentity(assignmentIdentity));
+        }
         return ResponseEntity.ok(null);
     }
 

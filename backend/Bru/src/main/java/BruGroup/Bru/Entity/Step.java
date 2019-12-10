@@ -94,6 +94,16 @@ public class Step {
                 this.getTimer());
     }
 
+    public boolean isComplete() {
+        if (this.actionType == null || this.actionMeasurement == 0 || this.timer == 0) {
+            return false;
+        }
+        if (this.actionType.equals("Pour")) {
+            return this.source != -1 && this.target != -1;
+        }
+        return this.source != -1;
+    }
+
     @Override
     public String toString() {
         return "Step {" +

@@ -3,6 +3,9 @@ import { Button, Modal, ProgressBar } from 'react-bootstrap';
 import ArrowKeysReact from 'arrow-keys-react';
 import SuccessBody from './ActionCompletedBody.jsx';
 import Spoon from '../images/spoon.png';
+import TimerAction from './TimerAction.jsx';
+import Countdown from 'react-countdown-now';
+import '../Styles/editor.css';
 
 class StirModal extends React.Component {
 	constructor(props) {
@@ -12,7 +15,9 @@ class StirModal extends React.Component {
 			currentKey: 'UP',
 			angle: 0,
 			largerCircleStyle: {},
-			smallerCircleStyle: {}
+			smallerCircleStyle: {},
+			failed: false,
+			completed: false
 		};
 		ArrowKeysReact.config({
 			left: () => this.handleArrowKeyPress('LEFT'),
@@ -22,8 +27,15 @@ class StirModal extends React.Component {
 		});
 	}
 
+	handleStateChange = () => {
+		if (this.state.progress / this.props.progressNeeded === 1) {
+			return;
+		}
+		this.setState({ failed: true }); //you get the value here when state changes in B(Child) component
+	};
+
 	render() {
-		const { progress, currentKey, smallerCircleStyle, largerCircleStyle } = this.state;
+		const { progress, currentKey, smallerCircleStyle, largerCircleStyle, failed, completed } = this.state;
 		const { progressNeeded, show, onComplete } = this.props;
 		let percentComplete = (progress / progressNeeded * 100).toFixed(2);
 		percentComplete = percentComplete < 100 ? percentComplete : 100;
@@ -56,10 +68,19 @@ class StirModal extends React.Component {
 							label={`${percentComplete}%`}
 							max={100}
 						/>
+						<div className={percentComplete === 100 ? 'displayNone' : ''}>
+							<TimerAction handleStateChange={this.handleStateChange} />
+						</div>
+						<h4 className="failedText" hidden={!failed}>
+							You have failed! Try again!
+						</h4>
 					</div>
 				</Modal.Header>
 				<Modal.Body>{modalBody}</Modal.Body>
 				<Modal.Footer>
+					<Button variant="warning" disabled={!failed} hidden={!failed}>
+						Retry
+					</Button>
 					<Button variant="primary" onClick={onComplete} disabled={percentComplete < 100}>
 						Continue
 					</Button>
@@ -69,6 +90,9 @@ class StirModal extends React.Component {
 	}
 
 	handleArrowKeyPress = (direction) => {
+		if (this.state.failed) {
+			return;
+		}
 		const { currentKey, progress } = this.state;
 		if (KEY_ORDER[currentKey] !== direction) {
 			return;

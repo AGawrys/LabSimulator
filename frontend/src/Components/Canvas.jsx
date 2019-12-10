@@ -1,12 +1,13 @@
-import React from "react";
-import {Droppable} from "react-drag-and-drop";
+import React from 'react';
+import { Droppable } from 'react-drag-and-drop';
 import { Form } from 'react-bootstrap';
 import {ContextMenu, MenuItem, ContextMenuTrigger} from 'react-contextmenu';
 import {CONTEXT_MENU_ID} from '../utils/EditorConstants.js';
+import { swapElements } from '../LilacArray.js';
 import {determineToolPosition} from '../utils/CanvasUtils.js';
 import Position from '../Objects/Position.js';
-import Tool from "./Tool.jsx"
-import ToolEditor from "./ToolEditor.jsx";
+import Tool from './Tool.jsx';
+import ToolEditor from './ToolEditor.jsx';
 
 class Canvas extends React.Component {
     constructor(props) {
@@ -65,7 +66,7 @@ class Canvas extends React.Component {
     }
 
     onPasteTool = () => {
-        const {copiedTool, tools, setCopiedTool} = this.props;
+        const {copiedTool, tools, setCopiedTool, onUpdateTools} = this.props;
         const newCopy = copiedTool.clone();         // must deep copy again so subsequential pastes will not have properties effected
 
         const {x,y} = determineToolPosition(copiedTool.height);
@@ -74,7 +75,33 @@ class Canvas extends React.Component {
         copiedTool.position = position;
         tools.push(copiedTool);
 
+        onUpdateTools(tools);
         setCopiedTool(newCopy);
+    }
+
+    onClickMoveUp = () => {
+        const {currentTool} = this.state;
+        const {tools, onUpdateTools} = this.props;
+        const index = tools.indexOf(currentTool);
+        const newTools = swapElements(tools,index,index + 1);
+        newTools[index].layer +=1;
+        newTools[index + 1].layer -=1;
+        onUpdateTools(newTools);
+    }
+
+    onClickMoveDown = () => {
+        const {currentTool} = this.state;
+        const {tools, onUpdateTools} = this.props;
+        const index = tools.indexOf(currentTool);
+        const newTools = swapElements(tools,index,index - 1);
+        newTools[index].layer -=1;
+        newTools[index - 1].layer +=1;
+        onUpdateTools(newTools);
+    }
+
+    updateTools = () => {
+        const {tools, onUpdateTools} = this.props;
+        onUpdateTools(tools);
     }
 
     render() {
@@ -90,6 +117,7 @@ class Canvas extends React.Component {
                             selected
                             tool={tool}
                             setCurrentTool={this.setCurrentTool}
+                            updateTools={this.updateTools}
                         />
                     </ContextMenuTrigger>
                 )
@@ -99,6 +127,7 @@ class Canvas extends React.Component {
                         draggable
                         tool={tool}
                         setCurrentTool={this.setCurrentTool}
+                        updateTools={this.updateTools}
                     />
                 );
             }
@@ -117,6 +146,7 @@ class Canvas extends React.Component {
                     tool={currentTool}
                     show={isEditingTool}
                     onHide={this.onHide}
+                    updateTools={this.updateTools}
                     setCurrentTool={this.setCurrentTool}
                 />
             );
@@ -180,13 +210,15 @@ class Canvas extends React.Component {
                     </MenuItem>
                     <MenuItem
                         onClick={this.onClickMoveUp}
+                        disabled={tools.indexOf(currentTool) == tools.length - 1}
                     >
-                        Move Up
+                        Move Up A Layer
                     </MenuItem>
                     <MenuItem
                         onClick={this.onClickMoveDown}
+                        disabled={tools.indexOf(currentTool) == 0}
                     >
-                        Move Down
+                        Move Down A Layer
                     </MenuItem>
                 </ContextMenu>
                 <ContextMenu id={CONTEXT_MENU_ID + "-2"}>

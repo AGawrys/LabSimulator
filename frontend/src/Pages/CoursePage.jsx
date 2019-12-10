@@ -25,6 +25,7 @@ class CoursePage extends Component {
 			showDeleteInstructor: false,
 			showDeleteStudent: false,
 			showDeleteLesson: false,
+			showDeleteCourse: false,
 			showAddLessonsModal: false,
 			showAddStudentsModal: false,
 			showAddInstructorsModal: false,
@@ -42,7 +43,7 @@ class CoursePage extends Component {
 
 	render() {
 		const {showAddLessonsModal, showAddStudentsModal, showDeleteInstructor, instructorLessons} = this.state;
-		const { showDeleteStudent, courseInfo, showDeleteLesson,showAddInstructorsModal} = this.state;
+		const { showDeleteStudent, courseInfo, showDeleteLesson,showAddInstructorsModal, showDeleteCourse} = this.state;
 		if (courseInfo === null || instructorLessons === null) {
 			return null;
 		}
@@ -72,6 +73,13 @@ class CoursePage extends Component {
 					onHide={() => this.setState({showDeleteLesson: false})}
 					show={showDeleteLesson}
 					onDelete={this.deleteLesson}/>
+				<ConfirmationModal
+					title={GeneralConstants.DELETE_COURSE_TITLE}
+					message={GeneralConstants.DELETE_COURSE_MESSAGE}
+					onHide={() => this.setState({showDeleteCourse: false})}
+					show={showDeleteCourse}
+					onDelete={this.deleteCourse}
+				/>
 				<AddSearchModal
 					actionRoute={Routes.SERVER + "/addLessons"}
 					param={accessCode}
@@ -101,8 +109,10 @@ class CoursePage extends Component {
 				/>
 				<div className="studentDashboard">
 					<div className="welcomeStudentDiv">
-						<h3> {title} </h3>
-						<h5> {"Access Code: " + accessCode} </h5>
+						<h3> {title}  </h3>
+						<Button variant="danger" onClick={() => this.setState({showDeleteCourse:true})}>
+							Delete Course
+						</Button>
 					</div>
 				</div>
 				<div className="studentDashboardContents">
@@ -323,6 +333,14 @@ class CoursePage extends Component {
 		};
 		axios.post(Routes.SERVER + "deleteCourseLesson", body).then(
 			(response) => this.fetchAllInformation(),
+			(error) => console.log(error),
+		);
+	}
+
+	deleteCourse = () => {
+		const {accessCode} = this.state.courseInfo;
+		axios.post(Routes.SERVER + "deleteCourse/" + accessCode, {}).then(
+			(response) => this.props.history.push(Routes.INSTRUCTOR_DASHBOARD),
 			(error) => console.log(error),
 		);
 	}

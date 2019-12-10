@@ -3,17 +3,16 @@ package BruGroup.Bru.Controller;
 import BruGroup.Bru.Entity.*;
 import BruGroup.Bru.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.constraints.Null;
 import javax.xml.ws.Response;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -29,9 +28,6 @@ public class LessonController {
 
     @Autowired
     OrganizationRepository organizationRepository;
-
-    @Autowired
-    AccountRepository accountRepository;
 
     @Autowired
     ToolRepository toolRepository;
@@ -127,6 +123,22 @@ public class LessonController {
         return ResponseEntity.ok(lessonInformation);
     }
 
+    @GetMapping(path ="/searchLesson")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity searchLessons(@RequestParam(value="name") String name,
+                                        @RequestParam(value="email") String email) {
+        List<Lesson> lessons = lessonRepository.findByNameContainingIgnoreCaseAndInstructorEmailNot(name,email);
+        List<Lesson> publishedLessons = lessons
+                .stream()
+                .filter(lesson -> organizationRepository.findByLessonId(lesson.getLessonId()) != null)
+                .collect(Collectors.toList());
+        List<SearchResult> searchResults = publishedLessons
+                .stream()
+                .map(lesson -> new SearchResult(lesson, organizationRepository.findByLessonId(lesson.getLessonId()).getCreateDate()))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(searchResults);
+    }
+
     @PostMapping(path = "/canStudentComplete")
     @CrossOrigin(origins = "*")
     public ResponseEntity canStudentComplete(@RequestBody AssignmentIdentity identity) {
@@ -153,11 +165,17 @@ public class LessonController {
     public ResponseEntity cloneLesson(@RequestBody AccountLessonParams params) {
         Lesson existingLesson = lessonRepository.findByLessonId(params.getLessonId());
         String clonedLessonName = "Copy of " + existingLesson.getName();
+        if (!params.getEmail().equals(existingLesson.getInstructorEmail())) {
+            incrementDownloads(existingLesson);
+        }
+
         Lesson clonedLesson = new Lesson(
                 clonedLessonName,
-                existingLesson.getInstructorEmail(),
+                params.getEmail(),
                 existingLesson.getCanvasHeight(),
-                existingLesson.getCanvasWidth());
+                existingLesson.getCanvasWidth(),
+                0
+        );
         lessonRepository.save(clonedLesson);
 
         List<Step> steps = stepRepository.findByStepIdentityLessonId(params.getLessonId());
@@ -185,6 +203,12 @@ public class LessonController {
         lessonRepository.save(lesson);
         saveStepTable(lessonInformation.getStepInformation(), lesson.getLessonId());
         return ResponseEntity.ok(null);
+    }
+
+    @Transactional
+    public void incrementDownloads(Lesson lesson) {
+        lesson.setDownloads(lesson.getDownloads() + 1);
+        lessonRepository.save(lesson);
     }
 
     public HashSet<Integer> getCourseLessonIds(String courseId) {
@@ -352,5 +376,35 @@ class StepInformation {
     public List<Tool> addToolList (Tool tool) {
         this.toolList.add(tool);
         return toolList;
+    }
+}
+
+class SearchResult {
+    private Lesson lesson;
+    private Date datePublished;
+
+    public SearchResult() {
+
+    }
+
+    public SearchResult(Lesson lesson, Date datePublished) {
+        this.lesson = lesson;
+        this.datePublished = datePublished;
+    }
+
+    public Lesson getLesson() {
+        return lesson;
+    }
+
+    public void setLesson(Lesson lesson) {
+        this.lesson = lesson;
+    }
+
+    public Date getDatePublished() {
+        return datePublished;
+    }
+
+    public void setDatePublished(Date datePublished) {
+        this.datePublished = datePublished;
     }
 }

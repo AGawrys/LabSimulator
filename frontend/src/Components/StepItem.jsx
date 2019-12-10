@@ -26,7 +26,7 @@ const SortableStep = sortableElement((props) => {
 		      		</Dropdown.Item>
 			      	<Dropdown.Divider/>
 			      	<Dropdown.Item key={stepIndex} disabled={isDisabled} onClick={(e) => onDeleteStep(e,value)}>
-			      		<i className="fa fa-trash-alt" />&nbsp; Delete Step 
+			      		<i className="fas fa-trash-alt" />&nbsp; Delete Step 
 			     	</Dropdown.Item>
 			    </Dropdown.Menu>
 			</Dropdown>

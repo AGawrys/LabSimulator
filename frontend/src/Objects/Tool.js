@@ -2,7 +2,7 @@ import Position from './Position';
 import { createImage } from '../Components/Tools.jsx';
 
 class Tool {
-	constructor(type, image, position = null, width, height, layer = null, color = "#0077be", amount = 0) {
+	constructor(type, image, position = null, width, height, layer = null, color = "#0077be", amount = 0, taper = .5) {
 		this.name = 'Tool ' + layer;
 		this.type = type;
 		this.image = image;
@@ -12,6 +12,7 @@ class Tool {
 		this.layer = layer;
 		this.color = color;
 		this.amount = amount;
+		this.taper = taper
 		this.new = true;
 	}
 
@@ -106,6 +107,19 @@ class Tool {
 		return clonedTool;
 	}
 
+	resize(widthRatio, heightRatio) {
+		const {x,y} = this.position;
+		const {width, height} = this;
+		const scaledX = x * widthRatio;
+		const scaledY = y * heightRatio;
+		const scaledWidth = width * widthRatio;
+		const scaledHeight = height * heightRatio;
+
+		this.position = new Position(scaledX, scaledY);
+		this.width = scaledWidth;
+		this.height = scaledHeight;
+	}
+
 	toString() {
 		return this.name;
 	}
@@ -117,13 +131,34 @@ class Tool {
 		};
 	}
 
-	toScaledPosition() {
-		const {x,y} = this.position;
-		const canvas = document.getElementById('canvas');
-		const {width, height} = canvas.getBoundingClientRect();
-		const scaledX = x / width;
-		const scaledY = y / height;
-		return {x: scaledX, y: scaledY};
+	static load(toolData) {
+		const {toolType, x, y, width, height, toolIdentity, color, amount, name} = toolData;
+		const {layer} = toolIdentity;
+		const image = createImage(toolType);
+		image.properties.Fill = amount;
+		image.properties.Color = color;
+		const position = new Position(x,y);
+		const loadedTool = new Tool(toolType, image, position, width, height, layer, color, amount);
+		loadedTool.setName(name);
+		return loadedTool;
+	}
+
+	save(lessonId, stepNumber) {
+		return {
+				toolIdentity: {
+					layer: this.layer,
+					stepNumber: stepNumber,
+					lessonId: lessonId
+				},
+				toolType: this.type,
+				x: this.position.x,
+				y: this.position.y,
+				name: this.name,
+				amount: this.amount,
+				color: this.color,
+				height: this.height,
+				width: this.width
+		};
 	}
 
 

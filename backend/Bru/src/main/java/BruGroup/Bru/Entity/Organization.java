@@ -1,7 +1,10 @@
 package BruGroup.Bru.Entity;
 
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
+import java.util.Date;
 
 @Table(name = "Organization")
 @Entity
@@ -10,6 +13,11 @@ public class Organization {
     @Id
     private int lessonId;
     private String email;
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "create_date")
+    private Date createDate;
 
     public Organization() {
 
@@ -41,5 +49,13 @@ public class Organization {
 
     public String getEmail() {
         return email;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 }

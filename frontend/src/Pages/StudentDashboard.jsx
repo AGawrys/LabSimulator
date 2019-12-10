@@ -80,7 +80,7 @@ function StudentCourse(props) {
 			<ListGroup>
 				{	lessons.map((lessonProgress,index) => {
 						const canComplete = lessonProgress.completed || nextOneToComplete;
-						if (canComplete && nextOneToComplete) {
+						if (!lessonProgress.completed && nextOneToComplete) {
 							nextOneToComplete = false;
 						}
 						return <StudentLesson key={index} course={course} lessonProgress={lessonProgress} disabled={!canComplete} onClick={onLessonClick}/>
@@ -93,11 +93,14 @@ function StudentCourse(props) {
 
 function StudentLesson(props) {
 	const {lessonProgress,disabled, onClick, course} = props;
-	const {lesson, isCompleted} = lessonProgress;
-	const variant = isCompleted ? "info" : null;
+	const {lesson, completed} = lessonProgress;
+	const completeString = completed ? "Completed" : "Not Completed";
 	return (
-		<ListGroup.Item as="button" style={{'text-align': "left"}} variant={variant} disabled={disabled} onClick={() => onClick(course.courseId,lesson.lessonId)}>
-			{lesson.name} 
+		<ListGroup.Item as="button" style={{'text-align': "left"}} disabled={disabled} onClick={() => onClick(course.courseId,lesson.lessonId)}>
+			<div className = "search-result-header">
+				<strong><p> {lesson.name} </p></strong>
+				<p style={{textAlign:"right"}}> {completeString} </p>
+			</div> 
 		</ListGroup.Item>
 	);
 }

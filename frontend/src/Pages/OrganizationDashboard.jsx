@@ -65,7 +65,7 @@ export class OrganizationDashboard extends React.Component {
 							<div className="scrollInstructorList">
 								<ListGroup>
 									{instructors.map((instructor,index) => 
-										<InstructorRow key={index} instructor={instructor} onClick={this.onInstructorClick}/>)
+										<InstructorRow key={index} instructor={instructor} onClick={this.onInstructorClick} disabled/>)
 									}
 								</ListGroup>
 							</div>

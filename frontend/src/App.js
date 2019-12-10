@@ -14,10 +14,18 @@ import EditorStudent from './Pages/EditorStudent.jsx';
 import Routes from './utils/RouteConstants.js';
 import GeneralConstants from './utils/GeneralConstants.js';
 import PrivateRoute from './Components/PrivateRoute.jsx';
+import SearchResults from './Pages/SearchResults.jsx';
+import { HotKeys } from 'react-hotkeys';
+
+const keyMap = {
+	UNDO: ["command+z", "ctrl+z"],
+	REDO: ["command+z+shift", "ctrl+shift+z"],
+};
 
 function App() {
   return (
-    <Router>
+  		<HotKeys keyMap={keyMap}>
+    		<Router>
 				<div className="App">
 					<Switch>
 						<Route exact path={Routes.DEFAULT} component={Home} />
@@ -53,11 +61,16 @@ function App() {
 							path={Routes.COURSE + ":course_id"} 
 							component={withRouter(CoursePage)} 
 							role={GeneralConstants.NO_ROLE}/>
+						<PrivateRoute exact 
+							path={Routes.SEARCH + ":query?"}
+							component={withRouter(SearchResults)}
+							role={GeneralConstants.INSTRUCTOR}/>
 						<Route exact path={Routes.SIGN_UP} component={Signup}/>
 						<Route component={NotFound} />
 					</Switch>
 				</div>
 			</Router>
+		</HotKeys>
   );
 }
 export default App;

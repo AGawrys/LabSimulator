@@ -4,7 +4,7 @@ import Collapsible from 'react-collapsible';
 import { Container, Row, Col } from 'react-grid-system';
 import Draggable, { DraggableCore } from 'react-draggable';
 import { getLessons } from '../Validation/StudentEditorValidation.js';
-import { loadLesson } from '../utils/LoadUtils.js';
+import Lesson from '../Objects/Lesson.js';
 import { resizeTools, getCanvasSize } from '../utils/CanvasUtils.js';
 import 'react-sticky-header/styles.css';
 import HeaderBru from '../Components/Header.jsx';
@@ -78,7 +78,7 @@ class EditorStudent extends Component {
 	getLesson(lesson_id, curriculum) {
 		axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
 			(response) => {
-				const {steps, lesson, canvasSize} = loadLesson(response.data);
+				const {steps, lesson, canvasSize} = Lesson.load(response.data);
 				this.setState({curriculum,steps,lesson,canvasSize});
 			},
 			(error) => console.log(error),
@@ -193,7 +193,7 @@ class EditorStudent extends Component {
 						</Col>
 						<Col sm={9}>
 							<div className="divider" />
-							<Canvas isInstructor={false} onDrop={this.onDropTool} tools={currentStep.getTools()} />
+							<Canvas isInstructor={false} tools={currentStep.getTools()} />
 							<Button
 								style={{float:"left", "marginRight": "10px"}}
 								variant="dark"
@@ -211,9 +211,9 @@ class EditorStudent extends Component {
 							<Button
 								style={{float:"left"}}
 								variant="dark"
-								onClick={this.resetLesson}
+								onClick={this.restartLesson}
 							>
-								RESET LESSON
+								RESTART LESSON
 							</Button>
 						</Col>
 					</Row>
@@ -240,8 +240,17 @@ class EditorStudent extends Component {
 		});
 	}
 
-	resetLesson = () => {
-		this.setState({currentStepIndex: 0});
+	restartLesson = () => {
+		const {lesson_id, course_id} = this.props.computedMatch.params;
+		const body = {
+			email: this.props.email,
+			courseId: course_id,
+			lessonId: lesson_id
+		};
+		axios.post(Routes.SERVER + "deleteAssignment", body).then(
+			(response) => this.setState({isCurrentStepComplete: false}),
+			(error) => console.log(error)
+		);
 	}
 
 	resetStep = () => {
