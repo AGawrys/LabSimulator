@@ -32,10 +32,7 @@
 		"react-select": "^3.0.8",
 		"react-simple-input": "^0.4.2",
 		"react-sortable-hoc": "^1.10.1",
-<<<<<<< HEAD
 		"react-spring": "^8.0.27",
-=======
->>>>>>> b93e625b68e70415748884db289b543da7c1b0d2
 		"react-sticky-header": "^0.2.0",
 		"react-tooltip": "^3.11.1"
 	},

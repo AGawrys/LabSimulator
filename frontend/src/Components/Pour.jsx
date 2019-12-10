@@ -1,29 +1,34 @@
 import React from 'react';
 import { Spring } from 'react-spring/renderprops';
-import { Button, Modal, Row } from 'react-bootstrap';
+import { Button, Modal, Row, Col } from 'react-bootstrap';
 import '../Styles/Pour.css';
 import Tool from '../Objects/Tool.js';
 import { CATEGORIES, IMAGES } from './Tools.jsx';
 import { Tool as ToolComponent } from './Tool.jsx';
 import { Draggable } from 'react-drag-and-drop';
 import ClickNHold from 'react-click-n-hold'; 
+import { isArrayEqual } from '../LilacArray';
 class Pour extends React.Component {
-    
-
-    state = {
-        fill: 0,
-        fillSrc: 1,
+    constructor(props) {
+    super(props);
+    const { source, target, goal, instructor } = this.props;
+    this.state = {
+        fill: target.image.properties.Fill,
+        fillSrc: source.image.properties.Fill,
+        defaultFill: target.image.properties.Fill,
+        defaultFillSrc: source.image.properties.Fill,
         transform:'translate3d(0, 0px, 0) scale(1) rotate(0deg)',
         t:undefined,
         start:100,
-        instruction: "Fill halfway",
-        goalMin: .45,
-        goalMax: .55,
+        instruction: 'Add '+ goal + '% to the cup' ,
+        goal,
+        goalMin: (goal/100) - 0.05 + (target.image.properties.Fill),
+        goalMax: (goal/100) + 0.05 + (target.image.properties.Fill),
         done: false,
         modalShow: true,
+        instructor, //if this is simulate or not
     };
-
-    
+    }
     animateCupUp = () => {
         this.setState({ transform : 'translate3d(0, -75px, 0) scale(1) rotate(90deg)' });
     };
@@ -51,7 +56,7 @@ class Pour extends React.Component {
     }
 	pour = (e) =>{
         const { fill, fillSrc } = this.state;
-        if (fill < 1){
+        if (fillSrc > 0){
             const n = fill + 0.01; 
             const nSrc = fillSrc - 0.01; 
             this.setState({ fill : n });
@@ -59,25 +64,32 @@ class Pour extends React.Component {
         }
     } 
     reset = () => { 
-        this.setState({ fill : 0 });
-        this.setState({ fillSrc : 1 }); 
+        const { defaultFill, defaultFillSrc } = this.state;
+        this.setState({ fill : defaultFill });
+        this.setState({ fillSrc : defaultFillSrc }); 
 	} 
 
-    closeAndFinish = () => { 
+    closeAndFinish = () => {
+        if(this.state.instructor) {
+            this.reset();
+        }
          this.setState({modalShow : false });
     }
     
     render() {
-        const { instruction, done, modalShow } = this.state;
+        const { instruction, done, modalShow} = this.state;
+        const {source, target} = this.props;
         const categories = Object.keys(CATEGORIES);
         const tools = CATEGORIES["Cups"];
-        const image = IMAGES["TaperedCup"];
+        const image = target.getImage();
+        image.draw = IMAGES["TaperedCup"].draw;
+        image.properties = {};
         image.properties.Fill = this.state.fill;
         const mytool = (
-            <ToolComponent tool={new Tool("TaperedCup",  image, undefined, 75, 75, undefined)} />
+            <ToolComponent tool={new Tool("TaperedCup", image, undefined, 75, 75, undefined)} />
         );
 
-        let imageSrc = {};
+        let imageSrc = source.getImage();
 		imageSrc.draw = IMAGES["TaperedCup"].draw;
 		imageSrc.properties = {};
         imageSrc.properties.Fill = this.state.fillSrc;
@@ -91,9 +103,9 @@ class Pour extends React.Component {
             aria-labelledby="contained-modal-title-vcenter"
             centered
         >
+            <h2 style={style1}>{instruction}</h2>
+            <Row style={{width: '70vh'}}>
             <div style={style2}>
-
-            <h2>{instruction}</h2>
         <Spring
             from={{
                 opacity: 1,
@@ -132,32 +144,35 @@ class Pour extends React.Component {
         </Spring> */}
 
         </div>
-        
-            <Button style={{ backgroundColor: 'black', alignSelf: "center", width: "25vh" }} block bsSize="large" onMouseUp={this.onMouseUp} onMouseDown={this.onMouseDown}>
+        <Col>
+            <Button style={{ backgroundColor: 'steelblue', alignSelf: "center", width: "20vh" }} block bsSize="large" onMouseUp={this.onMouseUp} onMouseDown={this.onMouseDown}>
                 POUR
             </Button>
-            <Button style={{ backgroundColor: 'black', alignSelf: "center", width: "25vh" }} block bsSize="large" onClick={this.reset}>
+            <Button style={{ backgroundColor: 'steelblue', alignSelf: "center", width: "20vh" }} block bsSize="large" onClick={this.reset}>
                 RESET
             </Button>
-            {done ? (<Button style={{ backgroundColor: 'black', alignSelf: "center", width: "25vh" }} block bsSize="large" onClick={this.closeAndFinish}>
+            {done ? (<Button style={{ backgroundColor: 'steelblue', alignSelf: "center", width: "20vh" }} block bsSize="large" onClick={this.closeAndFinish}>
                 DONE
             </Button>) : null }
+            </Col>
+            </Row>
         </Modal>
     )
     }
 }
 
 const style1 = {
-    background: 'steelblue',
-    color: 'white'
+    alignSelf: "center",
+    padding: '5vh',
 }
 
 const style2 = {
     height: '30vh',
-    width:'30vh',
-    paddingLeft: '100px',
-    paddingTop: '100px',
-    justifyContent: "center"
+    width:'75vh',
+    paddingLeft: '200px',
+    paddingBottom: '100px',
+    justifyContent: "center",
+    alignItems: "center"
 }
 
 export default Pour;

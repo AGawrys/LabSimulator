@@ -24,6 +24,7 @@ import { determineToolPosition, getCanvasSize, resizeTools } from '../utils/Canv
 import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
 import Tool from '../Objects/Tool.js';
+import { Tool as ToolComponent } from '../Components/Tool.jsx';
 import Position from '../Objects/Position.js';
 import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
@@ -36,6 +37,7 @@ import { SortableContainer, SortableStep } from '../Components/StepItem.jsx';
 import { swapElements } from '../LilacArray.js';
 import axios from 'axios';
 import plus from '../Styles/Images/icons8-plus.svg';
+import Pour from '../Components/Pour.jsx';
 
 const links = {
 	Account: '/instructor/dashboard'
@@ -54,6 +56,7 @@ class Editor extends Component {
 			showSuccessfulDuplicate: false,
 			showSuccessfulSave:false,
 			showActionMenu: true,
+			showPourModal: false,
 			copiedTool: null,
 			areToolsPlaced: false,
 			canvasSize: {height: 1000, width: 1000},
@@ -66,7 +69,30 @@ class Editor extends Component {
 		this.setState({ showActionMenu: !this.showActionMenu });
 	};
 	handleNext() {}
-	handleSimulate() {}
+	handleSimulate = () => {
+		const { currentStep } = this.state;
+		if(currentStep && currentStep.action === 'Pour'){
+			if(currentStep.source && currentStep.target && currentStep.actionMeasurement){
+				this.setState({ showPourModal: true});
+			}
+		}
+	}
+
+	renderPreview = () => {
+
+		const {currentStep} = this.state;
+		if(currentStep && currentStep.action === 'Pour' && currentStep.source && currentStep.target && currentStep.actionMeasurement){
+			const image = currentStep.target.getImage();
+			image.draw = IMAGES["TaperedCup"].draw;
+			image.properties = {};
+			const amt = currentStep.actionMeasurement / 100;
+			image.properties.Fill = currentStep.target.image.properties.Fill + amt;
+
+			const mytool =
+				(<ToolComponent tool={new Tool("TaperedCup", image, undefined, 75, 75, undefined)} />);
+			return mytool;
+		}
+	}
 
 	componentDidMount() {
 		window.addEventListener("resize", this.onCanvasResize);
@@ -112,7 +138,7 @@ class Editor extends Component {
 	};
 
 	render() {
-		const { lesson, currentStep, steps, copiedTool} = this.state;
+		const { lesson, currentStep, steps, copiedTool, showPourModal} = this.state;
 		const {showSuccessfulDuplicate, showDeleteLessonModal, showSuccessfullyPublished, showSuccessfulSave } = this.state;
 		if (steps == null) {
 			return null;
@@ -155,7 +181,14 @@ class Editor extends Component {
 					autohide
 					delay={1000}
 				/>
-
+				{showPourModal ? (
+					<Pour
+						source={currentStep.source}
+						target={currentStep.target}
+						goal={currentStep.actionMeasurement}
+						instructor={true}
+					/>
+					) : null}
 				<Container fluid={true} className="instructorContainer">
 					<Col className="instructorEditorToolBar brownBorder">
 						<Row>
@@ -173,7 +206,7 @@ class Editor extends Component {
 						<Row>
 							<Col className="editorToolBarButton alignLeft" lg={7}>
 								{publishBtn}
-								<button type="button" className="btn btn-secondary">
+								<button type="button" className="btn btn-secondary" onClick={this.handleSimulate}>
 									Simulate
 								</button>
 								<button type="button" className="btn btn-info" onClick={this.cloneLesson}>
@@ -283,11 +316,13 @@ class Editor extends Component {
 											type="number"
 											min="1"
 											placeholder="Timer (Seconds)"
+											disabled={currentStep.action === 'Pour'}
 											onChange={(e) => this.updateTimer(e)}
 											value={
 												currentStep.timer ? currentStep.timer > 0 ? currentStep.timer : '' : ''
 											}
 										/>
+										{/* {this.renderPreview()} */}
 									</div>
 								</Card>
 
