@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import javax.validation.constraints.Null;
 import javax.xml.ws.Response;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -135,7 +132,11 @@ public class LessonController {
                 .stream()
                 .filter(lesson -> organizationRepository.findByLessonId(lesson.getLessonId()) != null)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(publishedLessons);
+        List<SearchResult> searchResults = publishedLessons
+                .stream()
+                .map(lesson -> new SearchResult(lesson, organizationRepository.findByLessonId(lesson.getLessonId()).getCreateDate()))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(searchResults);
     }
 
     @PostMapping(path = "/canStudentComplete")
@@ -375,5 +376,35 @@ class StepInformation {
     public List<Tool> addToolList (Tool tool) {
         this.toolList.add(tool);
         return toolList;
+    }
+}
+
+class SearchResult {
+    private Lesson lesson;
+    private Date datePublished;
+
+    public SearchResult() {
+
+    }
+
+    public SearchResult(Lesson lesson, Date datePublished) {
+        this.lesson = lesson;
+        this.datePublished = datePublished;
+    }
+
+    public Lesson getLesson() {
+        return lesson;
+    }
+
+    public void setLesson(Lesson lesson) {
+        this.lesson = lesson;
+    }
+
+    public Date getDatePublished() {
+        return datePublished;
+    }
+
+    public void setDatePublished(Date datePublished) {
+        this.datePublished = datePublished;
     }
 }

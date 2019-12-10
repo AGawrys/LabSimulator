@@ -1,6 +1,9 @@
 package BruGroup.Bru.Entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
+import java.util.Date;
 
 @Table(name = "Lesson")
 @Entity

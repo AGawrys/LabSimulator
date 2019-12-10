@@ -78,3 +78,13 @@
 .add-button:hover {
 	opacity: .8;
 }
+
+.search-result-header {
+	display: flex !important;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+}
+
+.search-result-info {
+	text-align: left;
+}

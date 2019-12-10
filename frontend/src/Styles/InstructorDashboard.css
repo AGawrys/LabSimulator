@@ -44,7 +44,7 @@
 }
 
 .searchBarDiv input {
-	width: 80%;
+	width: 95%;
 	height: 60px;
 	color: #69cb9a;
 	border: 0.5px solid rgb(224, 224, 224);
@@ -56,7 +56,7 @@
 }
 
 .searchBarDiv button {
-	background-color: #69cb9a;
+	background-color: #69cb9a !important;
 	color: white;
 	height: 60px;
 	margin-bottom: 10px;
@@ -64,8 +64,8 @@
 	border: 0.5px solid rgb(224, 224, 224);
 	border-right-width: 0;
 	border-top-right-radius: 5px;
-	border-bottom-right-radius: 5px;
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	border-bottom-right-radius: 3px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 15px 0 rgba(0, 0, 0, 0.19);
 
 }
 
