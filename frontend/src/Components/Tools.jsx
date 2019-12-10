@@ -2,11 +2,11 @@ import { LineCalculator } from '../utils/LilacAlgebra.js';
 import '../images/icecube.png';
 
 const CATEGORIES = {
-	Cups: [ 'TaperedCup', 'IceCube', 'Banana', 'Milk', 'Mango', 'Blueberry', 'Strawberry', 'Machine' ]
+	Cups: [ 'Cup', 'IceCube', 'Banana', 'Milk', 'Mango', 'Blueberry', 'Strawberry', 'Spoon' ]
 };
 
 const IMAGES = {
-	TaperedCup: {
+	Cup: {
 		draw: (canvas, width, height, properties) => {
 			if (canvas.getContext) {
 				let context = canvas.getContext('2d');
@@ -90,6 +90,8 @@ const IMAGES = {
 		draw: (canvas, width, height) => {
 			if (canvas.getContext) {
 				var ctx = canvas.getContext('2d');
+				const bounds = canvas.getBoundingClientRect();
+				ctx.clearRect(0, 0, bounds.width, bounds.height);
 				var imageObj1 = new Image();
 				imageObj1.onload = function() {
 					ctx.drawImage(imageObj1, 0, 0, width, height);
@@ -103,6 +105,8 @@ const IMAGES = {
 		draw: (canvas, width, height) => {
 			if (canvas.getContext) {
 				var ctx = canvas.getContext('2d');
+				const bounds = canvas.getBoundingClientRect();
+				ctx.clearRect(0, 0, bounds.width, bounds.height);
 				var imageObj1 = new Image();
 				imageObj1.onload = function() {
 					ctx.drawImage(imageObj1, 0, 0, width, height);
@@ -117,6 +121,8 @@ const IMAGES = {
 		draw: (canvas, width, height) => {
 			if (canvas.getContext) {
 				var ctx = canvas.getContext('2d');
+				const bounds = canvas.getBoundingClientRect();
+				ctx.clearRect(0, 0, bounds.width, bounds.height);
 				var imageObj1 = new Image();
 				imageObj1.onload = function() {
 					ctx.drawImage(imageObj1, 0, 0, width, height);
@@ -125,7 +131,7 @@ const IMAGES = {
 			}
 		},
 		properties: {}
-	},
+	} /*
 	Machine: {
 		draw: (canvas, width, height) => {
 			if (canvas.getContext) {
@@ -135,6 +141,22 @@ const IMAGES = {
 					ctx.drawImage(imageObj1, 0, 0, width, height);
 				};
 				imageObj1.src = 'https://espressoplanet.r.worldssl.net/images/P/Barista-Front.png';
+			}
+		},
+		properties: {}
+	},*/,
+	Spoon: {
+		draw: (canvas, width, height) => {
+			if (canvas.getContext) {
+				var ctx = canvas.getContext('2d');
+				const bounds = canvas.getBoundingClientRect();
+				ctx.clearRect(0, 0, bounds.width, bounds.height);
+				var imageObj1 = new Image();
+				imageObj1.onload = function() {
+					ctx.drawImage(imageObj1, 0, 0, width, height);
+				};
+				imageObj1.src =
+					'https://images.vexels.com/media/users/3/166264/isolated/preview/8ffb8d9fca4dc861a5477c376b2ce27f-cute-spoon-emoji-by-vexels.png';
 			}
 		},
 		properties: {}

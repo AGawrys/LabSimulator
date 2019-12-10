@@ -123,6 +123,38 @@ class Editor extends Component {
 			return null;
 		}
 		const toolOptions = currentStep.tools.map((tool) => tool.toSelectOption());
+		const pourSourceOptions = toolOptions.filter(
+			(tool) =>
+				tool.value.type === 'Cup' ||
+				tool.value.type === 'Shaker' ||
+				tool.value.type === 'Blender' ||
+				tool.value.type === 'Milk' ||
+				tool.value.type === 'Pump'
+		);
+		const pourTargetOptions = toolOptions.filter(
+			(tool) => tool.value.type === 'Cup' || tool.value.type === 'Shaker' || tool.value.type === 'Blender'
+		);
+		const shakeOptions = toolOptions.filter((tool) => tool.value.type === 'Shaker');
+		const blendSourceOptions = toolOptions.filter(
+			(tool) =>
+				tool.value.type === 'Banana' ||
+				tool.value.type === 'Mango' ||
+				tool.value.type === 'Blueberry' ||
+				tool.value.type === 'Strawberry'
+		);
+		const blendTargetOptions = toolOptions.filter((tool) => tool.value.type === 'Blender');
+		const stirSourceOptions = toolOptions.filter((tool) => tool.value.type === 'Spoon');
+		const stirTargetOptions = toolOptions.filter(
+			(tool) => tool.value.type === 'Cup' || tool.value.type === 'Blender'
+		);
+		const dragSourceOptions = toolOptions.filter(
+			(tool) => tool.value.type === 'Cap' || tool.value.type === 'CupSleeve' || tool.value.type === 'IceCube'
+		);
+		const dragTargetOptions1 = toolOptions.filter(
+			(tool) => tool.value.type === 'Cup' || tool.value.type === 'Blender' || tool.value.type === 'Shaker'
+		);
+		const dragTargetOptions2 = toolOptions.filter((tool) => tool.value.type === 'Cup');
+
 		const publishBtn = lesson.isPublished ? null : (
 			<Button variant="primary" onClick={this.publishLesson}>
 				Publish
@@ -252,8 +284,23 @@ class Editor extends Component {
 											classNamePrefix="editorSelect2"
 											placeholder="Source"
 											isSearchable={true}
+											isDisabled={currentStep.action === null}
 											name="sources"
-											options={toolOptions}
+											options={
+												currentStep.action === 'Shake' ? (
+													shakeOptions
+												) : currentStep.action === 'Pour' ? (
+													pourSourceOptions
+												) : currentStep.action === 'Stir' ? (
+													stirSourceOptions
+												) : currentStep.action === 'Blend' ? (
+													blendSourceOptions
+												) : currentStep.action === 'Drag' ? (
+													dragSourceOptions
+												) : (
+													''
+												)
+											}
 											onChange={(tool) => this.updateCurrentSource(tool.value)}
 											value={currentStep.source ? currentStep.source.toSelectOption() : ''}
 										/>
@@ -264,8 +311,28 @@ class Editor extends Component {
 											placeholder="Target"
 											isSearchable={true}
 											name="targets"
-											isDisabled={currentStep.action !== 'Pour'}
-											options={toolOptions}
+											isDisabled={
+												currentStep.action === 'Shake' ||
+												currentStep.action === null ||
+												(currentStep.action === 'Drag' && currentStep.source === null)
+											}
+											options={
+												currentStep.action === 'Pour' ? (
+													pourTargetOptions
+												) : currentStep.action === 'Stir' ? (
+													stirTargetOptions
+												) : currentStep.action === 'Blend' ? (
+													blendTargetOptions
+												) : currentStep.action === 'Drag' ? currentStep.source === null ? (
+													''
+												) : currentStep.source.type === 'IceCube' ? (
+													dragTargetOptions1
+												) : (
+													dragTargetOptions2
+												) : (
+													''
+												)
+											}
 											onChange={(tool) => this.updateCurrentTarget(tool.value)}
 											value={currentStep.target ? currentStep.target.toSelectOption() : ''}
 										/>
@@ -290,6 +357,7 @@ class Editor extends Component {
 											type="number"
 											min="1"
 											placeholder="Timer (Seconds)"
+											disabled={currentStep.action === 'Pour'}
 											onChange={(e) => this.updateTimer(e)}
 											value={
 												currentStep.timer ? currentStep.timer > 0 ? currentStep.timer : '' : ''
@@ -489,9 +557,10 @@ class Editor extends Component {
 	updateCurrentAction = (action) => {
 		const { currentStep } = this.state;
 		currentStep.action = action.value;
-		if (action.value != 'Pour') {
-			currentStep.target = null;
-		}
+		currentStep.source = null;
+		currentStep.target = null;
+		currentStep.actionMeasurement = null;
+		currentStep.timer = null;
 		this.setState({ currentStep });
 	};
 
