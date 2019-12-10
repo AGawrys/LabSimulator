@@ -35,6 +35,8 @@ import { SortableContainer, SortableStep } from '../Components/StepItem.jsx';
 import { swapElements } from '../LilacArray.js';
 import axios from 'axios';
 import plus from '../Styles/Images/icons8-plus.svg';
+import { HotKeys } from 'react-hotkeys';
+
 
 const links = {
 	Account: '/instructor/dashboard'
@@ -61,6 +63,10 @@ class Editor extends Component {
 			history: {operations: [], pointer: 0}
 		};
 		this.onDropTool = this.onDropTool.bind(this);
+		this.shortcutHandlers = {
+			UNDO: this.onShortcutUndo,
+			REDO: this.onShortcutRedo,
+		}
 	}
 
 	handleToolClick = () => {
@@ -131,7 +137,7 @@ class Editor extends Component {
 			</Button>
 		);
 		return (
-			<div>
+			<HotKeys handlers={this.shortcutHandlers}>
 				<HeaderBru {...this.props} home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
 				<ConfirmationModal
 					title={GeneralConstants.DELETE_LESSON_TITLE}
@@ -341,7 +347,7 @@ class Editor extends Component {
 						</Col>
 					</Row>
 				</Container>
-			</div>
+			</HotKeys>
 		);
 	}
 
@@ -631,6 +637,22 @@ class Editor extends Component {
 		const currentStepIndex = steps.indexOf(currentStep);
 		const clonedSteps = steps.map((step) => step.clone());
 		return {steps: clonedSteps, currentStep: clonedSteps[currentStepIndex]};
+	}
+
+	onShortcutUndo = () => {
+		const {operations, pointer} = this.state.history;
+		if (pointer === 0) {
+			return;
+		}
+		this.handleUndo();
+	}
+
+	onShortcutRedo = () => {
+		const {operations, pointer} = this.state.history;
+		if (operations.length === 0 || pointer === operations.length - 1) {
+			return;
+		}
+		this.handleRedo();
 	}
 }
 
