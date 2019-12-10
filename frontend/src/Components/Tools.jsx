@@ -140,27 +140,45 @@ const IMAGES = {
             if (canvas.getContext) {
                 const context = canvas.getContext("2d");
                 const bounds = canvas.getBoundingClientRect();
-
                 context.clearRect(0, 0, bounds.width, bounds.height);
+
+                const leftTop = width * .15, rightTop = width * .90;
+                const leftBottom = width * .24, rightBottom = width * .76;
+                const topLeft = height * .13, topRight = height * .07,  bottom = height * .65;
+
+                const left = LineCalculator(leftTop, topLeft, leftBottom, bottom);
+                const right = LineCalculator(rightBottom, bottom, rightTop, topRight);
+                const cupHeight = bottom - topLeft
+                const fillPoint = topLeft + (cupHeight * (1 - properties.Fill))
+
+                context.beginPath();
+                context.moveTo(left.x(fillPoint), fillPoint);
+                context.lineTo(leftBottom, bottom)
+                context.lineTo(rightBottom, bottom)
+                context.lineTo(right.x(fillPoint), fillPoint);
+                context.fillStyle = properties.Color;
+                context.fill();
+
+                context.lineWidth = 3;
+                context.lineCap = "round";
+                context.lineJoin = "round";
     
                 context.beginPath();
                 context.lineJoin = "round";
-                context.strokeRect(width * .35, height * .05, width * .3, height * .01);
-                context.strokeRect(width * .15, height * .06, width * .65, height * .02);
-                context.moveTo(width * .15, height * .08);
-                context.lineTo(width * .20, height * .13);
-                context.lineTo(width * .30, height * .68);
-                context.lineTo(width * .70, height * .68);
-                context.lineTo(width * .80, height * .08);
+                context.moveTo(width * .30, height * .05);
+                context.bezierCurveTo(width * .35, height * .04, width * .65, height * .04, width * .70, height * .05);
+                context.strokeRect(width * .05, height * .05, width * .85, height * .02);
+                context.moveTo(width * .05, height * .07);
+                context.lineTo(leftTop, topLeft);
+                context.lineTo(leftBottom, bottom);
+                context.moveTo(rightBottom, bottom);
+                context.lineTo(rightTop, topRight);
 
-                context.moveTo(width * .27, height * .68);
-                context.lineTo(width * .20, height * .95);
-                context.lineTo(width * .80, height * .95);
-                context.lineTo(width * .73, height * .68);
-                context.lineTo(width * .27, height * .68);
-    
-                const left = LineCalculator(width * .2, height * .1, width * .3, height * .65);
-                const right = LineCalculator(width * .7, height * .65, width * .8, height * .05);
+                context.strokeRect(width * .23, height * .65, width * .54, height * .03);
+                context.moveTo(width * .23, height * .68);
+                context.quadraticCurveTo(width * .15, height * .70, width * .10, height * .95);
+                context.lineTo(width * .90, height * .95);
+                context.quadraticCurveTo(width * .85, height * .70, width * .77, height * .68);
     
                 context.moveTo(right.x(height * .12), height * .15);
                 context.lineTo(width * .90, height * .15);
@@ -171,20 +189,13 @@ const IMAGES = {
                 context.lineTo(width * .87, height * .52);
                 context.lineTo(right.x(height * .49), height * .52);
                 context.stroke()
-                
-                const cupHeight = (height * .95) - (height * .05)
-                const fillPoint = (height * .05) + (cupHeight * (1 - properties.Fill))
-
-                context.beginPath();
-                context.moveTo(left.x(fillPoint), fillPoint);
-                context.lineTo(width * .2, height * .95)
-                context.lineTo(width * .8, height * .95)
-                context.lineTo(right.x(fillPoint), fillPoint);
-                context.fill()
             }
         },
         properties: {
-            Fill: 0
+            Width: 200,
+            Height: 350,
+            Fill: 0,
+            Color:  "#03a9f4"
         }
     },
     PumpBottle: {
