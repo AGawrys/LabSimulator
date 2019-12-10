@@ -211,9 +211,9 @@ class EditorStudent extends Component {
 							<Button
 								style={{float:"left"}}
 								variant="dark"
-								onClick={this.resetLesson}
+								onClick={this.restartLesson}
 							>
-								RESET LESSON
+								RESTART LESSON
 							</Button>
 						</Col>
 					</Row>
@@ -240,8 +240,17 @@ class EditorStudent extends Component {
 		});
 	}
 
-	resetLesson = () => {
-		this.setState({currentStepIndex: 0});
+	restartLesson = () => {
+		const {lesson_id, course_id} = this.props.computedMatch.params;
+		const body = {
+			email: this.props.email,
+			courseId: course_id,
+			lessonId: lesson_id
+		};
+		axios.post(Routes.SERVER + "deleteAssignment", body).then(
+			(response) => this.setState({isCurrentStepComplete: false}),
+			(error) => console.log(error)
+		);
 	}
 
 	resetStep = () => {
