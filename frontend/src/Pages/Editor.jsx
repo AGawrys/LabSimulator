@@ -73,6 +73,7 @@ class Editor extends Component {
 		const { currentStep } = this.state;
 		if(currentStep && currentStep.action === 'Pour'){
 			if(currentStep.source && currentStep.target && currentStep.actionMeasurement){
+				console.log("changing show modal")
 				this.setState({ showPourModal: true});
 			}
 		}
@@ -181,7 +182,7 @@ class Editor extends Component {
 					autohide
 					delay={1000}
 				/>
-				{showPourModal ? (
+				{/* {showPourModal ? (
 					<Pour
 						source={currentStep.source}
 						target={currentStep.target}
@@ -189,7 +190,15 @@ class Editor extends Component {
 						instructor={true}
 						closeModal={() => this.setState({ showPourModal: false})}
 					/>
-					) : null}
+					) : null} */}
+					<Pour
+						show={showPourModal}
+						source={currentStep.source}
+						target={currentStep.target}
+						goal={currentStep.actionMeasurement}
+						instructor={true}
+						closeModal={() => this.setState({ showPourModal: false})}
+					/>
 				<Container fluid={true} className="instructorContainer">
 					<Col className="instructorEditorToolBar brownBorder">
 						<Row>

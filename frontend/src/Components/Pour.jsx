@@ -11,12 +11,14 @@ import { isArrayEqual } from '../LilacArray';
 class Pour extends React.Component {
     constructor(props) {
     super(props);
-    const { source, target, goal, instructor } = this.props;
+    const { source, target, goal, instructor, show } = this.props;
     this.state = {
         fill: target.image.properties.Fill,
         fillSrc: source.image.properties.Fill,
         defaultFill: target.image.properties.Fill,
         defaultFillSrc: source.image.properties.Fill,
+        color: target.image.properties.Color,
+        colorSrc: source.image.properties.Color,
         transform:'translate3d(0, 0px, 0) scale(1) rotate(0deg)',
         t:undefined,
         start:100,
@@ -25,7 +27,7 @@ class Pour extends React.Component {
         goalMin: (goal/100) - 0.05 + (target.image.properties.Fill),
         goalMax: (goal/100) + 0.05 + (target.image.properties.Fill),
         done: false,
-        modalShow: true,
+        show,
         instructor, //if this is simulate or not
     };
     }
@@ -65,20 +67,33 @@ class Pour extends React.Component {
     } 
     reset = () => { 
         const { defaultFill, defaultFillSrc } = this.state;
-        this.setState({ fill : defaultFill });
-        this.setState({ fillSrc : defaultFillSrc }); 
+        console.log("default fill: " + defaultFill);
+        console.log("default fill Source : " + defaultFillSrc);
+        const defaultTarget = defaultFill;
+        const defaultSource = defaultFillSrc;
+        this.setState({ fill : defaultTarget });
+        this.setState({ fillSrc : defaultSource }); 
+        console.log("fill: " + this.state.fill);
+        console.log("fill Source : " + this.state.fillSrc);
 	} 
 
     closeAndFinish = () => {
         if(this.state.instructor) {
+            console.log('going to reset');
             this.reset();
         }
-        this.props.closeModal();
-         this.setState({modalShow : false });
+        // this.setState({show : false });
+         this.closeParent();
     }
-    
+    closeParent = () => {
+        this.props.closeModal();
+    }
+
     render() {
-        const { instruction, done, modalShow} = this.state;
+        console.log("IN POUR");
+        const { instruction, done} = this.state;
+        const {show} = this.props;
+        console.log(show)
         const {source, target} = this.props;
         const categories = Object.keys(CATEGORIES);
         const tools = CATEGORIES["Cups"];
@@ -86,6 +101,7 @@ class Pour extends React.Component {
         image.draw = IMAGES["TaperedCup"].draw;
         image.properties = {};
         image.properties.Fill = this.state.fill;
+        image.properties.Color = this.state.color;
         const mytool = (
             <ToolComponent tool={new Tool("TaperedCup", image, undefined, 75, 75, undefined)} />
         );
@@ -94,12 +110,13 @@ class Pour extends React.Component {
 		imageSrc.draw = IMAGES["TaperedCup"].draw;
 		imageSrc.properties = {};
         imageSrc.properties.Fill = this.state.fillSrc;
+        imageSrc.properties.Color = this.state.colorSrc;
         const srctool = (
             <ToolComponent tool={new Tool("TaperedCup",  imageSrc, undefined, 75, 75, undefined)} />
         );
     return (
         <Modal
-            show={modalShow}
+            show={show}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             centered
