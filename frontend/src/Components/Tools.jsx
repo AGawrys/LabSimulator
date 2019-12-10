@@ -113,15 +113,16 @@ const IMAGES = {
                 context.fillStyle = "black"
                 context.font = "bold 12px Arial"
                 context.textBaseline = "middle"
-                for (let i = properties.Max - (properties.Max/properties.Intervals);
-                     i > properties.Min;
-                     i -= properties.Max/properties.Intervals) {
+                for (let i = properties.Capacity - (properties.Capacity/properties.Intervals);
+                     i > 0;
+                     i -= properties.Capacity/properties.Intervals) {
+                    console.log(i)
+                    let tickHeight = top + (cupHeight * ((properties.Capacity - i)/properties.Capacity))
                     context.beginPath();
-                    context.moveTo(width * .48, top + (cupHeight * ((properties.Max - i)/properties.Max)));
-                    context.lineTo(width * .52, top + (cupHeight * ((properties.Max - i)/properties.Max)));
-                    context.fillText(i, width * .54, top + (cupHeight * ((properties.Max - i)/properties.Max)))
+                    context.moveTo(width * .48, tickHeight);
+                    context.lineTo(width * .52, tickHeight);
+                    context.fillText(Number.isInteger(i)? i : i.toFixed(2), width * .54, tickHeight)
                     context.stroke();
-                    console.log(top + ((properties.Max - i)/properties.Max * cupHeight))
                 }
             }
         },
@@ -130,9 +131,8 @@ const IMAGES = {
             Height: 250,
             Fill: 0,
             Color: "#03a9f4",
-            Min: 0,
-            Max: 10,
-            Intervals: 5
+            Capacity: 2,
+            Intervals: 4
         }
     },
     Blender: {

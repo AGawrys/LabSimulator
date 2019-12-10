@@ -169,7 +169,22 @@ class ToolEditor extends React.Component {
                         step={.01} 
                         value={tool.taper}/>,
             Color: <SketchPicker disableAlpha={true} color={tool.color} onChange={this.onColorChange}/>,
-            
+            Capacity: <InputRange
+                        draggableTrack
+                        formatLabel={(value) => value.toFixed(2)} 
+                        minValue={2} 
+                        maxValue={32} 
+                        onChange={this.onCapacityChange}
+                        step={2} 
+                        value={tool.image.properties.Capacity}/>,
+            Intervals: <InputRange
+                        draggableTrack
+                        formatLabel={(value) => value.toFixed(2)} 
+                        minValue={4} 
+                        maxValue={8} 
+                        onChange={this.onIntervalsChange}
+                        step={4} 
+                        value={tool.image.properties.Intervals}/>,
         };
         return SUPPLEMENTAL_CONTROLS;
     }
@@ -211,6 +226,22 @@ class ToolEditor extends React.Component {
         const properties = tool.getImage().properties;
         properties["Color"] = color.hex;
         tool.color = color.hex;
+        this.props.setCurrentTool(this.props.tool);
+    }
+
+    onCapacityChange = (value) => {
+        const {tool} = this.props;
+        const properties = tool.getImage().properties;
+        properties["Capacity"] = parseInt(value, 10);
+        tool.image.properties = properties;
+        this.props.setCurrentTool(this.props.tool);
+    }
+
+    onIntervalsChange = (value) => {
+        const {tool} = this.props;
+        const properties = tool.getImage().properties;
+        properties["Intervals"] = parseInt(value, 10);
+        tool.image.properties = properties;
         this.props.setCurrentTool(this.props.tool);
     }
 }
