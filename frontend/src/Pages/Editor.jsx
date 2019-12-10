@@ -182,15 +182,6 @@ class Editor extends Component {
 					autohide
 					delay={1000}
 				/>
-				{/* {showPourModal ? (
-					<Pour
-						source={currentStep.source}
-						target={currentStep.target}
-						goal={currentStep.actionMeasurement}
-						instructor={true}
-						closeModal={() => this.setState({ showPourModal: false})}
-					/>
-					) : null} */}
 					<Pour
 						show={showPourModal}
 						source={currentStep.source}
