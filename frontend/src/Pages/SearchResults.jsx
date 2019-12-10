@@ -29,8 +29,7 @@ function SearchResultPage(props) {
 				<div className="searchBarDiv">
 					<h1 className="m-0 font-weight-light text-secondary headings">Results</h1>
 					<SearchBar placeHolderText={'Search for Lesson'} onSearchButtonClick={(value) =>  {
-						const route = Routes.SERVER + "search?" + value + "&email=" + props.email;
-						props.history.push(route);
+						props.history.push(Routes.SEARCH + value);
 					}}/>
 				</div>
 				<div className="teacherDashboardContents">

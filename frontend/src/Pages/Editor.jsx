@@ -89,7 +89,7 @@ class Editor extends Component {
 	}
 
 	componentWillUnmount() {
-		window.removeEventListener("resize");
+		window.removeEventListener("resize", this.onCanvasResize);
 	}
 
 	fetchData = () => {

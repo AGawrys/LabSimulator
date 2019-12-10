@@ -3,6 +3,7 @@ import {Droppable} from "react-drag-and-drop";
 import { Form } from 'react-bootstrap';
 import {ContextMenu, MenuItem, ContextMenuTrigger} from 'react-contextmenu';
 import {CONTEXT_MENU_ID} from '../utils/EditorConstants.js';
+import { swapElements } from '../LilacArray.js';
 import {determineToolPosition} from '../utils/CanvasUtils.js';
 import Position from '../Objects/Position.js';
 import Tool from "./Tool.jsx"
@@ -76,6 +77,26 @@ class Canvas extends React.Component {
 
         onUpdateTools(tools);
         setCopiedTool(newCopy);
+    }
+
+    onClickMoveUp = () => {
+        const {currentTool} = this.state;
+        const {tools, onUpdateTools} = this.props;
+        const index = tools.indexOf(currentTool);
+        const newTools = swapElements(tools,index,index + 1);
+        newTools[index].layer +=1;
+        newTools[index + 1].layer -=1;
+        onUpdateTools(newTools);
+    }
+
+    onClickMoveDown = () => {
+        const {currentTool} = this.state;
+        const {tools, onUpdateTools} = this.props;
+        const index = tools.indexOf(currentTool);
+        const newTools = swapElements(tools,index,index - 1);
+        newTools[index].layer -=1;
+        newTools[index - 1].layer +=1;
+        onUpdateTools(newTools);
     }
 
     updateTools = () => {
@@ -189,13 +210,15 @@ class Canvas extends React.Component {
                     </MenuItem>
                     <MenuItem
                         onClick={this.onClickMoveUp}
+                        disabled={tools.indexOf(currentTool) == tools.length - 1}
                     >
-                        Move Up
+                        Move Up A Layer
                     </MenuItem>
                     <MenuItem
                         onClick={this.onClickMoveDown}
+                        disabled={tools.indexOf(currentTool) == 0}
                     >
-                        Move Down
+                        Move Down A Layer
                     </MenuItem>
                 </ContextMenu>
                 <ContextMenu id={CONTEXT_MENU_ID + "-2"}>
