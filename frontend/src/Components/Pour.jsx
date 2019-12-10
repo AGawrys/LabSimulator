@@ -73,6 +73,7 @@ class Pour extends React.Component {
         if(this.state.instructor) {
             this.reset();
         }
+        this.props.closeModal();
          this.setState({modalShow : false });
     }
     

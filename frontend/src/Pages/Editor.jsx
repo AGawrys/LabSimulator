@@ -187,6 +187,7 @@ class Editor extends Component {
 						target={currentStep.target}
 						goal={currentStep.actionMeasurement}
 						instructor={true}
+						closeModal={() => this.setState({ showPourModal: false})}
 					/>
 					) : null}
 				<Container fluid={true} className="instructorContainer">
