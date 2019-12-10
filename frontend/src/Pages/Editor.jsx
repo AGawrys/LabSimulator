@@ -452,10 +452,10 @@ class Editor extends Component {
 	};
 
 	onDropTool(data) {
-		const {x,y} = determineToolPosition(DEFAULT_TOOL_SIZE);
 		const {width, height} = determineToolSize(data.tool,this.state.currentStep.tools);
-		const position = new Position(x, y);
 		const image = createImage(data.tool);
+		const {x,y} = determineToolPosition(width, height);
+		const position = new Position(x, y);
 		const layer = this.state.currentStep.getTools().length;
 		const tool = new Tool(data.tool, image, position,width,height,layer);
 		let currentStep = this.state.currentStep;

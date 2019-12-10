@@ -3,7 +3,7 @@ export function LineCalculator(x1, y1, x2, y2) {
     const b = (x1 * m) - y1
 
     const x = function(y) {
-        return (y + b) / m 
+        return (x1 === x2)? x1 : (y + b) / m 
     }
     const y = function(x) {
         return (x * m) - b

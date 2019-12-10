@@ -133,8 +133,27 @@ class ToolEditor extends React.Component {
     }
 
     getSupplementalControls = () => {
+        const canvas = document.getElementById("canvas")
+        const bounds = canvas.getBoundingClientRect();
+
         const {tool} = this.props;
         const SUPPLEMENTAL_CONTROLS = {
+            Width: <InputRange
+                        draggableTrack
+                        formatLabel={(value) => value.toFixed(2)} 
+                        minValue={0} 
+                        maxValue={bounds.width - tool.position.x} 
+                        onChange={this.onWidthChange}
+                        step={.01} 
+                        value={tool.width}/>,
+            Height: <InputRange
+                        draggableTrack
+                        formatLabel={(value) => value.toFixed(2)} 
+                        minValue={0} 
+                        maxValue={bounds.height - tool.position.y} 
+                        onChange={this.onHeightChange}
+                        step={.01} 
+                        value={tool.height}/>,
             Fill: <InputRange
                         draggableTrack
                         formatLabel={(value) => value.toFixed(2)} 
@@ -149,8 +168,49 @@ class ToolEditor extends React.Component {
                         color={tool.color} 
                         onChange={this.onColorChange}
                         onChangeComplete={() => this.props.updateTools()}/>,
+            Taper: <InputRange
+                        draggableTrack
+                        formatLabel={(value) => value.toFixed(2)} 
+                        minValue={0} 
+                        maxValue={1} 
+                        onChange={this.onTaperChange}
+                        step={.01} 
+                        value={tool.taper}/>,
+            Color: <SketchPicker disableAlpha={true} color={tool.color} onChange={this.onColorChange}/>,
+            Capacity: <InputRange
+                        draggableTrack
+                        formatLabel={(value) => value.toFixed(2)} 
+                        minValue={2} 
+                        maxValue={32} 
+                        onChange={this.onCapacityChange}
+                        step={2} 
+                        value={tool.image.properties.Capacity}/>,
+            Intervals: <InputRange
+                        draggableTrack
+                        formatLabel={(value) => value.toFixed(2)} 
+                        minValue={4} 
+                        maxValue={8} 
+                        onChange={this.onIntervalsChange}
+                        step={4} 
+                        value={tool.image.properties.Intervals}/>,
         };
         return SUPPLEMENTAL_CONTROLS;
+    }
+
+    onWidthChange = (value) => {
+        const {tool} = this.props;
+        const properties = tool.getImage().properties;
+        properties["Width"] = value;
+        tool.width = value;
+        this.props.setCurrentTool(this.props.tool);
+    }
+
+    onHeightChange = (value) => {
+        const {tool} = this.props;
+        const properties = tool.getImage().properties;
+        properties["Height"] = value;
+        tool.height = value;
+        this.props.setCurrentTool(this.props.tool);
     }
 
     onFillChange = (value) => {
@@ -161,11 +221,35 @@ class ToolEditor extends React.Component {
         this.props.setCurrentTool(this.props.tool);
     }
 
+    onTaperChange = (value) => {
+        const {tool} = this.props;
+        const properties = tool.getImage().properties;
+        properties["Taper"] = value;
+        tool.taper = value;
+        this.props.setCurrentTool(this.props.tool);
+    }
+
     onColorChange = (color, event) => {
         const {tool} = this.props;
         const properties = tool.getImage().properties;
         properties["Color"] = color.hex;
         tool.color = color.hex;
+        this.props.setCurrentTool(this.props.tool);
+    }
+
+    onCapacityChange = (value) => {
+        const {tool} = this.props;
+        const properties = tool.getImage().properties;
+        properties["Capacity"] = parseInt(value, 10);
+        tool.image.properties = properties;
+        this.props.setCurrentTool(this.props.tool);
+    }
+
+    onIntervalsChange = (value) => {
+        const {tool} = this.props;
+        const properties = tool.getImage().properties;
+        properties["Intervals"] = parseInt(value, 10);
+        tool.image.properties = properties;
         this.props.setCurrentTool(this.props.tool);
     }
 }

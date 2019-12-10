@@ -2,7 +2,7 @@ import Position from './Position';
 import { createImage } from '../Components/Tools.jsx';
 
 class Tool {
-	constructor(type, image, position = null, width, height, layer = null, color = "#0077be", amount = 0) {
+	constructor(type, image, position = null, width, height, layer = null, color = "#0077be", amount = 0, taper = .5) {
 		this.name = 'Tool ' + layer;
 		this.type = type;
 		this.image = image;
@@ -12,6 +12,7 @@ class Tool {
 		this.layer = layer;
 		this.color = color;
 		this.amount = amount;
+		this.taper = taper
 		this.new = true;
 	}
 
