@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.constraints.Null;
 import javax.xml.ws.Response;
 import java.util.ArrayList;
@@ -163,11 +164,17 @@ public class LessonController {
     public ResponseEntity cloneLesson(@RequestBody AccountLessonParams params) {
         Lesson existingLesson = lessonRepository.findByLessonId(params.getLessonId());
         String clonedLessonName = "Copy of " + existingLesson.getName();
+        if (!params.getEmail().equals(existingLesson.getInstructorEmail())) {
+            incrementDownloads(existingLesson);
+        }
+
         Lesson clonedLesson = new Lesson(
                 clonedLessonName,
                 params.getEmail(),
                 existingLesson.getCanvasHeight(),
-                existingLesson.getCanvasWidth());
+                existingLesson.getCanvasWidth(),
+                0
+        );
         lessonRepository.save(clonedLesson);
 
         List<Step> steps = stepRepository.findByStepIdentityLessonId(params.getLessonId());
@@ -195,6 +202,12 @@ public class LessonController {
         lessonRepository.save(lesson);
         saveStepTable(lessonInformation.getStepInformation(), lesson.getLessonId());
         return ResponseEntity.ok(null);
+    }
+
+    @Transactional
+    public void incrementDownloads(Lesson lesson) {
+        lesson.setDownloads(lesson.getDownloads() + 1);
+        lessonRepository.save(lesson);
     }
 
     public HashSet<Integer> getCourseLessonIds(String courseId) {
