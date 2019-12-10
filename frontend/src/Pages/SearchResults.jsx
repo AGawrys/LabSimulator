@@ -54,7 +54,9 @@ function SearchResults({results,email}) {
 	const resultString = results.length === 1 ? " result found." : " results found.";
 	return (
 		<div>
-			<h4 style={{"textAlign":"left"}} className="m-0 font-weight-light text-secondary headings"> {results.length} {resultString} </h4>
+			<h4 style={{"textAlign":"left"}} className="font-weight-light text-secondary headings"> 
+				{results.length} {resultString} 
+			</h4>
 				<ListGroup>
 					{
 						results.map((result, index) => <SearchResult key={index} result={result} email={email}/>)
