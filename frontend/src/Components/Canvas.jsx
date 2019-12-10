@@ -1,13 +1,13 @@
-import React from "react";
-import {Droppable} from "react-drag-and-drop";
+import React from 'react';
+import { Droppable } from 'react-drag-and-drop';
 import { Form } from 'react-bootstrap';
 import {ContextMenu, MenuItem, ContextMenuTrigger} from 'react-contextmenu';
 import {CONTEXT_MENU_ID} from '../utils/EditorConstants.js';
 import { swapElements } from '../LilacArray.js';
 import {determineToolPosition} from '../utils/CanvasUtils.js';
 import Position from '../Objects/Position.js';
-import Tool from "./Tool.jsx"
-import ToolEditor from "./ToolEditor.jsx";
+import Tool from './Tool.jsx';
+import ToolEditor from './ToolEditor.jsx';
 
 class Canvas extends React.Component {
     constructor(props) {

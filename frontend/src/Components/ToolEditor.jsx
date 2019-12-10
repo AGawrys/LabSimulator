@@ -1,8 +1,8 @@
-import React from "react"
+import React from 'react';
 import { Form, Modal } from 'react-bootstrap';
 import Draggable from 'react-draggable';
 import { Row, Col } from 'react-grid-system';
-import { SketchPicker } from 'react-color'
+import { SketchPicker } from 'react-color';
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';
 
@@ -171,12 +171,9 @@ class ToolEditor extends React.Component {
 }
 
 class DraggableDialog extends React.Component {
-    render() {
-        return (
-                <Modal.Dialog {...this.props} />
-        )
-    }
+	render() {
+		return <Modal.Dialog {...this.props} />;
+	}
 }
-
 
 export default ToolEditor;

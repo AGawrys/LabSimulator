@@ -77,19 +77,19 @@ class Editor extends Component {
 	handleSimulate() {}
 
 	componentDidMount() {
-		window.addEventListener("resize", this.onCanvasResize);
+		window.addEventListener('resize', this.onCanvasResize);
 		this.fetchData();
 	}
 
 	componentDidUpdate() {
-		const {areToolsPlaced, steps, canvasSize, currentStep} = this.state;
+		const { areToolsPlaced, steps, canvasSize } = this.state;
 		if (!areToolsPlaced) {
-			resizeTools(canvasSize,steps);
-			const {width, height} = getCanvasSize();
+			resizeTools(canvasSize, steps);
+			const { width, height } = getCanvasSize();
 			this.setState({
 				areToolsPlaced: true,
 				steps: steps,
-				canvasSize: {width, height}, 
+				canvasSize: { width, height }
 			});
 			this.addOperation();
 		}
@@ -109,16 +109,16 @@ class Editor extends Component {
 				this.props.history.push(Routes.NOT_FOUND);
 			}
 		);
-	}
+	};
 
 	loadLesson = (response) => {
-		const {instructorEmail} = response.data.lesson;
+		const { instructorEmail } = response.data.lesson;
 		if (instructorEmail !== this.props.email) {
 			this.props.history.push(Routes.NOT_FOUND);
 		}
 		const loadedLesson = Lesson.load(response.data);
 		this.setState(loadedLesson);
-	}
+	};
 
 	handleFieldChange = (e) => {
 		this.state.lesson.setName(e.target.value);
@@ -132,6 +132,38 @@ class Editor extends Component {
 			return null;
 		}
 		const toolOptions = currentStep.tools.map((tool) => tool.toSelectOption());
+		const pourSourceOptions = toolOptions.filter(
+			(tool) =>
+				tool.value.type === 'Cup' ||
+				tool.value.type === 'Shaker' ||
+				tool.value.type === 'Blender' ||
+				tool.value.type === 'Milk' ||
+				tool.value.type === 'Pump'
+		);
+		const pourTargetOptions = toolOptions.filter(
+			(tool) => tool.value.type === 'Cup' || tool.value.type === 'Shaker' || tool.value.type === 'Blender'
+		);
+		const shakeOptions = toolOptions.filter((tool) => tool.value.type === 'Shaker');
+		const blendSourceOptions = toolOptions.filter(
+			(tool) =>
+				tool.value.type === 'Banana' ||
+				tool.value.type === 'Mango' ||
+				tool.value.type === 'Blueberry' ||
+				tool.value.type === 'Strawberry'
+		);
+		const blendTargetOptions = toolOptions.filter((tool) => tool.value.type === 'Blender');
+		const stirSourceOptions = toolOptions.filter((tool) => tool.value.type === 'Spoon');
+		const stirTargetOptions = toolOptions.filter(
+			(tool) => tool.value.type === 'Cup' || tool.value.type === 'Blender'
+		);
+		const dragSourceOptions = toolOptions.filter(
+			(tool) => tool.value.type === 'Cap' || tool.value.type === 'CupSleeve' || tool.value.type === 'IceCube'
+		);
+		const dragTargetOptions1 = toolOptions.filter(
+			(tool) => tool.value.type === 'Cup' || tool.value.type === 'Blender' || tool.value.type === 'Shaker'
+		);
+		const dragTargetOptions2 = toolOptions.filter((tool) => tool.value.type === 'Cup');
+
 		const publishBtn = lesson.isPublished ? null : (
 			<Button variant="primary" onClick={this.onPublishLesson}>
 				Publish
@@ -245,13 +277,15 @@ class Editor extends Component {
 
 						<Col lg={8}>
 							<div className="brownBorder">
-							<Canvas 
-								instructor={true} 
-								onDrop={this.onDropTool} 
-								tools={currentStep.getTools()}
-								onUpdateTools={this.updateTools} 
-								setCopiedTool={this.setCopiedTool}
-								copiedTool={copiedTool} />
+								<Canvas
+									instructor={true}
+									onDrop={this.onDropTool}
+									tools={currentStep.getTools()}
+									onUpdateTools={this.updateTools}
+									onUpdateNameTool={this.updateNameTool}
+									setCopiedTool={this.setCopiedTool}
+									copiedTool={copiedTool}
+								/>
 							</div>
 						</Col>
 
@@ -283,8 +317,23 @@ class Editor extends Component {
 											classNamePrefix="editorSelect2"
 											placeholder="Source"
 											isSearchable={true}
+											isDisabled={currentStep.action === null}
 											name="sources"
-											options={toolOptions}
+											options={
+												currentStep.action === 'Shake' ? (
+													shakeOptions
+												) : currentStep.action === 'Pour' ? (
+													pourSourceOptions
+												) : currentStep.action === 'Stir' ? (
+													stirSourceOptions
+												) : currentStep.action === 'Blend' ? (
+													blendSourceOptions
+												) : currentStep.action === 'Drag' ? (
+													dragSourceOptions
+												) : (
+													''
+												)
+											}
 											onChange={(tool) => this.updateCurrentSource(tool.value)}
 											value={currentStep.source ? currentStep.source.toSelectOption() : ''}
 										/>
@@ -295,8 +344,28 @@ class Editor extends Component {
 											placeholder="Target"
 											isSearchable={true}
 											name="targets"
-											isDisabled={currentStep.action !== 'Pour'}
-											options={toolOptions}
+											isDisabled={
+												currentStep.action === 'Shake' ||
+												currentStep.action === null ||
+												(currentStep.action === 'Drag' && currentStep.source === null)
+											}
+											options={
+												currentStep.action === 'Pour' ? (
+													pourTargetOptions
+												) : currentStep.action === 'Stir' ? (
+													stirTargetOptions
+												) : currentStep.action === 'Blend' ? (
+													blendTargetOptions
+												) : currentStep.action === 'Drag' ? currentStep.source === null ? (
+													''
+												) : currentStep.source.type === 'IceCube' ? (
+													dragTargetOptions1
+												) : (
+													dragTargetOptions2
+												) : (
+													''
+												)
+											}
 											onChange={(tool) => this.updateCurrentTarget(tool.value)}
 											value={currentStep.target ? currentStep.target.toSelectOption() : ''}
 										/>
@@ -321,6 +390,7 @@ class Editor extends Component {
 											type="number"
 											min="1"
 											placeholder="Timer (Seconds)"
+											disabled={currentStep.action === 'Pour'}
 											onChange={(e) => this.updateTimer(e)}
 											value={
 												currentStep.timer ? currentStep.timer > 0 ? currentStep.timer : '' : ''
@@ -387,7 +457,6 @@ class Editor extends Component {
 		const position = new Position(x, y);
 		const image = createImage(data.tool);
 		const layer = this.state.currentStep.getTools().length;
-
 		const tool = new Tool(data.tool, image, position,width,height,layer);
 		let currentStep = this.state.currentStep;
 		currentStep.addTool(tool);
@@ -472,10 +541,11 @@ class Editor extends Component {
 	updateCurrentAction = (action) => {
 		const { currentStep } = this.state;
 		currentStep.action = action.value;
-		if (action.value != 'Pour') {
-			currentStep.target = null;
-		}
-		this.setState({ currentStep },this.addOperation);
+		currentStep.source = null;
+		currentStep.target = null;
+		currentStep.actionMeasurement = null;
+		currentStep.timer = null;
+		this.setState({ currentStep }, this.addOperation);
 	};
 
 	updateCurrentSource = (tool) => {
@@ -569,35 +639,35 @@ class Editor extends Component {
 			lessonId: lesson.id,
 			email: this.props.email
 		};
-		axios.post(Routes.SERVER + 'cloneLesson/', body).then(
-			(response) => this.setState({showSuccessfulDuplicate: true}),
-			(error) => console.log(error),
-		);
-	}
+		axios
+			.post(Routes.SERVER + 'cloneLesson/', body)
+			.then((response) => this.setState({ showSuccessfulDuplicate: true }), (error) => console.log(error));
+	};
 
 	setCopiedTool = (tool) => {
-		this.setState({copiedTool: tool});
-	}
+		this.setState({ copiedTool: tool });
+	};
 
 	updateTools = (tools) => {
-		const {currentStep} = this.state;
+		const { currentStep } = this.state;
 		if (tools.indexOf(currentStep.source) == -1) {
 			currentStep.source = null;
 		}
 		if (tools.indexOf(currentStep.target) == -1) {
 			currentStep.target = null;
 		}
+
 		currentStep.tools = tools;
 		this.setState({currentStep}, this.addOperation);
 	}
 
 	onCanvasResize = () => {
-		const {canvasSize, steps} = this.state;
+		const { canvasSize, steps } = this.state;
 		resizeTools(canvasSize, steps);
-		const {width, height} = getCanvasSize();
+		const { width, height } = getCanvasSize();
 		this.setState({
 			steps: steps,
-			canvasSize: {width,height},
+			canvasSize: { width, height }
 		});
 	}
 
