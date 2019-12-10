@@ -60,7 +60,8 @@ class Editor extends Component {
 			copiedTool: null,
 			areToolsPlaced: false,
 			canvasSize: {height: 1000, width: 1000},
-			history: {operations: [], pointer: 0}
+			history: {operations: [], pointer: 0},
+			isDirty: false,
 		};
 		this.onDropTool = this.onDropTool.bind(this);
 		this.shortcutHandlers = {
@@ -124,7 +125,7 @@ class Editor extends Component {
 	};
 
 	render() {
-		const { lesson, currentStep, steps, copiedTool } = this.state;
+		const { lesson, currentStep, steps, copiedTool, isDirty } = this.state;
 		const {showSuccessfulDuplicate, showDeleteLessonModal, showSuccessfullyPublished, showSuccessfulSave, showIncompleteSteps, showSaveBeforePublish } = this.state;
 		const { operations, pointer} = this.state.history;
 		if (steps == null) {
@@ -215,18 +216,18 @@ class Editor extends Component {
 								<Button disabled={operations.length === 0 || pointer === operations.length - 1} variant="dark" onClick={this.handleRedo}>
 									<i className="fa fa-repeat" aria-hidden="true"></i>
 								</Button>
+								<Button disabled={!isDirty} type="button" variant="success" onClick={
+									() => this.saveLesson(
+										() => this.setState({showSuccessfulSave: true, isDirty: false})
+									)}>
+									<i className="fas fa-save" />
+								</Button>
 								<Button
 									type="button"
 									variant="danger"
 									onClick={() => this.setState({ showDeleteLessonModal: true })}
 								>
 									<i className="fas fa-trash-alt" />
-								</Button>
-								<Button type="button" variant="success" onClick={
-									() => this.saveLesson(
-										() => this.setState({showSuccessfulSave: true})
-									)}>
-									<i className="fas fa-save" />
 								</Button>
 							</Col>
 						</Row>
@@ -605,15 +606,7 @@ class Editor extends Component {
 		operations.splice(pointer + 1);						// remove all operations after the current one
 		const stepState = this.cloneState(this.state);
 		operations.push(stepState);
-		this.setState({history: {operations: operations, pointer: operations.length - 1}});
-	}
-
-	updateOperation = (field,value) => {
-		const {steps, currentStep, history} = this.state;
-		const {operations, pointer} = history;
-		const index = steps.indexOf(currentStep);
-		const currentOperation = operations[pointer];
-		currentOperation.steps[index][field] = value;
+		this.setState({history: {operations: operations, pointer: operations.length - 1}, isDirty: operations.length > 1});
 	}
 
 	handleUndo = () => {
@@ -621,6 +614,7 @@ class Editor extends Component {
 		const currentState = operations[pointer - 1];
 		this.state.history.pointer -= 1;
 		const clonedState = this.cloneState(currentState);
+		clonedState.dirty = true;
 		this.setState(clonedState);
 	}
 
@@ -629,6 +623,7 @@ class Editor extends Component {
 		const currentState = operations[pointer + 1];
 		this.state.history.pointer += 1;
 		const clonedState = this.cloneState(currentState);
+		clonedState.dirty = true;
 		this.setState(clonedState);
 	}
 
