@@ -149,7 +149,7 @@ class Canvas extends React.Component {
                             tool={tool}
                             setCurrentTool={this.setCurrentTool}
                             updateTools={this.updateTools}
-                            instructor={true}
+                            instructor
                         />
                     </ContextMenuTrigger>
                 )
@@ -174,6 +174,7 @@ class Canvas extends React.Component {
                         tool={tool}
                         setCurrentTool={this.setCurrentTool}
                         updateTools={this.updateTools}
+                        instructor
                     />
                 );
             }
