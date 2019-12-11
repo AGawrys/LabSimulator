@@ -1,25 +1,29 @@
-import React from 'react';  
-import '../Styles/popupStyle.css';  
+import React from 'react';
+import '../Styles/popupStyle.css';
 import { Button, Form, Modal, ProgressBar } from 'react-bootstrap';
 import Draggable from 'react-draggable';
+import Timer from 'react-compound-timer';
 import Tool from './Tool.jsx';
 import Timer from 'react-compound-timer';
 import SuccessBody from './ActionCompletedBody.jsx';
 
 
 class ShakeModal extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			progress: 0,
+			position: {
+				x: 0,
+				y: 0
+			},
+			failed: false,
+			completed: false,
+			started: false
+		};
+	}
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      progress: 0,
-      position: {
-        x: 0, y: 0
-      },
-      started: false,
-      failed: false,
-    }
-  }
+
 
   render() {
     const {progress, started, failed} = this.state;

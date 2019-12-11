@@ -3,8 +3,6 @@ import { Button, Modal, ProgressBar } from 'react-bootstrap';
 import ArrowKeysReact from 'arrow-keys-react';
 import SuccessBody from './ActionCompletedBody.jsx';
 import Spoon from '../images/spoon.png';
-import TimerAction from './TimerAction.jsx';
-import Countdown from 'react-countdown-now';
 import Timer from 'react-compound-timer';
 import '../Styles/editor.css';
 
@@ -19,7 +17,7 @@ class StirModal extends React.Component {
 			smallerCircleStyle: {},
 			failed: false,
 			completed: false,
-			started: false,
+			started: false
 		};
 		ArrowKeysReact.config({
 			left: () => this.handleArrowKeyPress('LEFT'),
@@ -55,7 +53,7 @@ class StirModal extends React.Component {
 					}
 				]}
 			>
-				{({ start, resume, pause, stop, reset, getTimerState, getTime, setTime }) =>  {
+				{({ start, resume, pause, stop, reset, getTimerState, getTime, setTime }) => {
 					if (this.state.started) {
 						start();
 					}
@@ -93,11 +91,16 @@ class StirModal extends React.Component {
 							</Modal.Header>
 							<Modal.Body>{modalBody}</Modal.Body>
 							<Modal.Footer>
-								<Button variant="warning" disabled={!failed} hidden={!failed} onClick={() => {
-									reset();
-									start();
-									this.resetState()
-								}}>
+								<Button
+									variant="warning"
+									disabled={!failed}
+									hidden={!failed}
+									onClick={() => {
+										reset();
+										start();
+										this.resetState();
+									}}
+								>
 									Retry
 								</Button>
 								<Button variant="primary" onClick={this.resetProgress} disabled={percentComplete < 100}>
@@ -105,7 +108,8 @@ class StirModal extends React.Component {
 								</Button>
 							</Modal.Footer>
 						</Modal>
-				)}}
+					);
+				}}
 			</Timer>
 		);
 	}
@@ -119,14 +123,14 @@ class StirModal extends React.Component {
 			smallerCircleStyle: {},
 			failed: false,
 			completed: false,
-			started: false,
+			started: false
 		});
-	}
+	};
 
 	resetProgress = () => {
 		this.resetState();
 		this.props.onComplete();
-	}
+	};
 
 	handleStateChange = () => {
 		if (this.state.progress / this.props.progressNeeded === 1) {
@@ -153,11 +157,9 @@ class StirModal extends React.Component {
 			smallerCircleStyle: smallerCircleStyle,
 			currentKey: direction,
 			progress: direction === 'RIGHT' ? progress + 1 : progress,
-			started: true,
+			started: true
 		});
 	};
-
-
 }
 
 const KEY_ORDER = {
