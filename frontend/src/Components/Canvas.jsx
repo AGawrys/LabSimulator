@@ -95,7 +95,7 @@ class Canvas extends React.Component {
         const {copiedTool, tools, setCopiedTool, onUpdateTools} = this.props;
         const newCopy = copiedTool.clone();         // must deep copy again so subsequential pastes will not have properties effected
 
-        const {x,y} = determineToolPosition(copiedTool.height);
+        const {x,y} = determineToolPosition(copiedTool.width,copiedTool.height);
         const position = new Position(x,y);
         copiedTool.layer = tools.length;
         copiedTool.position = position;
