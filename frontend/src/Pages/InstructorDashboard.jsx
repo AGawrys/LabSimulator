@@ -170,8 +170,7 @@ export class InstructorDashboard extends Component {
 	};
 
 	navigateToCreatedCourse = (data) => {
-		const { courseCode } = data;
-		const newRoute = Routes.COURSE + courseCode;
+		const newRoute = Routes.COURSE + data;
 		this.props.history.push(newRoute);
 	};
 
