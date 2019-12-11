@@ -42,6 +42,7 @@ class EditorStudent extends Component {
 			showPourModal: false,
 			source: null, 
 			target: null,
+			currentAction: 'none',
 		};
 	}
 
@@ -160,7 +161,10 @@ class EditorStudent extends Component {
 		console.log(t2);
 		this.setState({source: t1});
 		this.setState({target: t2});
-		this.setState({showPourModal: true});
+		const {currentAction } = this.state;
+		if(currentAction === 'pour'){
+			this.setState({showPourModal: true});
+		}
 	}
 	completePour = (t1, t2) => {
 		this.setState({ showPourModal: false});
@@ -220,7 +224,15 @@ class EditorStudent extends Component {
 						</Col>
 						<Col sm={8}>
 							<div className="divider" />
-							<Canvas instructor={false} onDrop={this.onDropTool} tools={currentStep.getTools()} openActionMenu={this.openActionMenu} />
+							<Canvas 
+								instructor={false} 
+								onDrop={this.onDropTool} 
+								tools={currentStep.getTools()} 
+								changeActBlend={() => this.setState({currentAction: 'blend'})}
+								changeActPour={() => this.setState({currentAction: 'pour'})}
+								changeActStir={() => this.setState({currentAction: 'stir'})}
+								shake={() => this.setState({currentAction: 'shake'})}
+								openActionMenu={this.openActionMenu} />
 							<Button
 								style={{float:"left", "marginRight": "10px"}}
 								variant="dark"

@@ -208,22 +208,22 @@ class Canvas extends React.Component {
                     id={CONTEXT_MENU_ID}
                 >
                     <MenuItem
-                        onClick={this.onClickEdit}
+                        onClick={this.props.changeActStir}
                     >
                         Stir With {currentTool ? currentTool.getName() : null}
                     </MenuItem>
                     <MenuItem
-                        onClick={this.onCopyTool}
+                        onClick={this.props.shake}
                     >
                         Shake
                     </MenuItem>
                     <MenuItem
-                        onClick={this.onDeleteTool}
+                        onClick={this.props.changeActPour}
                     >
                         Pour From 
                     </MenuItem>
                     <MenuItem
-                        onClick={this.onClickMoveUp}
+                        onClick={this.props.changeActBlend}
                     >
                         Blend
                     </MenuItem>
