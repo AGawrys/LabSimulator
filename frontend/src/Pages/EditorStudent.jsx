@@ -11,6 +11,7 @@ import HeaderBru from '../Components/Header.jsx';
 import Routes from '../utils/RouteConstants.js';
 import axios from 'axios';
 import Canvas from '../Components/Canvas.jsx';
+import ActionMenuStudent from '../Components/ActionMenuStudent.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import { Redirect } from 'react-router-dom';
@@ -37,6 +38,7 @@ class EditorStudent extends Component {
 			lesson: null,
 			showSuccesfullyComplete: false,
 			areToolsPlaced: false,
+			actionMenu: false,
 		};
 	}
 
@@ -150,6 +152,13 @@ class EditorStudent extends Component {
 		}
 	}
 
+	onDropTool = () => {
+		
+	}
+	openActionMenu = () =>  {
+		console.log("I was clicked");
+		this.setState({ actionMenu : true});
+	}
 	render() {
 		const { lesson, steps, currentStepIndex, curriculum, showSuccesfullyComplete, isLessonComplete} = this.state;
 		if (lesson == null) {
@@ -191,9 +200,9 @@ class EditorStudent extends Component {
 									</Card>
 							</div>
 						</Col>
-						<Col sm={9}>
+						<Col sm={8}>
 							<div className="divider" />
-							<Canvas isInstructor={false} onDrop={this.onDropTool} tools={currentStep.getTools()} />
+							<Canvas instructor={false} onDrop={this.onDropTool} tools={currentStep.getTools()} openActionMenu={this.openActionMenu} />
 							<Button
 								style={{float:"left", "marginRight": "10px"}}
 								variant="dark"
@@ -215,6 +224,11 @@ class EditorStudent extends Component {
 							>
 								RESET LESSON
 							</Button>
+						</Col>
+						<Col sm={1}>
+							<div>
+								<ActionMenuStudent show={this.state.actionMenu} />
+							</div>
 						</Col>
 					</Row>
 				</Container>

@@ -76,6 +76,11 @@ class Canvas extends React.Component {
 
         setCopiedTool(newCopy);
     }
+    openStudentActions = () => {
+        console.log(" Open menu from Canvas");
+        const {currentTool} = this.state;
+        this.props.openActionMenu(currentTool);
+    }
 
     render() {
         const {currentTool, isEditingTool} = this.state;
@@ -93,6 +98,13 @@ class Canvas extends React.Component {
                         />
                     </ContextMenuTrigger>
                 )
+            } else if (currentTool === tool && !instructor) {
+                this.openStudentActions();
+                ToolComponent = (<Tool
+                        draggable
+                        tool={tool}
+                        setCurrentTool={this.setCurrentTool}
+                    />);
             } else {
                 ToolComponent = (
                     <Tool
