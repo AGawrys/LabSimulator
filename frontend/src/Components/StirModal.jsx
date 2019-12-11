@@ -29,7 +29,7 @@ class StirModal extends React.Component {
 
 	render() {
 		const { progress, currentKey, smallerCircleStyle, largerCircleStyle, failed, completed } = this.state;
-		const { progressNeeded, show, onComplete, timer } = this.props;
+		const { progressNeeded, show, onComplete, timer, target } = this.props;
 		let percentComplete = (progress / progressNeeded * 100).toFixed(2);
 		percentComplete = percentComplete < 100 ? percentComplete : 100;
 		const modalBody =
@@ -40,6 +40,7 @@ class StirModal extends React.Component {
 					largerCircleStyle={largerCircleStyle}
 					currentKey={currentKey}
 					smallerCircleStyle={smallerCircleStyle}
+					target={target}
 				/>
 			);
 		return (
@@ -148,7 +149,7 @@ class StirModal extends React.Component {
 			return;
 		}
 		const angle = this.state.angle + 90;
-		const largerCircleStyle = { transform: 'rotate(' + angle + 'deg)' };
+		const largerCircleStyle = { transform: 'rotate(' + angle + 'deg)', backgroundColor: this.props.target.color };
 		const smallerCircleStyle = { transform: 'rotate(-' + angle + 'deg)' };
 
 		this.setState({
@@ -170,10 +171,21 @@ const KEY_ORDER = {
 };
 
 function StirBody(props) {
+	console.log(Object.entries(props.largerCircleStyle).length === 0 && props.largerCircleStyle.constructor === Object);
 	return (
 		<React.Fragment>
 			<div className="centerCircle">
-				<div id="largerCircle" style={props.largerCircleStyle}>
+				<div
+					id="largerCircle"
+					style={
+						Object.entries(props.largerCircleStyle).length === 0 &&
+						props.largerCircleStyle.constructor === Object ? (
+							{ backgroundColor: [ props.target.color ] }
+						) : (
+							props.largerCircleStyle
+						)
+					}
+				>
 					<div id="smallerCircle" style={props.smallerCircleStyle}>
 						<img src={Spoon} />
 					</div>

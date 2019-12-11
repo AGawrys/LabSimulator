@@ -280,6 +280,7 @@ class Editor extends Component {
 					progressNeeded={currentStep.actionMeasurement}
 					show={showAction.stir}
 					timer={currentStep.timer}
+					target={currentStep.target}
 					onComplete={() => {
 						showAction.stir = false;
 						this.setState({ showAction });
