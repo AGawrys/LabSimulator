@@ -67,14 +67,14 @@ class HeaderBru extends React.Component {
 		return (
 			<Navbar bg="#69CB9A" className="justify-content-between">
 				<Navbar.Brand href={this.props.dashboard}>
-					<Link to={this.props.isLoggedIn || this.state.login ? this.getCorrectRoute() : '/'}>
+					<Link to="#">
 						<img src={title} className="Home-header-logo" style={{ height: '50px' }} alt="logo" />
 					</Link>
 				</Navbar.Brand>
 				<Nav>
 					{navLinks}
 					<Nav.Item>
-						{this.props.isLoggedIn || this.state.login ? this.renderSignOutBtn() : this.renderLoginBtn()}
+						{this.props.isLoggedIn || this.state.authenticated ? this.renderSignOutBtn() : this.renderLoginBtn()}
 					</Nav.Item>
 				</Nav>
 			</Navbar>
@@ -169,7 +169,7 @@ class HeaderBru extends React.Component {
 	}
 
 	getCorrectRoute() {
-		const { role } = this.state;
+		const { role } = this.props;
 		if (role == GeneralConstants.STUDENT) {
 			return Routes.STUDENT_DASHBOARD;
 		} else if (role == GeneralConstants.INSTRUCTOR) {

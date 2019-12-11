@@ -191,6 +191,7 @@ class EditorStudent extends Component {
 		return (
 			<div>
 				<HeaderBru
+					{...this.props}
 					links={links}
 					isLoggedIn
 					btn="Exit"
