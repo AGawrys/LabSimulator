@@ -57,6 +57,13 @@ class Editor extends Component {
 			showSuccessfulSave:false,
 			showSaveBeforePublish: false,
 			showActionMenu: true,
+			showAction: {
+				pour: false,
+				shake: false,
+				blend: false,
+				stir: false,
+				drag: false,
+			},
 			copiedTool: null,
 			areToolsPlaced: false,
 			canvasSize: {height: 1000, width: 1000},
@@ -73,8 +80,6 @@ class Editor extends Component {
 	handleToolClick = () => {
 		this.setState({ showActionMenu: !this.showActionMenu });
 	};
-
-	handleSimulate() {}
 
 	componentDidMount() {
 		window.addEventListener('resize', this.onCanvasResize);
@@ -126,7 +131,7 @@ class Editor extends Component {
 
 	render() {
 		const { lesson, currentStep, steps, copiedTool, isDirty } = this.state;
-		const {showSuccessfulDuplicate, showDeleteLessonModal, showSuccessfullyPublished, showSuccessfulSave, showIncompleteSteps, showSaveBeforePublish } = this.state;
+		const {showSuccessfulDuplicate, showDeleteLessonModal, showSuccessfullyPublished, showSuccessfulSave, showIncompleteSteps, showSaveBeforePublish, showAction} = this.state;
 		const { operations, pointer} = this.state.history;
 		if (steps == null) {
 			return null;
@@ -217,6 +222,15 @@ class Editor extends Component {
 					autohide
 					delay={1250}
 				/>
+				<ShakeModal
+					progressNeeded={currentStep.actionMeasurement}
+					show={showAction.shake}
+					onComplete={() => {
+						showAction.shake = false;
+						this.setState({showAction})
+					}}
+					tool={currentStep.source}
+				/>
 				<Container fluid={true} className="instructorContainer">
 					<Col className="instructorEditorToolBar brownBorder">
 						<Row>
@@ -234,7 +248,11 @@ class Editor extends Component {
 						<Row>
 							<Col className="editorToolBarButton alignLeft" lg={7}>
 								{publishBtn}
-								<button type="button" className="btn btn-secondary">
+								<button
+									disabled={!currentStep.isComplete()} 
+									type="button" 
+									className="btn btn-secondary" 
+									onClick={this.showActionModal}>
 									Simulate
 								</button>
 								<button type="button" className="btn btn-info" onClick={this.cloneLesson}>
@@ -718,6 +736,28 @@ class Editor extends Component {
 			return;
 		}
 		this.handleRedo();
+	}
+
+	showActionModal = () => {
+		const {showAction} = this.state;
+		switch (this.state.currentStep.action) {
+			case 'Shake':
+				showAction.shake = true;
+				break;
+			case 'Pour':
+				showAction.pour = true;
+				break;
+			case 'Stir':
+				showAction.stir = true;
+				break;
+			case 'Blend':
+				showAction.blend = true;
+				break;
+			case 'Drag':
+				showAction.drag = true;
+				break;
+		}
+		this.setState({showAction});
 	}
 }
 
