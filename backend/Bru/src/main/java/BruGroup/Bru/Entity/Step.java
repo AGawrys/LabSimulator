@@ -95,13 +95,29 @@ public class Step {
     }
 
     public boolean isComplete() {
-        if (this.actionType == null || this.actionMeasurement == 0 || this.timer == 0) {
+        if (actionType == null || actionMeasurement == 0) {
             return false;
         }
-        if (this.actionType.equals("Pour")) {
-            return this.source != -1 && this.target != -1;
+        if (timer == 0 && !actionType.equals("Pour")) {
+            return false;
         }
-        return this.source != -1;
+        return isActionSet();
+    }
+
+    public boolean isActionSet() {
+
+        if (actionType.equals("Pour") || actionType.equals("Drag") || actionType.equals("Stir")) {
+            return source != -1 && target != -1;
+        }
+        return source != -1;
+    }
+
+    public boolean isPourComplete() {
+        return this.source != -1 && this.target != -1;
+    }
+
+    public boolean isStirComplete() {
+        return this.timer != 0 && (this.source != -1 && this.target != -1);
     }
 
     @Override
