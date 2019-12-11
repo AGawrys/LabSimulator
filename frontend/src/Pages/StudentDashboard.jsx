@@ -8,7 +8,7 @@ import { Row, Card, ListGroup } from 'react-bootstrap';
 import axios from 'axios';
 
 const links = {
-	Account: '/account'
+	Dashboard: Routes.STUDENT_DASHBOARD,
 };
 
 const statusColor=['white', '#f7f5da', '#d8f2dd'];

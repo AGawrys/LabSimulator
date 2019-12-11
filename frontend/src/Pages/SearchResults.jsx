@@ -9,7 +9,7 @@ import { Container, Row, Col } from 'react-grid-system';
 
 
 const links = {
-	Account: '/account'
+	Dashboard: Routes.INSTRUCTOR_DASHBOARD,
 };
 
 function SearchResultPage(props) {
@@ -34,7 +34,7 @@ function SearchResultPage(props) {
 
 	return (
 		<div className="background-container">
-			<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} />
+			<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} links={links} isLoggedIn={true} />
 			<Container fluid>
 				<div className="teacherDashboard">
 					<div className="searchBarDiv">

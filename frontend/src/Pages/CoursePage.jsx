@@ -15,7 +15,7 @@ import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
 const links = {
-	Account: '/instructor/dashboard'
+	Dashboard: Routes.INSTRUCTOR_DASHBOARD,
 };
 
 class CoursePage extends Component {

@@ -13,8 +13,9 @@ import LessonRow from '../Components/LessonRow.jsx';
 import plus from '../Styles/Images/icons8-plus.svg';
 
 const links = {
-	Account: '/account'
+	Dashboard: Routes.INSTRUCTOR_DASHBOARD,
 };
+
 export class InstructorDashboard extends Component {
 	constructor(props) {
 		super(props);

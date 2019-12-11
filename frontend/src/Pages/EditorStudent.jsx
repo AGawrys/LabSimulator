@@ -25,7 +25,7 @@ const green = 'green';
 const red = 'red';
 
 const links = {
-	Account: '/student/dashboard'
+	Dashboard: Routes.STUDENT_DASHBOARD,
 };
 
 class EditorStudent extends Component {
@@ -207,7 +207,7 @@ class EditorStudent extends Component {
 
 		return (
 			<div>
-				<HeaderBru {...this.props} links={links} isLoggedIn btn="Exit" color="#01AFD8" />
+				<HeaderBru {...this.props} home={Routes.STUDENT_DASHBOARD} links={links} isLoggedIn btn="Exit" color="#01AFD8" />
 				<InformationModal
 					title={GeneralConstants.SUCCESSFUL_COMPLETE_LESSON_TITLE}
 					message={GeneralConstants.SUCCESSFUL_COMPLETE_LESSON_MESSAGE}

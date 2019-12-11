@@ -41,7 +41,7 @@ import { HotKeys } from 'react-hotkeys';
 import Pour from '../Components/Pour.jsx';
 
 const links = {
-	Account: '/instructor/dashboard'
+	Dashboard: Routes.INSTRUCTOR_DASHBOARD,
 };
 
 class Editor extends Component {

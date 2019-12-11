@@ -55,7 +55,7 @@ class HeaderBru extends React.Component {
 	render() {
 		const { authenticated, loggedOut } = this.state;
 		if (authenticated) {
-			const route = this.getCorrectRoute();
+			const route = this.getCorrectRoute(this.state.role);
 			return <Redirect exact to={route} />;
 		}
 
@@ -64,10 +64,11 @@ class HeaderBru extends React.Component {
 		}
 
 		const navLinks = this.renderLinks();
+		console.log(this.props.home);
 		return (
 			<Navbar bg="#69CB9A" className="justify-content-between">
-				<Navbar.Brand href={this.props.dashboard}>
-					<Link to="#">
+				<Navbar.Brand href={this.props.home}>
+					<Link to={this.props.home}>
 						<img src={title} className="Home-header-logo" style={{ height: '50px' }} alt="logo" />
 					</Link>
 				</Navbar.Brand>
@@ -168,8 +169,7 @@ class HeaderBru extends React.Component {
 		);
 	}
 
-	getCorrectRoute() {
-		const { role } = this.props;
+	getCorrectRoute(role) {
 		if (role == GeneralConstants.STUDENT) {
 			return Routes.STUDENT_DASHBOARD;
 		} else if (role == GeneralConstants.INSTRUCTOR) {
