@@ -4,7 +4,6 @@ import { Button, Form, Modal, ProgressBar } from 'react-bootstrap';
 import Draggable from 'react-draggable';
 import Timer from 'react-compound-timer';
 import Tool from './Tool.jsx';
-import Timer from 'react-compound-timer';
 import SuccessBody from './ActionCompletedBody.jsx';
 
 
