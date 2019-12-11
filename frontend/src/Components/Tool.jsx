@@ -82,7 +82,9 @@ class Tool extends React.Component {
                 </Draggable>
             )
         }
-
+        const width = this.props.draggable ? 0 : tool.getWidth();
+        const height = this.props.draggable ? 0 : tool.getHeight();
+        
         return(
             <div
                 style={{
