@@ -79,7 +79,9 @@ class Step {
 	}
 
 	isComplete() {
-		if (!this.actionMeasurement || !this.timer || this.tools.length === 0) {
+		if (!this.actionMeasurement || this.tools.length === 0) {
+			return false;
+		} else if (!this.timer && this.action !== 'Pour'){
 			return false;
 		}
 		return this.isActionSet();
