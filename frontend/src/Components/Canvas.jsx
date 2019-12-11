@@ -49,6 +49,33 @@ class Canvas extends React.Component {
         });
     }
 
+    onDrop = (tool) => {
+        const {tools } = this.props;
+        let dist = null;
+        console.log("On drop in canvas!");
+        console.log(tool);
+        let onTopTool = null;
+        for (let i = 0; i < tools.length; i++) {
+            const t = tools[i];
+            if(t.name != tool.name) {
+                const x1 = t.position.x;
+                const y1 = t.position.y;
+
+                const x2 = tool.position.x;
+                const y2= tool.position.y;
+
+                dist = Math.sqrt(Math.pow((x2 - x1), 2) +  Math.pow((y2 - y1), 2));
+                console.log(dist);
+                if(dist < 25){
+                    onTopTool = tools[i];
+                }  
+            }          
+        }
+        if(onTopTool){
+            this.props.onDrop(tool, onTopTool);
+        }
+    }
+
     onDeleteTool = () => {
         const {tools, onUpdateTools} = this.props;
         const index = tools.indexOf(this.state.currentTool);
@@ -98,13 +125,17 @@ class Canvas extends React.Component {
                         />
                     </ContextMenuTrigger>
                 )
-            } else if (currentTool === tool && !instructor) {
-                this.openStudentActions();
-                ToolComponent = (<Tool
+            } else if (!instructor) {
+                ToolComponent = (
+                <Tool
                         draggable
                         tool={tool}
                         setCurrentTool={this.setCurrentTool}
-                    />);
+                        onDrop={this.onDrop}
+                        //openActionMenu={this.openStudentActions}
+                    />
+                );
+                    
             } else {
                 ToolComponent = (
                     <Tool

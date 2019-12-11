@@ -19,12 +19,16 @@ class Tool extends React.Component {
     onClick(e) {
         this.props.setCurrentTool(this.props.tool);
         e.stopPropagation();
+        if(this.props.openActionMenu){
+            this.props.openActionMenu();
+        }
     }
 
     onDragStop(e, data) {
         const {tool} = this.props;
         const {x,y} = data;
         tool.setPosition(x,y);
+        this.props.onDrop(tool);
     }
 
     componentDidMount() {

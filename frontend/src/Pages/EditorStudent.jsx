@@ -15,7 +15,7 @@ import ActionMenuStudent from '../Components/ActionMenuStudent.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import { Redirect } from 'react-router-dom';
-
+import Pour from '../Components/Pour.jsx';
 
 
 import { isAbsolute } from 'path';
@@ -39,6 +39,9 @@ class EditorStudent extends Component {
 			showSuccesfullyComplete: false,
 			areToolsPlaced: false,
 			actionMenu: false,
+			showPourModal: false,
+			source: null, 
+			target: null,
 		};
 	}
 
@@ -152,15 +155,22 @@ class EditorStudent extends Component {
 		}
 	}
 
-	onDropTool = () => {
-		
+	onDropTool = (t1, t2) => {
+		console.log(t1);
+		console.log(t2);
+		this.setState({source: t1});
+		this.setState({target: t2});
+		this.setState({showPourModal: true});
+	}
+	completePour = (t1, t2) => {
+		this.setState({ showPourModal: false});
 	}
 	openActionMenu = () =>  {
 		console.log("I was clicked");
 		this.setState({ actionMenu : true});
 	}
 	render() {
-		const { lesson, steps, currentStepIndex, curriculum, showSuccesfullyComplete, isLessonComplete} = this.state;
+		const { lesson, steps, currentStepIndex, curriculum, showSuccesfullyComplete, isLessonComplete, showPourModal, source, target} = this.state;
 		if (lesson == null) {
 			return null;
 		}
@@ -183,6 +193,14 @@ class EditorStudent extends Component {
 					onHide={() => this.setState({ showSuccesfullyComplete: false })}
 					show={showSuccesfullyComplete}
 				/>
+				{showPourModal ? (<Pour
+					show={showPourModal}
+					source={source}
+					target={target}
+					goal={25}
+					instructor={false}
+					closeModal={this.completePour}
+				/>) : null}
 				<Container fluid>
 					<Row >
 						<Col sm={3}>

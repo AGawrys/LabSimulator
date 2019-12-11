@@ -29,22 +29,19 @@ class ActionMenuStudent extends React.Component {
     render() {
         const {show} = this.props;
         return (
-            show ? (<div>
-                <Row>
-                <Button style={{ backgroundColor: 'steelblue', alignSelf: "center", width: "20vh" }} block bsSize="large" onClick={this.pourAction}>
-                        POUR
-                    </Button>
-                    <Button style={{ backgroundColor: 'steelblue', alignSelf: "center", width: "20vh" }} block bsSize="large" onClick={this.shakeAction}>
+            show ? (<div style={{width: "20vh"}}>
+                <Col>
+                    <Button style={{ backgroundColor: 'steelblue', alignSelf: "center", width: "15vh" }} block bsSize="large" onClick={this.shakeAction}>
                         SHAKE
                     </Button>
-                    <Button style={{ backgroundColor: 'steelblue', alignSelf: "center", width: "20vh" }} block bsSize="large" onClick={this.stirAction}>
+                    <Button style={{ backgroundColor: 'steelblue', alignSelf: "center", width: "15vh" }} block bsSize="large" onClick={this.stirAction}>
                         STIR
                     </Button>
-                    <Button style={{ backgroundColor: 'steelblue', alignSelf: "center", width: "20vh" }} block bsSize="large" onClick={this.blendAction}>
+                    <Button style={{ backgroundColor: 'steelblue', alignSelf: "center", width: "15vh" }} block bsSize="large" onClick={this.blendAction}>
                         BLEND
                     </Button>
                     
-                </Row>
+                </Col>
             </div>) : null
         )
     }
