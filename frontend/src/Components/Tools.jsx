@@ -287,7 +287,6 @@ const IMAGES = {
         properties: {
             Width: 100,
             Height: 100,
-            Fill: 0
         }
     },
 	IceCube: {

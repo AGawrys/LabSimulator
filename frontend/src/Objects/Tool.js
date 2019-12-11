@@ -135,8 +135,10 @@ class Tool {
 		const {toolType, x, y, width, height, toolIdentity, color, amount, name} = toolData;
 		const {layer} = toolIdentity;
 		const image = createImage(toolType);
-		image.properties.Fill = amount;
-		image.properties.Color = color;
+		if (image.properties.hasOwnProperty("Fill")) {
+			image.properties.Fill = amount;
+			image.properties.Color = color;
+		}
 		const position = new Position(x,y);
 		const loadedTool = new Tool(toolType, image, position, width, height, layer, color, amount);
 		loadedTool.setName(name);

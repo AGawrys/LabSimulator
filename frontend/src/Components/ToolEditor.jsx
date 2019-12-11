@@ -4,6 +4,7 @@ import Draggable from 'react-draggable';
 import { Row, Col } from 'react-grid-system';
 import { SketchPicker } from 'react-color';
 import InputRange from 'react-input-range';
+import { IMAGES, createImage } from '../Components/Tools.jsx';
 import 'react-input-range/lib/css/index.css';
 
 class ToolEditor extends React.Component {
