@@ -79,6 +79,9 @@ class Pour extends React.Component {
         }
         // this.setState({show : false });
          this.closeParent();
+        if(!this.props.instructor) {
+            this.props.onNextStep();
+        }
     }
     closeParent = () => {
         this.props.closeModal();

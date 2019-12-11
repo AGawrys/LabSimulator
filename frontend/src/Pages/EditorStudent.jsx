@@ -144,7 +144,7 @@ class EditorStudent extends Component {
 	};
 	//console.log(lessons);
 	//console.log("x: " + lessons[currentLesson].steps[currentStep].tools[0].x + " y: " +lessons[currentLesson].steps[currentStep].tools[0].y);
-	handleClick() {
+	handleClick = () => {
 		const {steps, currentStepIndex} = this.state;
 		if (currentStepIndex == steps.length - 1) {
 			this.setLessonComplete()
@@ -209,6 +209,7 @@ class EditorStudent extends Component {
 					goal={actionManagement}
 					instructor={false}
 					closeModal={this.completePour}
+					onNextStep={this.handleClick}
 				/>) : null}
 				<Container fluid>
 					<Row >
@@ -241,7 +242,7 @@ class EditorStudent extends Component {
 							<Button
 								style={{float:"left", "marginRight": "10px"}}
 								variant="dark"
-								onClick={this.handleClick.bind(this)}
+								onClick={this.handleClick}
 								type="button"
 							>
 								NEXT STEP
