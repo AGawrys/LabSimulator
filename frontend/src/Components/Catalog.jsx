@@ -23,9 +23,13 @@ class Catalog extends React.Component {
 			const tools = CATEGORIES[category];
 			const items = tools.map((tool,index) => {
 				const image = IMAGES[tool];
+				const width = image.properties.Width, height = image.properties.Height
 				return (
-					<Draggable key={index} type="tool" data={tool}>
-						<ToolComponent tool={new Tool(tool, image, undefined, 75, 75, undefined)} />
+					<Draggable key={index} type="tool" data={tool} style={{width: "75px", height: "75px"}}>
+						<ToolComponent style={{display: "inline-block"}} tool={new Tool(tool, image, undefined, 
+													  (width >= height)? 75 : width * 75 / height, 
+													  (width <= height)? 75 : height * 75 / width,
+													  undefined)} />
 					</Draggable>
 				);
 			});

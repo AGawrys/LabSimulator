@@ -128,14 +128,16 @@ const IMAGES = {
                     context.beginPath();
                     context.moveTo(width * .48, tickHeight);
                     context.lineTo(width * .52, tickHeight);
-                    context.fillText(Number.isInteger(i)? i : i.toFixed(2), width * .54, tickHeight)
+                    if (width >= 100 && height >= 100) {
+                        context.fillText(Number.isInteger(i)? i : i.toFixed(2), width * .54, tickHeight)
+                    }
                     context.stroke();
                 }
             }
         },
         properties: {
             Width: 100,
-            Height: 250,
+            Height: 200,
             Fill: 0,
             Color: "#03a9f4",
             Capacity: 2,
@@ -149,14 +151,14 @@ const IMAGES = {
                 const bounds = canvas.getBoundingClientRect();
                 context.clearRect(0, 0, bounds.width, bounds.height);
 
-                const leftTop = width * .15, rightTop = width * .90;
+                const leftTop = width * .15, rightTop = width * .85;
                 const leftBottom = width * .24, rightBottom = width * .76;
-                const topLeft = height * .13, topRight = height * .07,  bottom = height * .65;
+                const top = height * .13, bottom = height * .65;
 
-                const left = LineCalculator(leftTop, topLeft, leftBottom, bottom);
-                const right = LineCalculator(rightBottom, bottom, rightTop, topRight);
-                const cupHeight = bottom - topLeft
-                const fillPoint = topLeft + (cupHeight * (1 - properties.Fill))
+                const left = LineCalculator(leftTop, top, leftBottom, bottom);
+                const right = LineCalculator(rightBottom, bottom, rightTop, top);
+                const cupHeight = bottom - top
+                const fillPoint = top + (cupHeight * (1 - properties.Fill))
 
                 context.beginPath();
                 context.moveTo(left.x(fillPoint), fillPoint);
@@ -171,38 +173,57 @@ const IMAGES = {
                 context.lineJoin = "round";
     
                 context.beginPath();
-                context.lineJoin = "round";
                 context.moveTo(width * .30, height * .05);
                 context.bezierCurveTo(width * .35, height * .04, width * .65, height * .04, width * .70, height * .05);
-                context.strokeRect(width * .05, height * .05, width * .85, height * .02);
+                context.strokeRect(width * .05, height * .05, right.x(height * .07) - width * .05, height * .02);
                 context.moveTo(width * .05, height * .07);
-                context.lineTo(leftTop, topLeft);
+                context.lineTo(leftTop, top);
                 context.lineTo(leftBottom, bottom);
                 context.moveTo(rightBottom, bottom);
-                context.lineTo(rightTop, topRight);
+                context.lineTo(right.x(height * .07), height * .07);
 
                 context.strokeRect(width * .23, height * .65, width * .54, height * .03);
                 context.moveTo(width * .23, height * .68);
                 context.quadraticCurveTo(width * .15, height * .70, width * .10, height * .95);
                 context.lineTo(width * .90, height * .95);
                 context.quadraticCurveTo(width * .85, height * .70, width * .77, height * .68);
-    
-                context.moveTo(right.x(height * .12), height * .15);
-                context.lineTo(width * .90, height * .15);
-                context.lineTo(width * .90, height * .55);
-                context.lineTo(right.x(height * .52), height * .55);
-                context.moveTo(right.x(height * .15), height * .18);
-                context.lineTo(width * .87, height * .18);
-                context.lineTo(width * .87, height * .52);
-                context.lineTo(right.x(height * .49), height * .52);
+
+                const inner = (width <= height)? width : height;
+                context.moveTo(right.x(height * .15), height * .15);
+                context.lineTo(width * .95, height * .15);
+                context.lineTo(width * .95, height * .55);
+                context.lineTo(right.x(height * .55), height * .55);
+                context.moveTo(right.x(height * .15 + inner * .03), height * .15 + inner * .03);
+                context.lineTo(width * .95 - inner * .03, height * .15 + inner * .03);
+                context.lineTo(width * .95 - inner * .03, height * .55 - inner * .03);
+                context.lineTo(right.x(height * .55 - inner * .03), height * .55 - inner * .03);
                 context.stroke()
+
+                context.fillStyle = "black"
+                context.font = "bold 12px Arial"
+                context.textBaseline = "middle"
+                for (let i = properties.Capacity;
+                     i > 0;
+                     i -= properties.Capacity/properties.Intervals) {
+                    let tickHeight = top + (cupHeight * ((properties.Capacity - i)/properties.Capacity))
+                    context.beginPath();
+                    context.moveTo(width * .48, tickHeight);
+                    context.lineTo(width * .52, tickHeight);
+                    if (width >= 100 && height >= 100) {
+                        context.fillText(Number.isInteger(i)? i : i.toFixed(2), width * .54, tickHeight)
+                    }
+                    context.stroke();
+                }
             }
         },
         properties: {
-            Width: 200,
-            Height: 350,
+            Width: 175,
+            Height: 250,
             Fill: 0,
-            Color:  "#03a9f4"
+            Color:  "#03a9f4",
+            Capacity: 2,
+            Intervals: 4,
+
         }
     },
     PumpBottle: {
@@ -210,27 +231,31 @@ const IMAGES = {
             if (canvas.getContext) {
                 const context = canvas.getContext("2d");
                 const bounds = canvas.getBoundingClientRect();
-
                 context.clearRect(0, 0, bounds.width, bounds.height);
+                context.lineWidth = 3;
+                context.lineCap = "round";
+                context.lineJoin = "round";
     
                 context.beginPath();
-                context.lineJoin = "round";
-                context.strokeRect(width * .375, height * .05, width * .175, height * .025);
-                context.strokeRect(width * .485, height * .075, width * .03, height * .225);
-                context.strokeRect(width * .450, height * .30, width * .10, height * .05);
                 context.moveTo(width * .45, height * .35);
-                context.lineTo(width * .30, height * .60);
+                context.quadraticCurveTo(width * .30, height * .4, width * .30, height * .60);
                 context.lineTo(width * .30, height * .95);
                 context.lineTo(width * .70, height * .95);
                 context.lineTo(width * .70, height * .60);
-                context.lineTo(width * .55, height * .35);
+                context.quadraticCurveTo(width * .70, height * .4, width * .55, height * .35);
+                context.fillStyle = properties.Color;
+                context.fill();
                 context.stroke();
+                context.fillStyle = "black";
+                context.fillRect(width * .375, height * .05, width * .175, height * .025);
+                context.fillRect(width * .485, height * .075, width * .03, height * .225);
+                context.fillRect(width * .450, height * .30, width * .10, height * .055);
             }
         },
         properties: {
-            Width: 100,
-            Height: 100,
-            Fill: 0
+            Width: 125,
+            Height: 200,
+            Color: "#FFF8CF"
         }
     },
     CupLid: {
@@ -240,25 +265,27 @@ const IMAGES = {
                 const bounds = canvas.getBoundingClientRect();
                 context.clearRect(0, 0, bounds.width, bounds.height);
 
-                const path = new Path2D();
-                path.rect(width * .12, height * .45, width * .76, height * .05);
-                path.moveTo(width * .12, height * .50);
-                path.lineTo(width * .10, height * .50);
-                path.lineTo(width * .05, height * .55);
-                path.lineTo(width * .95, height * .55);
-                path.lineTo(width * .90, height * .50);
-                path.lineTo(width * .88, height * .50);
+                context.lineWidth = 3;
+                context.lineCap = "round";
                 context.lineJoin = "round";
-                context.fillStyle = "#F0F0F0";
-                context.strokeStyle = "#000000";
+
+                const path = new Path2D();
+                path.rect(width * .10, height * .05, width * .80, height * .40);
+                path.moveTo(width * .10, height * .45);
+                path.lineTo(width * .08, height * .45);
+                path.lineTo(width * .05, height * .95);
+                path.lineTo(width * .95, height * .95);
+                path.lineTo(width * .92, height * .45);
+                path.lineTo(width * .90, height * .45);
+                context.fillStyle = properties.Color;
                 context.fill(path);
                 context.stroke(path);
             }
         },
         properties: {
-            Width: 100,
-            Height: 100,
-            Fill: 0
+            Width: 105,
+            Height: 15,
+            Color: "#F0F0F0"
         }
     },
     CupSleeve: {
@@ -268,26 +295,32 @@ const IMAGES = {
                 const bounds = canvas.getBoundingClientRect();
                 context.clearRect(0, 0, bounds.width, bounds.height);
 
-                const left = LineCalculator(width * .1, height * .05, width * .2, height * .95)
-                const right = LineCalculator(width * .8, height * .95, width * .9, height * .05)
+                const taper = (1 - properties.Taper) / 10
 
-                context.beginPath();
+                const leftTop = width * (.05 + taper), rightTop = width * (.95 - taper);
+                const leftBottom = width * (.25 - taper), rightBottom = width * (.75 + taper);
+                const top = height * .05, bottom = height * .95;
+
+                context.lineWidth = 3;
+                context.lineCap = "round";
                 context.lineJoin = "round";
-                context.moveTo(left.x(height * .35) - width * .025, height * .325);
-                context.lineTo(left.x(height * .65)  - width * .025, height * .675);
-                context.lineTo(right.x(height * .65) + width * .025, height * .675);
-                context.lineTo(right.x(height * .35) + width * .025, height * .325);
-                context.lineTo(left.x(height * .35) - width * .025, height * .325);
-                context.fillStyle = "#AD8762";
+                context.beginPath();
+                context.moveTo(leftTop, top);
+                context.lineTo(leftBottom, bottom);
+                context.lineTo(rightBottom, bottom);
+                context.lineTo(rightTop, top);
+                context.lineTo(leftTop, top);
+                context.fillStyle = properties.Color;
                 context.fill();
                 context.stroke();
 
             }
         },
         properties: {
-            Width: 100,
-            Height: 100,
-            Fill: 0
+            Width: 110,
+            Height: 35,
+            Taper: .10,
+            Color: "#AD8762"
         }
     },
 	IceCube: {
@@ -358,7 +391,10 @@ const IMAGES = {
 				imageObj1.src = 'https://cdn140.picsart.com/273156853001211.png?r1024x1024';
 			}
 		},
-		properties: {}
+		properties: {
+            Width: 100,
+            Height: 100,
+        }
 	},
 	Blueberry: {
 		draw: (canvas, width, height) => {
