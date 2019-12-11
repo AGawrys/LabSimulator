@@ -23,6 +23,7 @@ import { determineToolPosition, determineToolSize, getCanvasSize, resizeTools } 
 import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
 import Tool from '../Objects/Tool.js';
+import { Tool as ToolComponent } from '../Components/Tool.jsx';
 import Position from '../Objects/Position.js';
 import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
@@ -36,7 +37,7 @@ import { swapElements } from '../LilacArray.js';
 import axios from 'axios';
 import plus from '../Styles/Images/icons8-plus.svg';
 import { HotKeys } from 'react-hotkeys';
-
+import Pour from '../Components/Pour.jsx';
 
 const links = {
 	Account: '/instructor/dashboard'
@@ -64,6 +65,7 @@ class Editor extends Component {
 				stir: false,
 				drag: false,
 			},
+			showPourModal: false,
 			copiedTool: null,
 			areToolsPlaced: false,
 			canvasSize: {height: 1000, width: 1000},
@@ -80,6 +82,31 @@ class Editor extends Component {
 	handleToolClick = () => {
 		this.setState({ showActionMenu: !this.showActionMenu });
 	};
+	handleSimulate = () => {
+		const { currentStep } = this.state;
+		if(currentStep && currentStep.action === 'Pour'){
+			if(currentStep.source && currentStep.target && currentStep.actionMeasurement){
+				console.log("changing show modal")
+				this.setState({ showPourModal: true});
+			}
+		}
+	}
+
+	renderPreview = () => {
+
+		const {currentStep} = this.state;
+		if(currentStep && currentStep.action === 'Pour' && currentStep.source && currentStep.target && currentStep.actionMeasurement){
+			const image = currentStep.target.getImage();
+			image.draw = IMAGES["TaperedCup"].draw;
+			image.properties = {};
+			const amt = currentStep.actionMeasurement / 100;
+			image.properties.Fill = currentStep.target.image.properties.Fill + amt;
+
+			const mytool =
+				(<ToolComponent tool={new Tool("TaperedCup", image, undefined, 75, 75, undefined)} />);
+			return mytool;
+		}
+	}
 
 	componentDidMount() {
 		window.addEventListener('resize', this.onCanvasResize);
@@ -129,8 +156,15 @@ class Editor extends Component {
 		this.state.lesson.setName(e.target.value);
 	};
 
+	closePourModal = () => {
+		const {showAction } = this.state;
+		const newShowAction = showAction;
+		newShowAction.pour = false;
+		this.setState({showAction : newShowAction });
+	}
+
 	render() {
-		const { lesson, currentStep, steps, copiedTool, isDirty } = this.state;
+		const { lesson, currentStep, steps, copiedTool, isDirty, showPourModal, } = this.state;
 		const {showSuccessfulDuplicate, showDeleteLessonModal, showSuccessfullyPublished, showSuccessfulSave, showIncompleteSteps, showSaveBeforePublish, showAction} = this.state;
 		const { operations, pointer} = this.state.history;
 		if (steps == null) {
@@ -231,6 +265,14 @@ class Editor extends Component {
 					}}
 					tool={currentStep.source}
 				/>
+					{showAction.pour ? (<Pour
+						show={showAction.pour}
+						source={currentStep.source}
+						target={currentStep.target}
+						goal={currentStep.actionMeasurement}
+						instructor={true}
+						closeModal={this.closePourModal}
+					/>) : null}
 				<Container fluid={true} className="instructorContainer">
 					<Col className="instructorEditorToolBar brownBorder">
 						<Row>
@@ -414,6 +456,7 @@ class Editor extends Component {
 												currentStep.timer ? currentStep.timer > 0 ? currentStep.timer : '' : ''
 											}
 										/>
+										{/* {this.renderPreview()} */}
 									</div>
 								</Card>
 
