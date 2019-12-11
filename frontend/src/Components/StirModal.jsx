@@ -59,14 +59,14 @@ class StirModal extends React.Component {
 					if (this.state.started) {
 						start();
 					}
-					else  {
-						setTime(this.props.timer * 1000 + 999);
-						stop();
-						reset();
-					}
 					return (
 						<Modal
 							{...ArrowKeysReact.events}
+							onShow={() => {
+							  setTime(this.props.timer * 1000 + 999);
+							  stop();
+							  reset();
+							}}
 							show={show}
 							onHide={this.resetProgress}
 							size="lg"

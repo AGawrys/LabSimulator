@@ -230,6 +230,7 @@ class Editor extends Component {
 						showAction.shake = false;
 						this.setState({showAction})
 					}}
+					timer={currentStep.timer}
 					tool={currentStep.source}
 				/>
 				<StirModal
