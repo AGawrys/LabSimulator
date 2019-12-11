@@ -67,34 +67,26 @@ class Pour extends React.Component {
     } 
     reset = () => { 
         const { defaultFill, defaultFillSrc } = this.state;
-        console.log("default fill: " + defaultFill);
-        console.log("default fill Source : " + defaultFillSrc);
         const defaultTarget = defaultFill;
         const defaultSource = defaultFillSrc;
         this.setState({ fill : defaultTarget });
         this.setState({ fillSrc : defaultSource }); 
-        console.log("fill: " + this.state.fill);
-        console.log("fill Source : " + this.state.fillSrc);
 	} 
 
     closeAndFinish = () => {
         if(this.state.instructor) {
-            console.log('going to reset');
             this.reset();
         }
         // this.setState({show : false });
          this.closeParent();
     }
     closeParent = () => {
-        console.log("About to close parent");
         this.props.closeModal();
     }
 
     render() {
-        console.log("IN POUR");
         const { instruction, done} = this.state;
         const {show} = this.props;
-        console.log(show)
         const {source, target} = this.props;
         const t = target.clone();
         const categories = Object.keys(CATEGORIES);

@@ -30,11 +30,6 @@ function determineToolPosition(toolWidth, toolHeight) {
 
 function determineToolSize(toolType, tools) {
 
-	for (const tool of tools) {
-		if (tool.type == toolType) {
-			return {width: tool.width, height: tool.height};
-		}
-	}
 	return {width: IMAGES[toolType].properties.Width, height: IMAGES[toolType].properties.Height};
 }
 

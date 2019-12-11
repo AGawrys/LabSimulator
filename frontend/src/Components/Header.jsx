@@ -53,21 +53,21 @@ class HeaderBru extends React.Component {
 	};
 
 	render() {
-		const { authenticated, loggedOut} = this.state;
+		const { authenticated, loggedOut } = this.state;
 		if (authenticated) {
 			const route = this.getCorrectRoute();
 			return <Redirect exact to={route} />;
 		}
 
 		if (loggedOut) {
-			return <Redirect exact to={Routes.DEFAULT}/>;
+			return <Redirect exact to={Routes.DEFAULT} />;
 		}
 
 		const navLinks = this.renderLinks();
 		return (
 			<Navbar bg="#69CB9A" className="justify-content-between">
 				<Navbar.Brand href={this.props.dashboard}>
-					<Link to="/">
+					<Link to={this.props.isLoggedIn || this.state.login ? this.getCorrectRoute() : '/'}>
 						<img src={title} className="Home-header-logo" style={{ height: '50px' }} alt="logo" />
 					</Link>
 				</Navbar.Brand>
@@ -131,8 +131,8 @@ class HeaderBru extends React.Component {
 
 	onSignOut = () => {
 		localStorage.removeItem('token');
-		this.setState({loggedOut: true});
-	}
+		this.setState({ loggedOut: true });
+	};
 
 	getLoginForm() {
 		const errorMessage = this.state.errors;

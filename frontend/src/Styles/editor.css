@@ -257,6 +257,10 @@
 	color: red;
 }
 
+.successText {
+	color: green;
+}
+
 .displayNone {
 	display: none;
 }

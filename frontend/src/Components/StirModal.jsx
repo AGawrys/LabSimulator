@@ -3,8 +3,7 @@ import { Button, Modal, ProgressBar } from 'react-bootstrap';
 import ArrowKeysReact from 'arrow-keys-react';
 import SuccessBody from './ActionCompletedBody.jsx';
 import Spoon from '../images/spoon.png';
-import TimerAction from './TimerAction.jsx';
-import Countdown from 'react-countdown-now';
+import Timer from 'react-compound-timer';
 import '../Styles/editor.css';
 
 class StirModal extends React.Component {
@@ -17,7 +16,8 @@ class StirModal extends React.Component {
 			largerCircleStyle: {},
 			smallerCircleStyle: {},
 			failed: false,
-			completed: false
+			completed: false,
+			started: false
 		};
 		ArrowKeysReact.config({
 			left: () => this.handleArrowKeyPress('LEFT'),
@@ -27,16 +27,9 @@ class StirModal extends React.Component {
 		});
 	}
 
-	handleStateChange = () => {
-		if (this.state.progress / this.props.progressNeeded === 1) {
-			return;
-		}
-		this.setState({ failed: true }); //you get the value here when state changes in B(Child) component
-	};
-
 	render() {
 		const { progress, currentKey, smallerCircleStyle, largerCircleStyle, failed, completed } = this.state;
-		const { progressNeeded, show, onComplete } = this.props;
+		const { progressNeeded, show, onComplete, timer } = this.props;
 		let percentComplete = (progress / progressNeeded * 100).toFixed(2);
 		percentComplete = percentComplete < 100 ? percentComplete : 100;
 		const modalBody =
@@ -49,45 +42,102 @@ class StirModal extends React.Component {
 					smallerCircleStyle={smallerCircleStyle}
 				/>
 			);
-
 		return (
-			<Modal
-				{...ArrowKeysReact.events}
-				show={true}
-				size="lg"
-				tabIndex={1}
-				aria-labelledby="contained-modal-title-vcenter"
-				centered
+			<Timer
+				startImmediately={false}
+				direction="backward"
+				checkpoints={[
+					{
+						time: 0,
+						callback: () => this.handleStateChange()
+					}
+				]}
 			>
-				<Modal.Header closeButton>
-					<div style={{ width: 400 }}>
-						<ProgressBar
-							variant="success"
-							animated
-							now={percentComplete}
-							label={`${percentComplete}%`}
-							max={100}
-						/>
-						<div className={percentComplete === 100 ? 'displayNone' : ''}>
-							<TimerAction handleStateChange={this.handleStateChange} />
-						</div>
-						<h4 className="failedText" hidden={!failed}>
-							You have failed! Try again!
-						</h4>
-					</div>
-				</Modal.Header>
-				<Modal.Body>{modalBody}</Modal.Body>
-				<Modal.Footer>
-					<Button variant="warning" disabled={!failed} hidden={!failed}>
-						Retry
-					</Button>
-					<Button variant="primary" onClick={onComplete} disabled={percentComplete < 100}>
-						Continue
-					</Button>
-				</Modal.Footer>
-			</Modal>
+				{({ start, resume, pause, stop, reset, getTimerState, getTime, setTime }) => {
+					if (this.state.started) {
+						start();
+					}
+					return (
+						<Modal
+							{...ArrowKeysReact.events}
+							onShow={() => {
+							  setTime(this.props.timer * 1000 + 999);
+							  stop();
+							  reset();
+							}}
+							show={show}
+							onHide={this.resetProgress}
+							size="lg"
+							tabIndex={1}
+							aria-labelledby="contained-modal-title-vcenter"
+							centered
+						>
+							<Modal.Header closeButton>
+								<div style={{ width: 400 }}>
+									<ProgressBar
+										variant="success"
+										animated
+										now={percentComplete}
+										label={`${percentComplete}%`}
+										max={100}
+									/>
+									<div className={percentComplete === 100 ? 'displayNone' : ''}>
+										<Timer.Seconds /> seconds
+									</div>
+									<h4 className="failedText" hidden={!failed}>
+										You have failed! Try again!
+									</h4>
+								</div>
+							</Modal.Header>
+							<Modal.Body>{modalBody}</Modal.Body>
+							<Modal.Footer>
+								<Button
+									variant="warning"
+									disabled={!failed}
+									hidden={!failed}
+									onClick={() => {
+										reset();
+										start();
+										this.resetState();
+									}}
+								>
+									Retry
+								</Button>
+								<Button variant="primary" onClick={this.resetProgress} disabled={percentComplete < 100}>
+									Continue
+								</Button>
+							</Modal.Footer>
+						</Modal>
+					);
+				}}
+			</Timer>
 		);
 	}
+
+	resetState = () => {
+		this.setState({
+			progress: 0,
+			currentKey: 'UP',
+			angle: 0,
+			largerCircleStyle: {},
+			smallerCircleStyle: {},
+			failed: false,
+			completed: false,
+			started: false
+		});
+	};
+
+	resetProgress = () => {
+		this.resetState();
+		this.props.onComplete();
+	};
+
+	handleStateChange = () => {
+		if (this.state.progress / this.props.progressNeeded === 1) {
+			return;
+		}
+		this.setState({ failed: true }); //you get the value here when state changes in B(Child) component
+	};
 
 	handleArrowKeyPress = (direction) => {
 		if (this.state.failed) {
@@ -106,7 +156,8 @@ class StirModal extends React.Component {
 			largerCircleStyle: largerCircleStyle,
 			smallerCircleStyle: smallerCircleStyle,
 			currentKey: direction,
-			progress: direction === 'RIGHT' ? progress + 1 : progress
+			progress: direction === 'RIGHT' ? progress + 1 : progress,
+			started: true
 		});
 	};
 }

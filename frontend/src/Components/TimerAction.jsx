@@ -3,28 +3,28 @@ import Timer from 'react-compound-timer';
 import CountdownTimer from 'react-component-countdown-timer';
 
 class TimerAction extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			actionTime: 4999 // x times 1000 + 999
-		};
-	}
 
 	render() {
+		console.log("BACK");
+		console.log(this.props);
 		return (
 			<Timer
-				initialTime={this.state.actionTime}
+				initialTime={this.props.seconds * 1000 + 999}
 				direction="backward"
 				checkpoints={[
 					{
 						time: 0,
-						callback: () => this.props.handleStateChange()
+						callback: () => {
+
+						}
 					}
 				]}
 			>
-				<div>
-					<Timer.Seconds /> seconds
-				</div>
+				{({ start, resume, pause, stop, reset, getTimerState, getTime }) =>  (
+					<div>
+						<Timer.Seconds /> seconds
+					</div>
+				)}
 			</Timer>
 		);
 	}
