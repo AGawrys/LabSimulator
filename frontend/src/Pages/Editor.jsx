@@ -26,6 +26,7 @@ import Tool from '../Objects/Tool.js';
 import Position from '../Objects/Position.js';
 import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
+import StirModal from '../Components/StirModal.jsx';
 import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
 import EditorNotification from '../Components/EditorNotification.jsx';
@@ -230,6 +231,15 @@ class Editor extends Component {
 						this.setState({showAction})
 					}}
 					tool={currentStep.source}
+				/>
+				<StirModal
+					progressNeeded={currentStep.actionMeasurement}
+					show={showAction.stir}
+					timer={currentStep.timer}
+					onComplete={() => {
+						showAction.stir = false;
+						this.setState({showAction});
+					}}
 				/>
 				<Container fluid={true} className="instructorContainer">
 					<Col className="instructorEditorToolBar brownBorder">

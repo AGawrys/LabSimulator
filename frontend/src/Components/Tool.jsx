@@ -40,18 +40,20 @@ class Tool extends React.Component {
 	componentDidUpdate() {
 		const { tool } = this.props;
 		const image = tool.getImage();
-		image.draw(this.canvas.current, tool.getWidth(), tool.getHeight(), image.properties);
+        if (this.props.selected) {
+		  image.draw(this.canvas.current, tool.getWidth(), tool.getHeight(), image.properties);
+        }
 	}
 
 	render() {
-		const { tool } = this.props;
+		const { tool, actionTool, onDrag } = this.props;
 		let style = this.selected ? { border: '1px #7fb3d8 solid' } : { border: '1px transparent solid' };
 		const ToolCanvas = (
 			<canvas
 				width={tool.getWidth()}
 				height={tool.getHeight()}
 				style={style}
-				onClick={this.props.draggable ? this.onClick : null}
+				onClick={this.props.draggable && !actionTool ? this.onClick : null}
 				ref={this.canvas}
 			>
 				{tool.getName()}
@@ -59,7 +61,18 @@ class Tool extends React.Component {
 		);
 
         let ToolComponent = ToolCanvas;
-        if (this.props.draggable) {
+        if (actionTool) {
+        	ToolComponent = (
+        		<Draggable
+        			bounds={"#shake-body"} 
+        			defaultPosition={{x: 50, y: 50}}
+        			onDragStop={this.onDragStop} 
+        			onDrag={onDrag}>
+                    {ToolCanvas}
+                </Draggable>
+    		);
+        }
+        else if (this.props.draggable) {
             ToolComponent = (
                 <Draggable
                     bounds={"#canvas"}
@@ -79,7 +92,7 @@ class Tool extends React.Component {
                     height: height,
                     top: 0,
                     left:0,
-                    position: this.props.draggable? "absolute" : "relative",
+                    position: this.props.draggable ? "absolute" : "relative",
                 }}
             >
                 {ToolComponent}

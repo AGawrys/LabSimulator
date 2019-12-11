@@ -89,7 +89,7 @@ class Step {
 		if (!this.action) {
 			return false;
 		}
-		if (this.action == 'Pour') {
+		if (this.action == 'Pour' || this.action == 'Drag' || this.action == "Stir") {
 			return this.source && this.target;
 		}
 		return this.source;
