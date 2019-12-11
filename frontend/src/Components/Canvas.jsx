@@ -52,7 +52,6 @@ class Canvas extends React.Component {
     onDrop = (tool) => {
         const {tools } = this.props;
         let dist = null;
-        console.log("On drop in canvas!");
         console.log(tool);
         let onTopTool = null;
         for (let i = 0; i < tools.length; i++) {
@@ -127,6 +126,7 @@ class Canvas extends React.Component {
                 )
             } else if (!instructor) {
                 ToolComponent = (
+                    <ContextMenuTrigger id={CONTEXT_MENU_ID} holdToDisplay={-1}>
                 <Tool
                         draggable
                         tool={tool}
@@ -134,6 +134,7 @@ class Canvas extends React.Component {
                         onDrop={this.onDrop}
                         //openActionMenu={this.openStudentActions}
                     />
+                    </ContextMenuTrigger>
                 );
                     
             } else {
@@ -203,7 +204,31 @@ class Canvas extends React.Component {
                     {canvasComponent} 
                 </Droppable>
 
-                <ContextMenu
+                {!instructor ? (<ContextMenu
+                    id={CONTEXT_MENU_ID}
+                >
+                    <MenuItem
+                        onClick={this.onClickEdit}
+                    >
+                        Stir With {currentTool ? currentTool.getName() : null}
+                    </MenuItem>
+                    <MenuItem
+                        onClick={this.onCopyTool}
+                    >
+                        Shake
+                    </MenuItem>
+                    <MenuItem
+                        onClick={this.onDeleteTool}
+                    >
+                        Pour From 
+                    </MenuItem>
+                    <MenuItem
+                        onClick={this.onClickMoveUp}
+                    >
+                        Blend
+                    </MenuItem>
+                </ContextMenu>) : null}
+                {instructor ? (<ContextMenu
                     id={CONTEXT_MENU_ID}
                 >
                     <MenuItem
@@ -231,12 +256,13 @@ class Canvas extends React.Component {
                     >
                         Move Down
                     </MenuItem>
-                </ContextMenu>
+                </ContextMenu>) : null}
+                {instructor ? (
                 <ContextMenu id={CONTEXT_MENU_ID + "-2"}>
                     <MenuItem disabled={!copiedTool} onClick={this.onPasteTool}>
                         Paste Tool
                     </MenuItem>
-                </ContextMenu>
+                </ContextMenu> ) : null}
                 <div>
                     {ToolEditorComponent}
                 </div>
