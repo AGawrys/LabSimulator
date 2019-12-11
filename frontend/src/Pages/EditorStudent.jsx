@@ -11,10 +11,11 @@ import HeaderBru from '../Components/Header.jsx';
 import Routes from '../utils/RouteConstants.js';
 import axios from 'axios';
 import Canvas from '../Components/Canvas.jsx';
+import ActionMenuStudent from '../Components/ActionMenuStudent.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import { Redirect } from 'react-router-dom';
-
+import Pour from '../Components/Pour.jsx';
 
 
 import { isAbsolute } from 'path';
@@ -37,6 +38,12 @@ class EditorStudent extends Component {
 			lesson: null,
 			showSuccesfullyComplete: false,
 			areToolsPlaced: false,
+			actionMenu: false,
+			showPourModal: false,
+			source: null, 
+			target: null,
+			actionManagement: null,
+			currentAction: 'none',
 		};
 	}
 
@@ -150,8 +157,29 @@ class EditorStudent extends Component {
 		}
 	}
 
+	onDropTool = (t1, t2) => {
+		console.log(t1);
+		console.log(t2);
+		this.setState({source: t1});
+		this.setState({target: t2});
+		const { currentStepIndex, steps } = this.state;
+		const newActionManagement = steps[currentStepIndex].actionMeasurement;
+		console.log(steps);
+		this.setState({actionManagement: newActionManagement});
+		const {currentAction } = this.state;
+		if(currentAction === 'pour'){
+			this.setState({showPourModal: true});
+		}
+	}
+	completePour = (t1, t2) => {
+		this.setState({ showPourModal: false});
+	}
+	openActionMenu = () =>  {
+		console.log("I was clicked");
+		this.setState({ actionMenu : true});
+	}
 	render() {
-		const { lesson, steps, currentStepIndex, curriculum, showSuccesfullyComplete, isLessonComplete} = this.state;
+		const { lesson, steps, currentStepIndex, actionManagement, curriculum, showSuccesfullyComplete, isLessonComplete, showPourModal, source, target} = this.state;
 		if (lesson == null) {
 			return null;
 		}
@@ -174,6 +202,14 @@ class EditorStudent extends Component {
 					onHide={() => this.setState({ showSuccesfullyComplete: false })}
 					show={showSuccesfullyComplete}
 				/>
+				{showPourModal ? (<Pour
+					show={showPourModal}
+					source={source}
+					target={target}
+					goal={actionManagement}
+					instructor={false}
+					closeModal={this.completePour}
+				/>) : null}
 				<Container fluid>
 					<Row >
 						<Col sm={3}>
@@ -191,9 +227,17 @@ class EditorStudent extends Component {
 									</Card>
 							</div>
 						</Col>
-						<Col sm={9}>
+						<Col sm={8}>
 							<div className="divider" />
-							<Canvas isInstructor={false} tools={currentStep.getTools()} />
+							<Canvas 
+								instructor={false} 
+								onDrop={this.onDropTool} 
+								tools={currentStep.getTools()} 
+								changeActBlend={() => this.setState({currentAction: 'blend'})}
+								changeActPour={() => this.setState({currentAction: 'pour'})}
+								changeActStir={() => this.setState({currentAction: 'stir'})}
+								shake={() => this.setState({currentAction: 'shake'})}
+								openActionMenu={this.openActionMenu} />
 							<Button
 								style={{float:"left", "marginRight": "10px"}}
 								variant="dark"
@@ -215,6 +259,11 @@ class EditorStudent extends Component {
 							>
 								RESTART LESSON
 							</Button>
+						</Col>
+						<Col sm={1}>
+							<div>
+								<ActionMenuStudent show={this.state.actionMenu} />
+							</div>
 						</Col>
 					</Row>
 				</Container>

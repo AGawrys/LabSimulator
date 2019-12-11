@@ -50,6 +50,32 @@ class Canvas extends React.Component {
         });
     }
 
+    onDrop = (tool) => {
+        const {tools } = this.props;
+        let dist = null;
+        console.log(tool);
+        let onTopTool = null;
+        for (let i = 0; i < tools.length; i++) {
+            const t = tools[i];
+            if(t.name != tool.name) {
+                const x1 = t.position.x;
+                const y1 = t.position.y;
+
+                const x2 = tool.position.x;
+                const y2= tool.position.y;
+
+                dist = Math.sqrt(Math.pow((x2 - x1), 2) +  Math.pow((y2 - y1), 2));
+                console.log(dist);
+                if(dist < 25){
+                    onTopTool = tools[i];
+                }  
+            }          
+        }
+        if(onTopTool){
+            this.props.onDrop(tool, onTopTool);
+        }
+    }
+
     onDeleteTool = () => {
         const {tools, onUpdateTools} = this.props;
         const index = tools.indexOf(this.state.currentTool);
@@ -77,6 +103,11 @@ class Canvas extends React.Component {
 
         onUpdateTools(tools);
         setCopiedTool(newCopy);
+    }
+    openStudentActions = () => {
+        console.log(" Open menu from Canvas");
+        const {currentTool} = this.state;
+        this.props.openActionMenu(currentTool);
     }
 
     onClickMoveUp = () => {
@@ -118,9 +149,24 @@ class Canvas extends React.Component {
                             tool={tool}
                             setCurrentTool={this.setCurrentTool}
                             updateTools={this.updateTools}
+                            instructor={true}
                         />
                     </ContextMenuTrigger>
                 )
+            } else if (!instructor) {
+                ToolComponent = (
+                    <ContextMenuTrigger id={CONTEXT_MENU_ID} holdToDisplay={-1}>
+                <Tool
+                        draggable
+                        tool={tool}
+                        setCurrentTool={this.setCurrentTool}
+                        onDrop={this.onDrop}
+                        instructor={false}
+                        //openActionMenu={this.openStudentActions}
+                    />
+                    </ContextMenuTrigger>
+                );
+                    
             } else {
                 ToolComponent = (
                     <Tool
@@ -190,7 +236,31 @@ class Canvas extends React.Component {
                     {canvasComponent} 
                 </Droppable>
 
-                <ContextMenu
+                {!instructor ? (<ContextMenu
+                    id={CONTEXT_MENU_ID}
+                >
+                    <MenuItem
+                        onClick={this.props.changeActStir}
+                    >
+                        Stir With {currentTool ? currentTool.getName() : null}
+                    </MenuItem>
+                    <MenuItem
+                        onClick={this.props.shake}
+                    >
+                        Shake
+                    </MenuItem>
+                    <MenuItem
+                        onClick={this.props.changeActPour}
+                    >
+                        Pour From 
+                    </MenuItem>
+                    <MenuItem
+                        onClick={this.props.changeActBlend}
+                    >
+                        Blend
+                    </MenuItem>
+                </ContextMenu>) : null}
+                {instructor ? (<ContextMenu
                     id={CONTEXT_MENU_ID}
                 >
                     <MenuItem
@@ -220,12 +290,13 @@ class Canvas extends React.Component {
                     >
                         Move Down A Layer
                     </MenuItem>
-                </ContextMenu>
+                </ContextMenu>) : null}
+                {instructor ? (
                 <ContextMenu id={CONTEXT_MENU_ID + "-2"}>
                     <MenuItem disabled={!copiedTool} onClick={this.onPasteTool}>
                         Paste Tool
                     </MenuItem>
-                </ContextMenu>
+                </ContextMenu> ) : null}
                 <div>
                     {ToolEditorComponent}
                 </div>

@@ -22,12 +22,17 @@ class Tool extends React.Component {
 	}
 
     onDragStop(e, data) {
-        const {tool} = this.props;
+        const {tool, instructor} = this.props;
         const {x,y} = data;
         const [prevX, prevY] = [tool.position.x, tool.position.y];
         tool.setPosition(x,y);
-        if (Math.abs(x - prevX) > 2 || Math.abs(y - prevY) > 2) {
-            this.props.updateTools();
+        if(this.props.unpdateTools){
+            if (Math.abs(x - prevX) > 2 || Math.abs(y - prevY) > 2) {
+                this.props.updateTools();
+            }
+        }
+        if(this.props.onDrop){
+            this.props.onDrop(tool);
         }
     }
 
