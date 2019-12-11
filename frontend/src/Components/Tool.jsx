@@ -39,9 +39,7 @@ class Tool extends React.Component {
 	componentDidUpdate() {
 		const { tool } = this.props;
 		const image = tool.getImage();
-        if (this.props.selected) {
-		  image.draw(this.canvas.current, tool.getWidth(), tool.getHeight(), image.properties);
-        }
+	    image.draw(this.canvas.current, tool.getWidth(), tool.getHeight(), image.properties);
 	}
 
 	render() {
@@ -84,7 +82,7 @@ class Tool extends React.Component {
         }
         const width = this.props.draggable ? 0 : tool.getWidth();
         const height = this.props.draggable ? 0 : tool.getHeight();
-        
+
         return(
             <div
                 style={{
