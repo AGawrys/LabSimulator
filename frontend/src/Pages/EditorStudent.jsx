@@ -15,8 +15,9 @@ import ActionMenuStudent from '../Components/ActionMenuStudent.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import { Redirect } from 'react-router-dom';
+import StirModal from '../Components/StirModal.jsx';
+import ShakeModal from '../Components/ShakeModal.jsx';
 import Pour from '../Components/Pour.jsx';
-
 
 import { isAbsolute } from 'path';
 
@@ -40,39 +41,46 @@ class EditorStudent extends Component {
 			areToolsPlaced: false,
 			actionMenu: false,
 			showPourModal: false,
-			source: null, 
+			source: null,
 			target: null,
 			actionManagement: null,
 			currentAction: 'none',
+			showAction: {
+				pour: false,
+				shake: false,
+				blend: false,
+				stir: false,
+				drag: false
+			}
 		};
 	}
 
 	componentDidMount() {
-		window.addEventListener("resize", this.onCanvasResize);
+		window.addEventListener('resize', this.onCanvasResize);
 		this.fetchData();
 	}
 
 	componentDidUpdate() {
-		const {areToolsPlaced, steps, canvasSize} = this.state;
+		const { areToolsPlaced, steps, canvasSize } = this.state;
 		if (!areToolsPlaced) {
-			resizeTools(canvasSize,steps);
-			const {width, height} = getCanvasSize();
+			resizeTools(canvasSize, steps);
+			const { width, height } = getCanvasSize();
 			this.setState({
 				areToolsPlaced: true,
 				steps: steps,
-				canvasSize: {width,height},
+				canvasSize: { width, height }
 			});
 		}
 	}
 
-	fetchData = () =>  {
-		const {lesson_id, course_id} = this.props.computedMatch.params;
+	fetchData = () => {
+		const { lesson_id, course_id } = this.props.computedMatch.params;
 		const body = {
 			courseId: course_id,
 			lessonId: lesson_id,
-			email: this.props.email,
+			email: this.props.email
 		};
-		
+
 		axios.post(Routes.SERVER + 'canStudentComplete', body).then(
 			(response) => this.getLesson(lesson_id, response.data),
 			(error) => {
@@ -80,15 +88,15 @@ class EditorStudent extends Component {
 				this.props.history.push(Routes.NOT_FOUND);
 			}
 		);
-	}
+	};
 
 	getLesson(lesson_id, curriculum) {
 		axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
 			(response) => {
-				const {steps, lesson, canvasSize} = Lesson.load(response.data);
-				this.setState({curriculum,steps,lesson,canvasSize});
+				const { steps, lesson, canvasSize } = Lesson.load(response.data);
+				this.setState({ curriculum, steps, lesson, canvasSize });
 			},
-			(error) => console.log(error),
+			(error) => console.log(error)
 		);
 	}
 
@@ -114,8 +122,6 @@ class EditorStudent extends Component {
 	handleStop = (data) => {
 		let msg;
 		const { x, y, srcElement } = data;
-		console.log(srcElement.id);
-		console.log('x: ' + x + ' y: ' + y);
 		const { lessons, currentLesson, currentStep } = this.state;
 		const step = lessons[currentLesson].steps[currentStep];
 		if (srcElement.id !== step.source.name) {
@@ -145,120 +151,147 @@ class EditorStudent extends Component {
 	//console.log(lessons);
 	//console.log("x: " + lessons[currentLesson].steps[currentStep].tools[0].x + " y: " +lessons[currentLesson].steps[currentStep].tools[0].y);
 	handleClick = () => {
-		const {steps, currentStepIndex} = this.state;
+		const { steps, currentStepIndex } = this.state;
 		if (currentStepIndex == steps.length - 1) {
-			this.setLessonComplete()
-		}
-		else {
+			this.setLessonComplete();
+		} else {
 			this.setState({
 				currentStep: steps[currentStepIndex + 1],
-				currentStepIndex: currentStepIndex + 1,
+				currentStepIndex: currentStepIndex + 1
 			});
 		}
-	}
+	};
 
 	onDropTool = (t1, t2) => {
-		console.log(t1);
-		console.log(t2);
-		this.setState({source: t1});
-		this.setState({target: t2});
+		this.setState({ source: t1 });
+		this.setState({ target: t2 });
+		const { showAction } = this.state;
 		const { currentStepIndex, steps } = this.state;
 		const newActionManagement = steps[currentStepIndex].actionMeasurement;
-		console.log(steps);
-		this.setState({actionManagement: newActionManagement});
-		const {currentAction } = this.state;
-		if(currentAction === 'pour'){
-			this.setState({showPourModal: true});
+		this.setState({ actionManagement: newActionManagement });
+		const { currentAction } = this.state;
+		if (currentAction === 'pour') {
+			this.setState({ showPourModal: true });
+		} else if (currentAction === 'stir') {
+			showAction.stir = true;
+			this.setState({ showAction });
 		}
-	}
+	};
 	completePour = (t1, t2) => {
-		this.setState({ showPourModal: false});
-	}
-	openActionMenu = () =>  {
-		console.log("I was clicked");
-		this.setState({ actionMenu : true});
-	}
+		this.setState({ showPourModal: false });
+	};
+	openActionMenu = () => {
+		this.setState({ actionMenu: true });
+	};
 	render() {
-		const { lesson, steps, currentStepIndex, actionManagement, curriculum, showSuccesfullyComplete, isLessonComplete, showPourModal, source, target} = this.state;
+		const {
+			lesson,
+			steps,
+			currentStepIndex,
+			actionManagement,
+			curriculum,
+			showSuccesfullyComplete,
+			isLessonComplete,
+			showPourModal,
+			source,
+			target,
+			showAction
+		} = this.state;
 		if (lesson == null) {
 			return null;
 		}
 		const currentStep = steps[currentStepIndex].clone();
 		if (isLessonComplete && !showSuccesfullyComplete) {
-			return <Redirect exact to ={Routes.STUDENT_DASHBOARD}/>;
+			return <Redirect exact to={Routes.STUDENT_DASHBOARD} />;
 		}
 
 		return (
 			<div>
-				<HeaderBru
-					{...this.props}
-					links={links}
-					isLoggedIn
-					btn="Exit"
-					color="#01AFD8"
-				/>
+				<HeaderBru {...this.props} links={links} isLoggedIn btn="Exit" color="#01AFD8" />
 				<InformationModal
 					title={GeneralConstants.SUCCESSFUL_COMPLETE_LESSON_TITLE}
 					message={GeneralConstants.SUCCESSFUL_COMPLETE_LESSON_MESSAGE}
 					onHide={() => this.setState({ showSuccesfullyComplete: false })}
 					show={showSuccesfullyComplete}
 				/>
-				{showPourModal ? (<Pour
-					show={showPourModal}
-					source={source}
-					target={target}
-					goal={actionManagement}
-					instructor={false}
-					closeModal={this.completePour}
-					onNextStep={this.handleClick}
-				/>) : null}
+				<ShakeModal
+					progressNeeded={currentStep.actionMeasurement}
+					show={showAction.shake}
+					timer={currentStep.timer}
+					onComplete={() => {
+						showAction.shake = false;
+						this.setState({ showAction });
+					}}
+					timer={currentStep.timer}
+					tool={currentStep.source}
+				/>
+				{showPourModal ? (
+					<Pour
+						show={showPourModal}
+						source={source}
+						target={target}
+						goal={actionManagement}
+						instructor={false}
+						closeModal={this.completePour}
+					/>
+				) : null}
+				<StirModal
+					progressNeeded={currentStep.actionMeasurement}
+					show={showAction.stir}
+					timer={currentStep.timer}
+					onComplete={() => {
+						showAction.stir = false;
+						this.setState({ showAction });
+					}}
+				/>
 				<Container fluid>
-					<Row >
+					<Row>
 						<Col sm={3}>
 							<div className="divider"> </div>
 							<div className="step-column" style={{ overflowY: 'scroll' }}>
-									<Card>
-										<Card.Header> {lesson.name} </Card.Header>
-										<ListGroup >
-											{steps.map((step, index) => (
-												<ListGroup.Item key={index} active={currentStepIndex == index} as="li">
-													{step.name}
-												</ListGroup.Item>
-											))}
-										</ListGroup>
-									</Card>
+								<Card>
+									<Card.Header> {lesson.name} </Card.Header>
+									<ListGroup>
+										{steps.map((step, index) => (
+											<ListGroup.Item key={index} active={currentStepIndex == index} as="li">
+												{step.name}
+											</ListGroup.Item>
+										))}
+									</ListGroup>
+								</Card>
 							</div>
 						</Col>
 						<Col sm={8}>
 							<div className="divider" />
-							<Canvas 
-								instructor={false} 
-								onDrop={this.onDropTool} 
-								tools={currentStep.getTools()} 
-								changeActBlend={() => this.setState({currentAction: 'blend'})}
-								changeActPour={() => this.setState({currentAction: 'pour'})}
-								changeActStir={() => this.setState({currentAction: 'stir'})}
-								shake={() => this.setState({currentAction: 'shake'})}
-								openActionMenu={this.openActionMenu} />
+							<Canvas
+								instructor={false}
+								onDrop={this.onDropTool}
+								tools={currentStep.getTools()}
+								changeActBlend={() => this.setState({ currentAction: 'blend' })}
+								changeActPour={() => this.setState({ currentAction: 'pour' })}
+								changeActStir={() => this.setState({ currentAction: 'stir' })}
+								shake={() => {
+									showAction.shake = true;
+									this.setState({ showAction });
+								}}
+								openActionMenu={this.openActionMenu}
+							/>
 							<Button
-								style={{float:"left", "marginRight": "10px"}}
+								style={{ float: 'left', marginRight: '10px' }}
 								variant="dark"
 								onClick={this.handleClick}
 								type="button"
 							>
 								NEXT STEP
 							</Button>
-							<Button 
-								style={{float:"left", "marginRight": "10px"}}
-								variant="dark" 
-								onClick={this.resetStep}>
+							<Button
+								style={{ float: 'left', marginRight: '10px' }}
+								variant="dark"
+								onClick={this.resetStep}
+							>
 								RESET STEP
 							</Button>
-							<Button
-								style={{float:"left"}}
-								variant="dark"
-								onClick={this.restartLesson}
-							>
+							<Button style={{ float: 'left' }} variant="dark" onClick={this.restartLesson}>
 								RESTART LESSON
 							</Button>
 						</Col>
@@ -274,49 +307,46 @@ class EditorStudent extends Component {
 	}
 
 	setLessonComplete = () => {
-		const {lesson_id, course_id} = this.props.computedMatch.params;
-		const body = {
-			email: this.props.email,
-			courseId: course_id,
-			lessonId: lesson_id,
-		};
-
-		axios.post(Routes.SERVER + "markAsComplete", body).then(
-			(response) => console.log(response),
-			(error) => console.log(error),
-		);
-		this.setState({
-			isLessonComplete: true,
-			showSuccesfullyComplete: true,
-		});
-	}
-
-	restartLesson = () => {
-		const {lesson_id, course_id} = this.props.computedMatch.params;
+		const { lesson_id, course_id } = this.props.computedMatch.params;
 		const body = {
 			email: this.props.email,
 			courseId: course_id,
 			lessonId: lesson_id
 		};
-		axios.post(Routes.SERVER + "deleteAssignment", body).then(
-			(response) => this.setState({isCurrentStepComplete: false}),
-			(error) => console.log(error)
-		);
-	}
+
+		axios
+			.post(Routes.SERVER + 'markAsComplete', body)
+			.then((response) => console.log(response), (error) => console.log(error));
+		this.setState({
+			isLessonComplete: true,
+			showSuccesfullyComplete: true
+		});
+	};
+
+	restartLesson = () => {
+		const { lesson_id, course_id } = this.props.computedMatch.params;
+		const body = {
+			email: this.props.email,
+			courseId: course_id,
+			lessonId: lesson_id
+		};
+		axios
+			.post(Routes.SERVER + 'deleteAssignment', body)
+			.then((response) => this.setState({ isCurrentStepComplete: false }), (error) => console.log(error));
+	};
 
 	resetStep = () => {
-		this.setState({isCurrentStepComplete: false});
-	}
+		this.setState({ isCurrentStepComplete: false });
+	};
 
 	onCanvasResize = () => {
-		const {canvasSize, steps} = this.state;
+		const { canvasSize, steps } = this.state;
 		resizeTools(canvasSize, steps);
-		const {width, height} = getCanvasSize();
+		const { width, height } = getCanvasSize();
 		this.setState({
 			steps: steps,
-			canvasSize: {width,height},
+			canvasSize: { width, height }
 		});
-	}
-
+	};
 }
 export default EditorStudent;
