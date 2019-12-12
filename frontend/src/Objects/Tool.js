@@ -96,6 +96,25 @@ class Tool {
 		this.new = false;
 	}
 
+	equals(tool) {
+		return this.name == tool.name
+			&& this.type == tool.type
+			&& this.position.x == tool.position.x
+			&& this.position.y == tool.position.y
+			&& this.layer == tool.layer
+			&& this.imageEquals(tool);
+	}
+
+	imageEquals(tool) {
+		const {properties} = this.image;
+		for (const property in this.image.properties) {
+			if (properties[property] != tool.image.properties[property]) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	clone() {
 		const {name,type,width,height,layer,color,amount} = this;
 		const newPosition = this.position.clone();

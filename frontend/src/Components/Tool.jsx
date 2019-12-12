@@ -7,9 +7,10 @@ class Tool extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selected: false
+            selected: false,
         }   
         this.selected = props.selected;
+        this.tool = props.tool.position ? props.tool.clone() : props.tool;
 
         this.onClick = this.onClick.bind(this);
         this.onDragStop = this.onDragStop.bind(this);
@@ -46,9 +47,12 @@ class Tool extends React.Component {
     }
     
 	componentDidUpdate() {
-		const { tool } = this.props;
-		const image = tool.getImage();
-	    image.draw(this.canvas.current, tool.getWidth(), tool.getHeight(), image.properties);
+		const { tool, selected, } = this.props;
+        const image = tool.getImage();
+        if (tool.position && !tool.equals(this.tool)) {         // only update image of tool if it is on canvas && its properties has changed
+            image.draw(this.canvas.current, tool.getWidth(), tool.getHeight(), image.properties);
+            this.tool = tool.clone();
+        }
 	}
 
 	render() {
