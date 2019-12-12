@@ -237,13 +237,28 @@ class Canvas extends React.Component {
 						>
 							Stir With {currentTool ? currentTool.getName() : null}
 						</MenuItem>
-						<MenuItem onClick={this.props.shake}>
+						<MenuItem
+							onClick={() => {
+								this.props.shake();
+								this.props.setSource(currentTool);
+							}}
+						>
 							Shake {currentTool ? currentTool.getName() : null}
 						</MenuItem>
-						<MenuItem onClick={this.props.changeActPour}>
+						<MenuItem
+							onClick={() => {
+								this.props.changeActPour();
+								this.props.setSource(currentTool);
+							}}
+						>
 							Pour From {currentTool ? currentTool.getName() : null}
 						</MenuItem>
-						<MenuItem onClick={this.props.changeActBlend}>
+						<MenuItem
+							onClick={() => {
+								this.props.changeActBlend();
+								this.props.setSource(currentTool);
+							}}
+						>
 							Blend {currentTool ? currentTool.getName() : null}
 						</MenuItem>
 					</ContextMenu>

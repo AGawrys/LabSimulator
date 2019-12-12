@@ -194,6 +194,9 @@ class EditorStudent extends Component {
 	};
 
 	onDropTool = (t1, t2) => {
+		if (this.state.source !== t1 && this.state.currentAction === 'None') {
+			return;
+		}
 		this.setState({ source: t1 });
 		this.setState({ target: t2 });
 		console.log(t1);
@@ -326,6 +329,7 @@ class EditorStudent extends Component {
 								shake={() => {
 									showAction.shake = true;
 									this.setState({ showAction });
+									this.setState({ currentAction: 'Shake' });
 								}}
 								openActionMenu={this.openActionMenu}
 							/>
