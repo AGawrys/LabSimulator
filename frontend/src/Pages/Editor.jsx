@@ -776,7 +776,7 @@ class Editor extends Component {
 		const currentState = operations[pointer - 1];
 		this.state.history.pointer -= 1;
 		const clonedState = this.cloneState(currentState);
-		clonedState.dirty = true;
+		clonedState.isDirty = true;
 		this.setState(clonedState);
 	};
 
@@ -785,7 +785,7 @@ class Editor extends Component {
 		const currentState = operations[pointer + 1];
 		this.state.history.pointer += 1;
 		const clonedState = this.cloneState(currentState);
-		clonedState.dirty = true;
+		clonedState.isDirty = true;
 		this.setState(clonedState);
 	};
 
