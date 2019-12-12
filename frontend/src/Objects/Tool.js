@@ -12,7 +12,7 @@ class Tool {
 		this.layer = layer;
 		this.color = color;
 		this.amount = amount;
-		this.taper = taper
+		this.taper = taper;
 		this.new = true;
 	}
 
@@ -116,14 +116,22 @@ class Tool {
 	}
 
 	clone() {
-		const {name,type,width,height,layer,color,amount} = this;
+		const {name,type,width,height,layer,color,amount, taper, image} = this;
 		const newPosition = this.position.clone();
-		const newImage = createImage(this.type);
-		newImage.properties.Fill = amount;
-		newImage.properties.Color = color;
-		const clonedTool = new Tool(type,newImage,newPosition,width,height,layer,color,amount);
+		const newImage = this.cloneImage(type, image);
+		const clonedTool = new Tool(type,newImage,newPosition,width,height,layer,color,amount, taper);
 		clonedTool.setName(name);
 		return clonedTool;
+	}
+
+	cloneImage(type,image) {
+		const clonedImage = createImage(type);
+		const {properties} = image;
+		for (const property in properties) {
+			clonedImage.properties[property] = image.properties[property];
+		}
+		return clonedImage;
+
 	}
 
 	resize(widthRatio, heightRatio) {
@@ -151,17 +159,30 @@ class Tool {
 	}
 
 	static load(toolData) {
-		const {toolType, x, y, width, height, toolIdentity, color, amount, name} = toolData;
+		const {toolType, x, y, width, height, toolIdentity, color, amount, capacity, intervals, taper, name} = toolData;
 		const {layer} = toolIdentity;
+		const image = Tool.loadImage(toolType,{color,amount,capacity,intervals,taper});
+		const position = new Position(x,y);
+		const loadedTool = new Tool(toolType, image, position, width, height, layer, color, amount, taper);
+		loadedTool.setName(name);
+		return loadedTool;
+	}
+
+	static loadImage(toolType, properties) {
+		const {color, amount, capacity, intervals, taper} = properties;
 		const image = createImage(toolType);
 		if (image.properties.hasOwnProperty("Fill")) {
 			image.properties.Fill = amount;
 			image.properties.Color = color;
 		}
-		const position = new Position(x,y);
-		const loadedTool = new Tool(toolType, image, position, width, height, layer, color, amount);
-		loadedTool.setName(name);
-		return loadedTool;
+		if (image.properties.hasOwnProperty("Capacity")) {
+			image.properties.Capacity = capacity;
+			image.properties.Intervals = intervals;
+		}
+		if (image.properties.hasOwnProperty("Taper")) {
+			image.properties.Taper = taper;
+		}
+		return image;
 	}
 
 	save(lessonId, stepNumber) {
@@ -178,7 +199,11 @@ class Tool {
 				amount: this.amount,
 				color: this.color,
 				height: this.height,
-				width: this.width
+				width: this.width,
+				taper: this.image.properties.Taper,
+				capacity: this.image.properties.Capacity,
+				intervals: this.image.properties.Intervals,
+
 		};
 	}
 

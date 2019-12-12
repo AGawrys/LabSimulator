@@ -478,23 +478,4 @@ function createImage(toolType) {
 	return image;
 }
 
-function isImage(toolType) {
-    let isImage = false;
-    switch (toolType) {
-        case 'IceCube':
-        case 'Banana':
-        case 'Mango':
-        case 'Spoon':
-        case 'Strawberry':
-        case 'Blueberry':
-        case 'Milk':
-            isImage = true;
-            break;
-        default: 
-            isImage =  false;
-            
-        return isImage;
-    }
-}
-
 export { CATEGORIES, IMAGES, createImage };

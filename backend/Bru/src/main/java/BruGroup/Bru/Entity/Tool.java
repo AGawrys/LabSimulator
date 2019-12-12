@@ -23,12 +23,26 @@ public class Tool {
     private String color;
     private double height;
     private double width;
+    private double taper;
+    private double capacity;
+    private double intervals;
 
     public Tool() {
 
     }
 
-    public Tool(ToolIdentity toolIdentity, String toolType, double x, double y, double amount, String color, String name, double width, double height) {
+    public Tool(ToolIdentity toolIdentity,
+                String toolType,
+                double x,
+                double y,
+                double amount,
+                String color,
+                String name,
+                double width,
+                double height,
+                double taper,
+                double capacity,
+                double intervals) {
         this.toolIdentity = toolIdentity;
         this.toolType = toolType;
         this.x = x;
@@ -38,6 +52,10 @@ public class Tool {
         this.color = color;
         this.height = height;
         this.width = width;
+        this.taper = taper;
+        this.capacity = capacity;
+        this.intervals = intervals;
+
     }
 
     public Tool clone(int lessonId) {
@@ -51,7 +69,10 @@ public class Tool {
                 this.color,
                 this.name,
                 this.width,
-                this.height
+                this.height,
+                this.taper,
+                this.capacity,
+                this.intervals
         );
     }
 
@@ -117,5 +138,29 @@ public class Tool {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public double getTaper() {
+        return taper;
+    }
+
+    public void setTaper(double taper) {
+        this.taper = taper;
+    }
+
+    public double getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(double capacity) {
+        this.capacity = capacity;
+    }
+
+    public double getIntervals() {
+        return intervals;
+    }
+
+    public void setIntervals(double intervals) {
+        this.intervals = intervals;
     }
 }
