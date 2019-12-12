@@ -287,7 +287,7 @@ class Editor extends Component {
 						target={currentStep.target}
 						goal={currentStep.actionMeasurement}
 						instructor={true}
-						closeModal={this.closePourModal}
+						onHide={() => this.hideActionModal("pour")}
 					/>) : null}
 				<Container fluid={true} className="instructorContainer">
 					<Col className="instructorEditorToolBar brownBorder">

@@ -11,27 +11,26 @@ const links = {
 	Dashboard: Routes.STUDENT_DASHBOARD,
 };
 
-const statusColor=['white', '#f7f5da', '#d8f2dd'];
-const status=["Incomplete", "In progress", "Complete" ];
-const statusBtn=["START", "CONTINUE", "REDO"];
+const statusColor = [ 'white', '#f7f5da', '#d8f2dd' ];
+const status = [ 'Incomplete', 'In progress', 'Complete' ];
+const statusBtn = [ 'START', 'CONTINUE', 'REDO' ];
 export class StudentDashboard extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			courseProgresses: null,
-		}
+			courseProgresses: null
+		};
 	}
 
 	componentDidMount() {
-		const {email} = this.props;
-		axios.get(Routes.SERVER + "/getStudentAssignments/" + email).then(
-			(response) => this.setState({courseProgresses:response.data}),
-			(error) => console.log(error),
-		);
+		const { email } = this.props;
+		axios
+			.get(Routes.SERVER + '/getStudentAssignments/' + email)
+			.then((response) => this.setState({ courseProgresses: response.data }), (error) => console.log(error));
 	}
 
 	render() {
-		const {courseProgresses} = this.state;
+		const { courseProgresses } = this.state;
 		if (courseProgresses === null) {
 			return null;
 		}
@@ -42,22 +41,23 @@ export class StudentDashboard extends Component {
 				<div className="studentDashboard">
 					<div className="studentDashboardContents">
 						<Card>
-						<div className="studentRecentLesson">
-							<Row className="headingRow">
-								<h4>My Courses</h4>
-							</Row>
-							<div className="studentAllLesson">
-								<ListGroup>
-									{courseProgresses.map((progress, index) => 
-										<StudentCourse
-											key={index} 
-											course={progress.course} 
-											lessons={progress.lessonProgress} 
-											onLessonClick={this.navigateToStudentLesson}/>
-									)}
-								</ListGroup>
+							<div className="studentRecentLesson">
+								<Row className="headingRow">
+									<h4>My Courses</h4>
+								</Row>
+								<div className="studentAllLesson">
+									<ListGroup>
+										{courseProgresses.map((progress, index) => (
+											<StudentCourse
+												key={index}
+												course={progress.course}
+												lessons={progress.lessonProgress}
+												onLessonClick={this.navigateToStudentLesson}
+											/>
+										))}
+									</ListGroup>
+								</div>
 							</div>
-						</div>
 						</Card>
 					</div>
 				</div>
@@ -65,42 +65,61 @@ export class StudentDashboard extends Component {
 		);
 	}
 
-	navigateToStudentLesson = (courseId, lessonId) =>  {
-		const newRoute = Routes.STUDENT_EDITOR + courseId + "/" + lessonId;
+	navigateToStudentLesson = (courseId, lessonId) => {
+		const newRoute = Routes.STUDENT_EDITOR + courseId + '/' + lessonId;
 		this.props.history.push(newRoute);
-	}
+	};
 }
 
 function StudentCourse(props) {
-	const {course, lessons, onLessonClick} = props;
-	const courseComponent = <ListGroup.Item variant="primary"> {course.name} <span className="right"> Expand</span> </ListGroup.Item>
+	const { course, lessons, onLessonClick } = props;
+	const courseComponent = (
+		<ListGroup.Item variant="primary">
+			{' '}
+			{course.name} <span className="right"> Expand</span>{' '}
+		</ListGroup.Item>
+	);
 	let nextOneToComplete = true;
 	return (
 		<Collapsible trigger={courseComponent}>
 			<ListGroup>
-				{	lessons.map((lessonProgress,index) => {
-						const canComplete = lessonProgress.completed || nextOneToComplete;
-						if (!lessonProgress.completed && nextOneToComplete) {
-							nextOneToComplete = false;
-						}
-						return <StudentLesson key={index} course={course} lessonProgress={lessonProgress} disabled={!canComplete} onClick={onLessonClick}/>
-					})
-				}
+				{lessons.map((lessonProgress, index) => {
+					const canComplete = lessonProgress.completed || nextOneToComplete;
+					if (!lessonProgress.completed && nextOneToComplete) {
+						nextOneToComplete = false;
+					}
+					return (
+						<StudentLesson
+							key={index}
+							course={course}
+							lessonProgress={lessonProgress}
+							disabled={!canComplete}
+							onClick={onLessonClick}
+						/>
+					);
+				})}
 			</ListGroup>
 		</Collapsible>
 	);
 }
 
 function StudentLesson(props) {
-	const {lessonProgress,disabled, onClick, course} = props;
-	const {lesson, completed} = lessonProgress;
-	const completeString = completed ? "Completed" : "Not Completed";
+	const { lessonProgress, disabled, onClick, course } = props;
+	const { lesson, completed } = lessonProgress;
+	const completeString = completed ? 'Completed' : 'Not Completed';
 	return (
-		<ListGroup.Item as="button" style={{'text-align': "left"}} disabled={disabled} onClick={() => onClick(course.courseId,lesson.lessonId)}>
-			<div className = "search-result-header">
-				<strong><p> {lesson.name} </p></strong>
-				<p style={{textAlign:"right"}}> {completeString} </p>
-			</div> 
+		<ListGroup.Item
+			as="button"
+			style={{ textAlign: 'left' }}
+			disabled={disabled}
+			onClick={() => onClick(course.courseId, lesson.lessonId)}
+		>
+			<div className="search-result-header">
+				<strong>
+					<p> {lesson.name} </p>
+				</strong>
+				<p style={{ textAlign: 'right' }}> {completeString} </p>
+			</div>
 		</ListGroup.Item>
 	);
 }

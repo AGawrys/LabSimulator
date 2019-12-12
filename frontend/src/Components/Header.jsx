@@ -74,7 +74,11 @@ class HeaderBru extends React.Component {
 				<Nav>
 					{navLinks}
 					<Nav.Item>
-						{this.props.isLoggedIn || this.state.authenticated ? this.renderSignOutBtn() : this.renderLoginBtn()}
+						{this.props.isLoggedIn || this.state.authenticated ? (
+							this.renderSignOutBtn()
+						) : (
+							this.renderLoginBtn()
+						)}
 					</Nav.Item>
 				</Nav>
 			</Navbar>
