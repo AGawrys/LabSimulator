@@ -88,3 +88,7 @@
 .search-result-info {
 	text-align: left;
 }
+
+.completed-step {
+	color:green;
+}

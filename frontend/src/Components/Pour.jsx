@@ -78,18 +78,15 @@ class Pour extends React.Component {
             this.reset();
         }
         // this.setState({show : false });
-         this.closeParent();
+        this.props.onHide();
         if(!this.props.instructor) {
             this.props.onNextStep();
         }
     }
-    closeParent = () => {
-        this.props.closeModal();
-    }
 
     render() {
         const { instruction, done} = this.state;
-        const {show} = this.props;
+        const {show, onHide} = this.props;
         const {source, target} = this.props;
         const t = target.clone();
         const categories = Object.keys(CATEGORIES);
@@ -111,6 +108,7 @@ class Pour extends React.Component {
         );
     return (
         <Modal
+            onHide={onHide}
             show={show}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"

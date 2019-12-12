@@ -40,7 +40,6 @@ class EditorStudent extends Component {
 			showSuccesfullyComplete: false,
 			areToolsPlaced: false,
 			actionMenu: false,
-			showPourModal: false,
 			source: null,
 			target: null,
 			actionManagement: null,
@@ -99,55 +98,6 @@ class EditorStudent extends Component {
 			(error) => console.log(error)
 		);
 	}
-
-	lessonStatus = (lessonIndex) => {
-		if (lessonIndex == this.state.currentLesson) {
-			return [ '#3483eb', 'white' ];
-		} else {
-			return [ 'white', 'grey' ];
-		}
-	};
-
-	stepStatus = (lessonIndex, stepIndex) => {
-		const { currentStep, currentLesson } = this.state;
-		if (lessonIndex <= currentLesson && stepIndex < currentStep) {
-			return '#46b056'; // done green
-		} else if (lessonIndex == currentLesson && stepIndex == currentStep) {
-			return '#3483eb'; // In progress
-		} else {
-			return 'grey';
-		}
-	};
-
-	handleStop = (data) => {
-		let msg;
-		const { x, y, srcElement } = data;
-		const { lessons, currentLesson, currentStep } = this.state;
-		const step = lessons[currentLesson].steps[currentStep];
-		if (srcElement.id !== step.source.name) {
-			msg = 'That is not a ' + step.source.name + '. (you grabbed a ' + srcElement.id + ' )';
-			this.setState({ feedbackMsg: msg });
-			this.setState({ feedbackColor: red });
-			this.setState({ feedback: true });
-		} else if (!(x >= step.goalX.min && x <= step.goalX.max) || !(y >= step.goalY.min && y <= step.goalY.max)) {
-			msg = 'Move it a little farther!';
-			this.setState({ feedbackMsg: msg });
-			this.setState({ feedbackColor: red });
-			this.setState({ feedback: true });
-		} else {
-			msg = 'Very good! Hit next to move on.';
-			if (currentStep === lessons[currentLesson].steps.length - 1) {
-				msg =
-					'You have completed Lesson: ' +
-					lessons[currentLesson].name +
-					' (Hit next to start the next lesson)';
-			}
-			this.setState({ disable: null });
-			this.setState({ feedbackMsg: msg });
-			this.setState({ feedbackColor: green });
-			this.setState({ feedback: true });
-		}
-	};
 	//console.log(lessons);
 	//console.log("x: " + lessons[currentLesson].steps[currentStep].tools[0].x + " y: " +lessons[currentLesson].steps[currentStep].tools[0].y);
 	handleClick = () => {
@@ -177,26 +127,19 @@ class EditorStudent extends Component {
 			this.setState({ showAction });
 		}
 	};
-	completePour = (t1, t2) => {
-		this.setState({ showPourModal: false });
+
+	hideActionModal = (action) => {
+		const {showAction} = this.state;
+		showAction[action] = false;
+		this.setState(showAction);
 	};
 	openActionMenu = () => {
 		this.setState({ actionMenu: true });
 	};
 	render() {
-		const {
-			lesson,
-			steps,
-			currentStepIndex,
-			actionManagement,
-			curriculum,
-			showSuccesfullyComplete,
-			isLessonComplete,
-			showPourModal,
-			source,
-			target,
-			showAction
-		} = this.state;
+		const { lesson, steps, currentStepIndex, actionManagement, curriculum, showSuccesfullyComplete, isLessonComplete} = this.state;
+		const {showPourModal,source, target, showAction } = this.state;
+		const {isPreview} = this.props;
 		if (lesson == null) {
 			return null;
 		}
@@ -218,9 +161,10 @@ class EditorStudent extends Component {
 					progressNeeded={currentStep.actionMeasurement}
 					show={showAction.shake}
 					timer={currentStep.timer}
-					onComplete={() => {
-						showAction.shake = false;
-						this.setState({ showAction });
+					onHide={() => this.hideActionModal("shake")}
+					onSuccess={() => {
+						this.hideActionModal("shake");
+						this.handleClick();
 					}}
 					timer={currentStep.timer}
 					tool={currentStep.source}
@@ -232,16 +176,18 @@ class EditorStudent extends Component {
 						target={target}
 						goal={actionManagement}
 						instructor={false}
-						closeModal={this.completePour}
+						onHide={() => this.hideActionModal("pour")}
 					/>
 				) : null}
 				<StirModal
 					progressNeeded={currentStep.actionMeasurement}
 					show={showAction.stir}
 					timer={currentStep.timer}
-					onComplete={() => {
-						showAction.stir = false;
-						this.setState({ showAction });
+					target={currentStep.target}
+					onHide={() => this.hideActionModal("stir")}
+					onSuccess={() => {
+						this.hideActionModal("stir");
+						this.handleClick();
 					}}
 				/>
 				<Container fluid>
@@ -252,11 +198,13 @@ class EditorStudent extends Component {
 								<Card>
 									<Card.Header> {lesson.name} </Card.Header>
 									<ListGroup>
-										{steps.map((step, index) => (
-											<ListGroup.Item key={index} active={currentStepIndex == index} as="li">
-												{step.name}
-											</ListGroup.Item>
-										))}
+										{steps.map((step, index) => {
+											const className = index < currentStepIndex ?  "completed-step" : "";
+											return (
+												<ListGroup.Item className={className} key={index} active={currentStepIndex == index} as="li">
+													{step.name}
+												</ListGroup.Item>
+											)})}
 									</ListGroup>
 								</Card>
 							</div>
@@ -276,14 +224,16 @@ class EditorStudent extends Component {
 								}}
 								openActionMenu={this.openActionMenu}
 							/>
-							<Button
-								style={{ float: 'left', marginRight: '10px' }}
-								variant="dark"
-								onClick={this.handleClick}
-								type="button"
-							>
-								NEXT STEP
-							</Button>
+							{isPreview ? (
+								<Button
+									style={{ float: 'left', marginRight: '10px' }}
+									variant="dark"
+									onClick={this.handleClick}
+									type="button"
+								>
+									NEXT STEP
+								</Button>
+							) : null}
 							<Button
 								style={{ float: 'left', marginRight: '10px' }}
 								variant="dark"
@@ -332,7 +282,7 @@ class EditorStudent extends Component {
 		};
 		axios
 			.post(Routes.SERVER + 'deleteAssignment', body)
-			.then((response) => this.setState({ isCurrentStepComplete: false }), (error) => console.log(error));
+			.then((response) => this.setState({ isCurrentStepComplete: false, currentStepIndex: 0 }), (error) => console.log(error));
 	};
 
 	resetStep = () => {

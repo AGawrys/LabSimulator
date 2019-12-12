@@ -104,7 +104,11 @@ class StirModal extends React.Component {
 								>
 									Retry
 								</Button>
-								<Button variant="primary" onClick={this.resetProgress} disabled={percentComplete < 100}>
+								<Button variant="primary" onClick={() => {
+									pause();
+									reset();
+									this.onSuccess();
+								}} disabled={percentComplete < 100}>
 									Continue
 								</Button>
 							</Modal.Footer>
@@ -113,6 +117,11 @@ class StirModal extends React.Component {
 				}}
 			</Timer>
 		);
+	}
+
+	onSuccess = () => {
+		this.resetState();
+		this.props.onSuccess();
 	}
 
 	resetState = () => {
@@ -130,7 +139,7 @@ class StirModal extends React.Component {
 
 	resetProgress = () => {
 		this.resetState();
-		this.props.onComplete();
+		this.props.onHide();
 	};
 
 	handleStateChange = () => {

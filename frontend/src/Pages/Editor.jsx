@@ -268,11 +268,8 @@ class Editor extends Component {
 				<ShakeModal
 					progressNeeded={currentStep.actionMeasurement}
 					show={showAction.shake}
-					timer={currentStep.timer}
-					onComplete={() => {
-						showAction.shake = false;
-						this.setState({ showAction });
-					}}
+					onHide={() => this.hideActionModal("shake")}
+					onSuccess={() => this.hideActionModal("shake")}
 					timer={currentStep.timer}
 					tool={currentStep.source}
 				/>
@@ -281,10 +278,8 @@ class Editor extends Component {
 					show={showAction.stir}
 					timer={currentStep.timer}
 					target={currentStep.target}
-					onComplete={() => {
-						showAction.stir = false;
-						this.setState({ showAction });
-					}}
+					onHide={() => this.hideActionModal("stir")}
+					onSuccess={() => this.hideActionModal("stir")}
 				/>
 					{showAction.pour ? (<Pour
 						show={showAction.pour}
@@ -313,7 +308,7 @@ class Editor extends Component {
 								{publishBtn}
 								<button
 									disabled={!currentStep.isComplete()}
-									type="button"
+									type="submit"
 									className="btn btn-secondary"
 									onClick={this.showActionModal}
 								>
@@ -480,12 +475,11 @@ class Editor extends Component {
 											className="actionMeasurementControl"
 											type="number"
 											min="1"
+											max="59"
 											placeholder="Timer (Seconds)"
 											disabled={currentStep.action === 'Pour'}
 											onChange={(e) => this.updateTimer(e)}
-											value={
-												currentStep.timer ? currentStep.timer > 0 ? currentStep.timer : '' : ''
-											}
+											value={currentStep.timer && currentStep.timer > 0 ? currentStep.timer : ''}
 										/>
 										{/* {this.renderPreview()} */}
 									</div>
@@ -671,7 +665,7 @@ class Editor extends Component {
 
 	updateTimer = (e) => {
 		const { currentStep } = this.state;
-		if (e.target.value > 0) {
+		if (e.target.value > 0 && e.target.value < 60) {
 			currentStep.timer = e.target.value;
 			this.setState({ currentStep }, this.addOperation);
 		} else {
@@ -818,7 +812,14 @@ class Editor extends Component {
 		this.handleRedo();
 	};
 
-	showActionModal = () => {
+	hideActionModal = (action) => {
+		const {showAction} = this.state;
+		showAction[action] = false;
+		this.setState(showAction);
+	};
+
+	showActionModal = (e) => {
+		e.preventDefault();
 		const { showAction } = this.state;
 		switch (this.state.currentStep.action) {
 			case 'Shake':
