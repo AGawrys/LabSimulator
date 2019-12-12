@@ -44,7 +44,7 @@ class EditorStudent extends Component {
 			source: null,
 			target: null,
 			actionManagement: null,
-			currentAction: 'none',
+			currentAction: 'None',
 			showAction: {
 				pour: false,
 				shake: false,
@@ -157,22 +157,39 @@ class EditorStudent extends Component {
 		} else {
 			this.setState({
 				currentStep: steps[currentStepIndex + 1],
-				currentStepIndex: currentStepIndex + 1
+				currentStepIndex: currentStepIndex + 1,
+				source: null,
+				target: null,
+				actionManagement: null,
+				currentAction: 'None',
+				showAction: {
+					pour: false,
+					shake: false,
+					blend: false,
+					stir: false,
+					drag: false
+				}
 			});
 		}
+	};
+
+	setSource = (sourceTool) => {
+		this.setState({ source: sourceTool });
 	};
 
 	onDropTool = (t1, t2) => {
 		this.setState({ source: t1 });
 		this.setState({ target: t2 });
+		console.log(t1);
+		console.log(t2);
 		const { showAction } = this.state;
 		const { currentStepIndex, steps } = this.state;
 		const newActionManagement = steps[currentStepIndex].actionMeasurement;
 		this.setState({ actionManagement: newActionManagement });
 		const { currentAction } = this.state;
-		if (currentAction === 'pour') {
+		if (currentAction === 'Pour') {
 			this.setState({ showPourModal: true });
-		} else if (currentAction === 'stir') {
+		} else if (currentAction === 'Stir') {
 			showAction.stir = true;
 			this.setState({ showAction });
 		}
@@ -195,7 +212,8 @@ class EditorStudent extends Component {
 			showPourModal,
 			source,
 			target,
-			showAction
+			showAction,
+			currentAction
 		} = this.state;
 		if (lesson == null) {
 			return null;
@@ -264,43 +282,45 @@ class EditorStudent extends Component {
 							</div>
 						</Col>
 						<Col sm={8}>
-							<div className="divider" />
+							<h3>Step Title: {currentStep.name}</h3>
+							<h5>
+								Current Action: {currentAction} using {source ? source.name : '____'}{' '}
+								{currentAction === 'Shake' ? '' : 'and'}
+								{target ? target.name : currentAction === 'Shake' ? '' : '____'}.
+							</h5>
 							<Canvas
 								instructor={false}
 								onDrop={this.onDropTool}
 								tools={currentStep.getTools()}
-								changeActBlend={() => this.setState({ currentAction: 'blend' })}
-								changeActPour={() => this.setState({ currentAction: 'pour' })}
-								changeActStir={() => this.setState({ currentAction: 'stir' })}
+								setSource={this.setSource}
+								changeActBlend={() => this.setState({ currentAction: 'Blend' })}
+								changeActPour={() => this.setState({ currentAction: 'Pour' })}
+								changeActStir={() => this.setState({ currentAction: 'Stir' })}
 								shake={() => {
 									showAction.shake = true;
 									this.setState({ showAction });
 								}}
 								openActionMenu={this.openActionMenu}
 							/>
-							<Button
-								style={{ float: 'left', marginRight: '10px' }}
-								variant="dark"
-								onClick={this.handleClick}
-								type="button"
-							>
-								NEXT STEP
-							</Button>
-							<Button
-								style={{ float: 'left', marginRight: '10px' }}
-								variant="dark"
-								onClick={this.resetStep}
-							>
-								RESET STEP
-							</Button>
-							<Button style={{ float: 'left' }} variant="dark" onClick={this.restartLesson}>
-								RESTART LESSON
-							</Button>
 						</Col>
 						<Col sm={1}>
-							<div>
-								<ActionMenuStudent show={this.state.actionMenu} />
-							</div>
+							<div className="divider" />
+							<div className="divider" />
+							<div className="divider" />
+
+							<div className="divider" />
+							<div className="divider" />
+							<Button variant="dark" onClick={this.handleClick} type="button">
+								NEXT STEP
+							</Button>
+							<div className="divider" />
+							<Button variant="dark" onClick={this.resetStep}>
+								RESET STEP
+							</Button>
+							<div className="divider" />
+							<Button variant="dark" onClick={this.restartLesson}>
+								RESTART LESSON
+							</Button>
 						</Col>
 					</Row>
 				</Container>
