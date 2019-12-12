@@ -247,6 +247,7 @@ class ToolEditor extends React.Component {
         const {tool} = this.props;
         const properties = tool.getImage().properties;
         properties["Capacity"] = parseInt(value, 10);
+        tool.capacity = parseInt(value,10);
         tool.image.properties = properties;
         this.props.setCurrentTool(this.props.tool);
     }
@@ -255,6 +256,7 @@ class ToolEditor extends React.Component {
         const {tool} = this.props;
         const properties = tool.getImage().properties;
         properties["Intervals"] = parseInt(value, 10);
+        tool.intervals = parseInt(value,10);
         tool.image.properties = properties;
         this.props.setCurrentTool(this.props.tool);
     }

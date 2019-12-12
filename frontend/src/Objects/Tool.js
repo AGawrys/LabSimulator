@@ -2,7 +2,7 @@ import Position from './Position';
 import { createImage } from '../Components/Tools.jsx';
 
 class Tool {
-	constructor(type, image, position = null, width, height, layer = null, color = "#0077be", amount = 0, taper = .5) {
+	constructor(type, image, position = null, width, height, layer = null, color = "#0077be", amount = 0, taper = .5, capacity=0,intervals=0) {
 		this.name = 'Tool ' + layer;
 		this.type = type;
 		this.image = image;
@@ -13,6 +13,8 @@ class Tool {
 		this.color = color;
 		this.amount = amount;
 		this.taper = taper;
+		this.capacity = capacity;
+		this.intervals = intervals;
 		this.new = true;
 	}
 
@@ -116,10 +118,10 @@ class Tool {
 	}
 
 	clone() {
-		const {name,type,width,height,layer,color,amount, taper, image} = this;
+		const {name,type,width,height,layer,color,amount, taper, image, capacity, intervals} = this;
 		const newPosition = this.position.clone();
 		const newImage = this.cloneImage(type, image);
-		const clonedTool = new Tool(type,newImage,newPosition,width,height,layer,color,amount, taper);
+		const clonedTool = new Tool(type,newImage,newPosition,width,height,layer,color,amount, taper, capacity,intervals);
 		clonedTool.setName(name);
 		return clonedTool;
 	}
@@ -163,7 +165,7 @@ class Tool {
 		const {layer} = toolIdentity;
 		const image = Tool.loadImage(toolType,{color,amount,capacity,intervals,taper});
 		const position = new Position(x,y);
-		const loadedTool = new Tool(toolType, image, position, width, height, layer, color, amount, taper);
+		const loadedTool = new Tool(toolType, image, position, width, height, layer, color, amount, taper,capacity,intervals);
 		loadedTool.setName(name);
 		return loadedTool;
 	}
@@ -200,9 +202,9 @@ class Tool {
 				color: this.color,
 				height: this.height,
 				width: this.width,
-				taper: this.image.properties.Taper,
-				capacity: this.image.properties.Capacity,
-				intervals: this.image.properties.Intervals,
+				taper: this.taper,
+				capacity: this.capacity,
+				intervals: this.intervals,
 
 		};
 	}
