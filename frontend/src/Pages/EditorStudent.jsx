@@ -233,12 +233,14 @@ class EditorStudent extends Component {
 						goal={actionManagement}
 						instructor={false}
 						closeModal={this.completePour}
+						onNextStep={this.handleClick}
 					/>
 				) : null}
 				<StirModal
 					progressNeeded={currentStep.actionMeasurement}
 					show={showAction.stir}
 					timer={currentStep.timer}
+					target={currentStep.target}
 					onComplete={() => {
 						showAction.stir = false;
 						this.setState({ showAction });
