@@ -18,6 +18,7 @@ import { Redirect } from 'react-router-dom';
 import StirModal from '../Components/StirModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import Pour from '../Components/Pour.jsx';
+import StudentDirectionModal from '../Components/StudentDirectionModal.jsx';
 
 import { isAbsolute } from 'path';
 
@@ -51,18 +52,20 @@ class EditorStudent extends Component {
 				blend: false,
 				stir: false,
 				drag: false
-			}
+			},
+			directionModal: true
 		};
 	}
 
 	componentDidMount() {
 		window.addEventListener('resize', this.onCanvasResize);
 		this.fetchData();
+		this.getCompletedLessons();
 	}
 
 	componentDidUpdate() {
 		const { areToolsPlaced, steps, canvasSize } = this.state;
-		if (!areToolsPlaced) {
+		if (!areToolsPlaced && steps != null) {
 			resizeTools(canvasSize, steps);
 			const { width, height } = getCanvasSize();
 			this.setState({
@@ -72,6 +75,19 @@ class EditorStudent extends Component {
 			});
 		}
 	}
+
+	getCompletedLessons = () => {
+		axios.get(Routes.SERVER + '/completedLesson/' + this.props.email).then(
+			(response) => {
+				if (response.data == false) {
+					this.setState({ directionModal: true });
+				} else {
+					this.setState({ directionModal: false });
+				}
+			},
+			(error) => console.log(error)
+		);
+	};
 
 	fetchData = () => {
 		const { lesson_id, course_id } = this.props.computedMatch.params;
@@ -213,7 +229,8 @@ class EditorStudent extends Component {
 			source,
 			target,
 			showAction,
-			currentAction
+			currentAction,
+			directionModal
 		} = this.state;
 		if (lesson == null) {
 			return null;
@@ -231,6 +248,12 @@ class EditorStudent extends Component {
 					message={GeneralConstants.SUCCESSFUL_COMPLETE_LESSON_MESSAGE}
 					onHide={() => this.setState({ showSuccesfullyComplete: false })}
 					show={showSuccesfullyComplete}
+				/>
+				<StudentDirectionModal
+					show={directionModal}
+					closeDirection={() => {
+						this.setState({ directionModal: false });
+					}}
 				/>
 				<ShakeModal
 					progressNeeded={currentStep.actionMeasurement}
@@ -267,6 +290,10 @@ class EditorStudent extends Component {
 				<Container fluid>
 					<Row>
 						<Col sm={3}>
+							<div className="divider"> </div>
+							<div className="divider"> </div>
+							<div className="divider"> </div>
+							<div className="divider"> </div>
 							<div className="divider"> </div>
 							<div className="step-column" style={{ overflowY: 'scroll' }}>
 								<Card>

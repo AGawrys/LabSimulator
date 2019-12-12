@@ -74,9 +74,21 @@ public class AssignmentController {
 
     }
 
+    @GetMapping(path = "/completedLesson/{email}")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity getCompletedLesson(@PathVariable String email) {
+        List<Assignment> assignmentList = assignmentRepository.findByAssignmentIdentityEmail(email);
+        if (assignmentList.isEmpty()) {
+            return ResponseEntity.ok(false);
+        } else {
+            return ResponseEntity.ok(true);
+        }
+
+    }
+
     public List<LessonProgress> getLessonProgress(Course course, String email) {
         List<CourseLesson> lessonsIds = curriculumRepository.findByCourseLessonIdentityCourseId(course.getCourseId());
-        if (lessonsIds == null) {
+        if (lessonsIds.isEmpty()) {
             return new ArrayList<>();
         }
         List<Lesson> lessons = lessonsIds
