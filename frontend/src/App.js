@@ -16,6 +16,7 @@ import GeneralConstants from './utils/GeneralConstants.js';
 import PrivateRoute from './Components/PrivateRoute.jsx';
 import SearchResults from './Pages/SearchResults.jsx';
 import { HotKeys } from 'react-hotkeys';
+import LessonPreview from './Pages/LessonPreview.jsx';
 
 const keyMap = {
 	UNDO: ["command+z", "ctrl+z"],
@@ -36,6 +37,10 @@ function App() {
 						<PrivateRoute exact 
 							path={Routes.INSTRUCTOR_EDITOR + ":lesson_id"} 
 							component={withRouter(Editor)} 
+							role={GeneralConstants.INSTRUCTOR}/>
+						<PrivateRoute exact
+							path={Routes.INSTRUCTOR_PREVIEW + ":lesson_id"}
+							component={withRouter(LessonPreview)}
 							role={GeneralConstants.INSTRUCTOR}/>
 						<PrivateRoute exact 
 							path={Routes.STUDENT_EDITOR + ":course_id" + "/" + ":lesson_id"} 

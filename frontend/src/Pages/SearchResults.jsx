@@ -1,5 +1,6 @@
 import React, { Component, useState, useEffect } from 'react';
-import { ListGroup, Button, Spinner } from 'react-bootstrap';
+import { ListGroup, Button, Spinner, ButtonGroup } from 'react-bootstrap';
+import { useHistory } from "react-router-dom";
 import SearchBar from 'react-js-search';
 import HeaderBru from '../Components/Header.jsx';
 import Routes from '../utils/RouteConstants.js';
@@ -75,13 +76,28 @@ function SearchResult({result, email}) {
 		<ListGroup.Item> 
 			<div className = "search-result-header">
 				<strong><p> {name} </p></strong>
-				<AddLessonButton lessonId={lessonId} email={email} downloads={downloads} setDownloads={setDownloads}/>
+				<ButtonGroup>
+					<PreviewLessonButton lessonId={lessonId}/>
+					<AddLessonButton lessonId={lessonId} email={email} downloads={downloads} setDownloads={setDownloads}/>
+				</ButtonGroup>
 			</div>
 			<p className="search-result-info m-0 font-weight-light text-secondary headings"> Instructor: {instructorEmail} </p>
 			<p className="search-result-info m-0 font-weight-light text-secondary headings"> # of Downloads: {downloads} </p>
 			<p className="search-result-info m-0 font-weight-light text-secondary headings"> Date Published: {parsedDate.toDateString()} </p>
 	 	</ListGroup.Item>
  	);
+}
+
+function PreviewLessonButton({lessonId}) {
+	const history = useHistory();
+	return (
+		<Button 
+			style={{background: 'transparent', border: 'none'}}
+			onClick={() => history.push(Routes.INSTRUCTOR_PREVIEW + lessonId)}
+		>
+			<i className="fa fa-eye add-button" aria-hidden="true"></i>;
+		</Button>
+	);
 }
 
 function AddLessonButton({lessonId, email, downloads, setDownloads}) {
