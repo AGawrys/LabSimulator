@@ -821,25 +821,9 @@ class Editor extends Component {
 
 	showActionModal = (e) => {
 		e.preventDefault();
-		const { showAction } = this.state;
-		switch (this.state.currentStep.action) {
-			case 'Shake':
-				showAction.shake = true;
-				break;
-			case 'Pour':
-				showAction.pour = true;
-				break;
-			case 'Stir':
-				showAction.stir = true;
-				break;
-			case 'Blend':
-				showAction.blend = true;
-				break;
-			case 'Drag':
-				showAction.drag = true;
-				break;
-		}
-		this.setState({ showAction });
+		const { showAction, currentStep } = this.state;
+		showAction[currentStep.action.toLowerCase()] = true;
+		this.setState({showAction});
 	};
 }
 
