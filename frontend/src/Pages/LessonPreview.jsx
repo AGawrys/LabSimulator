@@ -211,8 +211,8 @@ class LessonPreview extends Component {
 				{showAction.pour ? (
 					<Pour
 						show={showAction.pour}
-						source={currentStep.source}
-						target={currentStep.target}
+						source={currentStep.source.clone()}
+						target={currentStep.target.clone()}
 						goal={currentStep.actionMeasurement}
 						instructor={false}
 						onHide={() => this.hideActionModal('pour')}

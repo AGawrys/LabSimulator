@@ -22,6 +22,10 @@ class Tool extends React.Component {
         e.stopPropagation();
     }
 
+    onContextMenu = (e) => {
+        this.props.setCurrentTool(this.props.tool);
+    }
+
     onDragStop(e, data) {
         const {tool, instructor} = this.props;
         const {x,y} = data;
@@ -64,6 +68,7 @@ class Tool extends React.Component {
 				height={tool.getHeight()}
 				style={style}
 				onClick={this.props.draggable && !actionTool ? this.onClick : null}
+                onContextMenu={this.props.draggable && !actionTool ? this.onContextMenu : null}
 				ref={this.canvas}
 			>
 				{tool.getName()}

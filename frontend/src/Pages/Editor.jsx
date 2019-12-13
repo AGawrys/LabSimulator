@@ -284,8 +284,8 @@ class Editor extends Component {
 				/>
 					{showAction.pour ? (<Pour
 						show={showAction.pour}
-						source={currentStep.source}
-						target={currentStep.target}
+						source={currentStep.source.clone()}
+						target={currentStep.target.clone()}
 						goal={currentStep.actionMeasurement}
 						instructor={true}
 						onHide={() => this.hideActionModal("pour")}

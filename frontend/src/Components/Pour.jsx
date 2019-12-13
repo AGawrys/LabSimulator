@@ -3,7 +3,7 @@ import { Spring } from 'react-spring/renderprops';
 import { Button, Modal, Row, Col } from 'react-bootstrap';
 import '../Styles/Pour.css';
 import Tool from '../Objects/Tool.js';
-import { CATEGORIES, IMAGES } from './Tools.jsx';
+import { IMAGES, createImage } from './Tools.jsx';
 import { Tool as ToolComponent } from './Tool.jsx';
 import { Draggable } from 'react-drag-and-drop';
 import ClickNHold from 'react-click-n-hold'; 
@@ -86,27 +86,14 @@ class Pour extends React.Component {
     }
 
     render() {
-        const { instruction, done} = this.state;
-        const {show, onHide} = this.props;
-        const {source, target} = this.props;
-        const t = target.clone();
-        const categories = Object.keys(CATEGORIES);
-        const tools = CATEGORIES["Cups"];
-        const image = t.getImage();
-        image.draw = IMAGES[t.type].draw;
-        image.properties.Fill = this.state.fill;
-        image.properties.Color = this.state.color;
-        const mytool = (
-            <ToolComponent tool={new Tool(t.type, image, undefined, target.getWidth(), target.getHeight(), undefined)} />
-        );
-        const src = source.clone();
-        let imageSrc = src.getImage();
-		imageSrc.draw = IMAGES[source.type].draw;
-        imageSrc.properties.Fill = this.state.fillSrc;
-        imageSrc.properties.Color = this.state.colorSrc;
-        const srctool = (
-            <ToolComponent tool={new Tool(src.type,  imageSrc, undefined, source.getWidth(), source.getHeight(), undefined)} />
-        );
+        const { instruction, done, fill, color} = this.state;
+        const {show, onHide, source, target} = this.props;
+
+        target.image.properties.Fill = fill
+        target.image.properties.Color = color;
+        source.image.properties.Fill = this.state.fillSrc;
+        source.image.properties.Color = this.state.colorSrc;
+
     return (
         <Modal
             onHide={onHide}
@@ -137,9 +124,9 @@ class Pour extends React.Component {
                 <div style={{ alignSelf: "center", justifyContent: "center"}}>
                     <Row>
                     <div style={props}>
-                    {srctool}
+                    <ToolComponent tool={source}/>
                     </div>
-                    {mytool}
+                    <ToolComponent tool={target}/>
                     </Row>
                 </div>
             )
