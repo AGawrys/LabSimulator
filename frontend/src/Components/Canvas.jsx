@@ -214,32 +214,28 @@ class Canvas extends React.Component {
 					<ContextMenu id={CONTEXT_MENU_ID}>
 						<MenuItem
 							onClick={() => {
-								this.props.changeActStir();
-								this.props.setSource(currentTool);
+								this.props.setSource(currentTool, () => this.props.setCurrentAction('Stir'));
 							}}
 						>
 							Stir With {currentTool ? currentTool.getName() : null}
 						</MenuItem>
 						<MenuItem
 							onClick={() => {
-								this.props.shake();
-								this.props.setSource(currentTool);
+								this.props.setSource(currentTool, () => this.props.setCurrentAction('Shake'));
 							}}
 						>
 							Shake {currentTool ? currentTool.getName() : null}
 						</MenuItem>
 						<MenuItem
 							onClick={() => {
-								this.props.changeActPour();
-								this.props.setSource(currentTool);
+								this.props.setSource(currentTool, () => this.props.setCurrentAction('Pour'));
 							}}
 						>
 							Pour From {currentTool ? currentTool.getName() : null}
 						</MenuItem>
 						<MenuItem
 							onClick={() => {
-								this.props.changeActBlend();
-								this.props.setSource(currentTool);
+								this.props.setSource(currentTool, () => this.props.setCurrentAction('Blend'));
 							}}
 						>
 							Blend {currentTool ? currentTool.getName() : null}

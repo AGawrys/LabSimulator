@@ -18,6 +18,7 @@ import { Redirect } from 'react-router-dom';
 import StirModal from '../Components/StirModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import Pour from '../Components/Pour.jsx';
+import Step from '../Objects/Step.js';
 import StudentDirectionModal from '../Components/StudentDirectionModal.jsx';
 
 import { isAbsolute } from 'path';
@@ -125,23 +126,41 @@ class LessonPreview extends Component {
 		});
 	};
 
-	setSource = (sourceTool) => {
-		this.setState({ source: sourceTool });
+	setSource = (sourceTool, callback) => {
+		this.setState({ source: sourceTool },callback);
 	};
 
-	onCollisionDetected = (draggedTool, overlappingTools) => {
-		const {steps, currentStepIndex, source, currentAction, showAction} = this.state;
+	setCurrentAction = (action) => {
+		const {steps, currentStepIndex, source} = this.state;
 		const currentStep = steps[currentStepIndex];
-		const targetIndex = overlappingTools.indexOf(currentStep.target);
-		if ((source !== draggedTool && currentAction === 'None') || targetIndex === -1) {
+		if (!Step.requiresTarget(action)) {
+			if (this.isSelectActionCorrect(action)) {
+				this.showActionModal(action.toLowerCase());
+			}
+			else {
+				alert("WRONG SELECT CHOICE");
+			}
+		}
+		else {
+			this.setState({currentAction: action});
+		}
+	}
+
+	onCollisionDetected = (draggedTool, overlappingTools) => {
+		if (this.state.source !== draggedTool) {
+			return;
+		}
+		if (!this.isDragActionCorrect(draggedTool,overlappingTools)) {
+			alert("WRONG DRAG ACTION");
 			return;
 		}
 
+		const {steps, currentStepIndex, currentAction} = this.state;
+		const currentStep = steps[currentStepIndex];
+		const targetIndex = overlappingTools.indexOf(currentStep.target);
 		const target = overlappingTools[targetIndex];
-		this.setState({source: draggedTool,target: target});
-		if (currentAction === 'Pour' || currentAction === 'Stir') {
-			this.showActionModal(currentAction.toLowerCase());
-		}
+		this.setState({target: target});
+		this.showActionModal(currentAction.toLowerCase());
 	};
 
 	showActionModal = (action) => {
@@ -240,14 +259,8 @@ class LessonPreview extends Component {
 								onDrop={this.onCollisionDetected}
 								tools={currentStep.getTools()}
 								setSource={this.setSource}
-								changeActBlend={() => this.setState({ currentAction: 'Blend' })}
-								changeActPour={() => this.setState({ currentAction: 'Pour' })}
-								changeActStir={() => this.setState({ currentAction: 'Stir' })}
-								shake={() => {
-									showAction.shake = true;
-									this.setState({ showAction });
-									this.setState({ currentAction: 'Shake' });
-								}}
+								setCurrentAction={this.setCurrentAction}
+								setShowAction={this.showActionModal}
 								openActionMenu={this.openActionMenu}
 							/>
 						</Col>
@@ -325,5 +338,18 @@ class LessonPreview extends Component {
 			canvasSize: { width, height }
 		});
 	};
+
+	isSelectActionCorrect = (action) => {
+		const {steps, currentStepIndex, source} = this.state;
+		const currentStep = steps[currentStepIndex];
+		return action == currentStep.action && source === currentStep.source
+	}
+
+	isDragActionCorrect = (draggedTool,overlappingTools) => {
+		const {steps, currentStepIndex, currentAction} = this.state;
+		const currentStep = steps[currentStepIndex];
+		const targetIndex = overlappingTools.indexOf(currentStep.target);
+		return currentAction === currentStep.action && draggedTool === currentStep.source && targetIndex !== -1;
+	}
 }
 export default LessonPreview;
