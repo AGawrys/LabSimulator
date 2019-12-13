@@ -5,7 +5,7 @@ import { Redirect, Link } from 'react-router-dom';
 import title from '../Styles/Images/brü.svg';
 import '../Styles/HeaderBruStyle.css';
 import FormModal from '../Components/FormModal.jsx';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Button, Form, Modal, } from 'react-bootstrap';
 import axios from 'axios';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import Routes from '../utils/RouteConstants.js';
@@ -67,9 +67,7 @@ class HeaderBru extends React.Component {
 		return (
 			<Navbar bg="#69CB9A" className="justify-content-between">
 				<Navbar.Brand href={this.props.home}>
-					<Link to={this.props.home}>
-						<img src={title} className="Home-header-logo" style={{ height: '50px' }} alt="logo" />
-					</Link>
+					<img src={title} className="Home-header-logo" style={{ height: '50px' }} alt="logo" />
 				</Navbar.Brand>
 				<Nav>
 					{navLinks}

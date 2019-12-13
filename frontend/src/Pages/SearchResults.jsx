@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react';
-import { ListGroup, Button, Spinner, ButtonGroup } from 'react-bootstrap';
+import { ListGroup, Button, Spinner, ButtonGroup, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { useHistory } from "react-router-dom";
 import SearchBar from 'react-js-search';
 import HeaderBru from '../Components/Header.jsx';
@@ -88,15 +88,22 @@ function SearchResult({result, email}) {
  	);
 }
 
+
+
 function PreviewLessonButton({lessonId}) {
 	const history = useHistory();
 	return (
-		<Button 
-			style={{background: 'transparent', border: 'none'}}
-			onClick={() => history.push(Routes.INSTRUCTOR_PREVIEW + lessonId)}
+		<OverlayTrigger
+		  placement="right"
+		  overlay={(props) => <Tooltip {...props}> Preview Lesson </Tooltip>}
 		>
-			<i className="fa fa-eye add-button" aria-hidden="true"></i>;
-		</Button>
+			<Button 
+				style={{background: 'transparent', border: 'none'}}
+				onClick={() => history.push(Routes.INSTRUCTOR_PREVIEW + lessonId)}
+			>
+				<i className="fa fa-eye add-button" aria-hidden="true"></i>;
+			</Button>
+		</OverlayTrigger>
 	);
 }
 
@@ -131,13 +138,18 @@ function AddLessonButton({lessonId, email, downloads, setDownloads}) {
 	}
 
 	return (
-		<Button
-			style={{background: 'transparent', border: 'none'}}
-			disabled={isLoading || isAdded}
-			onClick={!isLoading ? addLesson : null}
+		<OverlayTrigger
+		  placement="right"
+		  overlay={(props) => <Tooltip {...props}> Add Lesson </Tooltip>}
 		>
-			{icon}
-		</Button>
+			<Button
+				style={{background: 'transparent', border: 'none'}}
+				disabled={isLoading || isAdded}
+				onClick={!isLoading ? addLesson : null}
+			>
+				{icon}
+			</Button>
+		</OverlayTrigger>
 	);
 }
 
