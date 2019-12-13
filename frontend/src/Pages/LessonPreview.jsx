@@ -27,7 +27,7 @@ const green = 'green';
 const red = 'red';
 
 const links = {
-	Dashboard: Routes.INSTRUCTOR_DASHBOARD,
+	Dashboard: Routes.INSTRUCTOR_DASHBOARD
 };
 
 class LessonPreview extends Component {
@@ -68,10 +68,12 @@ class LessonPreview extends Component {
 		if (!areToolsPlaced && steps != null) {
 			resizeTools(canvasSize, steps);
 			const { width, height } = getCanvasSize();
+			const initialStepStates = steps.map((step) => step.clone());
 			this.setState({
 				areToolsPlaced: true,
 				steps: steps,
-				canvasSize: { width, height }
+				canvasSize: { width, height },
+				initialSteps: initialStepStates
 			});
 		}
 	}
@@ -81,15 +83,14 @@ class LessonPreview extends Component {
 		axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
 			(response) => {
 				const { steps, lesson, canvasSize } = Lesson.load(response.data);
-				const initialStepStates = steps.map((step) => step.clone());
-				this.setState({ steps, lesson, canvasSize, initialSteps: initialStepStates });
+				this.setState({ steps, lesson, canvasSize });
 			},
 			(error) => console.log(error)
 		);
 	};
 
 	onPrevStep = () => {
-		const {currentStepIndex} = this.state;
+		const { currentStepIndex } = this.state;
 		this.setState({
 			currentStepIndex: currentStepIndex - 1,
 			source: null,
@@ -104,10 +105,10 @@ class LessonPreview extends Component {
 				drag: false
 			}
 		});
-	}
+	};
 
 	onNextStep = () => {
-		const {currentStepIndex, steps} = this.state;
+		const { currentStepIndex, steps } = this.state;
 		const newIndex = currentStepIndex == steps.length - 1 ? currentStepIndex : currentStepIndex + 1;
 		this.resetStep();
 		this.setState({
@@ -127,50 +128,48 @@ class LessonPreview extends Component {
 	};
 
 	setSource = (sourceTool, callback) => {
-		this.setState({ source: sourceTool },callback);
+		this.setState({ source: sourceTool }, callback);
 	};
 
 	setCurrentAction = (action) => {
-		const {steps, currentStepIndex, source} = this.state;
+		const { steps, currentStepIndex, source } = this.state;
 		const currentStep = steps[currentStepIndex];
 		if (!Step.requiresTarget(action)) {
 			if (this.isSelectActionCorrect(action)) {
 				this.showActionModal(action.toLowerCase());
+			} else {
+				alert('WRONG SELECT CHOICE');
 			}
-			else {
-				alert("WRONG SELECT CHOICE");
-			}
+		} else {
+			this.setState({ currentAction: action });
 		}
-		else {
-			this.setState({currentAction: action});
-		}
-	}
+	};
 
 	onCollisionDetected = (draggedTool, overlappingTools) => {
 		if (this.state.source !== draggedTool) {
 			return;
 		}
-		if (!this.isDragActionCorrect(draggedTool,overlappingTools)) {
-			alert("WRONG DRAG ACTION");
+		if (!this.isDragActionCorrect(draggedTool, overlappingTools)) {
+			alert('WRONG DRAG ACTION');
 			return;
 		}
 
-		const {steps, currentStepIndex, currentAction} = this.state;
+		const { steps, currentStepIndex, currentAction } = this.state;
 		const currentStep = steps[currentStepIndex];
 		const targetIndex = overlappingTools.indexOf(currentStep.target);
 		const target = overlappingTools[targetIndex];
-		this.setState({target: target});
+		this.setState({ target: target });
 		this.showActionModal(currentAction.toLowerCase());
 	};
 
 	showActionModal = (action) => {
-		const {showAction} = this.state;
+		const { showAction } = this.state;
 		showAction[action] = true;
 		this.setState(showAction);
-	}
+	};
 
 	hideActionModal = (action) => {
-		const {showAction} = this.state;
+		const { showAction } = this.state;
 		showAction[action] = false;
 		this.setState(showAction);
 	};
@@ -179,9 +178,9 @@ class LessonPreview extends Component {
 	};
 
 	render() {
-		const { lesson, steps, currentStepIndex, actionManagement, } = this.state;
-		const {source,target, showAction, currentAction} = this.state;
-		const {isPreview, history} = this.props;
+		const { lesson, steps, currentStepIndex, actionManagement } = this.state;
+		const { source, target, showAction, currentAction } = this.state;
+		const { isPreview, history } = this.props;
 		if (lesson == null) {
 			return null;
 		}
@@ -189,14 +188,21 @@ class LessonPreview extends Component {
 
 		return (
 			<div>
-				<HeaderBru {...this.props} home={Routes.INSTRUCTOR_DASHBOARD} links={links} isLoggedIn btn="Exit" color="#01AFD8" />
+				<HeaderBru
+					{...this.props}
+					home={Routes.INSTRUCTOR_DASHBOARD}
+					links={links}
+					isLoggedIn
+					btn="Exit"
+					color="#01AFD8"
+				/>
 				<ShakeModal
 					progressNeeded={currentStep.actionMeasurement}
 					show={showAction.shake}
 					timer={currentStep.timer}
-					onHide={() => this.hideActionModal("shake")}
+					onHide={() => this.hideActionModal('shake')}
 					onSuccess={() => {
-						this.hideActionModal("shake");
+						this.hideActionModal('shake');
 						this.onNextStep();
 					}}
 					timer={currentStep.timer}
@@ -209,7 +215,7 @@ class LessonPreview extends Component {
 						target={currentStep.target}
 						goal={currentStep.actionMeasurement}
 						instructor={false}
-						onHide={() => this.hideActionModal("pour")}
+						onHide={() => this.hideActionModal('pour')}
 						onNextStep={this.onNextStep}
 					/>
 				) : null}
@@ -218,9 +224,9 @@ class LessonPreview extends Component {
 					show={showAction.stir}
 					timer={currentStep.timer}
 					target={currentStep.target}
-					onHide={() => this.hideActionModal("stir")}
+					onHide={() => this.hideActionModal('stir')}
 					onSuccess={() => {
-						this.hideActionModal("stir");
+						this.hideActionModal('stir');
 						this.onNextStep();
 					}}
 				/>
@@ -237,12 +243,18 @@ class LessonPreview extends Component {
 									<Card.Header> {lesson.name} </Card.Header>
 									<ListGroup>
 										{steps.map((step, index) => {
-											const className = index < currentStepIndex ?  "completed-step" : "";
+											const className = index < currentStepIndex ? 'completed-step' : '';
 											return (
-												<ListGroup.Item className={className} key={index} active={currentStepIndex == index} as="li">
+												<ListGroup.Item
+													className={className}
+													key={index}
+													active={currentStepIndex == index}
+													as="li"
+												>
 													{step.name}
 												</ListGroup.Item>
-											)})}
+											);
+										})}
 									</ListGroup>
 								</Card>
 							</div>
@@ -280,7 +292,7 @@ class LessonPreview extends Component {
 							</Button>
 							<div className="divider" />
 							<Button
-								disabled={currentStepIndex === steps.length -  1}
+								disabled={currentStepIndex === steps.length - 1}
 								style={{ float: 'left', marginRight: '10px' }}
 								variant="dark"
 								onClick={this.onNextStep}
@@ -311,10 +323,12 @@ class LessonPreview extends Component {
 			lessonId: lesson_id
 		};
 
-		axios.post(Routes.SERVER + 'markAsComplete', body).then(
-			(response) => this.setState({isLessonComplete: true, showSuccesfullyComplete: true}),
-			(error) => console.log(error)
-		);
+		axios
+			.post(Routes.SERVER + 'markAsComplete', body)
+			.then(
+				(response) => this.setState({ isLessonComplete: true, showSuccesfullyComplete: true }),
+				(error) => console.log(error)
+			);
 	};
 
 	restartLesson = () => {
@@ -323,11 +337,10 @@ class LessonPreview extends Component {
 	};
 
 	resetStep = () => {
-		const {initialSteps,steps, currentStepIndex} = this.state;
+		const { initialSteps, steps, currentStepIndex } = this.state;
 		steps[currentStepIndex] = initialSteps[currentStepIndex].clone();
-		this.setState({steps});
+		this.setState({ steps });
 	};
-
 
 	onCanvasResize = () => {
 		const { canvasSize, steps } = this.state;
@@ -340,16 +353,16 @@ class LessonPreview extends Component {
 	};
 
 	isSelectActionCorrect = (action) => {
-		const {steps, currentStepIndex, source} = this.state;
+		const { steps, currentStepIndex, source } = this.state;
 		const currentStep = steps[currentStepIndex];
-		return action == currentStep.action && source === currentStep.source
-	}
+		return action == currentStep.action && source === currentStep.source;
+	};
 
-	isDragActionCorrect = (draggedTool,overlappingTools) => {
-		const {steps, currentStepIndex, currentAction} = this.state;
+	isDragActionCorrect = (draggedTool, overlappingTools) => {
+		const { steps, currentStepIndex, currentAction } = this.state;
 		const currentStep = steps[currentStepIndex];
 		const targetIndex = overlappingTools.indexOf(currentStep.target);
 		return currentAction === currentStep.action && draggedTool === currentStep.source && targetIndex !== -1;
-	}
+	};
 }
 export default LessonPreview;
