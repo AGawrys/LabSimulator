@@ -18,7 +18,7 @@ import Catalog from '../Components/Catalog.jsx';
 import Canvas from '../Components/Canvas.jsx';
 import Routes from '../utils/RouteConstants.js';
 import GeneralConstants from '../utils/GeneralConstants.js';
-import { ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME } from '../utils/EditorConstants.js';
+import { ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME, DEFAULT_LESSON_NAME } from '../utils/EditorConstants.js';
 import { determineToolPosition, determineToolSize, getCanvasSize, resizeTools } from '../utils/CanvasUtils.js';
 import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
@@ -161,7 +161,8 @@ class Editor extends Component {
 	};
 
 	handleFieldChange = (e) => {
-		this.state.lesson.setName(e.target.value);
+		this.state.lesson.name = e.target.value;
+		this.setState({lesson:this.state.lesson});
 	};
 
 	closePourModal = () => {
@@ -311,11 +312,11 @@ class Editor extends Component {
 								<FormControl
 									onChange={(e) => this.handleFieldChange(e)}
 									className="editorControlName"
-									autoFocus
 									type="text"
 									disabled={lesson.isPublished}
-									defaultValue={lesson.name}
+									value={lesson.name}
 									required
+									onBlur={this.onLessonFieldBlur}
 								/>
 							</Col>
 						</Row>
@@ -555,7 +556,7 @@ class Editor extends Component {
 				onDeleteStep={this.onDeleteStep}
 				onFieldBlur={this.onFieldBlur}
 				value={step}
-				isDisabled={this.state.steps.length === 1}
+				isDisabled={this.state.steps.length === 1 || this.state.lesson.isPublished}
 			/>
 		);
 	};
@@ -607,9 +608,6 @@ class Editor extends Component {
 	};
 
 	onStepNameChange = (e) => {
-		if (this.state.lesson.isPublished) {
-			return;
-		}
 		const { steps, currentStep, history } = this.state;
 		currentStep.name = e.target.value;
 		this.setState({ currentStep });
@@ -623,6 +621,16 @@ class Editor extends Component {
 			this.addOperation();
 		}
 	};
+
+	onLessonFieldBlur = (e) => {
+
+		if (StringUtils.isEmpty(e.target.value)) {
+			this.state.lesson.name = DEFAULT_LESSON_NAME;
+			this.setState({lesson: this.state.lesson}, this.addOperation);
+		} else {
+			this.addOperation();
+		}
+	}
 
 	onDeleteStep = (e, step) => {
 		e.cancelBubble = true;
@@ -826,10 +834,11 @@ class Editor extends Component {
 	};
 
 	cloneState = (state) => {
-		const { steps, currentStep } = state;
+		const { steps, currentStep, lesson } = state;
 		const currentStepIndex = steps.indexOf(currentStep);
 		const clonedSteps = steps.map((step) => step.clone());
-		return { steps: clonedSteps, currentStep: clonedSteps[currentStepIndex] };
+		const clonedLesson = lesson.clone();
+		return { steps: clonedSteps, currentStep: clonedSteps[currentStepIndex], lesson:clonedLesson};
 	};
 
 	onShortcutUndo = () => {

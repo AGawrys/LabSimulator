@@ -11,6 +11,7 @@ const SortableStep = sortableElement((props) => {
 			<DragHandle />
 			<div index={stepIndex} className="divider" />
 			<Form.Control
+				disabled={isDisabled}
 				index={stepIndex}
 				className="step-name-form"
 				onBlur={(e) => onFieldBlur(e, value)}
@@ -21,7 +22,7 @@ const SortableStep = sortableElement((props) => {
 			  	<Dropdown.Toggle as={StepMenu}>
 			  	</Dropdown.Toggle>
 			  	<Dropdown.Menu index={stepIndex}> 
-			      	<Dropdown.Item key={stepIndex +"id"} onClick={(e) => onCloneStep(e,value)}>
+			      	<Dropdown.Item key={stepIndex +"id"} disabled={isDisabled} onClick={(e) => onCloneStep(e,value)}>
 			      		<i className="fa fa-clone" />&nbsp; Duplicate Step
 		      		</Dropdown.Item>
 			      	<Dropdown.Divider/>
