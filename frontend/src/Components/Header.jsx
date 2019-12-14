@@ -169,7 +169,7 @@ class HeaderBru extends React.Component {
 	}
 
 	getCorrectRoute() {
-		const { role } = this.props;
+		const { role } = this.state;
 		if (role == GeneralConstants.STUDENT) {
 			return Routes.STUDENT_DASHBOARD;
 		} else if (role == GeneralConstants.INSTRUCTOR) {

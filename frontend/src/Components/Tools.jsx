@@ -145,7 +145,7 @@ const IMAGES = {
         }
     },
     Blender: {
-        draw: (canvas, width, height, properties) => {
+        draw: (canvas, width, height, properties, animation) => {
             if (canvas.getContext) {
                 const context = canvas.getContext("2d");
                 const bounds = canvas.getBoundingClientRect();
@@ -161,10 +161,12 @@ const IMAGES = {
                 const fillPoint = top + (cupHeight * (1 - properties.Fill))
 
                 context.beginPath();
-                context.moveTo(left.x(fillPoint), fillPoint);
+                context.moveTo(left.x(fillPoint+ (cupHeight * .05 * (animation.rock - .5))), fillPoint + (cupHeight * .05 * (animation.rock - .5)));
                 context.lineTo(leftBottom, bottom)
                 context.lineTo(rightBottom, bottom)
-                context.lineTo(right.x(fillPoint), fillPoint);
+                context.lineTo(right.x(fillPoint - (cupHeight * .05 * (animation.rock - .5))), fillPoint - (cupHeight * .05 * (animation.rock - .5)));
+                context.quadraticCurveTo(width *.5, fillPoint + (cupHeight * .05 * animation.ramp),
+                                        left.x(fillPoint + (cupHeight * .05 * (animation.rock - .5))), fillPoint + (cupHeight * .05 * (animation.rock - .5)))
                 context.fillStyle = properties.Color;
                 context.fill();
 
@@ -214,6 +216,18 @@ const IMAGES = {
                     }
                     context.stroke();
                 }
+                if (animation.shake) {
+                    if (!animation.reset) {
+                        const x = Math.random(), y = Math.random()
+                        context.translate(x, y);
+                        animation.resetX = -x;
+                        animation.resetY = -y;
+                    } else {
+                        context.translate(animation.resetX, animation.resetY);
+                    }
+                } else {
+                    context.setTransform(1,0,0,1,0,0);
+                }
             }
         },
         properties: {
@@ -224,6 +238,15 @@ const IMAGES = {
             Capacity: 2,
             Intervals: 4,
 
+        },
+        animation: {
+            ramp: 0,
+            rock: .5,
+            increasing: true,
+            shake: false,
+            reset: false,
+            resetX: 0,
+            resetY: 0,
         }
     },
     PumpBottle: {
@@ -473,7 +496,13 @@ function createImage(toolType) {
 	image.properties = {};
 	Object.keys(IMAGES[toolType].properties).map((key) => {
 		image.properties[key] = IMAGES[toolType].properties[key];
-	});
+    });
+    if (IMAGES[toolType].animation) {
+        image.animation = {};
+        Object.keys(IMAGES[toolType].animation).map((key) => {
+            image.animation[key] = IMAGES[toolType].animation[key];
+        });
+    }
 
 	return image;
 }

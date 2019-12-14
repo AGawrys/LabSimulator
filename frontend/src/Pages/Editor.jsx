@@ -28,6 +28,7 @@ import Position from '../Objects/Position.js';
 import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import StirModal from '../Components/StirModal.jsx';
+import BlendModal from '../Components/BlendModal.jsx';
 import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
 import EditorNotification from '../Components/EditorNotification.jsx';
@@ -197,7 +198,8 @@ class Editor extends Component {
 				tool.value.type === 'Banana' ||
 				tool.value.type === 'Mango' ||
 				tool.value.type === 'Blueberry' ||
-				tool.value.type === 'Strawberry'
+				tool.value.type === 'Strawberry' ||
+				tool.value.type === 'IceCube'
 		);
 		const blendTargetOptions = toolOptions.filter((tool) => tool.value.type === 'Blender');
 		const stirSourceOptions = toolOptions.filter((tool) => tool.value.type === 'Spoon');
@@ -286,7 +288,18 @@ class Editor extends Component {
 						this.setState({ showAction });
 					}}
 				/>
-					{showAction.pour ? (<Pour
+				<BlendModal
+					show={showAction.blend}
+					progressNeeded={currentStep.actionMeasurement}
+					timer={currentStep.timer}
+					source={currentStep.souce}
+					target={currentStep.target}
+					onComplete={() => {
+						showAction.blend = false;
+						this.setState({ showAction });
+					}}
+				/>
+				{showAction.pour ? (<Pour
 						show={showAction.pour}
 						source={currentStep.source}
 						target={currentStep.target}
