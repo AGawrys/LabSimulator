@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Collapsible from 'react-collapsible';
-import '../Styles/StudentDashboard.css';
 import HeaderBru from '../Components/Header.jsx';
 import Routes from '../utils/RouteConstants.js';
 import FormModal from '../Components/FormModal.jsx';
@@ -228,7 +227,7 @@ class CoursePage extends Component {
 	parseLessonResponse = (response) => {
 		const potentialLessons = response.data;
 		const parsedLessons = potentialLessons.map((lesson, index) => {
-			return {id: index, value: lesson.name, key: lesson.lessonId}
+			return {id: index, label: lesson.name, data: lesson.lessonId}
 		});
 		console.log(response.data);
 		this.setState({
@@ -238,7 +237,7 @@ class CoursePage extends Component {
 
 	parseSearchResults = (accounts) => {
 		return accounts.map((account, index) => { 
-			return {id: index, value: account.name + " (" + account.email + ")", key: account.email}
+			return {id: index, label: account.name + " (" + account.email + ")", data: account.email}
 		});
 	}
 

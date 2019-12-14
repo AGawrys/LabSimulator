@@ -92,3 +92,16 @@
 .completed-step {
 	color:green;
 }
+
+.rbt-input-multi {
+    cursor: text;
+    overflow: hidden;
+    position: relative;
+    height: auto;
+}
+
+.rbt-input-multi .rbt-input-wrapper {
+    margin-bottom: -4px;
+    margin-top: -1px;
+    overflow: hidden;
+}

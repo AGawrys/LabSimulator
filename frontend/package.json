@@ -10,6 +10,7 @@
 		"react": "^16.10.2",
 		"react-addons": "^0.9.1-deprecated",
 		"react-bootstrap": "^1.0.0-beta.14",
+		"react-bootstrap-typeahead": "^3.4.7",
 		"react-click-n-hold": "^1.0.7",
 		"react-collapsible": "^2.6.0",
 		"react-color": "^2.17.3",
