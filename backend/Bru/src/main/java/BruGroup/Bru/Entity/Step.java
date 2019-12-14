@@ -106,6 +106,10 @@ public class Step {
 
     public boolean isActionSet() {
 
+        if(actionType == null) {
+            return false;
+        }
+
         if (actionType.equals("Pour") || actionType.equals("Drag") || actionType.equals("Stir")) {
             return source != -1 && target != -1;
         }

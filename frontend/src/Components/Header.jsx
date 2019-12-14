@@ -27,7 +27,7 @@ class HeaderBru extends React.Component {
 		this.setState({ [field]: e.target.value });
 	};
 
-	handleSignUp = (e) => {
+	handleLogin = (e) => {
 		e.preventDefault();
 
 		const account = {
@@ -113,6 +113,7 @@ class HeaderBru extends React.Component {
 				<FormModal
 					title="Login"
 					show={this.state.showLoginModal}
+					onSubmit={this.handleLogin}
 					onHide={() => {
 						this.setState({ showLoginModal: false });
 					}}
@@ -162,7 +163,7 @@ class HeaderBru extends React.Component {
 				</Modal.Body>
 				<Modal.Footer>
 					<p style={{ color: 'red' }}> {errorMessage}</p>
-					<Button variant="primary" type="button" onClick={this.handleSignUp}>
+					<Button variant="primary" type="submit" onClick={this.handleLogin}>
 						Login
 					</Button>
 				</Modal.Footer>

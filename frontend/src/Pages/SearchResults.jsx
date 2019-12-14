@@ -76,7 +76,7 @@ function SearchResult({result, email}) {
 	const percentComplete = (numCompleted/ numAttempts).toFixed(2) * 100;
 	let statisticStyle = "";
 	if (percentComplete > 70) {
-		statisticStyle = "good-lesson-statisic"
+		statisticStyle = "good-lesson-statistic"
 	}
 	else if (percentComplete < 50) {
 		statisticStyle = "bad-lesson-statistic"

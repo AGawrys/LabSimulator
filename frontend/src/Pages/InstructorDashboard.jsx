@@ -52,7 +52,9 @@ export class InstructorDashboard extends Component {
 				<div className="teacherDashboard">
 					<div className="searchBarDiv">
 					<h1 className="m-0 font-weight-light text-secondary headings">Welcome to your Dashboard</h1>
-						<SearchBar placeHolderText={'Search for Lesson'} onSearchButtonClick={(value) => this.props.history.push(Routes.SEARCH + value)} />
+						<Form onSubmit={(value) => this.props.history.push(Routes.Search + value)}>
+							<SearchBar placeHolderText={'Search for Lesson'} onSearchButtonClick={(value) => this.props.history.push(Routes.SEARCH + value)} />
+						</Form>
 					</div>
 					<div className="teacherDashboardContents">
 						<div className="recentDrinksDiv cardBorder">

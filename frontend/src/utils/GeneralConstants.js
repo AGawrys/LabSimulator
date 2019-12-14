@@ -19,6 +19,8 @@ const GeneralConstants = {
 		'Lesson has been successfully completed! Close to navigate back to student dashboard',
 	CANNOT_PUBLISH_MESSAGE: 'Please make sure all steps are completed before publishing!',
 	SAVE_BEFORE_PUBLISH_MESSAGE: 'Please save before publishing!',
+	PUBLISH_CONFIRMATION_TITLE: 'Publish Lesson',
+	PUBLISH_CONFIRMATION_MESSAGE: 'Are you sure you want to publish? You cannot edit this lesson after it has been published.',
 	ADD_STUDENT_TITLE: 'Add Student to Course',
 	ADD_INSTRUCTOR_TITLE: 'Add Instructor',
 	ADD_LESSON_TITLE: 'Add Lesson to Course',
