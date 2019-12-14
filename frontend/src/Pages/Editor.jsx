@@ -39,6 +39,7 @@ import axios from 'axios';
 import plus from '../Styles/Images/icons8-plus.svg';
 import { HotKeys } from 'react-hotkeys';
 import Pour from '../Components/Pour.jsx';
+import { Prompt} from 'react-router-dom';
 
 const links = {
 	Dashboard: Routes.INSTRUCTOR_DASHBOARD
@@ -230,6 +231,10 @@ class Editor extends Component {
 		);
 		return (
 			<HotKeys handlers={this.shortcutHandlers}>
+				<Prompt
+				  when={isDirty}
+				  message={GeneralConstants.UNSAVED_EDITOR_MESSAGE}
+				/>
 				<HeaderBru {...this.props} home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
 				<ConfirmationModal
 					title={GeneralConstants.DELETE_LESSON_TITLE}

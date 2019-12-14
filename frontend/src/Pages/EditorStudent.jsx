@@ -14,7 +14,7 @@ import Canvas from '../Components/Canvas.jsx';
 import ActionMenuStudent from '../Components/ActionMenuStudent.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
 import GeneralConstants from '../utils/GeneralConstants.js';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Prompt } from 'react-router-dom';
 import StirModal from '../Components/StirModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import Pour from '../Components/Pour.jsx';
@@ -221,6 +221,10 @@ class EditorStudent extends Component {
 
 		return (
 			<div>
+				<Prompt
+				  when={true}
+				  message={GeneralConstants.LEAVE_STUDENT_LESSON_MESSAGE}
+				/>
 				<HeaderBru
 					{...this.props}
 					home={Routes.STUDENT_DASHBOARD}
