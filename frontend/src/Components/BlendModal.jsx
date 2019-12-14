@@ -1,5 +1,5 @@
 import React from "react"
-import {Modal} from 'react-bootstrap';
+import {Modal, Button} from 'react-bootstrap';
 import Timer from "react-compound-timer";
 import Tool from './Tool.jsx';
 
@@ -10,10 +10,13 @@ class BlendModal extends React.Component {
             started: false,
 			failed: false,
             completed: false,
-            animation: null
+            animation: null,
+            time: null,
         };
         
+        this.resetState = this.resetState.bind(this);
         this.onBlend = this.onBlend.bind(this);
+        this.onStop = this.onStop.bind(this);
         this.onBlendEnd = this.onBlendEnd.bind(this);
     }
     
@@ -22,13 +25,14 @@ class BlendModal extends React.Component {
         const {show, source, target} = this.props;
         return (
             <Timer
-				startImmediately={false}
+                startImmediately={false}
+                onStop={this.onStop}
 				checkpoints={[{
-					time: (this.props.time - 1) * 1000 ,
-					callback: () => this.handleCompleted()
+					time: (this.props.time - 1) * 1000,
+					callback: () => this.setState({time: this.props.time - 1})
 				}, {
-                    time: (this.props.time + 1) * 1000,
-                    callback: () => this.handleFailed()
+                    time: (this.props.time + 2)  * 1000,
+                    callback: () => this.setState({time: this.props.time + 2})
                 }]}
 			>
                 {({ start, resume, pause, stop, reset, getTimerState, getTime, setTime }) =>  {
@@ -38,7 +42,11 @@ class BlendModal extends React.Component {
                     return (
                         <Modal
                             show={show}
-                            onHide={this.onHide}
+                            onHide={() => {
+                                stop();
+                                reset();
+                                this.onHide();
+                            }}
                             size="lg"
                             aria-labelledby="contained-modal-title-vcenter"
                             centered
@@ -51,7 +59,7 @@ class BlendModal extends React.Component {
                                     <h4 className="failedText" hidden={!failed}>
                                         You have failed! Try again!
                                     </h4>
-                                    <h4 className="successText" hidden={completed && !failed}>
+                                    <h4 className="successText" hidden={!completed || failed}>
                                         You completed the action!
                                     </h4>
                                 </div>
@@ -60,12 +68,33 @@ class BlendModal extends React.Component {
                                 <Tool
                                     tool={target}
                                 />
-                                <button
-                                    onMouseDown={this.onBlend}
-                                    onMouseUp={this.onBlendEnd}>
-                                    Blend!
-                                </button>                
+                                <Button variant="primary" disabled={completed || failed} onMouseDown={() => {
+                                    start();
+                                    this.onBlend()
+                                    }}
+                                    onMouseUp={() => {
+                                        stop();
+                                        this.onBlendEnd()
+                                    }}
+                                >
+                                    Blend
+                                </Button>               
                             </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="warning" disabled={!failed} hidden={!failed} onClick={() => {
+                                    reset();
+                                    this.resetState();
+                                    }}>
+                                    Retry
+                                </Button>
+                                <Button variant="primary" disabled={!completed || failed} onClick={() => {
+                                    reset();
+                                    this.resetState();
+                                    this.props.onComplete();
+                                    }}>
+                                    Continue
+                                </Button>
+                            </Modal.Footer>
                         </Modal>
                     );
                 }}
@@ -78,19 +107,21 @@ class BlendModal extends React.Component {
             started: false,
             completed: false,
             failed: false,
+            time: null
         });
     }
 
-    handleCompleted() {
-        this.setState({
-            completed: true
-        });
-    }
-
-    handleFailed() {
-        this.setState({
-            failed: true
-        });
+    onStop() {
+        if (this.state.time >= this.props.time - 1 && this.state.time <= this.props.time + 1) {
+            console.log(this.state.time, this.props.time)
+            this.setState({
+                completed: true
+            })
+        } else {
+            this.setState({
+                failed: true
+            })
+        }
     }
     
     onHide = () => {
@@ -102,11 +133,12 @@ class BlendModal extends React.Component {
         const {target} = this.props
         const {ramp, rock, increasing, reset}  = target.image.animation
 
+        target.image.animation.shake = true;
+        target.image.animation.reset = !reset;
+
         const animation = window.requestAnimationFrame(this.onBlend);
         this.setState({animation});
 
-        target.image.animation.shake = true;
-        target.image.animation.reset = !reset;
         if (ramp < 1) {
             target.image.animation.ramp += .10
         } else {
@@ -138,7 +170,6 @@ class BlendModal extends React.Component {
         
         if (target.image.animation.ramp > 0) {
             target.image.animation.ramp -= .2;
-            console.log(target.image.animation.ramp)
             if (target.image.animation.ramp < .1 && target.image.animation.ramp > -.1) {
                 target.image.animation.ramp = 0;
             }

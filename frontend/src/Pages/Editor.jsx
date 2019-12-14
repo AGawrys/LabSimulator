@@ -291,7 +291,7 @@ class Editor extends Component {
 				<BlendModal
 					show={showAction.blend}
 					progressNeeded={currentStep.actionMeasurement}
-					timer={currentStep.timer}
+					time={currentStep.timer}
 					source={currentStep.souce}
 					target={currentStep.target}
 					onComplete={() => {
@@ -487,6 +487,9 @@ class Editor extends Component {
 												) : (
 													''
 												)
+											}
+											hidden={
+												currentStep.action === "Blend"
 											}
 										/>
 										<input

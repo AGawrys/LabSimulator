@@ -218,7 +218,7 @@ const IMAGES = {
                 }
                 if (animation.shake) {
                     if (!animation.reset) {
-                        const x = Math.random(), y = Math.random()
+                        const x = Math.random() * 1.1, y = Math.random() * 1.1;
                         context.translate(x, y);
                         animation.resetX = -x;
                         animation.resetY = -y;

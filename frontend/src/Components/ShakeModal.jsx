@@ -53,7 +53,11 @@ class ShakeModal extends React.Component {
                     reset();
                   }}
                   show={show}
-                  onHide={this.resetProgress}
+                  onHide={() => {
+                    stop();
+                    reset();
+                    this.resetProgress();
+                  }}
                   size="lg"
                   aria-labelledby="contained-modal-title-vcenter"
                   centered
