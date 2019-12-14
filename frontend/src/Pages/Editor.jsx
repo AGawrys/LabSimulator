@@ -646,7 +646,6 @@ class Editor extends Component {
 		}
 		const { steps } = this.state;
 		const index = steps.indexOf(step);
-		console.log(step);
 		const newIndex = index === steps.length - 1 ? index - 1 : index;
 		steps.splice(index, 1);
 		const currentStep = steps[newIndex];
