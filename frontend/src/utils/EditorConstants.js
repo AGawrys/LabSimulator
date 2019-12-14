@@ -7,6 +7,7 @@ const ACTIONS = [
 	{ value: 'Pour', label: 'Pour' },
 	{ value: 'Stir', label: 'Stir' },
 	{ value: 'Blend', label: 'Blend' },
+	{ value: 'Pump', label: 'Pump' },
 	{ value: 'Drag', label: 'Drag' }
 ];
 
