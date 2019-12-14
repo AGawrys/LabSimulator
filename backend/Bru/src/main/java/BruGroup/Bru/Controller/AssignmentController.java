@@ -28,6 +28,9 @@ public class AssignmentController {
     @Autowired
     LessonRepository lessonRepository;
 
+    @Autowired
+    AttemptRepository attemptRepository;
+
     @GetMapping(path = "/allAssignment")
     @CrossOrigin(origins = "*")
     public List<Assignment> allAssignment() {
@@ -40,6 +43,35 @@ public class AssignmentController {
         if (assignmentRepository.existsById(assignmentIdentity)) {
             assignmentRepository.delete(assignmentRepository.findByAssignmentIdentity(assignmentIdentity));
         }
+        return ResponseEntity.ok(null);
+    }
+
+    @PostMapping(path = "/attemptLesson")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity attemptLesson (@RequestBody AttemptIdentity attemptIdentity) {
+        if (!attemptRepository.existsById(attemptIdentity)) {
+            Attempt attempt = new Attempt(attemptIdentity,1);
+            attemptRepository.save(attempt);
+        }
+        else {
+            Attempt attempt = attemptRepository.findByAttemptIdentity(attemptIdentity);
+            attempt.setNumAttempts(attempt.getNumAttempts() + 1);
+            attemptRepository.save(attempt);
+        }
+        return ResponseEntity.ok(null);
+    }
+
+    @GetMapping(path = "/hasAttempted/{email}")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity hasAttempted (@PathVariable String email) {
+        List<Attempt> lessonAttempts = attemptRepository.findByAttemptIdentityEmail(email);
+        return ResponseEntity.ok(!lessonAttempts.isEmpty());
+    }
+
+    @GetMapping(path = "/getLessonAttempts")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity getLessonAttempts (int lessonId) {
+        List<Attempt> lessonAttempts = attemptRepository.findByAttemptIdentityLessonId(lessonId);
         return ResponseEntity.ok(null);
     }
 
