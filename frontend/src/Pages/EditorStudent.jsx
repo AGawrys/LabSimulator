@@ -59,7 +59,7 @@ class EditorStudent extends Component {
 	componentDidMount() {
 		window.addEventListener('resize', this.onCanvasResize);
 		this.fetchData();
-		this.getCompletedLessons();
+		this.checkIfAttempted();
 	}
 
 	componentDidUpdate() {
@@ -77,10 +77,11 @@ class EditorStudent extends Component {
 		}
 	}
 
-	getCompletedLessons = () => {
-		axios
-			.get(Routes.SERVER + '/completedLesson/' + this.props.email)
-			.then((response) => this.setState({ directionModal: !response.data }), (error) => console.log(error));
+	checkIfAttempted = () => {
+		axios.get(Routes.SERVER + '/hasAttempted/' + this.props.email).then(
+			(response) => this.setState({ directionModal: !response.data }), 
+			(error) => console.log(error)
+		);
 	};
 
 	fetchData = () => {
@@ -105,8 +106,22 @@ class EditorStudent extends Component {
 			(response) => {
 				const { steps, lesson, canvasSize } = Lesson.load(response.data);
 				this.setState({ curriculum, steps, lesson, canvasSize });
+				this.attemptLesson();
 			},
 			(error) => console.log(error)
+		);
+	}
+
+	attemptLesson = () => {
+		const { lesson_id, course_id } = this.props.computedMatch.params;
+		const body = {
+			courseId: course_id,
+			lessonId: lesson_id,
+			email: this.props.email
+		};
+		axios.post(Routes.SERVER + 'attemptLesson', body).then(
+			(response) => console.log(response),
+			(error) => console.log(error),
 		);
 	}
 
