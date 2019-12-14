@@ -57,6 +57,7 @@ class Editor extends Component {
 			showSuccessfulDuplicate: false,
 			showIncompleteSteps: false,
 			showSuccessfulSave: false,
+			showPublishConfirmation: false,
 			showPublished: false,
 			showSaveBeforePublish: false,
 			showActionMenu: true,
@@ -182,6 +183,7 @@ class Editor extends Component {
 			showIncompleteSteps,
 			showSaveBeforePublish,
 			showPublished,
+			showPublishConfirmation,
 			showAction
 		} = this.state;
 		const { operations, pointer } = this.state.history;
@@ -222,7 +224,7 @@ class Editor extends Component {
 		const dragTargetOptions2 = toolOptions.filter((tool) => tool.value.type === 'StraightCup');
 
 		const publishBtn = lesson.isPublished ? null : (
-			<Button variant="primary" onClick={this.onPublishLesson}>
+			<Button variant="primary" onClick={() => this.setState({showPublishConfirmation: true})}>
 				Publish
 			</Button>
 		);
@@ -235,6 +237,13 @@ class Editor extends Component {
 					onHide={() => this.setState({ showDeleteLessonModal: false })}
 					show={showDeleteLessonModal}
 					onDelete={this.deleteLesson}
+				/>
+				<ConfirmationModal
+					title={GeneralConstants.PUBLISH_CONFIRMATION_TITLE}
+					message={GeneralConstants.PUBLISH_CONFIRMATION_MESSAGE}
+					onHide={() => this.setState({ showPublishConfirmation: false})}
+					show={showPublishConfirmation}
+					onDelete={this.onPublishLesson}
 				/>
 				<EditorNotification
 					message={GeneralConstants.SUCCESSFUL_PUBLISH_LESSON_MESSAGE}
