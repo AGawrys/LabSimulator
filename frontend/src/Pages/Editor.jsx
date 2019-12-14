@@ -61,6 +61,8 @@ class Editor extends Component {
 			showPublished: false,
 			showSaveBeforePublish: false,
 			showActionMenu: true,
+			showPourError: false,
+			showStirError: false,
 			showAction: {
 				pour: false,
 				shake: false,
@@ -184,7 +186,9 @@ class Editor extends Component {
 			showSaveBeforePublish,
 			showPublished,
 			showPublishConfirmation,
-			showAction
+			showAction,
+			showPourError,
+			showStirError
 		} = this.state;
 		const { operations, pointer } = this.state.history;
 		if (steps == null) {
@@ -224,7 +228,7 @@ class Editor extends Component {
 		const dragTargetOptions2 = toolOptions.filter((tool) => tool.value.type === 'StraightCup');
 
 		const publishBtn = lesson.isPublished ? null : (
-			<Button variant="primary" onClick={() => this.setState({showPublishConfirmation: true})}>
+			<Button variant="primary" onClick={() => this.setState({ showPublishConfirmation: true })}>
 				Publish
 			</Button>
 		);
@@ -241,7 +245,7 @@ class Editor extends Component {
 				<ConfirmationModal
 					title={GeneralConstants.PUBLISH_CONFIRMATION_TITLE}
 					message={GeneralConstants.PUBLISH_CONFIRMATION_MESSAGE}
-					onHide={() => this.setState({ showPublishConfirmation: false})}
+					onHide={() => this.setState({ showPublishConfirmation: false })}
 					show={showPublishConfirmation}
 					onDelete={this.onPublishLesson}
 				/>
@@ -273,6 +277,20 @@ class Editor extends Component {
 					message={GeneralConstants.CANNOT_PUBLISH_MESSAGE}
 					onClose={() => this.setState({ showIncompleteSteps: false })}
 					show={showIncompleteSteps}
+					autohide
+					delay={1250}
+				/>
+				<EditorNotification
+					message={GeneralConstants.POUR_NO_FILL_MESSAGE}
+					onClose={() => this.setState({ showPourError: false })}
+					show={showPourError}
+					autohide
+					delay={1250}
+				/>
+				<EditorNotification
+					message={GeneralConstants.STIR_NO_FILL_MESSAGE}
+					onClose={() => this.setState({ showStirError: false })}
+					show={showStirError}
 					autohide
 					delay={1250}
 				/>
@@ -873,6 +891,14 @@ class Editor extends Component {
 	showActionModal = (e) => {
 		e.preventDefault();
 		const { showAction, currentStep } = this.state;
+		if (currentStep.action === 'Pour' && currentStep.source.amount === 0) {
+			this.setState({ showPourError: true });
+			return;
+		}
+		if (currentStep.action === 'Stir' && currentStep.target.amount === 0) {
+			this.setState({ showStirError: true });
+			return;
+		}
 		showAction[currentStep.action.toLowerCase()] = true;
 		this.setState({ showAction });
 	};

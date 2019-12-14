@@ -20,7 +20,8 @@ const GeneralConstants = {
 	CANNOT_PUBLISH_MESSAGE: 'Please make sure all steps are completed before publishing!',
 	SAVE_BEFORE_PUBLISH_MESSAGE: 'Please save before publishing!',
 	PUBLISH_CONFIRMATION_TITLE: 'Publish Lesson',
-	PUBLISH_CONFIRMATION_MESSAGE: 'Are you sure you want to publish? You cannot edit this lesson after it has been published.',
+	PUBLISH_CONFIRMATION_MESSAGE:
+		'Are you sure you want to publish? You cannot edit this lesson after it has been published.',
 	ADD_STUDENT_TITLE: 'Add Student to Course',
 	ADD_INSTRUCTOR_TITLE: 'Add Instructor',
 	ADD_LESSON_TITLE: 'Add Lesson to Course',
@@ -29,7 +30,9 @@ const GeneralConstants = {
 	ORGANIZATION: 'ORGANIZATION',
 	NO_ROLE: 'ROLE INDEPENDENT',
 	SHOW_PUBLISHED: 'This lesson is already published!\n No changes can be saved.',
-	FAILED_SELECTION_MESSAGE: 'Incorrect selection! Try again.'
+	FAILED_SELECTION_MESSAGE: 'Incorrect selection! Try again.',
+	POUR_NO_FILL_MESSAGE: 'Cannot pour from empty source tool.',
+	STIR_NO_FILL_MESSAGE: 'Cannot stir an empty target tool. '
 };
 
 export default GeneralConstants;
