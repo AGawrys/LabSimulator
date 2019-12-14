@@ -277,8 +277,6 @@ class Editor extends Component {
 					message={GeneralConstants.SHOW_PUBLISHED}
 					onClose={() => this.setState({ showPublished: false })}
 					show={showPublished}
-					autohide
-					delay={1550}
 				/>
 				<ShakeModal
 					progressNeeded={currentStep.actionMeasurement}
@@ -348,7 +346,7 @@ class Editor extends Component {
 									<i className="fa fa-repeat" aria-hidden="true" />
 								</Button>
 								<Button
-									disabled={!isDirty}
+									disabled={!isDirty || lesson.isPublished}
 									type="button"
 									variant="success"
 									onClick={() =>
@@ -359,6 +357,7 @@ class Editor extends Component {
 									<i className="fas fa-save" />
 								</Button>
 								<Button
+									disabled={lesson.isPublished}
 									type="button"
 									variant="danger"
 									onClick={() => this.setState({ showDeleteLessonModal: true })}

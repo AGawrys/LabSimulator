@@ -26,7 +26,7 @@ const GeneralConstants = {
 	INSTRUCTOR: 'INSTRUCTOR',
 	ORGANIZATION: 'ORGANIZATION',
 	NO_ROLE: 'ROLE INDEPENDENT',
-	SHOW_PUBLISHED: 'This lesson is published!\n Only changes to the position of the tool can be done.'
+	SHOW_PUBLISHED: 'This lesson is already published!\n No changes can be saved.',
 };
 
 export default GeneralConstants;
