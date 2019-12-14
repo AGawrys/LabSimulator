@@ -20,6 +20,7 @@ import ShakeModal from '../Components/ShakeModal.jsx';
 import Pour from '../Components/Pour.jsx';
 import StudentDirectionModal from '../Components/StudentDirectionModal.jsx';
 import Step from '../Objects/Step.js';
+import EditorNotification from '../Components/EditorNotification.jsx';
 
 import { isAbsolute } from 'path';
 
@@ -52,7 +53,8 @@ class EditorStudent extends Component {
 				stir: false,
 				drag: false
 			},
-			directionModal: true
+			directionModal: true,
+			showError: false
 		};
 	}
 
@@ -78,10 +80,9 @@ class EditorStudent extends Component {
 	}
 
 	checkIfAttempted = () => {
-		axios.get(Routes.SERVER + '/hasAttempted/' + this.props.email).then(
-			(response) => this.setState({ directionModal: !response.data }), 
-			(error) => console.log(error)
-		);
+		axios
+			.get(Routes.SERVER + '/hasAttempted/' + this.props.email)
+			.then((response) => this.setState({ directionModal: !response.data }), (error) => console.log(error));
 	};
 
 	fetchData = () => {
@@ -119,11 +120,10 @@ class EditorStudent extends Component {
 			lessonId: lesson_id,
 			email: this.props.email
 		};
-		axios.post(Routes.SERVER + 'attemptLesson', body).then(
-			(response) => console.log(response),
-			(error) => console.log(error),
-		);
-	}
+		axios
+			.post(Routes.SERVER + 'attemptLesson', body)
+			.then((response) => console.log(response), (error) => console.log(error));
+	};
 
 	handleClick = () => {
 		const { steps, currentStepIndex } = this.state;
@@ -159,7 +159,7 @@ class EditorStudent extends Component {
 			if (this.isSelectActionCorrect(action)) {
 				this.showActionModal(action.toLowerCase());
 			} else {
-				alert('WRONG SELECT CHOICE');
+				this.setState({ showError: true });
 			}
 		} else {
 			this.setState({ currentAction: action });
@@ -173,7 +173,7 @@ class EditorStudent extends Component {
 			return;
 		}
 		if (!this.isDragActionCorrect(draggedTool, overlappingTools)) {
-			alert('WRONG DRAG ACTION');
+			this.setState({ showError: true });
 			return;
 		}
 
@@ -207,7 +207,8 @@ class EditorStudent extends Component {
 			actionManagement,
 			curriculum,
 			showSuccesfullyComplete,
-			isLessonComplete
+			isLessonComplete,
+			showError
 		} = this.state;
 		const { source, target, showAction, currentAction, directionModal } = this.state;
 		const { isPreview } = this.props;
@@ -232,6 +233,13 @@ class EditorStudent extends Component {
 					isLoggedIn
 					btn="Exit"
 					color="#01AFD8"
+				/>
+				<EditorNotification
+					message={GeneralConstants.FAILED_SELECTION_MESSAGE}
+					onClose={() => this.setState({ showError: false })}
+					show={showError}
+					autohide
+					delay={1250}
 				/>
 				<InformationModal
 					title={GeneralConstants.SUCCESSFUL_COMPLETE_LESSON_TITLE}

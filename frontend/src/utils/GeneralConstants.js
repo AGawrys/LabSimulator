@@ -31,6 +31,7 @@ const GeneralConstants = {
 	ORGANIZATION: 'ORGANIZATION',
 	NO_ROLE: 'ROLE INDEPENDENT',
 	SHOW_PUBLISHED: 'This lesson is already published!\n No changes can be saved.',
+	FAILED_SELECTION_MESSAGE: 'Incorrect selection! Try again.'
 };
 
 export default GeneralConstants;

@@ -164,7 +164,7 @@ class Editor extends Component {
 
 	handleFieldChange = (e) => {
 		this.state.lesson.name = e.target.value;
-		this.setState({lesson:this.state.lesson});
+		this.setState({ lesson: this.state.lesson });
 	};
 
 	closePourModal = () => {
@@ -570,7 +570,7 @@ class Editor extends Component {
 				onDeleteStep={this.onDeleteStep}
 				onFieldBlur={this.onFieldBlur}
 				value={step}
-				isDisabled={this.state.steps.length === 1 || this.state.lesson.isPublished}
+				isDisabled={this.state.lesson.isPublished}
 			/>
 		);
 	};
@@ -637,14 +637,13 @@ class Editor extends Component {
 	};
 
 	onLessonFieldBlur = (e) => {
-
 		if (StringUtils.isEmpty(e.target.value)) {
 			this.state.lesson.name = DEFAULT_LESSON_NAME;
-			this.setState({lesson: this.state.lesson}, this.addOperation);
+			this.setState({ lesson: this.state.lesson }, this.addOperation);
 		} else {
 			this.addOperation();
 		}
-	}
+	};
 
 	onDeleteStep = (e, step) => {
 		e.cancelBubble = true;
@@ -655,7 +654,7 @@ class Editor extends Component {
 	};
 
 	deleteStep = (step) => {
-		if (this.state.lesson.isPublished) {
+		if (this.state.lesson.isPublished || this.state.steps.length === 1) {
 			return;
 		}
 		const { steps } = this.state;
@@ -851,7 +850,7 @@ class Editor extends Component {
 		const currentStepIndex = steps.indexOf(currentStep);
 		const clonedSteps = steps.map((step) => step.clone());
 		const clonedLesson = lesson.clone();
-		return { steps: clonedSteps, currentStep: clonedSteps[currentStepIndex], lesson:clonedLesson};
+		return { steps: clonedSteps, currentStep: clonedSteps[currentStepIndex], lesson: clonedLesson };
 	};
 
 	onShortcutUndo = () => {
