@@ -145,7 +145,7 @@ class ToolEditor extends React.Component {
                         minValue={0} 
                         maxValue={bounds.width - tool.position.x} 
                         onChange={this.onWidthChange}
-                        onChangeComplete={() => this.props.updateTools()}
+                        onChangeComplete={this.props.updateTools}
                         step={.01} 
                         value={tool.width}/>,
             Height: <InputRange
@@ -154,7 +154,7 @@ class ToolEditor extends React.Component {
                         minValue={0} 
                         maxValue={bounds.height - tool.position.y} 
                         onChange={this.onHeightChange}
-                        onChangeComplete={() => this.props.updateTools()}
+                        onChangeComplete={this.props.updateTools}
                         step={.01} 
                         value={tool.height}/>,
             Fill: <InputRange
@@ -163,31 +163,30 @@ class ToolEditor extends React.Component {
                         minValue={0} 
                         maxValue={1} 
                         onChange={this.onFillChange}
-                        onChangeComplete={() => this.props.updateTools()}
+                        onChangeComplete={this.props.updateTools}
                         step={.01} 
                         value={tool.amount}/>,
             Color: <SketchPicker 
                         disableAlpha={true} 
                         color={tool.color} 
                         onChange={this.onColorChange}
-                        onChangeComplete={() => this.props.updateTools()}/>,
+                        onChangeComplete={this.props.updateTools}/>,
             Taper: <InputRange
                         draggableTrack
                         formatLabel={(value) => value.toFixed(2)} 
                         minValue={0} 
                         maxValue={1} 
                         onChange={this.onTaperChange}
-                        onChangeComplete={() => this.props.updateTools()}
+                        onChangeComplete={this.props.updateTools}
                         step={.01} 
                         value={tool.taper}/>,
-            Color: <SketchPicker disableAlpha={true} color={tool.color} onChange={this.onColorChange}/>,
             Capacity: <InputRange
                         draggableTrack
                         formatLabel={(value) => value.toFixed(2)} 
                         minValue={2} 
                         maxValue={32} 
                         onChange={this.onCapacityChange}
-                        onChangeComplete={() => this.props.updateTools()}
+                        onChangeComplete={this.props.updateTools}
                         step={2} 
                         value={tool.image.properties.Capacity}/>,
             Intervals: <InputRange
@@ -196,7 +195,7 @@ class ToolEditor extends React.Component {
                         minValue={4} 
                         maxValue={8} 
                         onChange={this.onIntervalsChange}
-                        onChangeComplete={() => this.props.updateTools()}
+                        onChangeComplete={this.props.updateTools}
                         step={4} 
                         value={tool.image.properties.Intervals}/>,
         };
