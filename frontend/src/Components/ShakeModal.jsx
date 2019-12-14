@@ -53,7 +53,11 @@ class ShakeModal extends React.Component {
                     reset();
                   }}
                   show={show}
-                  onHide={this.resetProgress}
+                  onHide={() => {
+                    pause();
+                    reset();
+                    this.resetProgress();
+                  }}
                   size="lg"
                   aria-labelledby="contained-modal-title-vcenter"
                   centered
@@ -88,7 +92,6 @@ class ShakeModal extends React.Component {
                   <Modal.Footer>
                     <Button variant="warning" disabled={!failed} hidden={!failed} onClick={() => {
                       reset();
-                      start();
                       this.resetState()
                     }}>
                       Retry

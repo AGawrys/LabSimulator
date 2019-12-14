@@ -67,7 +67,11 @@ class StirModal extends React.Component {
 							  reset();
 							}}
 							show={show}
-							onHide={this.resetProgress}
+							onHide={() => {
+							  pause();
+							  reset();
+							  this.resetProgress();
+							}}
 							size="lg"
 							tabIndex={1}
 							aria-labelledby="contained-modal-title-vcenter"
