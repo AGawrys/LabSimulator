@@ -93,15 +93,11 @@
 	color:green;
 }
 
-.rbt-input-multi {
-    cursor: text;
-    overflow: hidden;
-    position: relative;
-    height: auto;
+.good-lesson-statistic {
+	color: green;
 }
 
-.rbt-input-multi .rbt-input-wrapper {
-    margin-bottom: -4px;
-    margin-top: -1px;
-    overflow: hidden;
+.bad-lesson-statistic {
+	color: red;
+	font-weight: 1000;
 }

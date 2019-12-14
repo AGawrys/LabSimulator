@@ -190,3 +190,4 @@ class LessonProgress {
         isCompleted = completed;
     }
 }
+

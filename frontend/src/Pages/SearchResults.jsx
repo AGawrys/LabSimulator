@@ -68,10 +68,20 @@ function SearchResults({results,email}) {
 }
 
 function SearchResult({result, email}) {
-	const {lesson, datePublished} = result;
+	const {lesson, datePublished, statistic} = result;
 	const {name, lessonId,instructorEmail} = lesson;
+	const {numAttempts, numCompleted} = statistic;
 	const parsedDate = new Date(datePublished);
 	const [downloads, setDownloads] = useState(lesson.downloads);
+	const percentComplete = (numCompleted/ numAttempts).toFixed(2) * 100;
+	let statisticStyle = "";
+	if (percentComplete > 70) {
+		statisticStyle = "good-lesson-statisic"
+	}
+	else if (percentComplete < 50) {
+		statisticStyle = "bad-lesson-statistic"
+	}
+
 	return (
 		<ListGroup.Item> 
 			<div className = "search-result-header">
@@ -84,6 +94,7 @@ function SearchResult({result, email}) {
 			<p className="search-result-info m-0 font-weight-light text-secondary headings"> Instructor: {instructorEmail} </p>
 			<p className="search-result-info m-0 font-weight-light text-secondary headings"> # of Downloads: {downloads} </p>
 			<p className="search-result-info m-0 font-weight-light text-secondary headings"> Date Published: {parsedDate.toDateString()} </p>
+			<p className={statisticStyle + " search-result-info m-0 font-weight-light headings"}> {percentComplete} % complete ({numCompleted} / {numAttempts}) </p>
 	 	</ListGroup.Item>
  	);
 }
