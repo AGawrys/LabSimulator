@@ -94,9 +94,8 @@ public class LessonController {
         HashSet<Integer> courseLessonIds = getCourseLessonIds(params.getCourseId());
         List<Lesson> potentialLessons = instructorLessons
                 .stream()
-                .filter(lesson -> !courseLessonIds.contains(lesson.getLessonId()))
+                .filter(lesson -> !courseLessonIds.contains(lesson.getLessonId()) && organizationRepository.findByLessonId(lesson.getLessonId()) != null)
                 .collect(Collectors.toList());
-
         return ResponseEntity.ok(potentialLessons);
     }
 
