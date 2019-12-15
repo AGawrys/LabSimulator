@@ -71,6 +71,7 @@ class Editor extends Component {
 			canvasSize: {height: 1000, width: 1000},
 			history: {operations: [], pointer: 0},
 			isDirty: false,
+			previous: null,
 		};
 		this.onDropTool = this.onDropTool.bind(this);
 		this.shortcutHandlers = {
@@ -101,10 +102,15 @@ class Editor extends Component {
 			image.draw = IMAGES[t.type].draw;
 			const amt = currentStep.actionMeasurement / 100;
 			image.properties.Fill = image.properties.Fill + amt;
-			const mytool =
-				(<ToolComponent tool={new Tool(t.type, image, undefined, 75, 100, undefined)} />);
-			return mytool;
+			const tool = t.clone();
+			tool.image = image;
+			return tool;
 		}
+	}
+	
+	setPreviewToCopiedTool = () => {
+		const tool = this.renderPreview();
+		this.setCopiedTool(tool);
 	}
 
 	componentDidMount() {
@@ -455,7 +461,16 @@ class Editor extends Component {
 												currentStep.timer ? currentStep.timer > 0 ? currentStep.timer : '' : ''
 											}
 										/>
-										{this.renderPreview()}
+										{currentStep.isComplete() ? (<ToolComponent tool={this.renderPreview()} /> ): null}
+										<button
+											show={!currentStep.isComplete()}
+											disabled={!currentStep.isComplete()} 
+											type="button" 
+											className="btn btn-secondary" 
+											onClick={this.setPreviewToCopiedTool}>
+											COPY
+										</button>
+										
 									</div>
 								</Card>
 
