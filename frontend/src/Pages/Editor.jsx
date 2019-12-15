@@ -372,7 +372,11 @@ class Editor extends Component {
 								</button>
 							</Col>
 							<Col className="editorToolBarButton alignRight" lg={5}>
-								<Button disabled={pointer === 0} variant="dark" onClick={this.handleUndo}>
+								<Button
+									disabled={pointer === 0 || lesson.isPublished}
+									variant="dark"
+									onClick={this.handleUndo}
+								>
 									<i className="fa fa-undo" aria-hidden="true" />
 								</Button>
 								<Button
