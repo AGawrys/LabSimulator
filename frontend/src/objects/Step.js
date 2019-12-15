@@ -80,16 +80,13 @@ class Step {
 
 	isComplete() {
 		if ((!this.actionMeasurement && this.action !== 'Blend') || this.tools.length === 0) {
-			console.log("didnt passed 1")
 			return false;
 		} else if (
 			!this.timer &&
 			this.action !== 'Pour' &&
 			this.action !== 'Pump') {
-			console.log("didnt passed 2")
 			return false;
 		}
-		console.log("passed")
 		return this.isActionSet();
 	}
 

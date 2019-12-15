@@ -1,5 +1,5 @@
 import Position from './Position';
-import { createImage } from '../Components/Tools.jsx';
+import { createImage, copyImage } from '../Components/Tools.jsx';
 
 class Tool {
 	constructor(type, image, position = null, width, height, layer = null, color = "#0077be", amount = 0, taper = .5) {
@@ -99,9 +99,7 @@ class Tool {
 	clone() {
 		const {name,type,width,height,layer,color,amount} = this;
 		const newPosition = this.position.clone();
-		const newImage = createImage(this.type);
-		newImage.properties.Fill = amount;
-		newImage.properties.Color = color;
+		const newImage = copyImage(this);
 		const clonedTool = new Tool(type,newImage,newPosition,width,height,layer,color,amount);
 		clonedTool.setName(name);
 		return clonedTool;

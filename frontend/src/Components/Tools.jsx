@@ -6,6 +6,7 @@ const CATEGORIES = {
         "StraightCup",
         "Shaker",
         "Blender",
+        "CoffeeBeanGrinder",
         "PumpBottle",
         "CupLid",
         "CupSleeve",
@@ -250,7 +251,7 @@ const IMAGES = {
         }
     },
     PumpBottle: {
-        draw: (canvas, width, height, properties) => {
+        draw: (canvas, width, height, properties, animation) => {
             if (canvas.getContext) {
                 const context = canvas.getContext("2d");
                 const bounds = canvas.getBoundingClientRect();
@@ -270,15 +271,79 @@ const IMAGES = {
                 context.fill();
                 context.stroke();
                 context.fillStyle = "black";
-                context.fillRect(width * .375, height * .05, width * .175, height * .025);
-                context.fillRect(width * .485, height * .075, width * .03, height * .225);
-                context.fillRect(width * .450, height * .30, width * .10, height * .055);
+                context.strokeRect(width * .485, height * .077 + height * .225 * (animation.compressed), width * .03, height * .223 * (1 - animation.compressed)); // Neck
+                context.strokeRect(width * .450, height * .30, width * .10, height * .055); // Cap
+                context.strokeRect(width * .375, height * .05 + height * .225 * (animation.compressed), width * .175, height * .025); // Spout
             }
         },
         properties: {
-            Width: 125,
-            Height: 200,
+            Width: 150,
+            Height: 250,
             Color: "#FFF8CF"
+        },
+        animation: {
+            compressed: 0,
+            isMaxed: false,
+            isMined: true,
+            isReleasing: false,
+        }
+    },
+    CoffeeBeanGrinder: {
+        draw: (canvas, width, height, properties, animation) => {
+            const context = canvas.getContext("2d");
+                const bounds = canvas.getBoundingClientRect();
+                context.clearRect(0, 0, bounds.width, bounds.height);
+
+                const beansTop = height * .08, beansBot = height * .33;
+                const beansLeftOut = width * .07, beansRightOut = width * .93;
+                const beansLeftIn = width * .25, beansRightIn = width * .75;
+
+                const groundsTop = height * .54, groundsBot = height * .95;
+                const groundsLeft = width * .25, groundsRight = width * .75;
+
+                const leftLine = LineCalculator(beansLeftOut, beansTop, beansLeftIn, beansBot);
+                const rightLine = LineCalculator(beansRightIn, beansBot, beansRightOut, beansTop);
+                const beansFillHeight = beansBot - (beansBot - beansTop) * (properties.Fill) * (1 - animation.grindProgress);
+                const groundsFillHeight = groundsBot - (groundsBot - groundsTop) * (1 - properties.Fill) * (animation.progress);
+
+                context.fillStyle = "#4a2c2a";
+                context.beginPath();
+                context.moveTo(leftLine.x(beansFillHeight), beansFillHeight);
+                context.lineTo(beansLeftIn, beansBot);
+                context.lineTo(beansRightIn, beansBot);
+                context.lineTo(rightLine.x(beansFillHeight), beansFillHeight);
+                context.fill();
+                context.fillRect(groundsLeft, groundsFillHeight, groundsRight - groundsLeft, groundsBot - groundsFillHeight);
+
+                context.lineWidth = 3;
+                context.lineJoin = "round";
+                context.beginPath();
+                context.moveTo(beansLeftOut, beansTop);
+                context.lineTo(beansLeftIn, beansBot);
+                context.lineTo(beansRightIn, beansBot);
+                context.lineTo(beansRightOut, beansTop);
+                context.stroke();
+                context.strokeRect(groundsLeft, groundsTop, groundsRight - groundsLeft, groundsBot - groundsTop);
+
+                context.fillStyle = "black";
+                context.beginPath();
+                context.moveTo(width * .25, height * .38);
+                context.lineTo(width * .25, height * .45);
+                context.moveTo(width * .75, height * .38);
+                context.lineTo(width * .75, height * .45);
+                context.strokeRect(width * .05, height * .05, width * .90, height * .03);
+                context.strokeRect(width * .23, height * .33, width * .54, height * .05);
+                context.strokeRect(width * .24, height * .50, width * .52, height * .04);
+                context.strokeRect(width * .15, height * .45, width * .70, height *.50);
+                context.stroke();
+        },
+        properties: {
+            Width: 175,
+            Height: 250,
+            Fill: 0
+        },
+        animation: {
+            grindProgress: 0
         }
     },
     CupLid: {
@@ -507,6 +572,23 @@ function createImage(toolType) {
 	return image;
 }
 
+function copyImage(tool) {
+    const image = {};
+    image.draw = tool.image.draw;
+    image.properties = {};
+    Object.keys(tool.image.properties).map((key) => {
+        image.properties[key] = tool.image.properties[key];
+    });
+    if (tool.image.animation) {
+        image.animation = {};
+        Object.keys(tool.image.animation).map((key) => {
+            image.animation[key] = tool.image.animation[key];
+        });
+    }
+
+	return image;
+}
+
 function isImage(toolType) {
     let isImage = false;
     switch (toolType) {
@@ -526,4 +608,4 @@ function isImage(toolType) {
     }
 }
 
-export { CATEGORIES, IMAGES, createImage };
+export { CATEGORIES, IMAGES, createImage, copyImage };

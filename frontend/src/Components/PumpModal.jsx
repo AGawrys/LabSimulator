@@ -1,13 +1,19 @@
 import React from "react"
-import {Modal, Button} from 'react-bootstrap';
+import {Row, Modal, Button} from 'react-bootstrap';
 import Tool from './Tool.jsx';
+import {copyImage} from '../Components/Tools.jsx';
 
 class PumpModal extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
             pumps: 0,
+            started: false,
             finished: false,
+            earlyRelease: false,
+            earlyPump: false,
+            sourceCopy: this.props.source.clone(),
+            targetCopy: this.props.target.clone(),
             animation: null,
         };
         
@@ -18,8 +24,8 @@ class PumpModal extends React.Component {
     }
     
     render() {
-        const {pumps, finished, animation} = this.state;
-        const {show, source, target, pumpsNeeded, onComplete} = this.props;
+        const {pumps, started, finished, earlyRelease, earlyPump, sourceCopy, targetCopy, animation} = this.state;
+        const {show, pumpsNeeded, onComplete} = this.props;
 
         return (
             <Modal
@@ -31,35 +37,40 @@ class PumpModal extends React.Component {
             >
                 <Modal.Header closeButton>
                     <div style={{ width: 400 }}>
-                        <div className={finished && pumps === pumpsNeeded? 'displayNone' : ''}>
+                        <div className={ finished && pumps === pumpsNeeded ? 'displayNone' : ''}>
                             {pumps} Successful {pumps === 1? "Pump" : "Pumps"}
                         </div>
-                        <h4 className="failedText" hidden={!finished || pumps === pumpsNeeded}>
-                            You have failed! Try again!
+                        <h4 className="failedText" hidden={(!started && !finished) || !this.hasErred()}>
+                            You {earlyRelease? "released too soon" : earlyPump? "pumped too soon" : "pumped an incorrect amount"}! Try again. 
                         </h4>
-                        <h4 className="successText" hidden={!finished || pumps != pumpsNeeded}>
+                        <h4 className="successText" hidden={!finished || this.hasErred()}>
                             You completed the action!
                         </h4>
                     </div>
                 </Modal.Header>
                 <Modal.Body id="blend-body" style={{height: '500px', width: '750px'}}>
-                    <Tool
-                        tool={source}
-                    />
-                    <Tool
-                        tool={target}
-                    />
+                    <Row style={{display: "flex", alignItems: "flex-end"}}>
+                        <Tool
+                            tool={targetCopy}
+                        />
+                        <Tool
+                            tool={sourceCopy}
+                        />
+                    </Row>
                     <Button
                         variant="primary"
-                        disabled={finished}
+                        disabled={finished || earlyRelease || earlyPump}
                         onMouseDown={this.onPump}
-                        onMouseUp={this.onPumpEnd}
+                        onMouseUp={() => {
+                            window.cancelAnimationFrame(animation);
+                            this.onPumpEnd();
+                        }}
                     >
                         Pump
                     </Button>
                     <Button
                         variant="primary"
-                        disabled={finished}
+                        disabled={finished || earlyRelease || earlyPump}
                         onClick={this.onFinish}
                     >
                         Finish
@@ -68,15 +79,15 @@ class PumpModal extends React.Component {
                 <Modal.Footer>
                     <Button
                         variant="warning"
-                        disabled={!finished || pumps === pumpsNeeded}
-                        hidden={!finished || pumps === pumpsNeeded} 
+                        disabled={(!started && !finished) || !this.hasErred()}
+                        hidden={(!started && !finished) || !this.hasErred()} 
                         onClick={this.resetState}
                     >
                         Retry
                     </Button>
                     <Button
                         variant="primary"
-                        disabled={!finished || pumps != pumpsNeeded}
+                        disabled={!started || !finished || this.hasErred()}
                         onClick={() => {
                             this.resetState();
                             onComplete();
@@ -88,16 +99,47 @@ class PumpModal extends React.Component {
         );
     }
 
+    hasErred() {
+        const {pumps, finished, earlyRelease, earlyPump} = this.state;
+        const {pumpsNeeded} = this.props
+        return (finished && pumps != pumpsNeeded) || earlyRelease || earlyPump;
+    }
+
     resetState() {
+        const {source, target} = this.props;
         this.setState({
             pumps: 0,
-            finished: false
+            started: false,
+            finished: false,
+            earlyRelease: false,
+            earlyPump: false,
+            sourceCopy: source.clone(),
+            targetCopy: target.clone(),
+            animation: null
+        });
+    }
+
+    handleEarlyRelease() {
+        let {animation} = this.state;
+        window.cancelAnimationFrame(animation);
+        this.setState({
+            earlyRelease: true,
+            animation: null
+        });
+    }
+
+    handleEarlyPump() {
+        let {animation} = this.state;
+        window.cancelAnimationFrame(animation);
+        this.setState({
+            earlyPump: true,
+            animation: null
         });
     }
 
     onFinish() {
         this.setState({
-            finish: true
+            finished: true
         });
     }
     
@@ -107,59 +149,78 @@ class PumpModal extends React.Component {
     }
 
     onPump() {
-        return
-        /* const {target} = this.props
-        const {ramp, rock, increasing, reset}  = target.image.animation
+        let {pumps, started, sourceCopy, targetCopy, animation} = this.state
+        let {compressed, isMaxed, isReleasing}  = sourceCopy.image.animation;
 
-        target.image.animation.shake = true;
-        target.image.animation.reset = !reset;
+        if (!started) {
+            this.setState({
+                started: true
+            });
+        }
 
-        const animation = window.requestAnimationFrame(this.onBlend);
-        this.setState({animation});
+        if (isReleasing) {
+            this.handleEarlyPump();
+            return;
+        }
 
-        if (ramp < 1) {
-            target.image.animation.ramp += .10
-        } else {
-            if (increasing) {
-                target.image.animation.rock += .1;
-                target.image.animation.increasing = !(target.image.animation.rock >= 1) 
-            }
-            else {
-                target.image.animation.rock -= .1;
-                target.image.animation.increasing = (target.image.animation.rock <= 0)
-            }
-        } */
+        this.setState({
+            animation: window.requestAnimationFrame(this.onPump)
+        });
+
+        if (compressed < 1) {
+            sourceCopy.image.animation.compressed += .05;
+            targetCopy.image.properties.Fill += .0005;
+            this.setState({
+                sourceCopy,
+                targetCopy
+            })
+        } else if (compressed >= 1 && !isMaxed) {
+            sourceCopy.image.animation.compressed = 1;
+            sourceCopy.image.animation.isMaxed = true;
+            this.setState({
+                pumps: pumps + 1,
+                sourceCopy
+            });
+        }
+
+        sourceCopy.image.animation.isMined = false;
+        this.setState({
+            sourceCopy
+        })
     }
 
     onPumpEnd() {
-        return
-        /* const {target} = this.props
-        const {ramp, rock, increasing, shake}  = target.image.animation
+        let {sourceCopy} = this.state
+        let {compressed, isMaxed}  = sourceCopy.image.animation;
 
-        target.image.animation.shake = false;
-        target.image.animation.resetX = 0;
-        target.image.animation.resetY = 0;
+        sourceCopy.image.animation.isReleasing = true;
+        this.setState({
+            sourceCopy
+        });
 
-        if (target.image.animation.ramp === 0 && target.image.animation.rock === .5) {
+        if (!isMaxed && compressed != 0) {
+            this.handleEarlyRelease();
+            return;
+        }
+
+        if (compressed === 0) {
             window.cancelAnimationFrame(this.state.animation);
-        } else {
-            const animation = window.requestAnimationFrame(this.onBlendEnd);
-            this.setState({animation});
         }
+        this.setState({
+            animation: !compressed? null : window.requestAnimationFrame(this.onPumpEnd)
+        });
         
-        if (target.image.animation.ramp > 0) {
-            target.image.animation.ramp -= .2;
-            if (target.image.animation.ramp < .1 && target.image.animation.ramp > -.1) {
-                target.image.animation.ramp = 0;
-            }
+        if (compressed > 0) {
+            sourceCopy.image.animation.compressed -= .25;
         } else {
-            target.image.animation.ramp = 0;
+            sourceCopy.image.animation.compressed = 0;
+            sourceCopy.image.animation.isMaxed = false;
+            sourceCopy.image.animation.isMined = true;
+            sourceCopy.image.animation.isReleasing = false;
         }
-        if (target.image.animation.rock != .5) {
-            if (rock > .6) {target.image.animation.rock -= .1}
-            else  if (rock < .4) {target.image.animation.rock += .1}
-            else {target.image.animation.rock = .5}
-        } */
+        this.setState({
+            sourceCopy
+        });
     }
 }
 
