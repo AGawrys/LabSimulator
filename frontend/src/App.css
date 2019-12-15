@@ -105,3 +105,7 @@
 .completed-lesson {
 	color: green;
 }
+
+.collapse-button:hover {
+	cursor: pointer;
+}

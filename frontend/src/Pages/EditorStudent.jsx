@@ -98,7 +98,14 @@ class EditorStudent extends Component {
 		};
 
 		axios.post(Routes.SERVER + 'canStudentComplete', body).then(
-			(response) => this.getLesson(lesson_id, response.data),
+			(response) =>  {
+				const isAlreadyCompleted = response.data;
+				this.setState({isAlreadyCompleted});
+				this.getLesson(lesson_id);
+				if (!isAlreadyCompleted) {
+					this.attemptLesson();
+				}
+			},
 			(error) => {
 				console.log(error);
 				this.props.history.push(Routes.NOT_FOUND);
@@ -106,12 +113,11 @@ class EditorStudent extends Component {
 		);
 	};
 
-	getLesson(lesson_id, curriculum) {
+	getLesson(lesson_id) {
 		axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
 			(response) => {
 				const { steps, lesson, canvasSize } = Lesson.load(response.data);
-				this.setState({ curriculum, steps, lesson, canvasSize });
-				this.attemptLesson();
+				this.setState({ steps, lesson, canvasSize });
 			},
 			(error) => console.log(error)
 		);
@@ -207,10 +213,10 @@ class EditorStudent extends Component {
 			steps,
 			currentStepIndex,
 			actionManagement,
-			curriculum,
 			showSuccesfullyComplete,
 			isLessonComplete,
-			showError
+			showError,
+			isAlreadyCompleted,
 		} = this.state;
 		const { source, target, showAction, currentAction, directionModal } = this.state;
 		const { isPreview } = this.props;
@@ -225,7 +231,7 @@ class EditorStudent extends Component {
 		return (
 			<div>
 				<Prompt
-				  when={true}
+				  when={!isAlreadyCompleted}
 				  message={GeneralConstants.LEAVE_STUDENT_LESSON_MESSAGE}
 				/>
 				<HeaderBru
@@ -383,7 +389,7 @@ class EditorStudent extends Component {
 		axios.post(Routes.SERVER + 'deleteAssignment', body).then(
 			(response) => {
 				const newSteps = this.state.initialSteps.map((step) => step.clone());
-				this.setState({ steps: newSteps, currentStepIndex: 0 });
+				this.setState({ steps: newSteps, currentStepIndex: 0, isAlreadyCompleted: false });
 			},
 			(error) => console.log(error)
 		);

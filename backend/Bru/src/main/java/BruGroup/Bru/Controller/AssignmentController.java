@@ -132,7 +132,9 @@ public class AssignmentController {
                 .map(lesson -> {
                     AssignmentIdentity id = new AssignmentIdentity(email,course.getCourseId(),lesson.getLessonId());
                     boolean isCompleted = assignmentRepository.existsById(id);
-                    return new LessonProgress(lesson,isCompleted);
+                    Attempt attempt = attemptRepository.findByAttemptIdentity(new AttemptIdentity(email,course.getCourseId(),lesson.getLessonId()));
+                    int numAttempts = attempt != null ? attempt.getNumAttempts() : 0;
+                    return new LessonProgress(lesson,numAttempts,isCompleted);
                 })
                 .collect(Collectors.toList());
         return lessonProgresses;
@@ -168,9 +170,13 @@ class CourseProgress {
 class LessonProgress {
     private Lesson lesson;
     private boolean isCompleted;
+    private int numAttempts;
 
-    public LessonProgress(Lesson lesson, boolean isCompleted) {
+    public LessonProgress() {}
+
+    public LessonProgress(Lesson lesson, int numAttempts, boolean isCompleted) {
         this.lesson = lesson;
+        this.numAttempts = numAttempts;
         this.isCompleted = isCompleted;
     }
 
@@ -188,6 +194,14 @@ class LessonProgress {
 
     public void setCompleted(boolean completed) {
         isCompleted = completed;
+    }
+
+    public int getNumAttempts() {
+        return numAttempts;
+    }
+
+    public void setNumAttempts(int numAttempts) {
+        this.numAttempts = numAttempts;
     }
 }
 
