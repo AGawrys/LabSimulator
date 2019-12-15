@@ -14,6 +14,8 @@ const GeneralConstants = {
 	SUCCESSFUL_PUBLISH_LESSON_MESSAGE: 'Lesson successfully published to your organization!',
 	SUCCESSFUL_SAVE_MESSAGE: 'Lesson successfully saved!',
 	SUCCESSFUL_DUPLICATE_MESSAGE: 'Lesson successfully duplicated!',
+	RESTART_LESSON_TITLE: 'Restart Lesson?',
+	RESTART_LESSON_MESSAGE: 'Are you sure you want to restart the lesson?',
 	SUCCESSFUL_COMPLETE_LESSON_TITLE: 'Lesson Successfully Completed!',
 	SUCCESSFUL_COMPLETE_LESSON_MESSAGE:
 		'Lesson has been successfully completed! Close to navigate back to student dashboard',

@@ -300,14 +300,6 @@ class LessonPreview extends Component {
 							>
 								NEXT STEP
 							</Button>
-							<div className="divider" />
-							<Button variant="dark" onClick={this.resetStep}>
-								RESET STEP
-							</Button>
-							<div className="divider" />
-							<Button variant="dark" onClick={this.restartLesson}>
-								RESTART LESSON
-							</Button>
 						</Col>
 					</Row>
 				</Container>
