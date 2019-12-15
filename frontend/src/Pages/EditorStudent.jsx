@@ -14,7 +14,7 @@ import Canvas from '../Components/Canvas.jsx';
 import ActionMenuStudent from '../Components/ActionMenuStudent.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
 import GeneralConstants from '../utils/GeneralConstants.js';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Prompt } from 'react-router-dom';
 import StirModal from '../Components/StirModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import Pour from '../Components/Pour.jsx';
@@ -81,6 +81,10 @@ class EditorStudent extends Component {
 		}
 	}
 
+	componentWillUnmount() {
+		window.removeEventListener('resize', this.onCanvasResize);
+	}
+
 	checkIfAttempted = () => {
 		axios
 			.get(Routes.SERVER + '/hasAttempted/' + this.props.email)
@@ -96,7 +100,14 @@ class EditorStudent extends Component {
 		};
 
 		axios.post(Routes.SERVER + 'canStudentComplete', body).then(
-			(response) => this.getLesson(lesson_id, response.data),
+			(response) => {
+				const isAlreadyCompleted = response.data;
+				this.setState({ isAlreadyCompleted });
+				this.getLesson(lesson_id);
+				if (!isAlreadyCompleted) {
+					this.attemptLesson();
+				}
+			},
 			(error) => {
 				console.log(error);
 				this.props.history.push(Routes.NOT_FOUND);
@@ -104,12 +115,11 @@ class EditorStudent extends Component {
 		);
 	};
 
-	getLesson(lesson_id, curriculum) {
+	getLesson(lesson_id) {
 		axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
 			(response) => {
 				const { steps, lesson, canvasSize } = Lesson.load(response.data);
-				this.setState({ curriculum, steps, lesson, canvasSize });
-				this.attemptLesson();
+				this.setState({ steps, lesson, canvasSize });
 			},
 			(error) => console.log(error)
 		);
@@ -169,8 +179,6 @@ class EditorStudent extends Component {
 	};
 
 	onCollisionDetected = (draggedTool, overlappingTools) => {
-		console.log(this.state.source);
-		console.log(draggedTool);
 		if (this.state.source !== draggedTool) {
 			return;
 		}
@@ -207,11 +215,11 @@ class EditorStudent extends Component {
 			steps,
 			currentStepIndex,
 			actionManagement,
-			curriculum,
 			showSuccesfullyComplete,
 			isLessonComplete,
 			showError,
-			showRestartLessonModal
+			showRestartLessonModal,
+			isAlreadyCompleted
 		} = this.state;
 		const { source, target, showAction, currentAction, directionModal } = this.state;
 		const { isPreview } = this.props;
@@ -225,6 +233,7 @@ class EditorStudent extends Component {
 
 		return (
 			<div>
+				<Prompt when={!isAlreadyCompleted} message={GeneralConstants.LEAVE_STUDENT_LESSON_MESSAGE} />
 				<HeaderBru
 					{...this.props}
 					home={Routes.STUDENT_DASHBOARD}
@@ -383,7 +392,7 @@ class EditorStudent extends Component {
 		axios.post(Routes.SERVER + 'deleteAssignment', body).then(
 			(response) => {
 				const newSteps = this.state.initialSteps.map((step) => step.clone());
-				this.setState({ steps: newSteps, currentStepIndex: 0 });
+				this.setState({ steps: newSteps, currentStepIndex: 0, isAlreadyCompleted: false });
 			},
 			(error) => console.log(error)
 		);
@@ -391,8 +400,6 @@ class EditorStudent extends Component {
 
 	resetStep = () => {
 		const { initialSteps, steps, currentStepIndex } = this.state;
-		console.log(initialSteps[currentStepIndex]);
-		console.log(steps[currentStepIndex]);
 		steps[currentStepIndex] = initialSteps[currentStepIndex].clone();
 		this.setState({ steps });
 	};

@@ -35,6 +35,9 @@ function determineToolSize(toolType, tools) {
 
 function getCanvasSize() {
 	const canvas = document.getElementById('canvas');
+	if (canvas === null) {
+		return {width: 929, height: 738.890625};
+	}
 	return canvas.getBoundingClientRect();
 }
 

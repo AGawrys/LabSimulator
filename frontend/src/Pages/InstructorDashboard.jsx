@@ -82,7 +82,11 @@ export class InstructorDashboard extends Component {
 							<div className="recentDrinkBottom">
 								<ListGroup>
 									{lessons.map((lesson, index) => (
-										<LessonRow {...this.props} key={index} lesson={lesson} canDelete={false} />
+										<LessonRow {...this.props} 
+											key={index} 
+											lesson={lesson} 
+											canDelete={false}
+											onLessonClick={() => this.props.history.push(Routes.INSTRUCTOR_EDITOR + lesson.lessonId)}  />
 									))}
 								</ListGroup>
 							</div>

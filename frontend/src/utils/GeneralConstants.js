@@ -24,6 +24,8 @@ const GeneralConstants = {
 	PUBLISH_CONFIRMATION_TITLE: 'Publish Lesson',
 	PUBLISH_CONFIRMATION_MESSAGE:
 		'Are you sure you want to publish? You cannot edit this lesson after it has been published.',
+	UNSAVED_EDITOR_MESSAGE: 'You have unsaved changes, are you sure you want to leave?',
+	LEAVE_STUDENT_LESSON_MESSAGE: 'Are you sure you want to leave? This will count as a lesson attempt.',
 	ADD_STUDENT_TITLE: 'Add Student to Course',
 	ADD_INSTRUCTOR_TITLE: 'Add Instructor',
 	ADD_LESSON_TITLE: 'Add Lesson to Course',

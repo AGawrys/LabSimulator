@@ -66,8 +66,10 @@ class HeaderBru extends React.Component {
 		const navLinks = this.renderLinks();
 		return (
 			<Navbar bg="#69CB9A" className="justify-content-between">
-				<Navbar.Brand href={this.props.home}>
-					<img src={title} className="Home-header-logo" style={{ height: '50px' }} alt="logo" />
+				<Navbar.Brand>
+					<Link exact to={this.props.home}>
+						<img src={title} className="Home-header-logo" style={{ height: '50px' }} alt="logo" />
+					</Link>
 				</Navbar.Brand>
 				<Nav>
 					{navLinks}
@@ -91,7 +93,9 @@ class HeaderBru extends React.Component {
 			const [ text, route ] = link;
 			return (
 				<Nav.Item key={index}>
-					<Nav.Link href={route}>{text}</Nav.Link>
+					<Nav.Link >
+						<Link style={{color:"rgba(0,0,0,.5)"}} exact to={route}>{text}</Link>
+					</Nav.Link>
 				</Nav.Item>
 			);
 		});

@@ -94,7 +94,7 @@ function SearchResult({result, email}) {
 			<p className="search-result-info m-0 font-weight-light text-secondary headings"> Instructor: {instructorEmail} </p>
 			<p className="search-result-info m-0 font-weight-light text-secondary headings"> # of Downloads: {downloads} </p>
 			<p className="search-result-info m-0 font-weight-light text-secondary headings"> Date Published: {parsedDate.toDateString()} </p>
-			<p className={statisticStyle + " search-result-info m-0 font-weight-light headings"}> {percentComplete} % complete ({numCompleted} / {numAttempts}) </p>
+			<p className={statisticStyle + " search-result-info m-0 font-weight-light headings"}> {percentComplete} % completion rate ({numCompleted} / {numAttempts}) </p>
 	 	</ListGroup.Item>
  	);
 }

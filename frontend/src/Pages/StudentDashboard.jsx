@@ -76,12 +76,18 @@ function StudentCourse(props) {
 	const courseComponent = (
 		<ListGroup.Item variant="primary">
 			{' '}
-			{course.name} <span className="right"> Expand</span>{' '}
+			{course.name} <i className ="fa fa-chevron-down right collapse-button" aria-hidden="true"></i>
+		</ListGroup.Item>
+	);
+	const collapse = (
+		<ListGroup.Item variant="primary">
+			{' '}
+			{course.name} <i className ="fa fa-chevron-up right collapse-button" aria-hidden="true"></i>
 		</ListGroup.Item>
 	);
 	let nextOneToComplete = true;
 	return (
-		<Collapsible trigger={courseComponent}>
+		<Collapsible open trigger={courseComponent} triggerWhenOpen={collapse}>
 			<ListGroup>
 				{lessons.map((lessonProgress, index) => {
 					const canComplete = lessonProgress.completed || nextOneToComplete;
@@ -105,11 +111,15 @@ function StudentCourse(props) {
 
 function StudentLesson(props) {
 	const { lessonProgress, disabled, onClick, course } = props;
-	const { lesson, completed } = lessonProgress;
+	const { lesson, completed, numAttempts } = lessonProgress;
+
 	const completeString = completed ? 'Completed' : 'Not Completed';
+	const className = completed ? 'completed-lesson' : '';
+	const icon = completed ? <i className="fa fa-check" aria-hidden="true"></i> : null;
 	return (
 		<ListGroup.Item
 			as="button"
+			action
 			style={{ textAlign: 'left' }}
 			disabled={disabled}
 			onClick={() => onClick(course.courseId, lesson.lessonId)}
@@ -118,7 +128,7 @@ function StudentLesson(props) {
 				<strong>
 					<p> {lesson.name} </p>
 				</strong>
-				<p style={{ textAlign: 'right' }}> {completeString} </p>
+				<p className={className} style={{ textAlign: 'right' }}> {icon} {completeString} ({numAttempts} attempts) </p>
 			</div>
 		</ListGroup.Item>
 	);
