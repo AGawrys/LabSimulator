@@ -78,6 +78,7 @@ class Step {
 		this.actionMeasurement = actionMeasurement;
 	}
 
+
 	isComplete() {
 		if ((!this.actionMeasurement && this.action !== 'Blend') || this.tools.length === 0) {
 			return false;
@@ -119,6 +120,10 @@ class Step {
 		}
 
 		return new Step(name, description, clonedTools, action, clonedSource,clonedTarget, actionMeasurement, timer);
+	}
+
+	static requiresTarget(action) {
+		return action === "Stir" || action === "Pour" || action === "Blender";
 	}
 
 	static load(stepData) {

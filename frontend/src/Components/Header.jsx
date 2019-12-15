@@ -5,7 +5,7 @@ import { Redirect, Link } from 'react-router-dom';
 import title from '../Styles/Images/brü.svg';
 import '../Styles/HeaderBruStyle.css';
 import FormModal from '../Components/FormModal.jsx';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Button, Form, Modal, } from 'react-bootstrap';
 import axios from 'axios';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import Routes from '../utils/RouteConstants.js';
@@ -27,7 +27,7 @@ class HeaderBru extends React.Component {
 		this.setState({ [field]: e.target.value });
 	};
 
-	handleSignUp = (e) => {
+	handleLogin = (e) => {
 		e.preventDefault();
 
 		const account = {
@@ -55,7 +55,7 @@ class HeaderBru extends React.Component {
 	render() {
 		const { authenticated, loggedOut } = this.state;
 		if (authenticated) {
-			const route = this.getCorrectRoute();
+			const route = this.getCorrectRoute(this.state.role);
 			return <Redirect exact to={route} />;
 		}
 
@@ -66,15 +66,19 @@ class HeaderBru extends React.Component {
 		const navLinks = this.renderLinks();
 		return (
 			<Navbar bg="#69CB9A" className="justify-content-between">
-				<Navbar.Brand href={this.props.dashboard}>
-					<Link to="#">
+				<Navbar.Brand>
+					<Link exact to={this.props.home}>
 						<img src={title} className="Home-header-logo" style={{ height: '50px' }} alt="logo" />
 					</Link>
 				</Navbar.Brand>
 				<Nav>
 					{navLinks}
 					<Nav.Item>
-						{this.props.isLoggedIn || this.state.authenticated ? this.renderSignOutBtn() : this.renderLoginBtn()}
+						{this.props.isLoggedIn || this.state.authenticated ? (
+							this.renderSignOutBtn()
+						) : (
+							this.renderLoginBtn()
+						)}
 					</Nav.Item>
 				</Nav>
 			</Navbar>
@@ -89,7 +93,9 @@ class HeaderBru extends React.Component {
 			const [ text, route ] = link;
 			return (
 				<Nav.Item key={index}>
-					<Nav.Link href={route}>{text}</Nav.Link>
+					<Nav.Link >
+						<Link style={{color:"rgba(0,0,0,.5)"}} exact to={route}>{text}</Link>
+					</Nav.Link>
 				</Nav.Item>
 			);
 		});
@@ -111,6 +117,7 @@ class HeaderBru extends React.Component {
 				<FormModal
 					title="Login"
 					show={this.state.showLoginModal}
+					onSubmit={this.handleLogin}
 					onHide={() => {
 						this.setState({ showLoginModal: false });
 					}}
@@ -160,7 +167,7 @@ class HeaderBru extends React.Component {
 				</Modal.Body>
 				<Modal.Footer>
 					<p style={{ color: 'red' }}> {errorMessage}</p>
-					<Button variant="primary" type="button" onClick={this.handleSignUp}>
+					<Button variant="primary" type="submit" onClick={this.handleLogin}>
 						Login
 					</Button>
 				</Modal.Footer>
@@ -168,8 +175,7 @@ class HeaderBru extends React.Component {
 		);
 	}
 
-	getCorrectRoute() {
-		const { role } = this.state;
+	getCorrectRoute(role) {
 		if (role == GeneralConstants.STUDENT) {
 			return Routes.STUDENT_DASHBOARD;
 		} else if (role == GeneralConstants.INSTRUCTOR) {

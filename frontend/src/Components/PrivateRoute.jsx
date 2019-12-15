@@ -27,9 +27,9 @@ class PrivateRoute extends React.Component {
 			return <Redirect exact to={Routes.DEFAULT} />;
 		}
 		const Component = this.props.component;
-		const expectedRole = this.props.role;
 		const { email, role } = this.state;
-		if (expectedRole != GeneralConstants.NO_ROLE && expectedRole != role) {
+		const hasPermission = this.props.roles.filter((expectedRole) => expectedRole === GeneralConstants.NO_ROLE || expectedRole === role).length > 0;
+		if (!hasPermission) {
 			return <Redirect exact to={Routes.NOT_FOUND} />;
 		}
 		return <Component {...this.props} email={email} role={role} />;

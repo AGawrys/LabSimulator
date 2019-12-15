@@ -2,6 +2,7 @@ import React from 'react';
 import '../Styles/popupStyle.css';  
 import { Button, Form, Modal } from 'react-bootstrap';
 import Search from 'react-search';
+import {Typeahead} from 'react-bootstrap-typeahead';
 import axios from 'axios';
 
 
@@ -32,11 +33,12 @@ class FormModal extends React.Component {
                 </Modal.Header>
                 <Form onSubmit={this.onSubmit}>
                     <Modal.Body>
-                        <Search items={items}
-                                placeholder='Search...'
-                                NotFoundPlaceholder='No items found!'
-                                multiple={true}
-                                onItemsChanged={(items) => this.setState({selectedItems:items})}
+                        <Typeahead
+                            id="add-search"
+                            options={items}
+                            placeholder='Search...'
+                            multiple={true}
+                            onChange={(selectedItems) => this.setState({selectedItems})}
                         />
                     </Modal.Body>
                     <Modal.Footer>
@@ -55,8 +57,7 @@ class FormModal extends React.Component {
     onSubmit = (e) => {
         e.preventDefault();
         const {actionRoute, items, param, onSuccessfulAdd, onHide} = this.props;
-        const selectedIndices = this.state.selectedItems.map((item) => item.id);
-        const keys = selectedIndices.map((index) => items[index].key);
+        const keys = this.state.selectedItems.map((item) => item.data);
         const body = {
             ids: keys,
             param: param,
@@ -67,7 +68,7 @@ class FormModal extends React.Component {
                 onHide();
             },
             (error) => console.log(error),
-        )
+        );
     }
 
 

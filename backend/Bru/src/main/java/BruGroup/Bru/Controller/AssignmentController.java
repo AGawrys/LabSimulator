@@ -28,6 +28,9 @@ public class AssignmentController {
     @Autowired
     LessonRepository lessonRepository;
 
+    @Autowired
+    AttemptRepository attemptRepository;
+
     @GetMapping(path = "/allAssignment")
     @CrossOrigin(origins = "*")
     public List<Assignment> allAssignment() {
@@ -40,6 +43,35 @@ public class AssignmentController {
         if (assignmentRepository.existsById(assignmentIdentity)) {
             assignmentRepository.delete(assignmentRepository.findByAssignmentIdentity(assignmentIdentity));
         }
+        return ResponseEntity.ok(null);
+    }
+
+    @PostMapping(path = "/attemptLesson")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity attemptLesson (@RequestBody AttemptIdentity attemptIdentity) {
+        if (!attemptRepository.existsById(attemptIdentity)) {
+            Attempt attempt = new Attempt(attemptIdentity,1);
+            attemptRepository.save(attempt);
+        }
+        else {
+            Attempt attempt = attemptRepository.findByAttemptIdentity(attemptIdentity);
+            attempt.setNumAttempts(attempt.getNumAttempts() + 1);
+            attemptRepository.save(attempt);
+        }
+        return ResponseEntity.ok(null);
+    }
+
+    @GetMapping(path = "/hasAttempted/{email}")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity hasAttempted (@PathVariable String email) {
+        List<Attempt> lessonAttempts = attemptRepository.findByAttemptIdentityEmail(email);
+        return ResponseEntity.ok(!lessonAttempts.isEmpty());
+    }
+
+    @GetMapping(path = "/getLessonAttempts")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity getLessonAttempts (int lessonId) {
+        List<Attempt> lessonAttempts = attemptRepository.findByAttemptIdentityLessonId(lessonId);
         return ResponseEntity.ok(null);
     }
 
@@ -74,9 +106,21 @@ public class AssignmentController {
 
     }
 
+    @GetMapping(path = "/completedLesson/{email}")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity getCompletedLesson(@PathVariable String email) {
+        List<Assignment> assignmentList = assignmentRepository.findByAssignmentIdentityEmail(email);
+        if (assignmentList.isEmpty()) {
+            return ResponseEntity.ok(false);
+        } else {
+            return ResponseEntity.ok(true);
+        }
+
+    }
+
     public List<LessonProgress> getLessonProgress(Course course, String email) {
         List<CourseLesson> lessonsIds = curriculumRepository.findByCourseLessonIdentityCourseId(course.getCourseId());
-        if (lessonsIds == null) {
+        if (lessonsIds.isEmpty()) {
             return new ArrayList<>();
         }
         List<Lesson> lessons = lessonsIds
@@ -146,3 +190,4 @@ class LessonProgress {
         isCompleted = completed;
     }
 }
+

@@ -2,22 +2,12 @@ import { LineCalculator } from '../utils/LilacAlgebra.js';
 import '../images/icecube.png';
 
 const CATEGORIES = {
-    Cups: [
-        "StraightCup",
-        "Shaker",
-        "Blender",
-        "CoffeeBeanGrinder",
-        "PumpBottle",
-        "CupLid",
-        "CupSleeve",
-        'IceCube', 
-        'Banana', 
-        'Milk', 
-        'Mango', 
-        'Blueberry', 
-        'Strawberry', 
-        'Spoon'
-    ],
+    Cups: [ 'StraightCup', 'Shaker' ],
+	Fruits: [ 'Mango', 'Blueberry', 'Strawberry', 'Banana' ],
+	Ingredients: [ 'PumpBottle', 'IceCube', 'Milk' ],
+	Appliances: [ 'Blender', 'CoffeeBeanGrinder' ],
+	Accessories: [ 'CupLid', 'CupSleeve' ],
+	Utensils: [ 'Spoon' ]
 };
 
 const IMAGES = {
@@ -304,7 +294,7 @@ const IMAGES = {
                 const leftLine = LineCalculator(beansLeftOut, beansTop, beansLeftIn, beansBot);
                 const rightLine = LineCalculator(beansRightIn, beansBot, beansRightOut, beansTop);
                 const beansFillHeight = beansBot - (beansBot - beansTop) * (properties.Fill) * (1 - animation.grindProgress);
-                const groundsFillHeight = groundsBot - (groundsBot - groundsTop) * (1 - properties.Fill) * (animation.progress);
+                const groundsFillHeight = groundsBot - (groundsBot - groundsTop) * (1 - properties.Fill) * (animation.grindProgress);
 
                 context.fillStyle = "#4a2c2a";
                 context.beginPath();
@@ -541,11 +531,11 @@ const IMAGES = {
 			}
 		},
 		properties: {
-            Width: 100,
-            Height: 100,
-        }
-	},
-}
+			Width: 100,
+			Height: 100
+		}
+	}
+};
 
 function createImage(toolType) {
 	const image = {};
@@ -564,40 +554,4 @@ function createImage(toolType) {
 	return image;
 }
 
-function copyImage(tool) {
-    const image = {};
-    image.draw = tool.image.draw;
-    image.properties = {};
-    Object.keys(tool.image.properties).map((key) => {
-        image.properties[key] = tool.image.properties[key];
-    });
-    if (tool.image.animation) {
-        image.animation = {};
-        Object.keys(tool.image.animation).map((key) => {
-            image.animation[key] = tool.image.animation[key];
-        });
-    }
-
-	return image;
-}
-
-function isImage(toolType) {
-    let isImage = false;
-    switch (toolType) {
-        case 'IceCube':
-        case 'Banana':
-        case 'Mango':
-        case 'Spoon':
-        case 'Strawberry':
-        case 'Blueberry':
-        case 'Milk':
-            isImage = true;
-            break;
-        default: 
-            isImage =  false;
-            
-        return isImage;
-    }
-}
-
-export { CATEGORIES, IMAGES, createImage, copyImage };
+export { CATEGORIES, IMAGES, createImage };

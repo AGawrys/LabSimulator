@@ -18,7 +18,7 @@ import Catalog from '../Components/Catalog.jsx';
 import Canvas from '../Components/Canvas.jsx';
 import Routes from '../utils/RouteConstants.js';
 import GeneralConstants from '../utils/GeneralConstants.js';
-import { ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME } from '../utils/EditorConstants.js';
+import { ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME, DEFAULT_LESSON_NAME } from '../utils/EditorConstants.js';
 import { determineToolPosition, determineToolSize, getCanvasSize, resizeTools } from '../utils/CanvasUtils.js';
 import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
@@ -41,9 +41,10 @@ import axios from 'axios';
 import plus from '../Styles/Images/icons8-plus.svg';
 import { HotKeys } from 'react-hotkeys';
 import Pour from '../Components/Pour.jsx';
+import { Prompt} from 'react-router-dom';
 
 const links = {
-	Account: '/instructor/dashboard'
+	Dashboard: Routes.INSTRUCTOR_DASHBOARD
 };
 
 class Editor extends Component {
@@ -59,6 +60,8 @@ class Editor extends Component {
 			showSuccessfulDuplicate: false,
 			showIncompleteSteps: false,
 			showSuccessfulSave: false,
+			showPublishConfirmation: false,
+			showPublished: false,
 			showSaveBeforePublish: false,
 			showActionMenu: true,
 			showAction: {
@@ -88,29 +91,33 @@ class Editor extends Component {
 	};
 	handleSimulate = () => {
 		const { currentStep } = this.state;
-		if(currentStep && currentStep.action === 'Pour'){
-			if(currentStep.source && currentStep.target && currentStep.actionMeasurement){
-				console.log("changing show modal")
-				this.setState({ showPourModal: true});
+		if (currentStep && currentStep.action === 'Pour') {
+			if (currentStep.source && currentStep.target && currentStep.actionMeasurement) {
+				console.log('changing show modal');
+				this.setState({ showPourModal: true });
 			}
 		}
-	}
+	};
 
 	renderPreview = () => {
-
-		const {currentStep} = this.state;
-		if(currentStep && currentStep.action === 'Pour' && currentStep.source && currentStep.target && currentStep.actionMeasurement){
+		const { currentStep } = this.state;
+		if (
+			currentStep &&
+			currentStep.action === 'Pour' &&
+			currentStep.source &&
+			currentStep.target &&
+			currentStep.actionMeasurement
+		) {
 			const image = currentStep.target.getImage();
-			image.draw = IMAGES["TaperedCup"].draw;
+			image.draw = IMAGES['TaperedCup'].draw;
 			image.properties = {};
 			const amt = currentStep.actionMeasurement / 100;
 			image.properties.Fill = currentStep.target.image.properties.Fill + amt;
 
-			const mytool =
-				(<ToolComponent tool={new Tool("TaperedCup", image, undefined, 75, 75, undefined)} />);
+			const mytool = <ToolComponent tool={new Tool('TaperedCup', image, undefined, 75, 75, undefined)} />;
 			return mytool;
 		}
-	}
+	};
 
 	componentDidMount() {
 		window.addEventListener('resize', this.onCanvasResize);
@@ -149,23 +156,26 @@ class Editor extends Component {
 
 	loadLesson = (response) => {
 		const { instructorEmail } = response.data.lesson;
+		const lesson_id = this.props.computedMatch.params.lesson_id;
 		if (instructorEmail !== this.props.email) {
-			this.props.history.push(Routes.NOT_FOUND);
+			this.props.history.replace(Routes.INSTRUCTOR_PREVIEW + lesson_id);
 		}
 		const loadedLesson = Lesson.load(response.data);
 		this.setState(loadedLesson);
+		this.setState({ showPublished: this.state.lesson.isPublished });
 	};
 
 	handleFieldChange = (e) => {
-		this.state.lesson.setName(e.target.value);
+		this.state.lesson.name = e.target.value;
+		this.setState({ lesson: this.state.lesson });
 	};
 
 	closePourModal = () => {
-		const {showAction } = this.state;
+		const { showAction } = this.state;
 		const newShowAction = showAction;
 		newShowAction.pour = false;
-		this.setState({showAction : newShowAction });
-	}
+		this.setState({ showAction: newShowAction });
+	};
 
 	render() {
 		const { lesson, currentStep, steps, copiedTool, isDirty } = this.state;
@@ -176,6 +186,8 @@ class Editor extends Component {
 			showSuccessfulSave,
 			showIncompleteSteps,
 			showSaveBeforePublish,
+			showPublished,
+			showPublishConfirmation,
 			showAction
 		} = this.state;
 		const { operations, pointer } = this.state.history;
@@ -223,12 +235,16 @@ class Editor extends Component {
 		const dragTargetOptions2 = toolOptions.filter((tool) => tool.value.type === 'StraightCup');
 
 		const publishBtn = lesson.isPublished ? null : (
-			<Button variant="primary" onClick={this.onPublishLesson}>
+			<Button variant="primary" onClick={() => this.setState({showPublishConfirmation: true})}>
 				Publish
 			</Button>
 		);
 		return (
 			<HotKeys handlers={this.shortcutHandlers}>
+				<Prompt
+				  when={isDirty}
+				  message={GeneralConstants.UNSAVED_EDITOR_MESSAGE}
+				/>
 				<HeaderBru {...this.props} home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
 				<ConfirmationModal
 					title={GeneralConstants.DELETE_LESSON_TITLE}
@@ -236,6 +252,13 @@ class Editor extends Component {
 					onHide={() => this.setState({ showDeleteLessonModal: false })}
 					show={showDeleteLessonModal}
 					onDelete={this.deleteLesson}
+				/>
+				<ConfirmationModal
+					title={GeneralConstants.PUBLISH_CONFIRMATION_TITLE}
+					message={GeneralConstants.PUBLISH_CONFIRMATION_MESSAGE}
+					onHide={() => this.setState({ showPublishConfirmation: false})}
+					show={showPublishConfirmation}
+					onDelete={this.onPublishLesson}
 				/>
 				<EditorNotification
 					message={GeneralConstants.SUCCESSFUL_PUBLISH_LESSON_MESSAGE}
@@ -275,14 +298,16 @@ class Editor extends Component {
 					autohide
 					delay={1250}
 				/>
+				<EditorNotification
+					message={GeneralConstants.SHOW_PUBLISHED}
+					onClose={() => this.setState({ showPublished: false })}
+					show={showPublished}
+				/>
 				<ShakeModal
 					progressNeeded={currentStep.actionMeasurement}
 					show={showAction.shake}
-					timer={currentStep.timer}
-					onComplete={() => {
-						showAction.shake = false;
-						this.setState({ showAction });
-					}}
+					onHide={() => this.hideActionModal('shake')}
+					onSuccess={() => this.hideActionModal('shake')}
 					timer={currentStep.timer}
 					tool={currentStep.source}
 				/>
@@ -291,10 +316,8 @@ class Editor extends Component {
 					show={showAction.stir}
 					timer={currentStep.timer}
 					target={currentStep.target}
-					onComplete={() => {
-						showAction.stir = false;
-						this.setState({ showAction });
-					}}
+					onHide={() => this.hideActionModal('stir')}
+					onSuccess={() => this.hideActionModal('stir')}
 				/>
 				<BlendModal
 					show={showAction.blend}
@@ -316,14 +339,16 @@ class Editor extends Component {
 						this.setState({ showAction});
 					}}
 				/>
-				{showAction.pour ? (<Pour
+				{showAction.pour ? (
+					<Pour
 						show={showAction.pour}
-						source={currentStep.source}
-						target={currentStep.target}
+						source={currentStep.source.clone()}
+						target={currentStep.target.clone()}
 						goal={currentStep.actionMeasurement}
 						instructor={true}
-						closeModal={this.closePourModal}
-					/>) : null}
+						onHide={() => this.hideActionModal('pour')}
+					/>
+				) : null}
 				<Container fluid={true} className="instructorContainer">
 					<Col className="instructorEditorToolBar brownBorder">
 						<Row>
@@ -331,10 +356,11 @@ class Editor extends Component {
 								<FormControl
 									onChange={(e) => this.handleFieldChange(e)}
 									className="editorControlName"
-									autoFocus
 									type="text"
-									defaultValue={lesson.name}
+									disabled={lesson.isPublished}
+									value={lesson.name}
 									required
+									onBlur={this.onLessonFieldBlur}
 								/>
 							</Col>
 						</Row>
@@ -343,7 +369,7 @@ class Editor extends Component {
 								{publishBtn}
 								<button
 									disabled={!currentStep.isComplete()}
-									type="button"
+									type="submit"
 									className="btn btn-secondary"
 									onClick={this.showActionModal}
 								>
@@ -365,7 +391,7 @@ class Editor extends Component {
 									<i className="fa fa-repeat" aria-hidden="true" />
 								</Button>
 								<Button
-									disabled={!isDirty}
+									disabled={!isDirty || lesson.isPublished}
 									type="button"
 									variant="success"
 									onClick={() =>
@@ -376,6 +402,7 @@ class Editor extends Component {
 									<i className="fas fa-save" />
 								</Button>
 								<Button
+									disabled={lesson.isPublished}
 									type="button"
 									variant="danger"
 									onClick={() => this.setState({ showDeleteLessonModal: true })}
@@ -391,8 +418,7 @@ class Editor extends Component {
 								<Card.Header>
 									<h6 className="m-0 font-weight-bold text-primary headings"> TOOLS </h6>{' '}
 								</Card.Header>
-								<Catalog />
-								<Catalog />
+								<Catalog published={lesson.isPublished} />
 							</div>
 						</Col>
 
@@ -423,6 +449,7 @@ class Editor extends Component {
 											isSearchable={true}
 											name="actions"
 											options={ACTIONS}
+											isDisabled={lesson.isPublished}
 											onChange={(action) => this.updateCurrentAction(action)}
 											value={
 												currentStep.action ? (
@@ -438,7 +465,7 @@ class Editor extends Component {
 											classNamePrefix="editorSelect2"
 											placeholder="Source"
 											isSearchable={true}
-											isDisabled={currentStep.action === null}
+											isDisabled={currentStep.action === null || lesson.isPublished}
 											name="sources"
 											options={
 												currentStep.action === 'Shake' ? (
@@ -468,6 +495,7 @@ class Editor extends Component {
 											isSearchable={true}
 											name="targets"
 											isDisabled={
+												lesson.isPublished ||
 												currentStep.action === 'Shake' ||
 												currentStep.action === null ||
 												(currentStep.action === 'Drag' && currentStep.source === null)
@@ -498,6 +526,7 @@ class Editor extends Component {
 											className="actionMeasurementControl"
 											type="number"
 											min="1"
+											disabled={lesson.isPublished}
 											placeholder="Action Measurement"
 											onChange={(e) => this.updateActionMeasurement(e)}
 											value={
@@ -517,14 +546,15 @@ class Editor extends Component {
 											className="actionMeasurementControl"
 											type="number"
 											min="1"
+											max="59"
 											placeholder="Timer (Seconds)"
 											hidden={
-												currentStep.action === 'Pour' || currentStep.action === 'Pump'
+												currentStep.action === 'Pour' ||
+												currentStep.action === 'Pump'
 											}
+											disabled={lesson.isPublished}
 											onChange={(e) => this.updateTimer(e)}
-											value={
-												currentStep.timer ? currentStep.timer > 0 ? currentStep.timer : '' : ''
-											}
+											value={currentStep.timer && currentStep.timer > 0 ? currentStep.timer : ''}
 										/>
 										{/* {this.renderPreview()} */}
 									</div>
@@ -534,7 +564,12 @@ class Editor extends Component {
 									<Card.Header>
 										<Row style={{ justifyContent: 'space-evenly' }}>
 											<h6 className="m-0 font-weight-bold text-primary headings"> STEPS </h6>
-											<button title="Add Step" className="clearButton" onClick={this.addStep}>
+											<button
+												disabled={lesson.isPublished}
+												title="Add Step"
+												className="clearButton"
+												onClick={this.addStep}
+											>
 												<img src={plus} />
 											</button>
 										</Row>
@@ -576,7 +611,7 @@ class Editor extends Component {
 				onDeleteStep={this.onDeleteStep}
 				onFieldBlur={this.onFieldBlur}
 				value={step}
-				isDisabled={this.state.steps.length === 1}
+				isDisabled={this.state.lesson.isPublished}
 			/>
 		);
 	};
@@ -599,6 +634,9 @@ class Editor extends Component {
 	}
 
 	onDropStep = ({ oldIndex, newIndex }) => {
+		if (this.state.lesson.isPublished) {
+			return;
+		}
 		const { steps } = this.state;
 		const swappedSteps = swapElements(steps, oldIndex, newIndex);
 		this.setState({ steps: swappedSteps }, this.addOperation);
@@ -639,6 +677,15 @@ class Editor extends Component {
 		}
 	};
 
+	onLessonFieldBlur = (e) => {
+		if (StringUtils.isEmpty(e.target.value)) {
+			this.state.lesson.name = DEFAULT_LESSON_NAME;
+			this.setState({ lesson: this.state.lesson }, this.addOperation);
+		} else {
+			this.addOperation();
+		}
+	};
+
 	onDeleteStep = (e, step) => {
 		e.cancelBubble = true;
 		if (e.stopPropagation) {
@@ -648,9 +695,11 @@ class Editor extends Component {
 	};
 
 	deleteStep = (step) => {
+		if (this.state.lesson.isPublished || this.state.steps.length === 1) {
+			return;
+		}
 		const { steps } = this.state;
 		const index = steps.indexOf(step);
-		console.log(step);
 		const newIndex = index === steps.length - 1 ? index - 1 : index;
 		steps.splice(index, 1);
 		const currentStep = steps[newIndex];
@@ -666,6 +715,9 @@ class Editor extends Component {
 	};
 
 	cloneStep = (step) => {
+		if (this.state.lesson.isPublished) {
+			return;
+		}
 		const clonedStep = step.clone();
 		const { steps } = this.state;
 		const index = steps.indexOf(step);
@@ -710,7 +762,7 @@ class Editor extends Component {
 
 	updateTimer = (e) => {
 		const { currentStep } = this.state;
-		if (e.target.value > 0) {
+		if (e.target.value > 0 && e.target.value < 60) {
 			currentStep.timer = e.target.value;
 			this.setState({ currentStep }, this.addOperation);
 		} else {
@@ -821,7 +873,7 @@ class Editor extends Component {
 		const currentState = operations[pointer - 1];
 		this.state.history.pointer -= 1;
 		const clonedState = this.cloneState(currentState);
-		clonedState.dirty = true;
+		clonedState.isDirty = true;
 		this.setState(clonedState);
 	};
 
@@ -830,15 +882,16 @@ class Editor extends Component {
 		const currentState = operations[pointer + 1];
 		this.state.history.pointer += 1;
 		const clonedState = this.cloneState(currentState);
-		clonedState.dirty = true;
+		clonedState.isDirty = true;
 		this.setState(clonedState);
 	};
 
 	cloneState = (state) => {
-		const { steps, currentStep } = state;
+		const { steps, currentStep, lesson } = state;
 		const currentStepIndex = steps.indexOf(currentStep);
 		const clonedSteps = steps.map((step) => step.clone());
-		return { steps: clonedSteps, currentStep: clonedSteps[currentStepIndex] };
+		const clonedLesson = lesson.clone();
+		return { steps: clonedSteps, currentStep: clonedSteps[currentStepIndex], lesson: clonedLesson };
 	};
 
 	onShortcutUndo = () => {
@@ -857,28 +910,16 @@ class Editor extends Component {
 		this.handleRedo();
 	};
 
-	showActionModal = () => {
+	hideActionModal = (action) => {
 		const { showAction } = this.state;
-		switch (this.state.currentStep.action) {
-			case 'Shake':
-				showAction.shake = true;
-				break;
-			case 'Pour':
-				showAction.pour = true;
-				break;
-			case 'Stir':
-				showAction.stir = true;
-				break;
-			case 'Blend':
-				showAction.blend = true;
-				break;
-			case 'Pump':
-				showAction.pump = true;
-				break;
-			case 'Drag':
-				showAction.drag = true;
-				break;
-		}
+		showAction[action] = false;
+		this.setState(showAction);
+	};
+
+	showActionModal = (e) => {
+		e.preventDefault();
+		const { showAction, currentStep } = this.state;
+		showAction[currentStep.action.toLowerCase()] = true;
 		this.setState({ showAction });
 	};
 }

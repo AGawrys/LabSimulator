@@ -7,9 +7,10 @@ class Tool extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selected: false
+            selected: false,
         }   
         this.selected = props.selected;
+        this.tool = props.tool.position ? props.tool.clone() : props.tool;
 
         this.onClick = this.onClick.bind(this);
         this.onDragStop = this.onDragStop.bind(this);
@@ -19,6 +20,10 @@ class Tool extends React.Component {
     onClick(e) {
         this.props.setCurrentTool(this.props.tool);
         e.stopPropagation();
+    }
+
+    onContextMenu = (e) => {
+        this.props.setCurrentTool(this.props.tool);
     }
 
     onDragStop(e, data) {
@@ -47,9 +52,12 @@ class Tool extends React.Component {
     }
     
 	componentDidUpdate() {
-		const { tool } = this.props;
-		const image = tool.getImage();
-	    image.draw(this.canvas.current, tool.getWidth(), tool.getHeight(), image.properties, image.animation);
+		const { tool, selected, } = this.props;
+        const image = tool.getImage();
+        if (tool.position && !tool.equals(this.tool)) {         // only update image of tool if it is on canvas && its properties has changed
+            image.draw(this.canvas.current, tool.getWidth(), tool.getHeight(), image.properties, image.animation);
+            this.tool = tool.clone();
+        }
 	}
 
 	render() {
@@ -61,6 +69,7 @@ class Tool extends React.Component {
 				height={tool.getHeight()}
 				style={style}
 				onClick={this.props.draggable && !actionTool ? this.onClick : null}
+                onContextMenu={this.props.draggable && !actionTool ? this.onContextMenu : null}
 				ref={this.canvas}
 			>
 				{tool.getName()}

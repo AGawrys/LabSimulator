@@ -35,6 +35,9 @@ function determineToolSize(toolType, tools) {
 
 function getCanvasSize() {
 	const canvas = document.getElementById('canvas');
+	if (canvas === null) {
+		return {width: 929, height: 738.890625};
+	}
 	return canvas.getBoundingClientRect();
 }
 
@@ -47,4 +50,14 @@ function resizeTools(prevCanvasSize, steps) {
 	});
 }
 
-export {determineToolPosition, determineToolSize, getCanvasSize, resizeTools};
+function isCollisionDetected(tool1, tool2) {
+	return (
+		tool1 !== tool2 &&
+		tool1.position.x < tool2.position.x + tool2.width &&
+		tool1.position.x + tool1.width > tool2.position.x &&
+		tool1.position.y < tool2.position.y + tool2.height &&
+		tool1.position.y + tool1.height > tool2.position.y
+	);
+}
+
+export {determineToolPosition, determineToolSize, getCanvasSize, resizeTools, isCollisionDetected};

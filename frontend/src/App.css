@@ -88,3 +88,20 @@
 .search-result-info {
 	text-align: left;
 }
+
+.completed-step {
+	color:green;
+}
+
+.good-lesson-statistic {
+	color: green;
+}
+
+.bad-lesson-statistic {
+	color: red;
+	font-weight: 1000;
+}
+
+.completed-lesson {
+	color: green;
+}

@@ -30,51 +30,48 @@ class GrindModal extends React.Component {
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
             >
-            <Modal.Header closeButton>
-                <div style={{ width: 400 }}>
-                    <div className={completed && !failed ? 'displayNone' : ''}>
-                        Grind the coffee beans!
+                <Modal.Header closeButton>
+                    <div style={{ width: 400 }}>
+                        <div className={completed && !failed ? 'displayNone' : ''}>
+                            Grind the coffee beans!
+                        </div>
+                        <h4 className="failedText" hidden={!failed}>
+                            You have failed! Try again!
+                        </h4>
+                        <h4 className="successText" hidden={!completed || failed}>
+                            You completed the action!
+                        </h4>
                     </div>
-                    <h4 className="failedText" hidden={!failed}>
-                        You have failed! Try again!
-                    </h4>
-                    <h4 className="successText" hidden={!completed || failed}>
-                        You completed the action!
-                    </h4>
-                </div>
-            </Modal.Header>
-            <Modal.Body id="blend-body" style={{height: '500px', width: '750px'}}>
-                <Tool
-                    tool={source}
-                />
-                <Button variant="primary" disabled={completed || failed} onMouseDown={this.onGrind}
-                    onMouseUp={() => {
-                        stop();
-                        this.onBlendEnd()
-                    }}
-                >
-                    Blend
-                </Button>               
-            </Modal.Body>
-                            <Modal.Footer>
-                                <Button variant="warning" disabled={!failed} hidden={!failed} onClick={() => {
-                                    reset();
-                                    this.resetState();
-                                    }}>
-                                    Retry
-                                </Button>
-                                <Button variant="primary" disabled={!completed || failed} onClick={() => {
-                                    reset();
-                                    this.resetState();
-                                    this.props.onComplete();
-                                    }}>
-                                    Continue
-                                </Button>
-                            </Modal.Footer>
-                        </Modal>
-                    );
-                }}
-            </Timer>
+                </Modal.Header>
+                <Modal.Body id="blend-body" style={{height: '500px', width: '750px'}}>
+                    <Tool
+                        tool={source}
+                    />
+                    <Button variant="primary" disabled={completed || failed} onMouseDown={this.onGrind}
+                        onMouseUp={() => {
+                            stop();
+                            this.onBlendEnd()
+                        }}
+                    >
+                        Blend
+                    </Button>               
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="warning" disabled={!failed} hidden={!failed} onClick={() => {
+                        reset();
+                        this.resetState();
+                        }}>
+                        Retry
+                    </Button>
+                    <Button variant="primary" disabled={!completed || failed} onClick={() => {
+                        reset();
+                        this.resetState();
+                        this.props.onComplete();
+                        }}>
+                        Continue
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         );
     }
 
@@ -105,7 +102,7 @@ class GrindModal extends React.Component {
         this.props.onComplete();
     }
 
-    onBlend() {
+    onGrind() {
         const {target} = this.props
         const {ramp, rock, increasing, reset}  = target.image.animation
 
@@ -129,7 +126,7 @@ class GrindModal extends React.Component {
         }
     }
 
-    onBlendEnd() {
+    onGrindEnd() {
         const {target} = this.props
         const {ramp, rock, increasing, shake}  = target.image.animation
 
@@ -160,4 +157,4 @@ class GrindModal extends React.Component {
     }
 }
 
-export default BlendModal;
+export default GrindModal;

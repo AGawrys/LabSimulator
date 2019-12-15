@@ -14,32 +14,22 @@ import Canvas from '../Components/Canvas.jsx';
 import ActionMenuStudent from '../Components/ActionMenuStudent.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
 import GeneralConstants from '../utils/GeneralConstants.js';
-import { Redirect, Prompt } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import StirModal from '../Components/StirModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import Pour from '../Components/Pour.jsx';
-import StudentDirectionModal from '../Components/StudentDirectionModal.jsx';
 import Step from '../Objects/Step.js';
-import EditorNotification from '../Components/EditorNotification.jsx';
+import StudentDirectionModal from '../Components/StudentDirectionModal.jsx';
 
 import { isAbsolute } from 'path';
 
-const green = 'green';
-const red = 'red';
-
-const links = {
-	Dashboard: Routes.STUDENT_DASHBOARD
-};
-
-class EditorStudent extends Component {
+class LessonPreview extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			currentStepIndex: 0,
-			isLessonComplete: false,
 			steps: null,
 			lesson: null,
-			showSuccesfullyComplete: false,
 			areToolsPlaced: false,
 			actionMenu: false,
 			source: null,
@@ -53,15 +43,17 @@ class EditorStudent extends Component {
 				stir: false,
 				drag: false
 			},
-			directionModal: true,
-			showError: false
+			directionModal: true
 		};
 	}
 
 	componentDidMount() {
 		window.addEventListener('resize', this.onCanvasResize);
 		this.fetchData();
-		this.checkIfAttempted();
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener('resize', this.onCanvasResize);
 	}
 
 	componentDidUpdate() {
@@ -79,77 +71,53 @@ class EditorStudent extends Component {
 		}
 	}
 
-	componentWillUnmount() {
-		window.removeEventListener('resize', this.onCanvasResize);
-	}
-
-	checkIfAttempted = () => {
-		axios
-			.get(Routes.SERVER + '/hasAttempted/' + this.props.email)
-			.then((response) => this.setState({ directionModal: !response.data }), (error) => console.log(error));
-	};
-
 	fetchData = () => {
-		const { lesson_id, course_id } = this.props.computedMatch.params;
-		const body = {
-			courseId: course_id,
-			lessonId: lesson_id,
-			email: this.props.email
-		};
-
-		axios.post(Routes.SERVER + 'canStudentComplete', body).then(
-			(response) => this.getLesson(lesson_id, response.data),
-			(error) => {
-				console.log(error);
-				this.props.history.push(Routes.NOT_FOUND);
-			}
-		);
-	};
-
-	getLesson(lesson_id, curriculum) {
+		const { lesson_id } = this.props.computedMatch.params;
 		axios.get(Routes.SERVER + 'getLesson/' + lesson_id).then(
 			(response) => {
 				const { steps, lesson, canvasSize } = Lesson.load(response.data);
-				this.setState({ curriculum, steps, lesson, canvasSize });
-				this.attemptLesson();
+				this.setState({ steps, lesson, canvasSize });
 			},
 			(error) => console.log(error)
 		);
-	}
-
-	attemptLesson = () => {
-		const { lesson_id, course_id } = this.props.computedMatch.params;
-		const body = {
-			courseId: course_id,
-			lessonId: lesson_id,
-			email: this.props.email
-		};
-		axios
-			.post(Routes.SERVER + 'attemptLesson', body)
-			.then((response) => console.log(response), (error) => console.log(error));
 	};
 
-	handleClick = () => {
-		const { steps, currentStepIndex } = this.state;
-		if (currentStepIndex == steps.length - 1) {
-			this.setLessonComplete();
-		} else {
-			this.setState({
-				currentStep: steps[currentStepIndex + 1],
-				currentStepIndex: currentStepIndex + 1,
-				source: null,
-				target: null,
-				actionManagement: null,
-				currentAction: 'None',
-				showAction: {
-					pour: false,
-					shake: false,
-					blend: false,
-					stir: false,
-					drag: false
-				}
-			});
-		}
+	onPrevStep = () => {
+		const { currentStepIndex } = this.state;
+		this.setState({
+			currentStepIndex: currentStepIndex - 1,
+			source: null,
+			target: null,
+			actionManagement: null,
+			currentAction: 'None',
+			showAction: {
+				pour: false,
+				shake: false,
+				blend: false,
+				stir: false,
+				drag: false
+			}
+		});
+	};
+
+	onNextStep = () => {
+		const { currentStepIndex, steps } = this.state;
+		const newIndex = currentStepIndex == steps.length - 1 ? currentStepIndex : currentStepIndex + 1;
+		this.resetStep();
+		this.setState({
+			currentStepIndex: newIndex,
+			source: null,
+			target: null,
+			actionManagement: null,
+			currentAction: 'None',
+			showAction: {
+				pour: false,
+				shake: false,
+				blend: false,
+				stir: false,
+				drag: false
+			}
+		});
 	};
 
 	setSource = (sourceTool, callback) => {
@@ -163,7 +131,7 @@ class EditorStudent extends Component {
 			if (this.isSelectActionCorrect(action)) {
 				this.showActionModal(action.toLowerCase());
 			} else {
-				this.setState({ showError: true });
+				alert('WRONG SELECT CHOICE');
 			}
 		} else {
 			this.setState({ currentAction: action });
@@ -175,7 +143,7 @@ class EditorStudent extends Component {
 			return;
 		}
 		if (!this.isDragActionCorrect(draggedTool, overlappingTools)) {
-			this.setState({ showError: true });
+			alert('WRONG DRAG ACTION');
 			return;
 		}
 
@@ -201,59 +169,30 @@ class EditorStudent extends Component {
 	openActionMenu = () => {
 		this.setState({ actionMenu: true });
 	};
+
 	render() {
-		const {
-			lesson,
-			steps,
-			currentStepIndex,
-			actionManagement,
-			curriculum,
-			showSuccesfullyComplete,
-			isLessonComplete,
-			showError
-		} = this.state;
-		const { source, target, showAction, currentAction, directionModal } = this.state;
-		const { isPreview } = this.props;
+		const { lesson, steps, currentStepIndex, actionManagement } = this.state;
+		const { source, target, showAction, currentAction } = this.state;
+		const { isPreview, history } = this.props;
 		if (lesson == null) {
 			return null;
 		}
 		const currentStep = steps[currentStepIndex];
-		if (isLessonComplete && !showSuccesfullyComplete) {
-			return <Redirect exact to={Routes.STUDENT_DASHBOARD} />;
-		}
+		const correctDashboard = this.props.role === GeneralConstants.ORGANIZATION ? Routes.ORGANIZATION_DASHBOARD : Routes.INSTRUCTOR_DASHBOARD;
+		const home = correctDashboard;
+		const links = {
+			Dashboard: correctDashboard
+		};
 
 		return (
 			<div>
-				<Prompt
-				  when={true}
-				  message={GeneralConstants.LEAVE_STUDENT_LESSON_MESSAGE}
-				/>
 				<HeaderBru
 					{...this.props}
-					home={Routes.STUDENT_DASHBOARD}
+					home={home}
 					links={links}
 					isLoggedIn
 					btn="Exit"
 					color="#01AFD8"
-				/>
-				<EditorNotification
-					message={GeneralConstants.FAILED_SELECTION_MESSAGE}
-					onClose={() => this.setState({ showError: false })}
-					show={showError}
-					autohide
-					delay={1250}
-				/>
-				<InformationModal
-					title={GeneralConstants.SUCCESSFUL_COMPLETE_LESSON_TITLE}
-					message={GeneralConstants.SUCCESSFUL_COMPLETE_LESSON_MESSAGE}
-					onHide={() => this.setState({ showSuccesfullyComplete: false })}
-					show={showSuccesfullyComplete}
-				/>
-				<StudentDirectionModal
-					show={directionModal}
-					closeDirection={() => {
-						this.setState({ directionModal: false });
-					}}
 				/>
 				<ShakeModal
 					progressNeeded={currentStep.actionMeasurement}
@@ -262,7 +201,7 @@ class EditorStudent extends Component {
 					onHide={() => this.hideActionModal('shake')}
 					onSuccess={() => {
 						this.hideActionModal('shake');
-						this.handleClick();
+						this.onNextStep();
 					}}
 					timer={currentStep.timer}
 					tool={currentStep.source}
@@ -275,7 +214,7 @@ class EditorStudent extends Component {
 						goal={currentStep.actionMeasurement}
 						instructor={false}
 						onHide={() => this.hideActionModal('pour')}
-						onNextStep={this.handleClick}
+						onNextStep={this.onNextStep}
 					/>
 				) : null}
 				<StirModal
@@ -286,7 +225,7 @@ class EditorStudent extends Component {
 					onHide={() => this.hideActionModal('stir')}
 					onSuccess={() => {
 						this.hideActionModal('stir');
-						this.handleClick();
+						this.onNextStep();
 					}}
 				/>
 				<Container fluid>
@@ -339,9 +278,24 @@ class EditorStudent extends Component {
 							<div className="divider" />
 							<div className="divider" />
 							<div className="divider" />
-
 							<div className="divider" />
+							<Button
+								disabled={currentStepIndex === 0}
+								variant="dark"
+								onClick={this.onPrevStep}
+								type="button"
+							>
+								PREVIOUS STEP
+							</Button>
 							<div className="divider" />
+							<Button
+								disabled={currentStepIndex === steps.length - 1}
+								variant="dark"
+								onClick={this.onNextStep}
+								type="button"
+							>
+								NEXT STEP
+							</Button>
 							<div className="divider" />
 							<Button variant="dark" onClick={this.resetStep}>
 								RESET STEP
@@ -374,19 +328,8 @@ class EditorStudent extends Component {
 	};
 
 	restartLesson = () => {
-		const { lesson_id, course_id } = this.props.computedMatch.params;
-		const body = {
-			email: this.props.email,
-			courseId: course_id,
-			lessonId: lesson_id
-		};
-		axios.post(Routes.SERVER + 'deleteAssignment', body).then(
-			(response) => {
-				const newSteps = this.state.initialSteps.map((step) => step.clone());
-				this.setState({ steps: newSteps, currentStepIndex: 0 });
-			},
-			(error) => console.log(error)
-		);
+		const newSteps = this.state.initialSteps.map((step) => step.clone());
+		this.setState({ steps: newSteps, currentStepIndex: 0 });
 	};
 
 	resetStep = () => {
@@ -418,4 +361,4 @@ class EditorStudent extends Component {
 		return currentAction === currentStep.action && draggedTool === currentStep.source && targetIndex !== -1;
 	};
 }
-export default EditorStudent;
+export default LessonPreview;

@@ -26,6 +26,10 @@ class Lesson {
 		this.id = id;
 	}
 
+	clone() {
+		return new Lesson(this.name, this.id, this.email, this.isPublished);
+	}
+
 	static load(data) {
 		const {stepInformation, lesson, published} = data;
 		const {instructorEmail, name, lessonId, canvasWidth, canvasHeight} = lesson;
