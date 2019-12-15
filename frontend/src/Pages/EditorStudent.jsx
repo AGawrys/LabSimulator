@@ -171,8 +171,6 @@ class EditorStudent extends Component {
 	};
 
 	onCollisionDetected = (draggedTool, overlappingTools) => {
-		console.log(this.state.source);
-		console.log(draggedTool);
 		if (this.state.source !== draggedTool) {
 			return;
 		}
@@ -393,8 +391,6 @@ class EditorStudent extends Component {
 
 	resetStep = () => {
 		const { initialSteps, steps, currentStepIndex } = this.state;
-		console.log(initialSteps[currentStepIndex]);
-		console.log(steps[currentStepIndex]);
 		steps[currentStepIndex] = initialSteps[currentStepIndex].clone();
 		this.setState({ steps });
 	};

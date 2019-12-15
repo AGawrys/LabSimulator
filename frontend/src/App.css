@@ -101,3 +101,7 @@
 	color: red;
 	font-weight: 1000;
 }
+
+.completed-lesson {
+	color: green;
+}

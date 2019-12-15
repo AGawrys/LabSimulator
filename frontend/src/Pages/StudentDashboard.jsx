@@ -105,8 +105,11 @@ function StudentCourse(props) {
 
 function StudentLesson(props) {
 	const { lessonProgress, disabled, onClick, course } = props;
-	const { lesson, completed } = lessonProgress;
+	const { lesson, completed, numAttempts } = lessonProgress;
+
 	const completeString = completed ? 'Completed' : 'Not Completed';
+	const className = completed ? 'completed-lesson' : '';
+	const icon = completed ? <i className="fa fa-check" aria-hidden="true"></i> : null;
 	return (
 		<ListGroup.Item
 			as="button"
@@ -118,7 +121,7 @@ function StudentLesson(props) {
 				<strong>
 					<p> {lesson.name} </p>
 				</strong>
-				<p style={{ textAlign: 'right' }}> {completeString} </p>
+				<p className={className} style={{ textAlign: 'right' }}> {icon} {completeString} ({numAttempts} attempts) </p>
 			</div>
 		</ListGroup.Item>
 	);
