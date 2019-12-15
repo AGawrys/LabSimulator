@@ -32,7 +32,8 @@ const GeneralConstants = {
 	SHOW_PUBLISHED: 'This lesson is already published!\n No changes can be saved.',
 	FAILED_SELECTION_MESSAGE: 'Incorrect selection! Try again.',
 	POUR_NO_FILL_MESSAGE: 'Cannot pour from empty source tool.',
-	STIR_NO_FILL_MESSAGE: 'Cannot stir an empty target tool. '
+	STIR_NO_FILL_MESSAGE: 'Cannot stir an empty target tool. ',
+	SHAKE_NO_FILL_MESSAGE: 'Cannot shake an empty source tool.'
 };
 
 export default GeneralConstants;

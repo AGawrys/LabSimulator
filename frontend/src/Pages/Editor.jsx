@@ -63,6 +63,7 @@ class Editor extends Component {
 			showActionMenu: true,
 			showPourError: false,
 			showStirError: false,
+			showShakeError: false,
 			showAction: {
 				pour: false,
 				shake: false,
@@ -188,7 +189,8 @@ class Editor extends Component {
 			showPublishConfirmation,
 			showAction,
 			showPourError,
-			showStirError
+			showStirError,
+			showShakeError
 		} = this.state;
 		const { operations, pointer } = this.state.history;
 		if (steps == null) {
@@ -291,6 +293,13 @@ class Editor extends Component {
 					message={GeneralConstants.STIR_NO_FILL_MESSAGE}
 					onClose={() => this.setState({ showStirError: false })}
 					show={showStirError}
+					autohide
+					delay={1250}
+				/>
+				<EditorNotification
+					message={GeneralConstants.SHAKE_NO_FILL_MESSAGE}
+					onClose={() => this.setState({ showShakeError: false })}
+					show={showShakeError}
 					autohide
 					delay={1250}
 				/>
@@ -769,6 +778,19 @@ class Editor extends Component {
 
 	onPublishLesson = () => {
 		const incompleteSteps = this.state.steps.filter((step) => !step.isComplete());
+		const { currentStep } = this.state;
+		if (currentStep.action === 'Pour' && currentStep.source.amount === 0) {
+			this.setState({ showPourError: true });
+			return;
+		}
+		if (currentStep.action === 'Stir' && currentStep.target.amount === 0) {
+			this.setState({ showStirError: true });
+			return;
+		}
+		if (currentStep.action === 'Shake' && currentStep.source.amount === 0) {
+			this.setState({ showShakeError: true });
+			return;
+		}
 		if (incompleteSteps.length !== 0) {
 			this.setState({ showIncompleteSteps: true });
 		} else {
@@ -897,6 +919,10 @@ class Editor extends Component {
 		}
 		if (currentStep.action === 'Stir' && currentStep.target.amount === 0) {
 			this.setState({ showStirError: true });
+			return;
+		}
+		if (currentStep.action === 'Shake' && currentStep.source.amount === 0) {
+			this.setState({ showShakeError: true });
 			return;
 		}
 		showAction[currentStep.action.toLowerCase()] = true;
