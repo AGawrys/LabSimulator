@@ -88,27 +88,46 @@ class Pour extends React.Component {
     closeParent = () => {
         console.log("About to close parent");
         this.props.closeModal();
+        if(!this.props.instructor){
+            this.props.nextStep();
+        }
     }
 
     render() {
         console.log("IN POUR");
-        const { instruction, done} = this.state;
+        const { instruction, done, instructor} = this.state;
         const {show} = this.props;
-        console.log(show)
+        console.log(show);
         const {source, target} = this.props;
-        const t = target.clone();
-        const categories = Object.keys(CATEGORIES);
-        const tools = CATEGORIES["Cups"];
-        const image = t.getImage();
-        image.draw = IMAGES[t.type].draw;
+        console.log(source);
+        console.log(target);
+        let t;
+        let image;
+        if(instructor){
+            t = target.clone();
+            image = t.getImage();
+            image.draw = IMAGES[t.type].draw;
+        } else {
+            t = target;
+            image= t.getImage();
+        }
+        console.log(image);
         image.properties.Fill = this.state.fill;
         image.properties.Color = this.state.color;
         const mytool = (
             <ToolComponent tool={new Tool(t.type, image, undefined, target.getWidth(), target.getHeight(), undefined)} />
         );
-        const src = source.clone();
-        let imageSrc = src.getImage();
-		imageSrc.draw = IMAGES[source.type].draw;
+        let src;
+        let imageSrc;
+        if(instructor){
+            src = source.clone();
+            imageSrc = source.getImage();
+            imageSrc.draw = IMAGES[src.type].draw;
+        } else {
+            src = source;
+            imageSrc= source.getImage();
+        }
+        console.log(imageSrc);
         imageSrc.properties.Fill = this.state.fillSrc;
         imageSrc.properties.Color = this.state.colorSrc;
         const srctool = (
@@ -172,6 +191,9 @@ class Pour extends React.Component {
             {done ? (<Button style={{ backgroundColor: 'steelblue', alignSelf: "center", width: "20vh" }} block bsSize="large" onClick={this.closeAndFinish}>
                 DONE
             </Button>) : null }
+            <Button style={{ backgroundColor: 'steelblue', alignSelf: "center", width: "20vh" }} block bsSize="large" onClick={this.closeAndFinish}>
+                EXIT
+            </Button>
             </Col>
             </Row>
         </Modal>

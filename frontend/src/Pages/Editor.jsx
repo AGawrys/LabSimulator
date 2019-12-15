@@ -96,14 +96,13 @@ class Editor extends Component {
 
 		const {currentStep} = this.state;
 		if(currentStep && currentStep.action === 'Pour' && currentStep.source && currentStep.target && currentStep.actionMeasurement){
-			const image = currentStep.target.getImage();
-			image.draw = IMAGES["TaperedCup"].draw;
-			image.properties = {};
+			const t = currentStep.target.clone()
+			const image = t.getImage();
+			image.draw = IMAGES[t.type].draw;
 			const amt = currentStep.actionMeasurement / 100;
-			image.properties.Fill = currentStep.target.image.properties.Fill + amt;
-
+			image.properties.Fill = image.properties.Fill + amt;
 			const mytool =
-				(<ToolComponent tool={new Tool("TaperedCup", image, undefined, 75, 75, undefined)} />);
+				(<ToolComponent tool={new Tool(t.type, image, undefined, 75, 100, undefined)} />);
 			return mytool;
 		}
 	}
@@ -456,7 +455,7 @@ class Editor extends Component {
 												currentStep.timer ? currentStep.timer > 0 ? currentStep.timer : '' : ''
 											}
 										/>
-										{/* {this.renderPreview()} */}
+										{this.renderPreview()}
 									</div>
 								</Card>
 
