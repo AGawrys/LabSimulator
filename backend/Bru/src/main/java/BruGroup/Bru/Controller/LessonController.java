@@ -147,14 +147,14 @@ public class LessonController {
         List<CourseLesson> curriculum = curriculumRepository.findByCourseLessonIdentityCourseId(identity.getCourseId());
         boolean isCompleted = assignmentRepository.existsById(identity);
         if (isCompleted) {
-            return ResponseEntity.ok(curriculum);
+            return ResponseEntity.ok(isCompleted);
         }
 
         for (CourseLesson courseLesson : curriculum) {
             identity = new AssignmentIdentity(identity.getEmail(),identity.getCourseId(), courseLesson.getCourseLessonIdentity().getLessonId());
             if (!assignmentRepository.existsById(identity)) { //if assignment has not been completed by student
                 ResponseEntity canStudentComplete = identity.getLessonId() == identity.getLessonId()
-                        ? ResponseEntity.ok(curriculum)
+                        ? ResponseEntity.ok(false)
                         : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
                 return canStudentComplete;
             }
