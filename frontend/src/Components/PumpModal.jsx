@@ -12,8 +12,8 @@ class PumpModal extends React.Component {
             finished: false,
             earlyRelease: false,
             earlyPump: false,
-            sourceCopy: this.props.source? this.props.source.clone(): null,
-            targetCopy: this.props.target? this.props.target.clone(): null,
+            sourceCopy: this.props.source.clone(),
+            targetCopy: this.props.target.clone(),
             animation: null,
         };
         
@@ -169,7 +169,7 @@ class PumpModal extends React.Component {
 
         if (compressed < 1) {
             sourceCopy.image.animation.compressed += .05;
-            targetCopy.image.properties.Fill += .0005;
+            targetCopy.image.properties.Fill += .0025;
             this.setState({
                 sourceCopy,
                 targetCopy

@@ -329,16 +329,18 @@ class Editor extends Component {
 						this.setState({ showAction });
 					}}
 				/>
-				<PumpModal
-					show={showAction.pump}
-					source={currentStep.source}
-					target={currentStep.target}
-					pumpsNeeded={currentStep.actionMeasurement}
-					onComplete={() => {
-						showAction.pump = false;
-						this.setState({ showAction});
-					}}
-				/>
+				{showAction.pump ? (
+					<PumpModal
+						show={showAction.pump}
+						source={currentStep.source}
+						target={currentStep.target}
+						pumpsNeeded={currentStep.actionMeasurement}
+						onComplete={() => {
+							showAction.pump = false;
+							this.setState({ showAction});
+						}}
+					/>
+				) : null}
 				{showAction.pour ? (
 					<Pour
 						show={showAction.pour}

@@ -122,9 +122,14 @@ class Tool {
 	}
 
 	imageEquals(tool) {
-		const { properties } = this.image;
-		for (const property in this.image.properties) {
+		const { properties, animation } = this.image;
+		for (const property in properties) {
 			if (properties[property] != tool.image.properties[property]) {
+				return false;
+			}
+		}
+		for (const animationProperty in animation) {
+			if (animation[animationProperty] != tool.image.animation[animationProperty]) {
 				return false;
 			}
 		}
