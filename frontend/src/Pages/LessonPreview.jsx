@@ -281,7 +281,6 @@ class LessonPreview extends Component {
 							<div className="divider" />
 							<Button
 								disabled={currentStepIndex === 0}
-								style={{ float: 'left', marginRight: '10px' }}
 								variant="dark"
 								onClick={this.onPrevStep}
 								type="button"
@@ -291,7 +290,6 @@ class LessonPreview extends Component {
 							<div className="divider" />
 							<Button
 								disabled={currentStepIndex === steps.length - 1}
-								style={{ float: 'left', marginRight: '10px' }}
 								variant="dark"
 								onClick={this.onNextStep}
 								type="button"
