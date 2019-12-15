@@ -79,6 +79,10 @@ class EditorStudent extends Component {
 		}
 	}
 
+	componentWillUnmount() {
+		window.removeEventListener('resize', this.onCanvasResize);
+	}
+
 	checkIfAttempted = () => {
 		axios
 			.get(Routes.SERVER + '/hasAttempted/' + this.props.email)

@@ -131,7 +131,8 @@ class CoursePage extends Component {
 							<ListGroup>
 								{lessons.map((lesson, index) => 
 									<LessonRow {...this.props} key={index} lesson={lesson} canDelete={true} 
-										onClick={(e) => this.onLessonClick(e,lesson)}
+										onDelete={(e) => this.onLessonClick(e,lesson)}
+										onLessonClick={() => this.props.history.push(Routes.INSTRUCTOR_EDITOR + lesson.lessonId)}
 									/>)
 								}
 							</ListGroup>
@@ -229,7 +230,6 @@ class CoursePage extends Component {
 		const parsedLessons = potentialLessons.map((lesson, index) => {
 			return {id: index, label: lesson.name, data: lesson.lessonId}
 		});
-		console.log(response.data);
 		this.setState({
 			instructorLessons: parsedLessons,
 		});

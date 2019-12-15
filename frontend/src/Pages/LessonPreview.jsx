@@ -23,13 +23,6 @@ import StudentDirectionModal from '../Components/StudentDirectionModal.jsx';
 
 import { isAbsolute } from 'path';
 
-const green = 'green';
-const red = 'red';
-
-const links = {
-	Dashboard: Routes.INSTRUCTOR_DASHBOARD
-};
-
 class LessonPreview extends Component {
 	constructor(props) {
 		super(props);
@@ -185,12 +178,17 @@ class LessonPreview extends Component {
 			return null;
 		}
 		const currentStep = steps[currentStepIndex];
+		const correctDashboard = this.props.role === GeneralConstants.ORGANIZATION ? Routes.ORGANIZATION_DASHBOARD : Routes.INSTRUCTOR_DASHBOARD;
+		const home = correctDashboard;
+		const links = {
+			Dashboard: correctDashboard
+		};
 
 		return (
 			<div>
 				<HeaderBru
 					{...this.props}
-					home={Routes.INSTRUCTOR_DASHBOARD}
+					home={home}
 					links={links}
 					isLoggedIn
 					btn="Exit"

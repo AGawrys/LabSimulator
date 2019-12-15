@@ -155,7 +155,7 @@ class Editor extends Component {
 		const { instructorEmail } = response.data.lesson;
 		const lesson_id = this.props.computedMatch.params.lesson_id;
 		if (instructorEmail !== this.props.email) {
-			this.props.history.push(Routes.INSTRUCTOR_PREVIEW + lesson_id);
+			this.props.history.replace(Routes.INSTRUCTOR_PREVIEW + lesson_id);
 		}
 		const loadedLesson = Lesson.load(response.data);
 		this.setState(loadedLesson);
