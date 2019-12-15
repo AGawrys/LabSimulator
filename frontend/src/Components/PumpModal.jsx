@@ -12,8 +12,8 @@ class PumpModal extends React.Component {
             finished: false,
             earlyRelease: false,
             earlyPump: false,
-            sourceCopy: this.props.source.clone(),
-            targetCopy: this.props.target.clone(),
+            sourceCopy: this.props.source? this.props.source.clone(): null,
+            targetCopy: this.props.target? this.props.target.clone(): null,
             animation: null,
         };
         
