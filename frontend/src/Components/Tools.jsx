@@ -427,6 +427,7 @@ const IMAGES = {
 		properties: {
             Width: 100,
             Height: 100,
+            Color: "#0000FF"
         }
 	},
 	Banana: {
@@ -445,7 +446,7 @@ const IMAGES = {
 		properties: {
             Width: 100,
             Height: 100,
-
+            Color: "#FFFF00"
         }
 	},
 	Milk: {
@@ -464,6 +465,7 @@ const IMAGES = {
 		properties: {
             Width: 100,
             Height: 100,
+            Color: "#DCD9CD"
         }
 	},
 	Mango: {
@@ -482,6 +484,7 @@ const IMAGES = {
 		properties: {
             Width: 100,
             Height: 100,
+            Color: "#FFAE42"
         }
 	},
 	Blueberry: {
@@ -501,6 +504,7 @@ const IMAGES = {
 		properties: {
             Width: 100,
             Height: 100,
+            Color: "#0000FF"
         }
 	},
 	Strawberry: {
@@ -519,21 +523,9 @@ const IMAGES = {
 		properties: {
             Width: 100,
             Height: 100,
+            Color: "#FF0000"
         }
-	} /*
-	Machine: {
-		draw: (canvas, width, height) => {
-			if (canvas.getContext) {
-				var ctx = canvas.getContext('2d');
-				var imageObj1 = new Image();
-				imageObj1.onload = function() {
-					ctx.drawImage(imageObj1, 0, 0, width, height);
-				};
-				imageObj1.src = 'https://espressoplanet.r.worldssl.net/images/P/Barista-Front.png';
-			}
-		},
-		properties: {}
-	},*/,
+	},
 	Spoon: {
 		draw: (canvas, width, height) => {
 			if (canvas.getContext) {
