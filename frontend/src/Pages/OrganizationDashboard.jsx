@@ -29,6 +29,10 @@ export class OrganizationDashboard extends React.Component {
 	}
 
 	componentDidMount() {
+		this.fetchInformation();
+	}
+
+	fetchInformation() {
 		axios.get(Routes.SERVER + "organizationInformation/" + this.props.email).then(
 			(response) => this.parseResponse(response.data),
 			(error) => console.log(error),
@@ -78,7 +82,10 @@ export class OrganizationDashboard extends React.Component {
 										{...this.props} 
 										key={index} 
 										lesson={lesson} 
-										onLessonClick={() => this.props.history.push(Routes.INSTRUCTOR_PREVIEW + lesson.lessonId)}/>)
+										onLessonClick={() => this.props.history.push(Routes.INSTRUCTOR_PREVIEW + lesson.lessonId)}
+										canDelete
+										onDelete={(e) => this.onLessonDelete(e, lesson)}/>
+									)
 								}
 							</ListGroup>
 						</div>
@@ -104,11 +111,23 @@ export class OrganizationDashboard extends React.Component {
 		});
 	}
 
-	onLessonClick = (lesson) => {
+	onLessonDelete = (e,lesson) => {
+		e.cancelBubble = true;
+		if (e.stopPropagation) {
+			e.stopPropagation();
+		}
 		this.setState({
 			showDeleteLesson: true,
 			selectedLesson: lesson,
 		});
+	}
+
+	deleteLesson = () => {
+		const {lessonId} = this.state.selectedLesson;
+		axios.post(Routes.SERVER + "deleteLesson/" + lessonId).then(
+			(response) => this.fetchInformation(),
+			(error) => console.log(error),
+		);
 	}
 }
 
