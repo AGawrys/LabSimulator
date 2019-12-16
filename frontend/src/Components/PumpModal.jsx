@@ -5,7 +5,8 @@ import {copyImage} from '../Components/Tools.jsx';
 
 class PumpModal extends React.Component {
 	constructor(props) {
-		super(props);
+        super(props);
+        const { source, target } = this.props;
 		this.state = {
             pumps: 0,
             started: false,
@@ -15,6 +16,7 @@ class PumpModal extends React.Component {
             sourceCopy: this.props.source.clone(),
             targetCopy: this.props.target.clone(),
             animation: null,
+			defaultFill: target.image.properties.Fill,
         };
         
         this.resetState = this.resetState.bind(this);
@@ -149,7 +151,7 @@ class PumpModal extends React.Component {
     }
 
     onPump() {
-        let {pumps, started, sourceCopy, targetCopy, animation} = this.state
+        let {pumps, started, sourceCopy, targetCopy, animation, defaultFill} = this.state
         let {compressed, isMaxed, isReleasing}  = sourceCopy.image.animation;
 
         if (!started) {
@@ -175,6 +177,17 @@ class PumpModal extends React.Component {
                 targetCopy
             })
         } else if (compressed >= 1 && !isMaxed) {
+            if( pumps === 0) {
+                const srcColor = sourceCopy.image.properties.Color
+                if(defaultFill <= 0.04){
+                    targetCopy.image.properties.Color = srcColor;
+                } else {
+                    targetCopy.image.properties.Color = this.colorChange(targetCopy.image.properties.Color, srcColor)
+                }
+                this.setState({
+                    targetCopy
+                })
+            }
             sourceCopy.image.animation.compressed = 1;
             sourceCopy.image.animation.isMaxed = true;
             this.setState({
@@ -222,6 +235,25 @@ class PumpModal extends React.Component {
             sourceCopy
         });
     }
+    colorChange = ( colorSrc, oldColor ) => {
+		const srcColor = colorSrc.slice(1);
+		const tarColor = oldColor.slice(1);
+		const srcArray = srcColor.match(/.{1,2}/g);
+		const tarArray = tarColor.match(/.{1,2}/g);
+		var ans = '#';
+		for (var i = 0; i < srcArray.length; i++) {
+			const srcInt = parseInt(srcArray[i], 16);
+			const tarInt = parseInt(tarArray[i], 16);
+			srcArray[i] = srcInt;
+			tarArray[i] = tarInt;
+			var newColor = Math.floor((srcInt + tarInt) / 2).toString(16);
+			if (newColor.length == 1) {
+				newColor = '0' + newColor;
+			}
+			ans = ans + newColor;
+		}
+		return ans;
+	};
 }
 
 export default PumpModal;
