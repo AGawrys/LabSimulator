@@ -111,7 +111,7 @@ class Editor extends Component {
 			tarArray[i] = tarInt;
 			var newColor = Math.floor((srcInt + tarInt) / 2).toString(16);
 			if(newColor.length == 1) { 
-				newColor = 0 + newColor;
+				newColor = '0' + newColor;
 			}
 			ans = ans + newColor;
 		}

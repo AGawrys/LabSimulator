@@ -29,7 +29,7 @@ class Pour extends React.Component {
 			goalMin: goal / 100 - 0.05 + target.image.properties.Fill,
 			goalMax: goal / 100 + 0.05 + target.image.properties.Fill,
 			done: false,
-			overpoured: false,
+			overpoured: false
 		};
 		this.start = 100;
 	}
@@ -38,12 +38,12 @@ class Pour extends React.Component {
 	};
 	repeat = () => {
 		this.pour();
-		this.t = setTimeout(this.repeat,this.start);
+		this.t = setTimeout(this.repeat, this.start);
 		this.start /= 2;
 	};
 
 	colorChange = () => {
-		const { colorSrc, oldColor} = this.state;
+		const { colorSrc, oldColor } = this.state;
 		const srcColor = colorSrc.slice(1);
 		const tarColor = oldColor.slice(1);
 		const srcArray = srcColor.match(/.{1,2}/g);
@@ -55,8 +55,8 @@ class Pour extends React.Component {
 			srcArray[i] = srcInt;
 			tarArray[i] = tarInt;
 			var newColor = Math.floor((srcInt + tarInt) / 2).toString(16);
-			if(newColor.length == 1) { 
-				newColor = 0 + newColor;
+			if (newColor.length == 1) {
+				newColor = '0' + newColor;
 			}
 			ans = ans + newColor;
 		}
@@ -75,9 +75,9 @@ class Pour extends React.Component {
 		this.setState({ transform: 'translate3d(0, 0px, 0) scale(1) rotate(0deg)' });
 		if (fill <= goalMax && fill >= goalMin) {
 			this.setState({ done: true });
-		} 
+		}
 		if (fill > goalMax) {
-			this.setState({ overpoured: true});
+			this.setState({ overpoured: true });
 		}
 	};
 
@@ -96,12 +96,12 @@ class Pour extends React.Component {
 		const { defaultFill, defaultFillSrc, color, oldColor } = this.state;
 		const defaultTarget = defaultFill;
 		const defaultSource = defaultFillSrc;
-		this.setState({ 
+		this.setState({
 			color: oldColor,
 			fill: defaultTarget,
 			fillSrc: defaultSource,
 			overpoured: false,
-			done: false,
+			done: false
 		});
 	};
 
@@ -198,7 +198,7 @@ const style1 = {
 	alignSelf: 'center',
 	paddingLeft: '5vh',
 	paddingRight: '5vh',
-	paddingTop: '5vh',
+	paddingTop: '5vh'
 };
 
 const style2 = {
@@ -211,8 +211,8 @@ const style2 = {
 };
 
 const overpourStyle = {
-	color: "red",
-	textAlign: "center",
+	color: 'red',
+	textAlign: 'center'
 };
 
 export default Pour;
