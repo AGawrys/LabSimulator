@@ -126,7 +126,15 @@ class Editor extends Component {
 				image.properties.Fill = image.properties.Fill + amt;
 				image.properties.Color = this.colorMedian(currentStep.source.getImage().properties.Color, image.properties.Color)
 			} else if(currentStep.action === "Blend"){
+				const sourceColor = currentStep.source.getImage().animation.color;
+				if(image.properties.Fill === 0) {
+					image.properties.Color = sourceColor;
+				}
+				else { 
+					image.properties.Color = this.colorMedian(sourceColor, image.properties.Color)
+				}
 				image.properties.Fill = image.properties.Fill + 0.1;
+				
 			} else if(currentStep.action === "Stir" || currentStep.action === "Shake"){
 				
 			} else if(currentStep.action === "Grind"){
