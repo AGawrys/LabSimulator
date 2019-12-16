@@ -76,7 +76,7 @@ public class OrganizationController {
         organizationRepository.save(organization);
         return ResponseEntity.ok(null);
     }
-    
+
 }
 
 class OrganizationInformation {

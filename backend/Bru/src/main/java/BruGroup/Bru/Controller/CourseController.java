@@ -61,7 +61,7 @@ public class CourseController {
     @PostMapping (path="/deleteCourse/{courseId}", produces = "application/json")
     @CrossOrigin(origins= "*")
     public ResponseEntity deleteCourse(@PathVariable String courseId) {
-        List<CourseLesson> lessons = curriculumRepository.findByCourseLessonIdentityCourseId(courseId);
+        List<CourseLesson> lessons = curriculumRepository.findByCourseLessonIdentityCourseIdOrderByCreateDateAsc(courseId);
         List<Instructor> instructors = instructorRepository.findByInstructorIdentityCourseId(courseId);
         List<Student> students = studentRepository.findByStudentIdentityCourseId(courseId);
 
@@ -82,7 +82,7 @@ public class CourseController {
 
         List<Student> studentList = studentRepository.findByStudentIdentityCourseId(courseId);
         List<Instructor> instructorList = instructorRepository.findByInstructorIdentityCourseId(courseId);
-        List<CourseLesson> lessons = curriculumRepository.findByCourseLessonIdentityCourseId(courseId);
+        List<CourseLesson> lessons = curriculumRepository.findByCourseLessonIdentityCourseIdOrderByCreateDateAsc(courseId);
 
         List<Account> courseStudents = getStudentAccounts(studentList);
         List<Account> courseInstructors = getInstructorAccounts(instructorList);

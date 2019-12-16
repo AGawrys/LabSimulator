@@ -44,7 +44,7 @@ public class CourseLessonController {
     @PostMapping(path = "/getCourseLesson/{courseId}")
     @CrossOrigin(origins = "*")
     public List<CourseLesson> getCourseLesson (@PathVariable String courseId) {
-        List<CourseLesson> courseLessonList = curriculumRepository.findByCourseLessonIdentityCourseId(courseId);
+        List<CourseLesson> courseLessonList = curriculumRepository.findByCourseLessonIdentityCourseIdOrderByCreateDateAsc(courseId);
         return courseLessonList;
     }
 }

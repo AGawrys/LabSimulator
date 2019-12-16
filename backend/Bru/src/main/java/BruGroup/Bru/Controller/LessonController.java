@@ -144,7 +144,7 @@ public class LessonController {
     @PostMapping(path = "/canStudentComplete")
     @CrossOrigin(origins = "*")
     public ResponseEntity canStudentComplete(@RequestBody AssignmentIdentity identity) {
-        List<CourseLesson> curriculum = curriculumRepository.findByCourseLessonIdentityCourseId(identity.getCourseId());
+        List<CourseLesson> curriculum = curriculumRepository.findByCourseLessonIdentityCourseIdOrderByCreateDateAsc(identity.getCourseId());
         boolean isCompleted = assignmentRepository.existsById(identity);
         if (isCompleted) {
             return ResponseEntity.ok(isCompleted);
@@ -215,7 +215,7 @@ public class LessonController {
 
     public HashSet<Integer> getCourseLessonIds(String courseId) {
         HashSet<Integer> courseLessonIds = new HashSet<>();
-        List<CourseLesson> courseLessons = curriculumRepository.findByCourseLessonIdentityCourseId(courseId);
+        List<CourseLesson> courseLessons = curriculumRepository.findByCourseLessonIdentityCourseIdOrderByCreateDateAsc(courseId);
         for (CourseLesson lesson: courseLessons) {
             courseLessonIds.add(lesson.getCourseLessonIdentity().getLessonId());
         }

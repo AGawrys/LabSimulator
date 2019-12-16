@@ -1,14 +1,20 @@
 package BruGroup.Bru.Entity;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
+import java.util.Date;
 
 @Table (name = "CourseLesson")
 @Entity
 public class CourseLesson {
     @EmbeddedId
     private CourseLessonIdentity courseLessonIdentity;
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "create_date")
+    private Date createDate;
 
     public CourseLesson(){}
 
@@ -30,5 +36,13 @@ public class CourseLesson {
         return "CourseLesson {" +
                 "courseId = " + courseLessonIdentity.getCourseId() +
                 ", lessonId = " + courseLessonIdentity.getLessonId() + "}";
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 }

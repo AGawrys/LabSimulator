@@ -119,7 +119,7 @@ public class AssignmentController {
     }
 
     public List<LessonProgress> getLessonProgress(Course course, String email) {
-        List<CourseLesson> lessonsIds = curriculumRepository.findByCourseLessonIdentityCourseId(course.getCourseId());
+        List<CourseLesson> lessonsIds = curriculumRepository.findByCourseLessonIdentityCourseIdOrderByCreateDateAsc(course.getCourseId());
         if (lessonsIds.isEmpty()) {
             return new ArrayList<>();
         }
