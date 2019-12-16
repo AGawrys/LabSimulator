@@ -102,8 +102,11 @@ class BlendModal extends React.Component {
     }
 
     resetState() {
-        this.props.target.color = this.oldColor;
-        this.props.target.image.properties.Color = this.oldColor;
+        const {target} = this.props;
+        target.color = this.oldColor;
+        target.image.properties.Color = this.oldColor;
+        target.amount -= .25;
+        target.image.properties.Fill -= .25;
         this.setState({
             started: false,
             completed: false,
@@ -143,6 +146,8 @@ class BlendModal extends React.Component {
         if (!started) {
             target.color = this.newColor;
             target.image.properties.Color = this.newColor;
+            target.amount += .25;
+            target.image.properties.Fill += .25;
             this.setState({started: true});
         }
 
