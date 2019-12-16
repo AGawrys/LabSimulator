@@ -622,7 +622,10 @@ const IMAGES = {
 			Width: 100,
 			Height: 100
 		},
-		animation: {}
+		animation: {
+            Fill: 100,
+            Color: '#654321'
+        }
 	},
 	Kettle: {
 		draw: (canvas, width, height) => {

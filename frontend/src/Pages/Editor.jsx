@@ -182,7 +182,7 @@ class Editor extends Component {
 			showShakeError,
 			showBlendError,
 			showOverflowError,
-			showLackFillError
+			showLackFillError,
 			showGrindError
 		} = this.state;
 		const { operations, pointer } = this.state.history;
