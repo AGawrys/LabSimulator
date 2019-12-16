@@ -42,7 +42,7 @@ class ShakeModal extends React.Component {
           ]}
         >
           {({ start, resume, pause, stop, reset, getTimerState, getTime, setTime }) =>  {
-            if (started) {
+            if (started && getTimerState() != 'PLAYING') {
               start();
             }
             return (
@@ -86,6 +86,7 @@ class ShakeModal extends React.Component {
                         draggable
                         actionTool
                         boundId="#shake-body"
+                        defaultPosition={{x: 50, y:50}}
                         tool={tool}
                         onDrag={this.handleDrag}
                     />                  
@@ -93,6 +94,7 @@ class ShakeModal extends React.Component {
                   <Modal.Footer>
                     <Button variant="warning" disabled={!failed} hidden={!failed} onClick={() => {
                       reset();
+                      pause();
                       this.resetState()
                     }}>
                       Retry
@@ -141,6 +143,9 @@ class ShakeModal extends React.Component {
   };
 
   handleDrag = (e, ui) => {
+    if(!this.state.started) {
+      this.setState({started: true});
+    }
     if (!this.state.failed) {
       const {progress, position} = this.state;
       const {x, y} = position;
@@ -151,7 +156,6 @@ class ShakeModal extends React.Component {
           x: x + ui.deltaX,
           y: y + ui.deltaY,
         },
-        started: true,
       });
     }
   };

@@ -61,7 +61,7 @@ class Tool extends React.Component {
 	}
 
 	render() {
-		const { tool, actionTool, onDrag, boundId } = this.props;
+		const { tool, actionTool, onDrag, onStart, boundId } = this.props;
 		let style = this.selected ? { border: '1px #7fb3d8 solid' } : { border: '1px transparent solid' };
 		const ToolCanvas = (
 			<canvas
@@ -81,8 +81,9 @@ class Tool extends React.Component {
         	ToolComponent = (
         		<Draggable
         			bounds={boundId} 
-        			defaultPosition={{x: 50, y: 50}}
-        			onDragStop={this.onDragStop} 
+        			defaultPosition={this.props.defaultPosition}
+                    onStart={onStart}
+        			onStop={this.onDragStop} 
         			onDrag={onDrag}>
                     {ToolCanvas}
                 </Draggable>

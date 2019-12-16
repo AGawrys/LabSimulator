@@ -45,7 +45,7 @@ class LessonPreview extends Component {
 				blend: false,
 				pump: false,
 				stir: false,
-				drag: false
+				brew: false,
 			},
 			directionModal: true,
 			showError: false,
@@ -268,6 +268,19 @@ class LessonPreview extends Component {
 						onHide={() => this.hideActionModal('stir')}
 						onSuccess={() => {
 							this.hideActionModal('stir');
+							this.onNextStep();
+						}}
+					/>
+				) : null}
+				{showAction.brew ? (
+					<BrewModal
+						show={showAction.brew}
+						timer={currentStep.timer}
+						source={currentStep.source.cloneAsDefaultSize()}
+						target={currentStep.target.cloneAsDefaultSize()}
+						onHide={() => this.hideActionModal('brew')}
+						onSuccess={() => {
+							this.hideActionModal('brew');
 							this.onNextStep();
 						}}
 					/>

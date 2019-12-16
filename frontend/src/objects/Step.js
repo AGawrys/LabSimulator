@@ -95,7 +95,7 @@ class Step {
 		if (!this.action) {
 			return false;
 		}
-		if (this.action == 'Pour' || this.action == 'Drag' || this.action == "Stir" || this.action == 'Blend' || this.action == 'Pump') {
+		if (Step.requiresTarget(this.action)) {
 			return this.source && this.target;
 		}
 		return this.source;
@@ -123,7 +123,7 @@ class Step {
 	}
 
 	static requiresTarget(action) {
-		return action === "Stir" || action === "Pour" || action === "Blender" || action === "Pump" || action === "Blend";
+		return action === "Stir" || action === "Pour" || action === "Blender" || action === "Pump" || action === "Blend" || action === "Brew";
 	}
 
 	static load(stepData) {
