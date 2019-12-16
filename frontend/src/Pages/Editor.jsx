@@ -30,6 +30,7 @@ import ShakeModal from '../Components/ShakeModal.jsx';
 import StirModal from '../Components/StirModal.jsx';
 import BlendModal from '../Components/BlendModal.jsx';
 import PumpModal from '../Components/PumpModal.jsx';
+import BrewModal from '../Components/BrewModal.jsx';
 import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
 import EditorNotification from '../Components/EditorNotification.jsx';
@@ -41,6 +42,7 @@ import axios from 'axios';
 import plus from '../Styles/Images/icons8-plus.svg';
 import { HotKeys } from 'react-hotkeys';
 import Pour from '../Components/Pour.jsx';
+import { Prompt } from 'react-router-dom';
 
 const links = {
 	Account: '/instructor/dashboard'
@@ -270,20 +272,17 @@ class Editor extends Component {
 				tool.value.type === 'Strawberry'
 		);
 		const blendTargetOptions = toolOptions.filter((tool) => tool.value.type === 'Blender');
+		const pumpSourceOptions = toolOptions.filter((tool) => tool.value.type === 'PumpBottle');
+		const pumpTargetOptions = toolOptions.filter(
+			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Shaker' || tool.value.type === 'Blender'
+		);
 		const stirSourceOptions = toolOptions.filter(
 			(tool) => tool.value.type === 'Spoon' || tool.value.type == 'TeaBag'
 		);
 		const stirTargetOptions = toolOptions.filter(
 			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender' || tool.value.type === 'Shaker'
 		);
-		const dragSourceOptions = toolOptions.filter(
-			(tool) =>
-				tool.value.type === 'StraightCup' || tool.value.type === 'CupSleeve' || tool.value.type === 'IceCube'
-		);
-		const dragTargetOptions1 = toolOptions.filter(
-			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender' || tool.value.type === 'Shaker'
-		);
-		const dragTargetOptions2 = toolOptions.filter((tool) => tool.value.type === 'StraightCup');
+		const brewSourceOptions = toolOptions;
 
 		const publishBtn = lesson.isPublished ? null : (
 			<Button variant="primary" onClick={() => this.setState({ showPublishConfirmation: true })}>
@@ -292,6 +291,7 @@ class Editor extends Component {
 		);
 		return (
 			<HotKeys handlers={this.shortcutHandlers}>
+				<Prompt when={isDirty} message={GeneralConstants.UNSAVED_EDITOR_MESSAGE} />
 				<HeaderBru {...this.props} home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
 				<ConfirmationModal
 					title={GeneralConstants.DELETE_LESSON_TITLE}
@@ -383,6 +383,15 @@ class Editor extends Component {
 					onHide={() => this.hideActionModal('stir')}
 					onSuccess={() => this.hideActionModal('stir')}
 				/>
+				{showAction.brew ? (
+					<BrewModal
+						show={showAction.brew}
+						timer={currentStep.timer}
+						source={currentStep.source}
+						onHide={() => this.hideActionModal('stir')}
+						onSuccess={() => this.hideActionModal('stir')}
+					/>
+				) : null}
 				{showAction.blend ? (
 					<BlendModal
 						show={showAction.blend}
@@ -400,9 +409,11 @@ class Editor extends Component {
 						show={showAction.pump}
 						source={currentStep.source}
 						target={currentStep.target}
-						goal={currentStep.actionMeasurement}
-						instructor={true}
-						onHide={this.closePourModal}
+						pumpsNeeded={currentStep.actionMeasurement}
+						onComplete={() => {
+							showAction.pump = false;
+							this.setState({ showAction });
+						}}
 					/>
 				) : null}
 				{showAction.pour ? (
@@ -542,8 +553,10 @@ class Editor extends Component {
 													stirSourceOptions
 												) : currentStep.action === 'Blend' ? (
 													blendSourceOptions
-												) : currentStep.action === 'Drag' ? (
-													dragSourceOptions
+												) : currentStep.action === 'Pump' ? (
+													pumpSourceOptions
+												) : currentStep.action === 'Brew' ? (
+													brewSourceOptions
 												) : (
 													''
 												)
@@ -561,7 +574,7 @@ class Editor extends Component {
 											isDisabled={
 												currentStep.action === 'Shake' ||
 												currentStep.action === null ||
-												(currentStep.action === 'Drag' && currentStep.source === null)
+												currentStep.action === 'Brew'
 											}
 											options={
 												currentStep.action === 'Pour' ? (
@@ -570,12 +583,8 @@ class Editor extends Component {
 													stirTargetOptions
 												) : currentStep.action === 'Blend' ? (
 													blendTargetOptions
-												) : currentStep.action === 'Drag' ? currentStep.source === null ? (
-													''
-												) : currentStep.source.type === 'IceCube' ? (
-													dragTargetOptions1
-												) : (
-													dragTargetOptions2
+												) : currentStep.action === 'Pump' ? (
+													pumpTargetOptions
 												) : (
 													''
 												)
@@ -598,13 +607,15 @@ class Editor extends Component {
 													''
 												)
 											}
+											hidden={currentStep.action === 'Blend' || currentStep.action === 'Brew'}
 										/>
 										<input
 											className="actionMeasurementControl"
 											type="number"
 											min="1"
 											placeholder="Timer (Seconds)"
-											disabled={currentStep.action === 'Pour'}
+											hidden={currentStep.action === 'Pour' || currentStep.action === 'Pump'}
+											disabled={lesson.isPublished}
 											onChange={(e) => this.updateTimer(e)}
 											value={
 												currentStep.timer ? currentStep.timer > 0 ? currentStep.timer : '' : ''
@@ -795,12 +806,11 @@ class Editor extends Component {
 	updateActionMeasurement = (e) => {
 		const { currentStep } = this.state;
 		if (e.target.value > 0) {
-			currentStep.actionMeasurement = e.target.value;
-			this.setState({ currentStep });
+			currentStep.actionMeasurement = Number(e.target.value);
 		} else {
 			currentStep.actionMeasurement = null;
-			this.setState({ currentStep }, this.addOperation);
 		}
+		this.setState({ currentStep }, this.addOperation);
 	};
 
 	updateTimer = (e) => {
@@ -840,7 +850,7 @@ class Editor extends Component {
 
 	onPublishLesson = () => {
 		const incompleteSteps = this.state.steps.filter((step) => !step.isComplete());
-		const { currentStep } = this.state;
+		const { currentStep, isDirty } = this.state;
 		if (currentStep.action === 'Pour' && currentStep.source.amount === 0) {
 			this.setState({ showPourError: true });
 			return;
@@ -855,6 +865,11 @@ class Editor extends Component {
 		}
 		if (incompleteSteps.length !== 0) {
 			this.setState({ showIncompleteSteps: true });
+			return;
+		}
+		if (isDirty) {
+			this.setState({ showSaveBeforePublish: true });
+			return;
 		} else {
 			this.publishLesson();
 		}

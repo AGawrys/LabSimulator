@@ -17,9 +17,12 @@ import GeneralConstants from '../utils/GeneralConstants.js';
 import { Redirect } from 'react-router-dom';
 import StirModal from '../Components/StirModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
+import BlendModal from '../Components/BlendModal.jsx';
+import PumpModal from '../Components/PumpModal.jsx';
 import Pour from '../Components/Pour.jsx';
 import Step from '../Objects/Step.js';
-import StudentDirectionModal from '../Components/StudentDirectionModal.jsx';
+import EditorNotification from '../Components/EditorNotification.jsx';
+
 
 import { isAbsolute } from 'path';
 
@@ -40,10 +43,12 @@ class LessonPreview extends Component {
 				pour: false,
 				shake: false,
 				blend: false,
+				pump: false,
 				stir: false,
 				drag: false
 			},
-			directionModal: true
+			directionModal: true,
+			showError: false,
 		};
 	}
 
@@ -94,8 +99,9 @@ class LessonPreview extends Component {
 				pour: false,
 				shake: false,
 				blend: false,
+				pump: false,
 				stir: false,
-				drag: false
+				brew: false,
 			}
 		});
 	};
@@ -114,8 +120,9 @@ class LessonPreview extends Component {
 				pour: false,
 				shake: false,
 				blend: false,
+				pump: false,
 				stir: false,
-				drag: false
+				brew: false,
 			}
 		});
 	};
@@ -131,7 +138,7 @@ class LessonPreview extends Component {
 			if (this.isSelectActionCorrect(action)) {
 				this.showActionModal(action.toLowerCase());
 			} else {
-				alert('WRONG SELECT CHOICE');
+				this.setState({ showError: true });
 			}
 		} else {
 			this.setState({ currentAction: action });
@@ -143,7 +150,7 @@ class LessonPreview extends Component {
 			return;
 		}
 		if (!this.isDragActionCorrect(draggedTool, overlappingTools)) {
-			alert('WRONG DRAG ACTION');
+			this.setState({ showError: true });
 			return;
 		}
 
@@ -172,7 +179,7 @@ class LessonPreview extends Component {
 
 	render() {
 		const { lesson, steps, currentStepIndex, actionManagement } = this.state;
-		const { source, target, showAction, currentAction } = this.state;
+		const { source, target, showAction, currentAction, showError } = this.state;
 		const { isPreview, history } = this.props;
 		if (lesson == null) {
 			return null;
@@ -194,6 +201,13 @@ class LessonPreview extends Component {
 					btn="Exit"
 					color="#01AFD8"
 				/>
+				<EditorNotification
+					message={GeneralConstants.FAILED_SELECTION_MESSAGE}
+					onClose={() => this.setState({ showError: false })}
+					show={showError}
+					autohide
+					delay={1250}
+				/>
 				<ShakeModal
 					progressNeeded={currentStep.actionMeasurement}
 					show={showAction.shake}
@@ -206,6 +220,32 @@ class LessonPreview extends Component {
 					timer={currentStep.timer}
 					tool={currentStep.source}
 				/>
+				{showAction.blend ? (
+					<BlendModal
+						show={showAction.blend}
+						time={currentStep.timer}
+						source={currentStep.source}
+						target={currentStep.target}
+						onHide={() => this.hideActionModal('blend')}
+						onComplete={() => {
+							this.hideActionModal('blend');
+							this.onNextStep();
+						}}
+					/>
+				) : null}
+				{showAction.pump ? (
+					<PumpModal
+						show={showAction.pump}
+						source={currentStep.source}
+						target={currentStep.target}
+						pumpsNeeded={currentStep.actionMeasurement}
+						onHide={() => this.hideActionModal('pump')}
+						onComplete={() => {
+							this.hideActionModal('pump');
+							this.onNextStep();
+						}}
+					/>
+				) : null}
 				{showAction.pour ? (
 					<Pour
 						show={showAction.pour}

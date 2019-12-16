@@ -61,7 +61,7 @@ class Tool extends React.Component {
 	}
 
 	render() {
-		const { tool, actionTool, onDrag } = this.props;
+		const { tool, actionTool, onDrag, boundId } = this.props;
 		let style = this.selected ? { border: '1px #7fb3d8 solid' } : { border: '1px transparent solid' };
 		const ToolCanvas = (
 			<canvas
@@ -80,7 +80,7 @@ class Tool extends React.Component {
         if (actionTool) {
         	ToolComponent = (
         		<Draggable
-        			bounds={"#shake-body"} 
+        			bounds={boundId} 
         			defaultPosition={{x: 50, y: 50}}
         			onDragStop={this.onDragStop} 
         			onDrag={onDrag}>
