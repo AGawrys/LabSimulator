@@ -42,7 +42,7 @@ import axios from 'axios';
 import plus from '../Styles/Images/icons8-plus.svg';
 import { HotKeys } from 'react-hotkeys';
 import Pour from '../Components/Pour.jsx';
-import { Prompt} from 'react-router-dom';
+import { Prompt } from 'react-router-dom';
 
 const links = {
 	Dashboard: Routes.INSTRUCTOR_DASHBOARD
@@ -223,12 +223,10 @@ class Editor extends Component {
 				tool.value.type === 'IceCube'
 		);
 		const blendTargetOptions = toolOptions.filter((tool) => tool.value.type === 'Blender');
-		const pumpSourceOptions = toolOptions.filter(
-			(tool) => tool.value.type === "PumpBottle"
-		);
+		const pumpSourceOptions = toolOptions.filter((tool) => tool.value.type === 'PumpBottle');
 		const pumpTargetOptions = toolOptions.filter(
-			(tool) => tool.value.type === "StraightCup" || tool.value.type === "Shaker" || tool.value.type === "Blender"
-		)
+			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Shaker' || tool.value.type === 'Blender'
+		);
 		const stirSourceOptions = toolOptions.filter((tool) => tool.value.type === 'Spoon');
 		const stirTargetOptions = toolOptions.filter(
 			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender'
@@ -242,10 +240,7 @@ class Editor extends Component {
 		);
 		return (
 			<HotKeys handlers={this.shortcutHandlers}>
-				<Prompt
-				  when={isDirty}
-				  message={GeneralConstants.UNSAVED_EDITOR_MESSAGE}
-				/>
+				<Prompt when={isDirty} message={GeneralConstants.UNSAVED_EDITOR_MESSAGE} />
 				<HeaderBru {...this.props} home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
 				<ConfirmationModal
 					title={GeneralConstants.DELETE_LESSON_TITLE}
@@ -370,7 +365,7 @@ class Editor extends Component {
 						pumpsNeeded={currentStep.actionMeasurement}
 						onComplete={() => {
 							showAction.pump = false;
-							this.setState({ showAction});
+							this.setState({ showAction });
 						}}
 					/>
 				) : null}
@@ -516,7 +511,7 @@ class Editor extends Component {
 												) : currentStep.action === 'Blend' ? (
 													blendSourceOptions
 												) : currentStep.action === 'Pump' ? (
-													pumpSourceOptions	
+													pumpSourceOptions
 												) : currentStep.action === 'Brew' ? (
 													brewSourceOptions
 												) : (
@@ -548,7 +543,9 @@ class Editor extends Component {
 													blendTargetOptions
 												) : currentStep.action === 'Pump' ? (
 													pumpTargetOptions
-												) : ''
+												) : (
+													''
+												)
 											}
 											onChange={(tool) => this.updateCurrentTarget(tool.value)}
 											value={currentStep.target ? currentStep.target.toSelectOption() : ''}
@@ -569,10 +566,7 @@ class Editor extends Component {
 													''
 												)
 											}
-											hidden={
-												currentStep.action === "Blend" ||
-												currentStep.action === "Brew"
-											}
+											hidden={currentStep.action === 'Blend' || currentStep.action === 'Brew'}
 										/>
 										<input
 											className="actionMeasurementControl"
@@ -580,10 +574,7 @@ class Editor extends Component {
 											min="1"
 											max="59"
 											placeholder="Timer (Seconds)"
-											hidden={
-												currentStep.action === 'Pour' ||
-												currentStep.action === 'Pump'
-											}
+											hidden={currentStep.action === 'Pour' || currentStep.action === 'Pump'}
 											disabled={lesson.isPublished}
 											onChange={(e) => this.updateTimer(e)}
 											value={currentStep.timer && currentStep.timer > 0 ? currentStep.timer : ''}
@@ -846,10 +837,9 @@ class Editor extends Component {
 			return;
 		}
 		if (isDirty) {
-			this.setState({ showSaveBeforePublish: true});
+			this.setState({ showSaveBeforePublish: true });
 			return;
-		}
-		else {
+		} else {
 			this.publishLesson();
 		}
 	};
