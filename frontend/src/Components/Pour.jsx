@@ -79,12 +79,14 @@ class Pour extends React.Component {
 	};
 
 	pour = (e) => {
-		const { fill, fillSrc } = this.state;
+		const { fill, fillSrc, defaultFill} = this.state;
 		if (fillSrc > 0) {
 			const n = fill + 0.01;
 			const nSrc = Number((fillSrc - 0.01).toFixed(2));
 			this.setState({ fill: n, fillSrc: nSrc });
-			this.colorChange();
+			if(defaultFill != 0){
+				this.colorChange();
+			}
 		}
 	};
 	reset = () => {
@@ -115,11 +117,16 @@ class Pour extends React.Component {
 
 		target.amount = fill;
 		target.image.properties.Fill = fill;
-		target.image.properties.Color = color;
+		if(this.state.defaultFill === 0){
+			target.image.properties.Color = colorSrc;
+		}
+		else {
+			target.image.properties.Color = color;
+		}
 		source.amount = fillSrc;
 		source.image.properties.Fill = fillSrc;
 		source.image.properties.Color = colorSrc;
-
+		
 		return (
 			<Modal onHide={onHide} show={show} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
 				<h2 style={style1}>{instruction}</h2>
