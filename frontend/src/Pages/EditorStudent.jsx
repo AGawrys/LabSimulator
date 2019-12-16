@@ -158,7 +158,7 @@ class EditorStudent extends Component {
 					blend: false,
 					pump: false,
 					stir: false,
-					brew: false,
+					brew: false
 				}
 			});
 		}

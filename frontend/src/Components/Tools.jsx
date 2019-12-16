@@ -622,7 +622,8 @@ const IMAGES = {
 				imageObj1.onload = function() {
 					ctx.drawImage(imageObj1, 0, 0, width, height);
 				};
-				imageObj1.src = 'https://plantinstructions.com/wp-content/uploads/2017/05/coffee-grounds.gif';
+				imageObj1.src =
+					'https://www.pinclipart.com/picdir/big/66-660272_ground-coffee-coffee-ground-icon-png-clipart.png?fbclid=IwAR3QvlBHE-fnmsBkW1T7isj1Vgk8sKRG0bDgEV_YoHdQepb2IzDy7-AARv4';
 			}
 		},
 		properties: {
@@ -639,7 +640,8 @@ const IMAGES = {
 				imageObj1.onload = function() {
 					ctx.drawImage(imageObj1, 0, 0, width, height);
 				};
-				imageObj1.src = 'https://myrealdomain.com/images/coffee-grounds-clipart-4.png';
+				imageObj1.src =
+					'https://cdn3.iconfinder.com/data/icons/coffee-filled-line-1/100/coffee-25-512.png?fbclid=IwAR1vuWDyg9qJQEpBgJQz4Xc18VeiDV8PL2tmPLwjC78-IlJf6bmVOmjy4TA';
 			}
 		},
 		properties: {
@@ -656,8 +658,7 @@ const IMAGES = {
 				imageObj1.onload = function() {
 					ctx.drawImage(imageObj1, 0, 0, width, height);
 				};
-				imageObj1.src =
-					'https://cdn0.iconfinder.com/data/icons/household-filled-color/300/13524567Untitled-3-512.png';
+				imageObj1.src = 'https://images.vexels.com/media/users/3/134844/isolated/preview/d00662b831b4955b1c176d787eaae0f2-teapot-tea-pot-by-vexels.png';
 			}
 		},
 		properties: {
