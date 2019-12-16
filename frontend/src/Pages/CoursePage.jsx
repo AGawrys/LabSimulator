@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Collapsible from 'react-collapsible';
-import '../Styles/StudentDashboard.css';
 import HeaderBru from '../Components/Header.jsx';
 import Routes from '../utils/RouteConstants.js';
 import FormModal from '../Components/FormModal.jsx';
@@ -15,7 +14,7 @@ import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
 const links = {
-	Account: '/instructor/dashboard'
+	Dashboard: Routes.INSTRUCTOR_DASHBOARD,
 };
 
 class CoursePage extends Component {
@@ -132,7 +131,8 @@ class CoursePage extends Component {
 							<ListGroup>
 								{lessons.map((lesson, index) => 
 									<LessonRow {...this.props} key={index} lesson={lesson} canDelete={true} 
-										onClick={(e) => this.onLessonClick(e,lesson)}
+										onDelete={(e) => this.onLessonClick(e,lesson)}
+										onLessonClick={() => this.props.history.push(Routes.INSTRUCTOR_EDITOR + lesson.lessonId)}
 									/>)
 								}
 							</ListGroup>
@@ -228,9 +228,8 @@ class CoursePage extends Component {
 	parseLessonResponse = (response) => {
 		const potentialLessons = response.data;
 		const parsedLessons = potentialLessons.map((lesson, index) => {
-			return {id: index, value: lesson.name, key: lesson.lessonId}
+			return {id: index, label: lesson.name, data: lesson.lessonId}
 		});
-		console.log(response.data);
 		this.setState({
 			instructorLessons: parsedLessons,
 		});
@@ -238,7 +237,7 @@ class CoursePage extends Component {
 
 	parseSearchResults = (accounts) => {
 		return accounts.map((account, index) => { 
-			return {id: index, value: account.name + " (" + account.email + ")", key: account.email}
+			return {id: index, label: account.name + " (" + account.email + ")", data: account.email}
 		});
 	}
 

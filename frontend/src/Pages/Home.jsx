@@ -45,9 +45,15 @@ class Home extends Component {
 									<h2 className="Home-main-items">Barista Labratory</h2>
 									<h1 className="Home-main-items">Your next orientation, online</h1>
 									<p className="Home-main-items">
-										Lorem ipsum dolor sit amet, sapien etiam, nunc amet dolor ac odio mauris justo.
-										Luctus arcu, urna praesent at id quisque ac. Arcu es massa vestibulum malesuada,
-										integer vivamus elit eu mauris eus, cum eros quis aliquam wisi..
+										Coffee is a brewed drink prepared from roasted coffee beans, the seeds of
+										berries from certain Coffea species. The genus Coffea is native to tropical
+										Africa (specifically having its origin in Ethiopia and Sudan) and Madagascar,
+										the Comoros, Mauritius, and Réunion in the Indian Ocean.[2] Coffee plants are
+										now cultivated in over 70 countries, primarily in the equatorial regions of the
+										Americas, Southeast Asia, Indian subcontinent, and Africa. The two most commonly
+										grown are C. arabica and C. robusta. Once ripe, coffee berries are picked,
+										processed, and dried. Roasted beans are ground and then brewed with near-boiling
+										water to produce the beverage known as coffee.
 									</p>
 									<Link to="/Signup" className="link">
 										<div className="Home-main-items">

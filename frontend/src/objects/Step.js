@@ -78,10 +78,14 @@ class Step {
 		this.actionMeasurement = actionMeasurement;
 	}
 
+
 	isComplete() {
-		if (!this.actionMeasurement || this.tools.length === 0) {
+		if ((!this.actionMeasurement && this.action !== 'Blend') || this.tools.length === 0) {
 			return false;
-		} else if (!this.timer && this.action !== 'Pour'){
+		} else if (
+			!this.timer &&
+			this.action !== 'Pour' &&
+			this.action !== 'Pump') {
 			return false;
 		}
 		return this.isActionSet();
@@ -91,7 +95,7 @@ class Step {
 		if (!this.action) {
 			return false;
 		}
-		if (this.action == 'Pour') {
+		if (this.action == 'Pour' || this.action == 'Drag' || this.action == "Stir") {
 			return this.source && this.target;
 		}
 		return this.source;
@@ -116,6 +120,10 @@ class Step {
 		}
 
 		return new Step(name, description, clonedTools, action, clonedSource,clonedTarget, actionMeasurement, timer);
+	}
+
+	static requiresTarget(action) {
+		return action === "Stir" || action === "Pour" || action === "Blender";
 	}
 
 	static load(stepData) {

@@ -96,16 +96,31 @@ class Editor extends Component {
 	renderPreview = () => {
 
 		const {currentStep} = this.state;
-		if(currentStep && currentStep.action === 'Pour' && currentStep.source && currentStep.target && currentStep.actionMeasurement){
-			const t = currentStep.target.clone()
+		if(currentStep && currentStep.isComplete()){
+			let t = currentStep
+			if(currentStep.action === "Shake"){
+				t = currentStep.source.clone()
+			}
+			else{ 
+				t = currentStep.target.clone()
+			}
 			const image = t.getImage();
 			image.draw = IMAGES[t.type].draw;
-			const amt = currentStep.actionMeasurement / 100;
-			image.properties.Fill = image.properties.Fill + amt;
+			if(currentStep.action === 'Pour' && currentStep.source && currentStep.target && currentStep.actionMeasurement){
+				const amt = currentStep.actionMeasurement / 100;
+				image.properties.Fill = image.properties.Fill + amt;
+			} else if(currentStep.action === "Blend"){
+				image.properties.Fill = image.properties.Fill + 0.1;
+			} else if(currentStep.action === "Stir" || currentStep.action === "Shake"){
+				
+			} else if(currentStep.action === "Grind"){
+
+			}
 			const tool = t.clone();
 			tool.image = image;
 			return tool;
 		}
+		
 	}
 	
 	setPreviewToCopiedTool = () => {
@@ -178,14 +193,14 @@ class Editor extends Component {
 		const toolOptions = currentStep.tools.map((tool) => tool.toSelectOption());
 		const pourSourceOptions = toolOptions.filter(
 			(tool) =>
-				tool.value.type === 'Cup' ||
+				tool.value.type === 'StraightCup' ||
 				tool.value.type === 'Shaker' ||
 				tool.value.type === 'Blender' ||
 				tool.value.type === 'Milk' ||
 				tool.value.type === 'Pump'
 		);
 		const pourTargetOptions = toolOptions.filter(
-			(tool) => tool.value.type === 'Cup' || tool.value.type === 'Shaker' || tool.value.type === 'Blender'
+			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Shaker' || tool.value.type === 'Blender'
 		);
 		const shakeOptions = toolOptions.filter((tool) => tool.value.type === 'Shaker');
 		const blendSourceOptions = toolOptions.filter(
@@ -198,15 +213,15 @@ class Editor extends Component {
 		const blendTargetOptions = toolOptions.filter((tool) => tool.value.type === 'Blender');
 		const stirSourceOptions = toolOptions.filter((tool) => tool.value.type === 'Spoon');
 		const stirTargetOptions = toolOptions.filter(
-			(tool) => tool.value.type === 'Cup' || tool.value.type === 'Blender'
+			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender'
 		);
 		const dragSourceOptions = toolOptions.filter(
-			(tool) => tool.value.type === 'Cap' || tool.value.type === 'CupSleeve' || tool.value.type === 'IceCube'
+			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'CupSleeve' || tool.value.type === 'IceCube'
 		);
 		const dragTargetOptions1 = toolOptions.filter(
-			(tool) => tool.value.type === 'Cup' || tool.value.type === 'Blender' || tool.value.type === 'Shaker'
+			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender' || tool.value.type === 'Shaker'
 		);
-		const dragTargetOptions2 = toolOptions.filter((tool) => tool.value.type === 'Cup');
+		const dragTargetOptions2 = toolOptions.filter((tool) => tool.value.type === 'StraightCup');
 
 		const publishBtn = lesson.isPublished ? null : (
 			<Button variant="primary" onClick={this.onPublishLesson}>

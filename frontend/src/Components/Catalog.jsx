@@ -19,13 +19,27 @@ class Catalog extends React.Component {
 
 	render() {
 		const categories = Object.keys(CATEGORIES);
-		const sections = categories.map((category,index) => {
+		const sections = categories.map((category, index) => {
 			const tools = CATEGORIES[category];
-			const items = tools.map((tool,index) => {
+			const items = tools.map((tool, index) => {
 				const image = IMAGES[tool];
+				const width = image.properties.Width,
+					height = image.properties.Height;
 				return (
-					<Draggable key={index} type="tool" data={tool}>
-						<ToolComponent tool={new Tool(tool, image, undefined, 75, 75, undefined)} />
+					<Draggable key={index} type="tool" data={tool} style={{ width: '75px', height: '75px' }}>
+						<ToolComponent
+							style={{ display: 'inline-block' }}
+							tool={
+								new Tool(
+									tool,
+									image,
+									undefined,
+									width >= height ? 75 : width * 75 / height,
+									width <= height ? 75 : height * 75 / width,
+									undefined
+								)
+							}
+						/>
 					</Draggable>
 				);
 			});
@@ -34,6 +48,7 @@ class Catalog extends React.Component {
 				<div key={index} style={{ overflowY: 'auto', borderBottom: '1px solid black' }}>
 					<Col style={{ margin: 0, padding: '10px' }}>
 						<Collapsible
+							triggerDisabled={this.props.published}
 							trigger={<CollapsibleTrigger text={category} image={down} alt="expand" />}
 							triggerWhenOpen={<CollapsibleTrigger text={category} image={up} alt="collapse" />}
 						>

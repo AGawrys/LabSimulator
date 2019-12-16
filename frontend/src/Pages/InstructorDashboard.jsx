@@ -13,8 +13,9 @@ import LessonRow from '../Components/LessonRow.jsx';
 import plus from '../Styles/Images/icons8-plus.svg';
 
 const links = {
-	Account: '/account'
+	Dashboard: Routes.INSTRUCTOR_DASHBOARD,
 };
+
 export class InstructorDashboard extends Component {
 	constructor(props) {
 		super(props);
@@ -51,7 +52,9 @@ export class InstructorDashboard extends Component {
 				<div className="teacherDashboard">
 					<div className="searchBarDiv">
 					<h1 className="m-0 font-weight-light text-secondary headings">Welcome to your Dashboard</h1>
-						<SearchBar placeHolderText={'Search for Lesson'} onSearchButtonClick={(value) => this.props.history.push(Routes.SEARCH + value)} />
+						<Form onSubmit={(value) => this.props.history.push(Routes.Search + value)}>
+							<SearchBar placeHolderText={'Search for Lesson'} onSearchButtonClick={(value) => this.props.history.push(Routes.SEARCH + value)} />
+						</Form>
 					</div>
 					<div className="teacherDashboardContents">
 						<div className="recentDrinksDiv cardBorder">
@@ -79,7 +82,11 @@ export class InstructorDashboard extends Component {
 							<div className="recentDrinkBottom">
 								<ListGroup>
 									{lessons.map((lesson, index) => (
-										<LessonRow {...this.props} key={index} lesson={lesson} canDelete={false} />
+										<LessonRow {...this.props} 
+											key={index} 
+											lesson={lesson} 
+											canDelete={false}
+											onLessonClick={() => this.props.history.push(Routes.INSTRUCTOR_EDITOR + lesson.lessonId)}  />
 									))}
 								</ListGroup>
 							</div>
@@ -170,8 +177,7 @@ export class InstructorDashboard extends Component {
 	};
 
 	navigateToCreatedCourse = (data) => {
-		const { courseCode } = data;
-		const newRoute = Routes.COURSE + courseCode;
+		const newRoute = Routes.COURSE + data;
 		this.props.history.push(newRoute);
 	};
 

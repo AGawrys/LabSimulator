@@ -4,6 +4,7 @@ import { Button, FormGroup, FormControl } from 'react-bootstrap';
 import axios from 'axios';
 import '../Styles/signup.css';
 import { Redirect } from 'react-router-dom';
+import Routes from '../utils/RouteConstants.js';
 
 class Signup extends React.Component {
 	constructor(props) {
@@ -45,7 +46,7 @@ class Signup extends React.Component {
 		};
 		e.preventDefault();
 
-		axios.post('http://localhost:8080/createAccount', account).then(
+		axios.post(Routes.SERVER + '/createAccount', account).then(
 			(response) => {
 				console.log(response);
 				this.setState({ redirect: true });
@@ -61,10 +62,9 @@ class Signup extends React.Component {
 	render() {
 		const { role } = this.state;
 		if (this.state.redirect) {
-			if (role === "STUDENT"){
+			if (role === 'STUDENT') {
 				return <Redirect exact to="/student/dashboard" />;
-			}
-			else{ 
+			} else {
 				return <Redirect exact to="/instructor/dashboard" />;
 			}
 		} else {

@@ -38,6 +38,9 @@ public class LessonController {
     @Autowired
     AssignmentRepository assignmentRepository;
 
+    @Autowired
+    AttemptRepository attemptRepository;
+
     private static final double DEFAULT_CANVAS_SIZE = 1000;
 
     @GetMapping(path = "/allLessons")
@@ -94,9 +97,8 @@ public class LessonController {
         HashSet<Integer> courseLessonIds = getCourseLessonIds(params.getCourseId());
         List<Lesson> potentialLessons = instructorLessons
                 .stream()
-                .filter(lesson -> !courseLessonIds.contains(lesson.getLessonId()))
+                .filter(lesson -> !courseLessonIds.contains(lesson.getLessonId()) && organizationRepository.findByLessonId(lesson.getLessonId()) != null)
                 .collect(Collectors.toList());
-
         return ResponseEntity.ok(potentialLessons);
     }
 
@@ -134,7 +136,7 @@ public class LessonController {
                 .collect(Collectors.toList());
         List<SearchResult> searchResults = publishedLessons
                 .stream()
-                .map(lesson -> new SearchResult(lesson, organizationRepository.findByLessonId(lesson.getLessonId()).getCreateDate()))
+                .map(lesson -> toSearchResult(lesson))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(searchResults);
     }
@@ -145,14 +147,14 @@ public class LessonController {
         List<CourseLesson> curriculum = curriculumRepository.findByCourseLessonIdentityCourseId(identity.getCourseId());
         boolean isCompleted = assignmentRepository.existsById(identity);
         if (isCompleted) {
-            return ResponseEntity.ok(curriculum);
+            return ResponseEntity.ok(isCompleted);
         }
 
         for (CourseLesson courseLesson : curriculum) {
             identity = new AssignmentIdentity(identity.getEmail(),identity.getCourseId(), courseLesson.getCourseLessonIdentity().getLessonId());
             if (!assignmentRepository.existsById(identity)) { //if assignment has not been completed by student
                 ResponseEntity canStudentComplete = identity.getLessonId() == identity.getLessonId()
-                        ? ResponseEntity.ok(curriculum)
+                        ? ResponseEntity.ok(false)
                         : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
                 return canStudentComplete;
             }
@@ -242,6 +244,20 @@ public class LessonController {
             stepRepository.save(step);
             saveToolTable(stepInformation.getToolList());
         }
+    }
+
+    public SearchResult toSearchResult(Lesson lesson) {
+        Date publishDate = organizationRepository.findByLessonId(lesson.getLessonId()).getCreateDate();
+        List <Attempt> attempts = attemptRepository.findByAttemptIdentityLessonId(lesson.getLessonId());
+        List <Assignment> completions = assignmentRepository.findByAssignmentIdentityLessonId(lesson.getLessonId());
+
+        int totalAttempts = attempts
+                .stream()
+                .reduce(0, (partialAttemptNumber, attempt2) -> partialAttemptNumber + attempt2.getNumAttempts(), Integer::sum);
+        int totalCompletions = completions.size();
+
+        LessonStatistic statistic = new LessonStatistic(totalAttempts, totalCompletions);
+        return new SearchResult(lesson, publishDate, statistic);
     }
 }
 
@@ -382,14 +398,16 @@ class StepInformation {
 class SearchResult {
     private Lesson lesson;
     private Date datePublished;
+    private LessonStatistic statistic;
 
     public SearchResult() {
 
     }
 
-    public SearchResult(Lesson lesson, Date datePublished) {
+    public SearchResult(Lesson lesson, Date datePublished, LessonStatistic statistic) {
         this.lesson = lesson;
         this.datePublished = datePublished;
+        this.statistic = statistic;
     }
 
     public Lesson getLesson() {
@@ -406,5 +424,41 @@ class SearchResult {
 
     public void setDatePublished(Date datePublished) {
         this.datePublished = datePublished;
+    }
+
+    public LessonStatistic getStatistic() {
+        return statistic;
+    }
+
+    public void setStatistic(LessonStatistic statistic) {
+        this.statistic = statistic;
+    }
+}
+
+class LessonStatistic {
+    private int numAttempts;
+    private int numCompleted;
+
+    public LessonStatistic() {}
+
+    public LessonStatistic(int numAttempts, int numCompleted) {
+        this.numAttempts = numAttempts;
+        this.numCompleted = numCompleted;
+    }
+
+    public int getNumAttempts() {
+        return numAttempts;
+    }
+
+    public void setNumAttempts(int numAttempts) {
+        this.numAttempts = numAttempts;
+    }
+
+    public int getNumCompleted() {
+        return numCompleted;
+    }
+
+    public void setNumCompleted(int numCompleted) {
+        this.numCompleted = numCompleted;
     }
 }
