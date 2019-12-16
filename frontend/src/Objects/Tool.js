@@ -248,7 +248,6 @@ class Tool {
 	}
 
 	save(lessonId, stepNumber) {
-		console.log(this);
 		return {
 			toolIdentity: {
 				layer: this.layer,
