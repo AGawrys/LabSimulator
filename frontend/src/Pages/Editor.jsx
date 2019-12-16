@@ -145,7 +145,7 @@ class Editor extends Component {
 				const amt = currentStep.actionMeasurement / 100;
 				image.properties.Fill = image.properties.Fill + amt;
 			} else if(currentStep.action === "Blend" || currentStep.action === "Pump" ){
-				const sourceColor = currentStep.source.getImage().animation.Color;
+				const sourceColor = currentStep.action === "Blend" ? (currentStep.source.getImage().animation.Color) : (currentStep.source.getImage().properties.Color);
 				if(image.properties.Fill === 0.00) {
 					image.properties.Color = sourceColor;
 				}
@@ -268,6 +268,12 @@ class Editor extends Component {
 				tool.value.type === 'Strawberry'
 		);
 		const blendTargetOptions = toolOptions.filter((tool) => tool.value.type === 'Blender');
+		const pumpSourceOptions = toolOptions.filter(
+			(tool) => tool.value.type === "PumpBottle"
+		);
+		const pumpTargetOptions = toolOptions.filter(
+			(tool) => tool.value.type === "StraightCup" || tool.value.type === "Shaker" || tool.value.type === "Blender"
+		)
 		const stirSourceOptions = toolOptions.filter((tool) => tool.value.type === 'Spoon');
 		const stirTargetOptions = toolOptions.filter(
 			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender'
@@ -528,8 +534,8 @@ class Editor extends Component {
 													stirSourceOptions
 												) : currentStep.action === 'Blend' ? (
 													blendSourceOptions
-												) : currentStep.action === 'Drag' ? (
-													dragSourceOptions
+												) : currentStep.action === 'Pump' ? (
+													pumpSourceOptions
 												) : (
 													''
 												)
@@ -556,15 +562,10 @@ class Editor extends Component {
 													stirTargetOptions
 												) : currentStep.action === 'Blend' ? (
 													blendTargetOptions
-												) : currentStep.action === 'Drag' ? currentStep.source === null ? (
-													''
-												) : currentStep.source.type === 'IceCube' ? (
-													dragTargetOptions1
-												) : (
-													dragTargetOptions2
-												) : (
-													''
-												)
+												) : currentStep.action === 'Pump' ? (
+													pumpTargetOptions
+												) :
+												''
 											}
 											onChange={(tool) => this.updateCurrentTarget(tool.value)}
 											value={currentStep.target ? currentStep.target.toSelectOption() : ''}
