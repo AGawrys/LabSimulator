@@ -78,13 +78,14 @@ class Editor extends Component {
 			showBlendError: false,
 			showOverflowError: false,
 			showLackFillError: false,
+			showGrindError: false,
 			showAction: {
 				pour: false,
 				shake: false,
 				blend: false,
 				pump: false,
 				grind: false,
-				stir: false,
+				stir: false
 			},
 			showPourModal: false,
 			copiedTool: null,
@@ -182,6 +183,7 @@ class Editor extends Component {
 			showBlendError,
 			showOverflowError,
 			showLackFillError
+			showGrindError
 		} = this.state;
 		const { operations, pointer } = this.state.history;
 		if (steps == null) {
@@ -199,9 +201,9 @@ class Editor extends Component {
 				tool.value.type === 'CoffeeBeans'
 		);
 		const pourTargetOptions = toolOptions.filter(
-			(tool) => 
-				tool.value.type === 'StraightCup' || 
-				tool.value.type === 'Shaker' || 
+			(tool) =>
+				tool.value.type === 'StraightCup' ||
+				tool.value.type === 'Shaker' ||
 				tool.value.type === 'Blender' ||
 				tool.value.type === 'CoffeeBeanGrinder'
 		);
@@ -227,8 +229,7 @@ class Editor extends Component {
 		);
 		const brewSourceOptions = toolOptions.filter((tool) => tool.value.type === 'CoffeeGround');
 		const brewTargetOptions = toolOptions.filter((tool) => tool.value.type === 'CoffeeMachine');
-		const grindOptions = toolOptions.filter((tool) => tool.value.type === "CoffeeBeanGrinder");
-
+		const grindOptions = toolOptions.filter((tool) => tool.value.type === 'CoffeeBeanGrinder');
 
 		const publishBtn = lesson.isPublished ? null : (
 			<Button variant="primary" onClick={() => this.setState({ showPublishConfirmation: true })}>
@@ -306,6 +307,13 @@ class Editor extends Component {
 					delay={1250}
 				/>
 				<EditorNotification
+					message={GeneralConstants.GRIND_NO_FILL_MESSAGE}
+					onClose={() => this.setState({ showGrindError: false })}
+					show={showGrindError}
+					autohide
+					delay={1250}
+				/>
+				<EditorNotification
 					message={GeneralConstants.SHAKE_NO_FILL_MESSAGE}
 					onClose={() => this.setState({ showShakeError: false })}
 					show={showShakeError}
@@ -360,7 +368,7 @@ class Editor extends Component {
 						onHide={() => this.hideActionModal('stir')}
 						onSuccess={() => this.hideActionModal('stir')}
 					/>
-				): null}
+				) : null}
 				{showAction.brew ? (
 					<BrewModal
 						show={showAction.brew}
@@ -601,9 +609,9 @@ class Editor extends Component {
 												)
 											}
 											hidden={
-												currentStep.action === "Blend" ||
-												currentStep.action === "Brew" || 
-												currentStep.action === "Grind"
+												currentStep.action === 'Blend' ||
+												currentStep.action === 'Brew' ||
+												currentStep.action === 'Grind'
 											}
 										/>
 										<input
@@ -881,6 +889,10 @@ class Editor extends Component {
 			this.setState({ showStirError: true });
 			return;
 		}
+		if (currentStep.action === 'Grind' && currentStep.source.amount === 0) {
+			this.setState({ showGrindError: true });
+			return;
+		}
 		if (currentStep.action === 'Shake' && currentStep.source.amount === 0) {
 			this.setState({ showShakeError: true });
 			return;
@@ -1051,8 +1063,10 @@ class Editor extends Component {
 		if (currentStep.action === 'Pump' && currentStep.target.amount + currentStep.actionMeasurement * 0.05 > 1) {
 			return false;
 		}
+		if (currentStep.action === 'Grind' && currentStep.source.amount === 0) {
+			return false;
+		}
 		return true;
-		console.log('A');
 	};
 
 	showActionModal = (e) => {
@@ -1087,6 +1101,10 @@ class Editor extends Component {
 		}
 		if (currentStep.action === 'Pump' && currentStep.target.amount + currentStep.actionMeasurement * 0.05 > 1) {
 			this.setState({ showOverflowError: true });
+			return;
+		}
+		if (currentStep.action === 'Grind' && currentStep.source.amount === 0) {
+			this.setState({ showGrindError: true });
 			return;
 		}
 		showAction[currentStep.action.toLowerCase()] = true;

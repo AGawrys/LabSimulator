@@ -40,7 +40,8 @@ const GeneralConstants = {
 	SHAKE_NO_FILL_MESSAGE: 'Cannot shake an empty source tool.',
 	BLEND_OVER_FILL_MESSAGE: 'Cannot blend, blender is too full.',
 	OVERFLOW_MESSAGE: 'Target source will overflow.',
-	LACK_FILL_MESSAGE: 'Not enough fill to complete step.'
+	LACK_FILL_MESSAGE: 'Not enough fill to complete step.',
+	GRIND_NO_FILL_MESSAGE: 'Cannot grind empty source.',
 };
 
 export default GeneralConstants;
