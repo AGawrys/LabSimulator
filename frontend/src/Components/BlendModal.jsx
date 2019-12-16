@@ -53,6 +53,7 @@ class BlendModal extends React.Component {
                         >
                             <Modal.Header closeButton>
                                 <div style={{ width: 400 }}>
+                                    <h3>Blend for {this.props.time -1 } to {this.props.time + 1} seconds.</h3>
                                     <div className={completed && !failed ? 'displayNone' : ''}>
                                         <Timer.Seconds /> seconds
                                     </div>
@@ -173,7 +174,7 @@ class BlendModal extends React.Component {
 
     onBlendEnd() {
         const {target} = this.props
-        const {ramp, rock, increasing, shake}  = target.image.animation
+        const {rock}  = target.image.animation
 
         target.image.animation.shake = false;
         target.image.animation.resetX = 0;

@@ -80,12 +80,16 @@ class Step {
 
 
 	isComplete() {
-		if ((!this.actionMeasurement && !(this.action === 'Blend' || this.action === 'Brew')) || this.tools.length === 0) {
+		if ( this.tools.length === 0 || (!this.actionMeasurement &&
+			this.action !== 'Blend' &&
+			this.action !== 'Grind' &&
+			this.action !== 'Brew')) {
 			return false;
 		} else if (
 			!this.timer &&
 			this.action !== 'Pour' &&
-			this.action !== 'Pump') {
+			this.action !== 'Pump' &&
+			this.action !== 'Grind') {
 			return false;
 		}
 		return this.isActionSet();

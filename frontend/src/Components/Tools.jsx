@@ -11,449 +11,419 @@ const CATEGORIES = {
 };
 
 const IMAGES = {
-	StraightCup: {
-		draw: (canvas, width, height, properties) => {
-			if (canvas.getContext) {
-				const context = canvas.getContext('2d');
-				const bounds = canvas.getBoundingClientRect();
-				context.clearRect(0, 0, bounds.width, bounds.height);
+    StraightCup: {
+        draw: (canvas, width, height, properties) => {
+            if (canvas.getContext) {
+                const context = canvas.getContext("2d");
+                const bounds = canvas.getBoundingClientRect();
+                context.clearRect(0, 0, bounds.width, bounds.height);
 
-				const taper = (1 - properties.Taper) / 10;
+                const taper = (1 - properties.Taper) / 10
 
-				const leftTop = width * (0.05 + taper),
-					rightTop = width * (0.95 - taper);
-				const leftBottom = width * (0.25 - taper),
-					rightBottom = width * (0.75 + taper);
-				const top = height * 0.05,
-					bottom = height * 0.95;
+                const leftTop = width * (.05 + taper), rightTop = width * (.95 - taper);
+                const leftBottom = width * (.25 - taper), rightBottom = width * (.75 + taper);
+                const top = height * .05, bottom = height * .95;
 
-				const left = LineCalculator(leftTop, top, leftBottom, bottom);
-				const right = LineCalculator(rightBottom, bottom, rightTop, top);
+                const left = LineCalculator(leftTop, top, leftBottom, bottom);
+                const right = LineCalculator(rightBottom, bottom, rightTop, top);
+                
+                const cupHeight = bottom - top
+                const fillPoint = top + (cupHeight * (1 - properties.Fill))
 
-				const cupHeight = bottom - top;
-				const fillPoint = top + cupHeight * (1 - properties.Fill);
+                context.beginPath();
+                context.moveTo(left.x(fillPoint), fillPoint);
+                context.lineTo(leftBottom, bottom)
+                context.lineTo(rightBottom, bottom)
+                context.lineTo(right.x(fillPoint), fillPoint);
+                context.fillStyle = properties.Color;
+                context.fill();
+    
+                context.beginPath();
+                context.moveTo(leftTop, top);
+                context.lineTo(leftBottom, bottom);
+                context.lineTo(rightBottom, bottom);
+                context.lineTo(rightTop, top);
+                context.lineWidth = 3;
+                context.lineCap = "round";
+                context.lineJoin = "round";
+                context.stroke()
+            }
+        },
+        properties: {
+            Width: 100,
+            Height: 120,
+            Taper: .5,
+            Fill: 0,
+            Color: "#03a9f4",
+        },
+    },
+    Shaker: {
+        draw: (canvas, width, height, properties) => {
+            if (canvas.getContext) {
+                const context = canvas.getContext("2d");
+                const bounds = canvas.getBoundingClientRect();
+                context.clearRect(0, 0, bounds.width, bounds.height);
 
-				context.beginPath();
-				context.moveTo(left.x(fillPoint), fillPoint);
-				context.lineTo(leftBottom, bottom);
-				context.lineTo(rightBottom, bottom);
-				context.lineTo(right.x(fillPoint), fillPoint);
-				context.fillStyle = properties.Color;
-				context.fill();
+                const leftTop = width * .05, rightTop = width * .95;
+                const leftBottom = width * .12, rightBottom = width * .88;
+                const top = height * .28, bottom = height * .95;
 
-				context.beginPath();
-				context.moveTo(leftTop, top);
-				context.lineTo(leftBottom, bottom);
-				context.lineTo(rightBottom, bottom);
-				context.lineTo(rightTop, top);
-				context.lineWidth = 3;
-				context.lineCap = 'round';
-				context.lineJoin = 'round';
-				context.stroke();
-			}
-		},
-		properties: {
-			Width: 100,
-			Height: 120,
-			Taper: 0.5,
-			Fill: 0,
-			Color: '#03a9f4'
-		},
-		animation: {}
-	},
-	Shaker: {
-		draw: (canvas, width, height, properties) => {
-			if (canvas.getContext) {
-				const context = canvas.getContext('2d');
-				const bounds = canvas.getBoundingClientRect();
-				context.clearRect(0, 0, bounds.width, bounds.height);
+                const left = LineCalculator(leftTop, top, leftBottom, bottom);
+                const right = LineCalculator(rightBottom, bottom, rightTop, top);
+                const cupHeight = bottom - top
+                const fillPoint = top + (cupHeight * (1 - properties.Fill))
 
-				const leftTop = width * 0.05,
-					rightTop = width * 0.95;
-				const leftBottom = width * 0.12,
-					rightBottom = width * 0.88;
-				const top = height * 0.28,
-					bottom = height * 0.95;
+                context.beginPath();
+                context.moveTo(left.x(fillPoint), fillPoint);
+                context.lineTo(leftBottom, bottom)
+                context.lineTo(rightBottom, bottom)
+                context.lineTo(right.x(fillPoint), fillPoint);
+                context.fillStyle = properties.Color;
+                context.fill();
 
-				const left = LineCalculator(leftTop, top, leftBottom, bottom);
-				const right = LineCalculator(rightBottom, bottom, rightTop, top);
-				const cupHeight = bottom - top;
-				const fillPoint = top + cupHeight * (1 - properties.Fill);
+                context.lineWidth = 3;
+                context.lineCap = "round";
+                context.lineJoin = "round";
 
-				context.beginPath();
-				context.moveTo(left.x(fillPoint), fillPoint);
-				context.lineTo(leftBottom, bottom);
-				context.lineTo(rightBottom, bottom);
-				context.lineTo(right.x(fillPoint), fillPoint);
-				context.fillStyle = properties.Color;
-				context.fill();
+                context.beginPath();
+                context.moveTo(leftTop, top);
+                context.lineTo(leftBottom, bottom);
+                context.lineTo(rightBottom, bottom);
+                context.lineTo(rightTop, top);
+                context.stroke()
+                
+                context.beginPath();
+                context.moveTo(width * .25, height * .05)
+                context.lineTo(width * .25, height * .10)
+                context.lineTo(width * .15, height * .13);
+                context.lineTo(width * .10, height * .16);
+                context.lineTo(width * .05, height * .23);
+                context.lineTo(width * .95, height * .23);
+                context.lineTo(width * .90, height * .16);
+                context.lineTo(width * .85, height * .13);
+                context.lineTo(width * .75, height * .10);
+                context.lineTo(width * .75, height * .05);
+                context.quadraticCurveTo(width * .5, height * .03, width * .25, height * .05);
+                context.stroke()
 
-				context.lineWidth = 3;
-				context.lineCap = 'round';
-				context.lineJoin = 'round';
+                context.clearRect(width * .03, height * .23, width * .94, height * .05);
+                context.strokeRect(width * .03, height * .23, width * .94, height * .05);
 
-				context.beginPath();
-				context.moveTo(leftTop, top);
-				context.lineTo(leftBottom, bottom);
-				context.lineTo(rightBottom, bottom);
-				context.lineTo(rightTop, top);
-				context.stroke();
+                context.fillStyle = "black"
+                context.font = "bold 12px Arial"
+                context.textBaseline = "middle"
+                for (let i = properties.Capacity - (properties.Capacity/properties.Intervals);
+                     i > 0;
+                     i -= properties.Capacity/properties.Intervals) {
+                    let tickHeight = top + (cupHeight * ((properties.Capacity - i)/properties.Capacity))
+                    context.beginPath();
+                    context.moveTo(width * .48, tickHeight);
+                    context.lineTo(width * .52, tickHeight);
+                    if (width >= 100 && height >= 100) {
+                        context.fillText(Number.isInteger(i)? i : i.toFixed(2), width * .54, tickHeight)
+                    }
+                    context.stroke();
+                }
+            }
+        },
+        properties: {
+            Width: 100,
+            Height: 200,
+            Fill: 0,
+            Color: "#03a9f4",
+            Capacity: 2,
+            Intervals: 4
+        }
+    },
+    Blender: {
+        draw: (canvas, width, height, properties, animation) => {
+            if (canvas.getContext) {
+                const context = canvas.getContext("2d");
+                const bounds = canvas.getBoundingClientRect();
+                context.clearRect(0, 0, bounds.width, bounds.height);
 
-				context.beginPath();
-				context.moveTo(width * 0.25, height * 0.05);
-				context.lineTo(width * 0.25, height * 0.1);
-				context.lineTo(width * 0.15, height * 0.13);
-				context.lineTo(width * 0.1, height * 0.16);
-				context.lineTo(width * 0.05, height * 0.23);
-				context.lineTo(width * 0.95, height * 0.23);
-				context.lineTo(width * 0.9, height * 0.16);
-				context.lineTo(width * 0.85, height * 0.13);
-				context.lineTo(width * 0.75, height * 0.1);
-				context.lineTo(width * 0.75, height * 0.05);
-				context.quadraticCurveTo(width * 0.5, height * 0.03, width * 0.25, height * 0.05);
-				context.stroke();
+                const leftTop = width * .15, rightTop = width * .85;
+                const leftBottom = width * .24, rightBottom = width * .76;
+                const top = height * .13, bottom = height * .65;
 
-				context.clearRect(width * 0.03, height * 0.23, width * 0.94, height * 0.05);
-				context.strokeRect(width * 0.03, height * 0.23, width * 0.94, height * 0.05);
+                const left = LineCalculator(leftTop, top, leftBottom, bottom);
+                const right = LineCalculator(rightBottom, bottom, rightTop, top);
+                const cupHeight = bottom - top
+                const fillPoint = top + (cupHeight * (1 - properties.Fill))
 
-				context.fillStyle = 'black';
-				context.font = 'bold 12px Arial';
-				context.textBaseline = 'middle';
-				for (
-					let i = properties.Capacity - properties.Capacity / properties.Intervals;
-					i > 0;
-					i -= properties.Capacity / properties.Intervals
-				) {
-					let tickHeight = top + cupHeight * ((properties.Capacity - i) / properties.Capacity);
-					context.beginPath();
-					context.moveTo(width * 0.48, tickHeight);
-					context.lineTo(width * 0.52, tickHeight);
-					if (width >= 100 && height >= 100) {
-						context.fillText(Number.isInteger(i) ? i : i.toFixed(2), width * 0.54, tickHeight);
-					}
-					context.stroke();
-				}
-			}
-		},
-		properties: {
-			Width: 100,
-			Height: 200,
-			Fill: 0,
-			Color: '#03a9f4',
-			Capacity: 2,
-			Intervals: 4
-		},
-		animation: {}
-	},
-	Blender: {
-		draw: (canvas, width, height, properties, animation) => {
-			if (canvas.getContext) {
-				const context = canvas.getContext('2d');
-				const bounds = canvas.getBoundingClientRect();
-				context.clearRect(0, 0, bounds.width, bounds.height);
+                context.beginPath();
+                context.moveTo(left.x(fillPoint+ (cupHeight * .05 * (animation.rock - .5))), fillPoint + (cupHeight * .05 * (animation.rock - .5)));
+                context.lineTo(leftBottom, bottom)
+                context.lineTo(rightBottom, bottom)
+                context.lineTo(right.x(fillPoint - (cupHeight * .05 * (animation.rock - .5))), fillPoint - (cupHeight * .05 * (animation.rock - .5)));
+                context.quadraticCurveTo(width *.5, fillPoint + (cupHeight * .05 * animation.ramp),
+                                        left.x(fillPoint + (cupHeight * .05 * (animation.rock - .5))), fillPoint + (cupHeight * .05 * (animation.rock - .5)))
+                context.fillStyle = properties.Color;
+                context.fill();
 
-				const leftTop = width * 0.15,
-					rightTop = width * 0.85;
-				const leftBottom = width * 0.24,
-					rightBottom = width * 0.76;
-				const top = height * 0.13,
-					bottom = height * 0.65;
+                context.lineWidth = 3;
+                context.lineCap = "round";
+                context.lineJoin = "round";
+    
+                context.beginPath();
+                context.moveTo(width * .30, height * .05);
+                context.bezierCurveTo(width * .35, height * .04, width * .65, height * .04, width * .70, height * .05);
+                context.strokeRect(width * .05, height * .05, right.x(height * .07) - width * .05, height * .02);
+                context.moveTo(width * .05, height * .07);
+                context.lineTo(leftTop, top);
+                context.lineTo(leftBottom, bottom);
+                context.moveTo(rightBottom, bottom);
+                context.lineTo(right.x(height * .07), height * .07);
 
-				const left = LineCalculator(leftTop, top, leftBottom, bottom);
-				const right = LineCalculator(rightBottom, bottom, rightTop, top);
-				const cupHeight = bottom - top;
-				const fillPoint = top + cupHeight * (1 - properties.Fill);
+                context.strokeRect(width * .23, height * .65, width * .54, height * .03);
+                context.moveTo(width * .23, height * .68);
+                context.quadraticCurveTo(width * .15, height * .70, width * .10, height * .95);
+                context.lineTo(width * .90, height * .95);
+                context.quadraticCurveTo(width * .85, height * .70, width * .77, height * .68);
 
-				context.beginPath();
-				context.moveTo(
-					left.x(fillPoint + cupHeight * 0.05 * (animation.rock - 0.5)),
-					fillPoint + cupHeight * 0.05 * (animation.rock - 0.5)
-				);
-				context.lineTo(leftBottom, bottom);
-				context.lineTo(rightBottom, bottom);
-				context.lineTo(
-					right.x(fillPoint - cupHeight * 0.05 * (animation.rock - 0.5)),
-					fillPoint - cupHeight * 0.05 * (animation.rock - 0.5)
-				);
-				context.quadraticCurveTo(
-					width * 0.5,
-					fillPoint + cupHeight * 0.05 * animation.ramp,
-					left.x(fillPoint + cupHeight * 0.05 * (animation.rock - 0.5)),
-					fillPoint + cupHeight * 0.05 * (animation.rock - 0.5)
-				);
-				context.fillStyle = properties.Color;
-				context.fill();
+                const inner = (width <= height)? width : height;
+                context.moveTo(right.x(height * .15), height * .15);
+                context.lineTo(width * .95, height * .15);
+                context.lineTo(width * .95, height * .55);
+                context.lineTo(right.x(height * .55), height * .55);
+                context.moveTo(right.x(height * .15 + inner * .03), height * .15 + inner * .03);
+                context.lineTo(width * .95 - inner * .03, height * .15 + inner * .03);
+                context.lineTo(width * .95 - inner * .03, height * .55 - inner * .03);
+                context.lineTo(right.x(height * .55 - inner * .03), height * .55 - inner * .03);
+                context.stroke()
 
-				context.lineWidth = 3;
-				context.lineCap = 'round';
-				context.lineJoin = 'round';
+                context.fillStyle = "black"
+                context.font = "bold 12px Arial"
+                context.textBaseline = "middle"
+                for (let i = properties.Capacity;
+                     i > 0;
+                     i -= properties.Capacity/properties.Intervals) {
+                    let tickHeight = top + (cupHeight * ((properties.Capacity - i)/properties.Capacity))
+                    context.beginPath();
+                    context.moveTo(width * .48, tickHeight);
+                    context.lineTo(width * .52, tickHeight);
+                    if (width >= 100 && height >= 100) {
+                        context.fillText(Number.isInteger(i)? i : i.toFixed(2), width * .54, tickHeight)
+                    }
+                    context.stroke();
+                }
+                if (animation.shake) {
+                    context.save();
+                    if (!animation.reset) {
+                        const x = Math.random() * 1.1, y = Math.random() * 1.1;
+                        context.translate(x, y);
+                        animation.resetX = -x;
+                        animation.resetY = -y;
+                    } else {
+                        context.translate(animation.resetX, animation.resetY);
+                    }
+                } else {
+                    context.restore();
+                    context.setTransform(1,0,0,1,0,0);
+                }
+            }
+        },
+        properties: {
+            Width: 175,
+            Height: 250,
+            Fill: 0,
+            Color:  "#03a9f4",
+            Capacity: 2,
+            Intervals: 4,
 
-				context.beginPath();
-				context.moveTo(width * 0.3, height * 0.05);
-				context.bezierCurveTo(
-					width * 0.35,
-					height * 0.04,
-					width * 0.65,
-					height * 0.04,
-					width * 0.7,
-					height * 0.05
-				);
-				context.strokeRect(width * 0.05, height * 0.05, right.x(height * 0.07) - width * 0.05, height * 0.02);
-				context.moveTo(width * 0.05, height * 0.07);
-				context.lineTo(leftTop, top);
-				context.lineTo(leftBottom, bottom);
-				context.moveTo(rightBottom, bottom);
-				context.lineTo(right.x(height * 0.07), height * 0.07);
+        },
+        animation: {
+            ramp: 0,
+            rock: .5,
+            increasing: true,
+            shake: false,
+            reset: false,
+            resetX: 0,
+            resetY: 0,
+        }
+    },
+    PumpBottle: {
+        draw: (canvas, width, height, properties, animation) => {
+            if (canvas.getContext) {
+                const context = canvas.getContext("2d");
+                const bounds = canvas.getBoundingClientRect();
+                context.clearRect(0, 0, bounds.width, bounds.height);
+                context.lineWidth = 3;
+                context.lineCap = "round";
+                context.lineJoin = "round";
+    
+                context.beginPath();
+                context.moveTo(width * .45, height * .35);
+                context.quadraticCurveTo(width * .30, height * .4, width * .30, height * .60);
+                context.lineTo(width * .30, height * .95);
+                context.lineTo(width * .70, height * .95);
+                context.lineTo(width * .70, height * .60);
+                context.quadraticCurveTo(width * .70, height * .4, width * .55, height * .35);
+                context.fillStyle = properties.Color;
+                context.fill();
+                context.stroke();
+                context.fillStyle = "black";
+                context.strokeRect(width * .485, height * .077 + height * .225 * (animation.compressed), width * .03, height * .223 * (1 - animation.compressed)); // Neck
+                context.strokeRect(width * .450, height * .30, width * .10, height * .055); // Cap
+                context.strokeRect(width * .375, height * .05 + height * .225 * (animation.compressed), width * .175, height * .025); // Spout
+            }
+        },
+        properties: {
+            Width: 150,
+            Height: 250,
+            Color: "#FFF8CF"
+        },
+        animation: {
+            compressed: 0,
+            isMaxed: false,
+            isMined: true,
+            isReleasing: false,
+        }
+    },
+    CoffeeBeanGrinder: {
+        draw: (canvas, width, height, properties, animation) => {
+            const context = canvas.getContext("2d");
+                const bounds = canvas.getBoundingClientRect();
+                context.clearRect(0, 0, bounds.width, bounds.height);
 
-				context.strokeRect(width * 0.23, height * 0.65, width * 0.54, height * 0.03);
-				context.moveTo(width * 0.23, height * 0.68);
-				context.quadraticCurveTo(width * 0.15, height * 0.7, width * 0.1, height * 0.95);
-				context.lineTo(width * 0.9, height * 0.95);
-				context.quadraticCurveTo(width * 0.85, height * 0.7, width * 0.77, height * 0.68);
+                const beansTop = height * .08, beansBot = height * .33;
+                const beansLeftOut = width * .07, beansRightOut = width * .93;
+                const beansLeftIn = width * .25, beansRightIn = width * .75;
 
-				const inner = width <= height ? width : height;
-				context.moveTo(right.x(height * 0.15), height * 0.15);
-				context.lineTo(width * 0.95, height * 0.15);
-				context.lineTo(width * 0.95, height * 0.55);
-				context.lineTo(right.x(height * 0.55), height * 0.55);
-				context.moveTo(right.x(height * 0.15 + inner * 0.03), height * 0.15 + inner * 0.03);
-				context.lineTo(width * 0.95 - inner * 0.03, height * 0.15 + inner * 0.03);
-				context.lineTo(width * 0.95 - inner * 0.03, height * 0.55 - inner * 0.03);
-				context.lineTo(right.x(height * 0.55 - inner * 0.03), height * 0.55 - inner * 0.03);
-				context.stroke();
+                const groundsTop = height * .54, groundsBot = height * .95;
+                const groundsLeft = width * .25, groundsRight = width * .75;
 
-				context.fillStyle = 'black';
-				context.font = 'bold 12px Arial';
-				context.textBaseline = 'middle';
-				for (let i = properties.Capacity; i > 0; i -= properties.Capacity / properties.Intervals) {
-					let tickHeight = top + cupHeight * ((properties.Capacity - i) / properties.Capacity);
-					context.beginPath();
-					context.moveTo(width * 0.48, tickHeight);
-					context.lineTo(width * 0.52, tickHeight);
-					if (width >= 100 && height >= 100) {
-						context.fillText(Number.isInteger(i) ? i : i.toFixed(2), width * 0.54, tickHeight);
-					}
-					context.stroke();
-				}
-				if (animation.shake) {
-					if (!animation.reset) {
-						const x = Math.random() * 1.1,
-							y = Math.random() * 1.1;
-						context.translate(x, y);
-						animation.resetX = -x;
-						animation.resetY = -y;
-					} else {
-						context.translate(animation.resetX, animation.resetY);
-					}
-				} else {
-					context.setTransform(1, 0, 0, 1, 0, 0);
-				}
-			}
-		},
-		properties: {
-			Width: 175,
-			Height: 250,
-			Fill: 0,
-			Color: '#03a9f4',
-			Capacity: 2,
-			Intervals: 4
-		},
-		animation: {
-			ramp: 0,
-			rock: 0.5,
-			increasing: true,
-			shake: false,
-			reset: false,
-			resetX: 0,
-			resetY: 0
-		}
-	},
-	PumpBottle: {
-		draw: (canvas, width, height, properties, animation) => {
-			if (canvas.getContext) {
-				const context = canvas.getContext('2d');
-				const bounds = canvas.getBoundingClientRect();
-				context.clearRect(0, 0, bounds.width, bounds.height);
-				context.lineWidth = 3;
-				context.lineCap = 'round';
-				context.lineJoin = 'round';
+                const leftLine = LineCalculator(beansLeftOut, beansTop, beansLeftIn, beansBot);
+                const rightLine = LineCalculator(beansRightIn, beansBot, beansRightOut, beansTop);
+                const beansFillHeight = beansBot - (beansBot - beansTop) * (properties.Fill) * (1 - animation.grindProgress);
+                const groundsFillHeight = groundsBot - (groundsBot - groundsTop) * (properties.Fill) * (animation.grindProgress * .9);
+                console.log(beansFillHeight);
+                console.log(groundsFillHeight);
 
-				context.beginPath();
-				context.moveTo(width * 0.45, height * 0.35);
-				context.quadraticCurveTo(width * 0.3, height * 0.4, width * 0.3, height * 0.6);
-				context.lineTo(width * 0.3, height * 0.95);
-				context.lineTo(width * 0.7, height * 0.95);
-				context.lineTo(width * 0.7, height * 0.6);
-				context.quadraticCurveTo(width * 0.7, height * 0.4, width * 0.55, height * 0.35);
-				context.fillStyle = properties.Color;
-				context.fill();
-				context.stroke();
-				context.fillStyle = 'black';
-				context.strokeRect(
-					width * 0.485,
-					height * 0.077 + height * 0.225 * animation.compressed,
-					width * 0.03,
-					height * 0.223 * (1 - animation.compressed)
-				); // Neck
-				context.strokeRect(width * 0.45, height * 0.3, width * 0.1, height * 0.055); // Cap
-				context.strokeRect(
-					width * 0.375,
-					height * 0.05 + height * 0.225 * animation.compressed,
-					width * 0.175,
-					height * 0.025
-				); // Spout
-			}
-		},
-		properties: {
-			Width: 150,
-			Height: 250,
-			Color: '#FFF8CF'
-		},
-		animation: {
-			compressed: 0,
-			isMaxed: false,
-			isMined: true,
-			isReleasing: false
-		}
-	},
-	CoffeeBeanGrinder: {
-		draw: (canvas, width, height, properties, animation) => {
-			const context = canvas.getContext('2d');
-			const bounds = canvas.getBoundingClientRect();
-			context.clearRect(0, 0, bounds.width, bounds.height);
+                context.fillStyle = "#4a2c2a";
+                context.moveTo(leftLine.x(beansFillHeight), beansFillHeight);
+                context.lineTo(beansLeftIn, beansBot);
+                context.lineTo(beansRightIn, beansBot);
+                context.lineTo(rightLine.x(beansFillHeight), beansFillHeight);
+                context.fill();
+                context.fillRect(groundsLeft, groundsFillHeight, groundsRight - groundsLeft, groundsBot - groundsFillHeight);
 
-			const beansTop = height * 0.08,
-				beansBot = height * 0.33;
-			const beansLeftOut = width * 0.07,
-				beansRightOut = width * 0.93;
-			const beansLeftIn = width * 0.25,
-				beansRightIn = width * 0.75;
+                context.lineWidth = 3;
+                context.lineJoin = "round";
+                context.beginPath();
+                context.moveTo(beansLeftOut, beansTop);
+                context.lineTo(beansLeftIn, beansBot);
+                context.lineTo(beansRightIn, beansBot);
+                context.lineTo(beansRightOut, beansTop);
+                context.stroke();
+                context.strokeRect(groundsLeft, groundsTop, groundsRight - groundsLeft, groundsBot - groundsTop);
 
-			const groundsTop = height * 0.54,
-				groundsBot = height * 0.95;
-			const groundsLeft = width * 0.25,
-				groundsRight = width * 0.75;
+                context.fillStyle = "black";
+                context.beginPath();
+                context.moveTo(width * .25, height * .38);
+                context.lineTo(width * .25, height * .45);
+                context.moveTo(width * .75, height * .38);
+                context.lineTo(width * .75, height * .45);
+                context.strokeRect(width * .05, height * .05, width * .90, height * .03);
+                context.strokeRect(width * .23, height * .33, width * .54, height * .05);
+                context.strokeRect(width * .24, height * .50, width * .52, height * .04);
+                context.strokeRect(width * .15, height * .45, width * .70, height *.50);
+                context.stroke();
 
-			const leftLine = LineCalculator(beansLeftOut, beansTop, beansLeftIn, beansBot);
-			const rightLine = LineCalculator(beansRightIn, beansBot, beansRightOut, beansTop);
-			const beansFillHeight = beansBot - (beansBot - beansTop) * properties.Fill * (1 - animation.grindProgress);
-			const groundsFillHeight =
-				groundsBot - (groundsBot - groundsTop) * (1 - properties.Fill) * animation.grindProgress;
+                if (animation.shake) {
+                    context.save();
+                    if (!animation.reset) {
+                        const x = Math.random() * 1.1, y = Math.random() * 1.1;
+                        context.translate(x, y);
+                        animation.resetX = -x;
+                        animation.resetY = -y;
+                    } else {
+                        context.translate(animation.resetX, animation.resetY);
+                    }
+                } else {
+                    context.restore();
+                    context.setTransform(1,0,0,1,0,0);
+                }
+        },
+        properties: {
+            Width: 175,
+            Height: 250,
+            Fill: 0
+        },
+        animation: {
+            grindProgress: 0,
+            isEmpty: false,
+            shake: false,
+            reset: false,
+            resetX: 0,
+            resetY: 0,
+        }
+    },
+    CupLid: {
+        draw: (canvas, width, height, properties) => {
+            if (canvas.getContext) {
+                const context = canvas.getContext("2d");
+                const bounds = canvas.getBoundingClientRect();
+                context.clearRect(0, 0, bounds.width, bounds.height);
 
-			context.fillStyle = '#4a2c2a';
-			context.beginPath();
-			context.moveTo(leftLine.x(beansFillHeight), beansFillHeight);
-			context.lineTo(beansLeftIn, beansBot);
-			context.lineTo(beansRightIn, beansBot);
-			context.lineTo(rightLine.x(beansFillHeight), beansFillHeight);
-			context.fill();
-			context.fillRect(
-				groundsLeft,
-				groundsFillHeight,
-				groundsRight - groundsLeft,
-				groundsBot - groundsFillHeight
-			);
+                context.lineWidth = 3;
+                context.lineCap = "round";
+                context.lineJoin = "round";
 
-			context.lineWidth = 3;
-			context.lineJoin = 'round';
-			context.beginPath();
-			context.moveTo(beansLeftOut, beansTop);
-			context.lineTo(beansLeftIn, beansBot);
-			context.lineTo(beansRightIn, beansBot);
-			context.lineTo(beansRightOut, beansTop);
-			context.stroke();
-			context.strokeRect(groundsLeft, groundsTop, groundsRight - groundsLeft, groundsBot - groundsTop);
+                const path = new Path2D();
+                path.rect(width * .10, height * .05, width * .80, height * .40);
+                path.moveTo(width * .10, height * .45);
+                path.lineTo(width * .08, height * .45);
+                path.lineTo(width * .05, height * .95);
+                path.lineTo(width * .95, height * .95);
+                path.lineTo(width * .92, height * .45);
+                path.lineTo(width * .90, height * .45);
+                context.fillStyle = properties.Color;
+                context.fill(path);
+                context.stroke(path);
+            }
+        },
+        properties: {
+            Width: 105,
+            Height: 15,
+            Color: "#F0F0F0"
+        }
+    },
+    CupSleeve: {
+        draw: (canvas, width, height, properties) => {
+            if (canvas.getContext) {
+                const context = canvas.getContext("2d");
+                const bounds = canvas.getBoundingClientRect();
+                context.clearRect(0, 0, bounds.width, bounds.height);
 
-			context.fillStyle = 'black';
-			context.beginPath();
-			context.moveTo(width * 0.25, height * 0.38);
-			context.lineTo(width * 0.25, height * 0.45);
-			context.moveTo(width * 0.75, height * 0.38);
-			context.lineTo(width * 0.75, height * 0.45);
-			context.strokeRect(width * 0.05, height * 0.05, width * 0.9, height * 0.03);
-			context.strokeRect(width * 0.23, height * 0.33, width * 0.54, height * 0.05);
-			context.strokeRect(width * 0.24, height * 0.5, width * 0.52, height * 0.04);
-			context.strokeRect(width * 0.15, height * 0.45, width * 0.7, height * 0.5);
-			context.stroke();
-		},
-		properties: {
-			Width: 175,
-			Height: 250,
-			Fill: 0
-		},
-		animation: {
-			grindProgress: 0
-		}
-	},
-	CupLid: {
-		draw: (canvas, width, height, properties) => {
-			if (canvas.getContext) {
-				const context = canvas.getContext('2d');
-				const bounds = canvas.getBoundingClientRect();
-				context.clearRect(0, 0, bounds.width, bounds.height);
+                const taper = (1 - properties.Taper) / 10
 
-				context.lineWidth = 3;
-				context.lineCap = 'round';
-				context.lineJoin = 'round';
+                const leftTop = width * (.05 + taper), rightTop = width * (.95 - taper);
+                const leftBottom = width * (.25 - taper), rightBottom = width * (.75 + taper);
+                const top = height * .05, bottom = height * .95;
 
-				const path = new Path2D();
-				path.rect(width * 0.1, height * 0.05, width * 0.8, height * 0.4);
-				path.moveTo(width * 0.1, height * 0.45);
-				path.lineTo(width * 0.08, height * 0.45);
-				path.lineTo(width * 0.05, height * 0.95);
-				path.lineTo(width * 0.95, height * 0.95);
-				path.lineTo(width * 0.92, height * 0.45);
-				path.lineTo(width * 0.9, height * 0.45);
-				context.fillStyle = properties.Color;
-				context.fill(path);
-				context.stroke(path);
-			}
-		},
-		properties: {
-			Width: 105,
-			Height: 15,
-			Color: '#F0F0F0'
-		},
-		animation: {}
-	},
-	CupSleeve: {
-		draw: (canvas, width, height, properties) => {
-			if (canvas.getContext) {
-				const context = canvas.getContext('2d');
-				const bounds = canvas.getBoundingClientRect();
-				context.clearRect(0, 0, bounds.width, bounds.height);
+                context.lineWidth = 3;
+                context.lineCap = "round";
+                context.lineJoin = "round";
+                context.beginPath();
+                context.moveTo(leftTop, top);
+                context.lineTo(leftBottom, bottom);
+                context.lineTo(rightBottom, bottom);
+                context.lineTo(rightTop, top);
+                context.lineTo(leftTop, top);
+                context.fillStyle = properties.Color;
+                context.fill();
+                context.stroke();
 
-				const taper = (1 - properties.Taper) / 10;
-
-				const leftTop = width * (0.05 + taper),
-					rightTop = width * (0.95 - taper);
-				const leftBottom = width * (0.25 - taper),
-					rightBottom = width * (0.75 + taper);
-				const top = height * 0.05,
-					bottom = height * 0.95;
-
-				context.lineWidth = 3;
-				context.lineCap = 'round';
-				context.lineJoin = 'round';
-				context.beginPath();
-				context.moveTo(leftTop, top);
-				context.lineTo(leftBottom, bottom);
-				context.lineTo(rightBottom, bottom);
-				context.lineTo(rightTop, top);
-				context.lineTo(leftTop, top);
-				context.fillStyle = properties.Color;
-				context.fill();
-				context.stroke();
-			}
-		},
-		properties: {
-			Width: 110,
-			Height: 35,
-			Taper: 0.1,
-			Color: '#AD8762'
-		},
-		animation: {}
-	},
+            }
+        },
+        properties: {
+            Width: 110,
+            Height: 35,
+            Taper: .10,
+            Color: "#AD8762"
+        }
+    },
 	IceCube: {
 		draw: (canvas, width, height) => {
 			if (canvas.getContext) {

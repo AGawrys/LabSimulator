@@ -8,7 +8,8 @@ const ACTIONS = [
 	{ value: 'Stir', label: 'Stir' },
 	{ value: 'Blend', label: 'Blend' },
 	{ value: 'Pump', label: 'Pump' },
-	{ value: 'Brew', label: 'Brew'}
+	{ value: 'Brew', label: 'Brew'},
+	{ value: 'Grind', label: 'Grind'}
 ];
 
 export { DEFAULT_LESSON_NAME, DEFAULT_STEP_NAME, CONTEXT_MENU_ID, DEFAULT_TOOL_SIZE, ACTIONS };

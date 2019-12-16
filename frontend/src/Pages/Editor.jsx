@@ -31,6 +31,7 @@ import StirModal from '../Components/StirModal.jsx';
 import BlendModal from '../Components/BlendModal.jsx';
 import PumpModal from '../Components/PumpModal.jsx';
 import BrewModal from '../Components/BrewModal.jsx';
+import GrindModal from '../Components/GrindModal.jsx';
 import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
 import EditorNotification from '../Components/EditorNotification.jsx';
@@ -74,6 +75,7 @@ class Editor extends Component {
 				shake: false,
 				blend: false,
 				pump: false,
+				grind: false,
 				stir: false,
 			},
 			showPourModal: false,
@@ -183,10 +185,15 @@ class Editor extends Component {
 				tool.value.type === 'Blender' ||
 				tool.value.type === 'Milk' ||
 				tool.value.type === 'Kettle' ||
-				tool.value.type === 'CoffeePot'
+				tool.value.type === 'CoffeePot' ||
+				tool.value.type === 'CoffeeBeans'
 		);
 		const pourTargetOptions = toolOptions.filter(
-			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Shaker' || tool.value.type === 'Blender'
+			(tool) => 
+				tool.value.type === 'StraightCup' || 
+				tool.value.type === 'Shaker' || 
+				tool.value.type === 'Blender' ||
+				tool.value.type === 'CoffeeBeanGrinder'
 		);
 		const shakeOptions = toolOptions.filter((tool) => tool.value.type === 'Shaker');
 		const blendSourceOptions = toolOptions.filter(
@@ -206,6 +213,8 @@ class Editor extends Component {
 		const stirTargetOptions = toolOptions.filter((tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender');
 		const brewSourceOptions = toolOptions.filter((tool) => tool.value.type === 'CoffeeGround');
 		const brewTargetOptions = toolOptions.filter((tool) => tool.value.type === 'CoffeeMachine');
+		const grindOptions = toolOptions.filter((tool) => tool.value.type === "CoffeeBeanGrinder");
+
 
 		const publishBtn = lesson.isPublished ? null : (
 			<Button variant="primary" onClick={() => this.setState({ showPublishConfirmation: true })}>
@@ -355,6 +364,14 @@ class Editor extends Component {
 						onComplete={() => this.hideActionModal('pump')}
 					/>
 				) : null}
+				{showAction.grind ? (
+					<GrindModal
+						show={showAction.grind}
+						source={currentStep.source}
+						onHide={() => this.hideActionModal('grind')}
+						onSuccess={() => this.hideActionModal('grind')}
+					/>
+				) : null}
 				{showAction.pour ? (
 					<Pour
 						show={showAction.pour}
@@ -500,6 +517,8 @@ class Editor extends Component {
 													pumpSourceOptions	
 												) : currentStep.action === 'Brew' ? (
 													brewSourceOptions
+												) : currentStep.action === 'Grind' ? (
+													grindOptions
 												) : (
 													''
 												)
@@ -517,6 +536,7 @@ class Editor extends Component {
 											isDisabled={
 												lesson.isPublished ||
 												currentStep.action === 'Shake' ||
+												currentStep.action === 'Grind' ||
 												currentStep.action === null
 											}
 											options={
@@ -555,7 +575,8 @@ class Editor extends Component {
 											}
 											hidden={
 												currentStep.action === "Blend" ||
-												currentStep.action === "Brew"
+												currentStep.action === "Brew" || 
+												currentStep.action === "Grind"
 											}
 										/>
 										<input
@@ -566,7 +587,8 @@ class Editor extends Component {
 											placeholder="Timer (Seconds)"
 											hidden={
 												currentStep.action === 'Pour' ||
-												currentStep.action === 'Pump'
+												currentStep.action === 'Pump' ||
+												currentStep.action === 'Grind'
 											}
 											disabled={lesson.isPublished}
 											onChange={(e) => this.updateTimer(e)}

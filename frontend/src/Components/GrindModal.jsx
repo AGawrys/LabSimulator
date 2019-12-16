@@ -7,21 +7,21 @@ class GrindModal extends React.Component {
 		super(props);
 		this.state = {
             started: false,
-			failed: false,
-            completed: false,
+            finished: false,
             sourceCopy: this.props.source.clone(),
             animation: null,
         };
         
         this.resetState = this.resetState.bind(this);
         this.onGrind = this.onGrind.bind(this);
-        this.onStop = this.onStop.bind(this);
         this.onGrindEnd = this.onGrindEnd.bind(this);
     }
     
     render() {
-        const {started, failed, completed} = this.state;
-        const {show, source} = this.props;
+        const {show} = this.props;
+        const {started, finished, sourceCopy} = this.state;
+        const {grindProgress} = sourceCopy.image.animation;
+        
         return (
             <Modal
                 show={show}
@@ -32,42 +32,47 @@ class GrindModal extends React.Component {
             >
                 <Modal.Header closeButton>
                     <div style={{ width: 400 }}>
-                        <div className={completed && !failed ? 'displayNone' : ''}>
-                            Grind the coffee beans!
-                        </div>
-                        <h4 className="failedText" hidden={!failed}>
+                        <h3>Grind the coffee beans!</h3>
+                        <h4 className="failedText" hidden={!started || !finished || (finished && grindProgress === 1)}>
                             You have failed! Try again!
                         </h4>
-                        <h4 className="successText" hidden={!completed || failed}>
+                        <h4 className="successText" hidden={!started || !finished || (finished && grindProgress !== 1)}>
                             You completed the action!
                         </h4>
                     </div>
                 </Modal.Header>
                 <Modal.Body id="blend-body" style={{height: '500px', width: '750px'}}>
                     <Tool
-                        tool={source}
+                        tool={sourceCopy}
                     />
-                    <Button variant="primary" disabled={completed || failed} onMouseDown={this.onGrind}
-                        onMouseUp={() => {
-                            stop();
-                            this.onBlendEnd()
-                        }}
+                    <Button 
+                        variant="primary" 
+                        disabled={finished} 
+                        onMouseDown={this.onGrind}
+                        onMouseUp={this.onGrindEnd}
                     >
-                        Blend
+                        Grind
                     </Button>               
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="warning" disabled={!failed} hidden={!failed} onClick={() => {
-                        reset();
-                        this.resetState();
-                        }}>
+                    <Button
+                        variant="warning"
+                        disabled={!started || !finished || (finished && grindProgress === 1)}
+                        hidden={!started || !finished || (finished && grindProgress === 1)}
+                        onClick={() => {
+                            this.resetState();
+                        }
+                    }>
                         Retry
                     </Button>
-                    <Button variant="primary" disabled={!completed || failed} onClick={() => {
-                        reset();
-                        this.resetState();
-                        this.props.onComplete();
-                        }}>
+                    <Button
+                        variant="primary"
+                        disabled={!started || !finished || (finished && grindProgress !== 1)}
+                        onClick={() => {
+                            this.resetState();
+                            this.props.onSuccess();
+                        }
+                    }>
                         Continue
                     </Button>
                 </Modal.Footer>
@@ -78,82 +83,52 @@ class GrindModal extends React.Component {
     resetState() {
         this.setState({
             started: false,
-            completed: false,
-            failed: false,
-            time: null
+            finished: false,
+            sourceCopy: this.props.source.clone(),
+            animation: null
         });
-    }
-
-    onStop() {
-        if (this.state.time >= this.props.time - 1 && this.state.time <= this.props.time + 1) {
-            console.log(this.state.time, this.props.time)
-            this.setState({
-                completed: true
-            })
-        } else {
-            this.setState({
-                failed: true
-            })
-        }
     }
     
     onHide = () => {
         this.resetState();
-        this.props.onComplete();
+        this.props.onSuccess();
     }
 
     onGrind() {
-        const {target} = this.props
-        const {ramp, rock, increasing, reset}  = target.image.animation
+        const {started, sourceCopy} = this.state;
+        const {Fill}  = sourceCopy.image.properties;
+        const {grindProgress, isEmpty, reset}  = sourceCopy.image.animation;
 
-        target.image.animation.shake = true;
-        target.image.animation.reset = !reset;
-
-        const animation = window.requestAnimationFrame(this.onBlend);
-        this.setState({animation});
-
-        if (ramp < 1) {
-            target.image.animation.ramp += .10
-        } else {
-            if (increasing) {
-                target.image.animation.rock += .1;
-                target.image.animation.increasing = !(target.image.animation.rock >= 1) 
-            }
-            else {
-                target.image.animation.rock -= .1;
-                target.image.animation.increasing = (target.image.animation.rock <= 0)
-            }
+        if (!started) {
+            this.setState({
+                started: true
+            });
         }
+
+        if (grindProgress < 1) {
+            sourceCopy.image.animation.shake = true;
+            sourceCopy.image.animation.reset = !reset;
+        }
+
+        this.setState({
+            animation: window.requestAnimationFrame(this.onGrind)
+        });
+
+        if (grindProgress < 1) {
+            sourceCopy.image.animation.grindProgress += .01 * (1 / Fill);
+        } else if (grindProgress >= 1 && !isEmpty) {
+            sourceCopy.image.animation.grindProgress = 1;
+            sourceCopy.image.animation.isEmpty = true;
+        }
+        this.setState({sourceCopy});
     }
 
     onGrindEnd() {
-        const {target} = this.props
-        const {ramp, rock, increasing, shake}  = target.image.animation
-
-        target.image.animation.shake = false;
-        target.image.animation.resetX = 0;
-        target.image.animation.resetY = 0;
-
-        if (target.image.animation.ramp === 0 && target.image.animation.rock === .5) {
-            window.cancelAnimationFrame(this.state.animation);
-        } else {
-            const animation = window.requestAnimationFrame(this.onBlendEnd);
-            this.setState({animation});
-        }
-        
-        if (target.image.animation.ramp > 0) {
-            target.image.animation.ramp -= .2;
-            if (target.image.animation.ramp < .1 && target.image.animation.ramp > -.1) {
-                target.image.animation.ramp = 0;
-            }
-        } else {
-            target.image.animation.ramp = 0;
-        }
-        if (target.image.animation.rock != .5) {
-            if (rock > .6) {target.image.animation.rock -= .1}
-            else  if (rock < .4) {target.image.animation.rock += .1}
-            else {target.image.animation.rock = .5}
-        }
+        window.cancelAnimationFrame(this.state.animation);
+        this.setState({
+            finished: true,
+            animation: null
+        });
     }
 }
 
