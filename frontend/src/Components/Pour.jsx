@@ -10,6 +10,8 @@ import ClickNHold from 'react-click-n-hold';
 import { isArrayEqual } from '../LilacArray';
 import { connectMenu } from 'react-contextmenu';
 
+const statics = [ 'Milk', 'Kettle', 'CoffeePot' ];
+
 class Pour extends React.Component {
 	constructor(props) {
 		super(props);
@@ -17,12 +19,12 @@ class Pour extends React.Component {
 		this.state = {
 			startFill: source.image.properties.Fill,
 			fill: target.image.properties.Fill,
-			fillSrc: source.image.properties.Fill,
+			fillSrc: this.setSourceFill(),
 			defaultFill: target.image.properties.Fill,
-			defaultFillSrc: source.image.properties.Fill,
+			defaultFillSrc: this.setSourceFill(),
 			color: target.image.properties.Color,
 			oldColor: target.image.properties.Color,
-			colorSrc: source.image.properties.Color,
+			colorSrc: this.setSourceColor(),
 			transform: 'translate3d(0, 0px, 0) scale(1) rotate(0deg)',
 			start: 100,
 			instruction: 'Add ' + goal + '% to the cup',
@@ -35,6 +37,26 @@ class Pour extends React.Component {
 	}
 	animateCupUp = () => {
 		this.setState({ transform: 'translate3d(0, -75px, 0) scale(1) rotate(90deg)' });
+	};
+	setSourceColor = () => {
+		const { source } = this.props;
+		let sourceColor = source;
+		if (statics.indexOf(source.type) !== -1) {
+			sourceColor = source.getImage().animation.Color;
+		} else {
+			sourceColor = source.getImage().properties.Color;
+		}
+		return sourceColor;
+	};
+	setSourceFill = () => {
+		const { source } = this.props;
+		let srcFill = source;
+		if (statics.indexOf(source.type) !== -1) {
+			srcFill = source.getImage().animation.Fill;
+		} else {
+			srcFill = source.getImage().properties.Fill;
+		}
+		return srcFill;
 	};
 	repeat = () => {
 		this.pour();
@@ -82,12 +104,12 @@ class Pour extends React.Component {
 	};
 
 	pour = (e) => {
-		const { fill, fillSrc, defaultFill} = this.state;
+		const { fill, fillSrc, defaultFill } = this.state;
 		if (fillSrc > 0) {
 			const n = fill + 0.01;
 			const nSrc = Number((fillSrc - 0.01).toFixed(2));
 			this.setState({ fill: n, fillSrc: nSrc });
-			if(defaultFill != 0){
+			if (defaultFill != 0) {
 				this.colorChange();
 			}
 		}
@@ -120,16 +142,15 @@ class Pour extends React.Component {
 
 		target.amount = fill;
 		target.image.properties.Fill = fill;
-		if(this.state.defaultFill === 0){
+		if (this.state.defaultFill === 0) {
 			target.image.properties.Color = colorSrc;
-		}
-		else {
+		} else {
 			target.image.properties.Color = color;
 		}
 		source.amount = fillSrc;
 		source.image.properties.Fill = fillSrc;
 		source.image.properties.Color = colorSrc;
-		
+
 		return (
 			<Modal onHide={onHide} show={show} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
 				<h2 style={style1}>{instruction}</h2>

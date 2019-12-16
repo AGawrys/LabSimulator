@@ -123,6 +123,7 @@ class Editor extends Component {
 	renderPreview = () => {
 		const { currentStep } = this.state;
 		if (currentStep && currentStep.isComplete()) {
+			let tool;
 			let t = currentStep;
 			if (currentStep.action === 'Shake') {
 				t = currentStep.source.clone();
@@ -137,30 +138,42 @@ class Editor extends Component {
 				currentStep.target &&
 				currentStep.actionMeasurement
 			) {
-				console.log('Pour fill target is ' + image.properties.Fill);
-				console.log('Source image is ' + currentStep.source.getImage().properties.Color);
-				if (image.properties.Fill === 0.0) {
-					image.properties.Color = currentStep.source.getImage().properties.Color;
-				} else {
-					image.properties.Color = this.colorMedian(
-						currentStep.source.getImage().properties.Color,
-						image.properties.Color
-					);
+				let sourceColor = currentStep.source.getImage().properties.Color;
+				const statics = [ 'Milk', 'Kettle', 'CoffeePot' ];
+				if (statics.indexOf(currentStep.source.type) !== -1) {
+					sourceColor = currentStep.source.getImage().animation.Color;
 				}
-				const amt = currentStep.actionMeasurement / 100;
-				image.properties.Fill = image.properties.Fill + amt;
-			} else if (currentStep.action === 'Blend') {
-				const sourceColor = currentStep.source.getImage().animation.color;
 				if (image.properties.Fill === 0.0) {
 					image.properties.Color = sourceColor;
 				} else {
 					image.properties.Color = this.colorMedian(sourceColor, image.properties.Color);
 				}
-				image.properties.Fill = image.properties.Fill + 0.1;
+				const amt = currentStep.actionMeasurement / 100;
+				image.properties.Fill = image.properties.Fill + amt;
+			} else if (currentStep.action === 'Blend' || currentStep.action === 'Pump') {
+				const sourceColor =
+					currentStep.action === 'Blend'
+						? currentStep.source.getImage().animation.Color
+						: currentStep.source.getImage().properties.Color;
+				if (image.properties.Fill === 0.0) {
+					image.properties.Color = sourceColor;
+				} else {
+					image.properties.Color = this.colorMedian(sourceColor, image.properties.Color);
+				}
+				if (currentStep.action === 'Blend') {
+					image.properties.Fill = image.properties.Fill + 0.25;
+				} else {
+					image.properties.Fill = image.properties.Fill + 0.01 * currentStep.actionMeasurement;
+				}
 			} else if (currentStep.action === 'Stir' || currentStep.action === 'Shake') {
 			} else if (currentStep.action === 'Grind') {
+				const image = IMAGES['CoffeeGround'];
+				return new Tool('CoffeeGround', image, t.position, 75, 75, undefined);
+			} else if (currentStep.action === 'Brew') {
+				const image = IMAGES['CoffeePot'];
+				return new Tool('CoffeePot', image, t.position, 75, 75, undefined);
 			}
-			const tool = t.clone();
+			tool = t.clone();
 			tool.image = image;
 			return tool;
 		}
@@ -260,6 +273,8 @@ class Editor extends Component {
 				tool.value.type === 'Shaker' ||
 				tool.value.type === 'Blender' ||
 				tool.value.type === 'Milk' ||
+				tool.value.type === 'Kettle' ||
+				tool.value.type === 'CoffeePot' ||
 				tool.value.type === 'Pump'
 		);
 		const pourTargetOptions = toolOptions.filter(
@@ -430,6 +445,7 @@ class Editor extends Component {
 						show={showAction.pour}
 						source={currentStep.source}
 						target={currentStep.target}
+						goal={currentStep.actionMeasurement}
 						instructor={true}
 						onHide={() => this.hideActionModal('pour')}
 					/>
@@ -872,7 +888,7 @@ class Editor extends Component {
 			this.setState({ showShakeError: true });
 			return;
 		}
-		if (currentStep.action === 'Blend' && currentStep.target.amount === 90) {
+		if (currentStep.action === 'Blend' && currentStep.target.amount >= 0.75) {
 			this.setState({ showBlendError: true });
 			return;
 		}
@@ -996,6 +1012,7 @@ class Editor extends Component {
 	showActionModal = (e) => {
 		e.preventDefault();
 		const { showAction, currentStep } = this.state;
+		console.log(currentStep.target.amount);
 		if (
 			currentStep.action === 'Pour' &&
 			(currentStep.source.amount === 0 && !currentStep.source.image.animation.Fill)
@@ -1011,7 +1028,7 @@ class Editor extends Component {
 			this.setState({ showShakeError: true });
 			return;
 		}
-		if (currentStep.action === 'Blend' && currentStep.target.amount === 80) {
+		if (currentStep.action === 'Blend' && currentStep.target.amount >= 0.75) {
 			this.setState({ showBlendError: true });
 			return;
 		}

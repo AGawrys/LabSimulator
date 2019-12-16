@@ -472,7 +472,9 @@ const IMAGES = {
 			Height: 100,
 			Color: '#0000FF'
 		},
-		animation: {}
+		animation: {
+			Color: '#0000FF'
+		}
 	},
 	Banana: {
 		draw: (canvas, width, height) => {
@@ -492,7 +494,9 @@ const IMAGES = {
 			Height: 100,
 			Color: '#FFFF00'
 		},
-		animation: {}
+		animation: {
+			Color: '#FFFF00'
+		}
 	},
 	Milk: {
 		draw: (canvas, width, height) => {
@@ -513,6 +517,7 @@ const IMAGES = {
 			Color: '#e4f1f2'
 		},
 		animation: {
+			Color: '#e4f1f2',
 			Fill: 100
 		}
 	},
@@ -534,7 +539,9 @@ const IMAGES = {
 			Height: 100,
 			Color: '#FFAE42'
 		},
-		animation: {}
+		animation: {
+			Color: '#FFAE42'
+		}
 	},
 	Blueberry: {
 		draw: (canvas, width, height) => {
@@ -555,7 +562,9 @@ const IMAGES = {
 			Height: 100,
 			Color: '#0000FF'
 		},
-		animation: {}
+		animation: {
+			Color: '#0000FF'
+		}
 	},
 	Strawberry: {
 		draw: (canvas, width, height) => {
@@ -575,7 +584,9 @@ const IMAGES = {
 			Height: 100,
 			Color: '#FF0000'
 		},
-		animation: {}
+		animation: {
+			Color: '#FF0000'
+		}
 	},
 	CoffeeMachine: {
 		draw: (canvas, width, height) => {
@@ -658,7 +669,8 @@ const IMAGES = {
 				imageObj1.onload = function() {
 					ctx.drawImage(imageObj1, 0, 0, width, height);
 				};
-				imageObj1.src = 'https://images.vexels.com/media/users/3/134844/isolated/preview/d00662b831b4955b1c176d787eaae0f2-teapot-tea-pot-by-vexels.png';
+				imageObj1.src =
+					'https://images.vexels.com/media/users/3/134844/isolated/preview/d00662b831b4955b1c176d787eaae0f2-teapot-tea-pot-by-vexels.png';
 			}
 		},
 		properties: {
@@ -667,6 +679,115 @@ const IMAGES = {
 		},
 		animation: {
 			Fill: 100
+		}
+	},
+	TeaBag: {
+		draw: (canvas, width, height) => {
+			if (canvas.getContext) {
+				var ctx = canvas.getContext('2d');
+				var imageObj1 = new Image();
+				imageObj1.onload = function() {
+					ctx.drawImage(imageObj1, 0, 0, width, height);
+				};
+				imageObj1.src = 'https://icon-library.net/images/tea-bag-icon/tea-bag-icon-20.jpg';
+			}
+		},
+		properties: {
+			Width: 100,
+			Height: 100
+		},
+		animation: {}
+	},
+	CoffeeMachine: {
+		draw: (canvas, width, height) => {
+			if (canvas.getContext) {
+				var ctx = canvas.getContext('2d');
+				var imageObj1 = new Image();
+				imageObj1.onload = function() {
+					ctx.drawImage(imageObj1, 0, 0, width, height);
+				};
+				imageObj1.src = 'http://www.kuppa.ph/img/location.png';
+			}
+		},
+		properties: {
+			Width: 100,
+			Height: 100
+		},
+		animation: {}
+	},
+	CoffeePot: {
+		draw: (canvas, width, height) => {
+			if (canvas.getContext) {
+				var ctx = canvas.getContext('2d');
+				var imageObj1 = new Image();
+				imageObj1.onload = function() {
+					ctx.drawImage(imageObj1, 0, 0, width, height);
+				};
+				imageObj1.src = 'https://d29fhpw069ctt2.cloudfront.net/icon/image/85150/preview.svg';
+			}
+		},
+		properties: {
+			Width: 100,
+			Height: 100
+		},
+		animation: {
+			Fill: 100,
+			Color: '#654321'
+		}
+	},
+	CoffeeGround: {
+		draw: (canvas, width, height) => {
+			if (canvas.getContext) {
+				var ctx = canvas.getContext('2d');
+				var imageObj1 = new Image();
+				imageObj1.onload = function() {
+					ctx.drawImage(imageObj1, 0, 0, width, height);
+				};
+				imageObj1.src = 'https://plantinstructions.com/wp-content/uploads/2017/05/coffee-grounds.gif';
+			}
+		},
+		properties: {
+			Width: 100,
+			Height: 100
+		},
+		animation: {}
+	},
+	CoffeeBean: {
+		draw: (canvas, width, height) => {
+			if (canvas.getContext) {
+				var ctx = canvas.getContext('2d');
+				var imageObj1 = new Image();
+				imageObj1.onload = function() {
+					ctx.drawImage(imageObj1, 0, 0, width, height);
+				};
+				imageObj1.src = 'https://myrealdomain.com/images/coffee-grounds-clipart-4.png';
+			}
+		},
+		properties: {
+			Width: 100,
+			Height: 100
+		},
+		animation: {}
+	},
+	Kettle: {
+		draw: (canvas, width, height) => {
+			if (canvas.getContext) {
+				var ctx = canvas.getContext('2d');
+				var imageObj1 = new Image();
+				imageObj1.onload = function() {
+					ctx.drawImage(imageObj1, 0, 0, width, height);
+				};
+				imageObj1.src =
+					'https://cdn0.iconfinder.com/data/icons/household-filled-color/300/13524567Untitled-3-512.png';
+			}
+		},
+		properties: {
+			Width: 100,
+			Height: 100
+		},
+		animation: {
+			Fill: 100,
+			Color: '#bfebf2'
 		}
 	},
 	TeaBag: {
