@@ -22,7 +22,7 @@ class BlendModal extends React.Component {
     
     render() {
         const {started, ended, failed, completed} = this.state;
-        const {show, source, target} = this.props;
+        const {show, source, target, onHide} = this.props;
         return (
             <Timer
                 startImmediately={false}
@@ -89,8 +89,7 @@ class BlendModal extends React.Component {
                                 </Button>
                                 <Button variant="primary" disabled={!completed || failed} onClick={() => {
                                     reset();
-                                    this.resetState();
-                                    this.props.onComplete();
+                                    this.onComplete();
                                     }}>
                                     Continue
                                 </Button>
@@ -126,6 +125,12 @@ class BlendModal extends React.Component {
     
     onHide = () => {
         this.resetState();
+        this.props.onHide();
+    }
+
+    onComplete = () => {
+        this.resetState();
+        this.onHide();
         this.props.onComplete();
     }
 

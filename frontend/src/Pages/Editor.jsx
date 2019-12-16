@@ -356,10 +356,8 @@ class Editor extends Component {
 						time={currentStep.timer}
 						source={currentStep.source}
 						target={currentStep.target}
-						onComplete={() => {
-							showAction.blend = false;
-							this.setState({ showAction });
-						}}
+						onHide={() => this.hideActionModal('blend')}
+						onComplete={() => this.hideActionModal('blend')}
 					/>
 				) : null}
 				{showAction.pump ? (
@@ -368,10 +366,8 @@ class Editor extends Component {
 						source={currentStep.source}
 						target={currentStep.target}
 						pumpsNeeded={currentStep.actionMeasurement}
-						onComplete={() => {
-							showAction.pump = false;
-							this.setState({ showAction});
-						}}
+						onHide={() => this.hideActionModal('pump')}
+						onComplete={() => this.hideActionModal('pump')}
 					/>
 				) : null}
 				{showAction.pour ? (
