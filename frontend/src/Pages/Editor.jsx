@@ -153,7 +153,7 @@ class Editor extends Component {
 					image.properties.Color = this.colorMedian(sourceColor, image.properties.Color)
 				}
 				if(currentStep.action === "Blend") {image.properties.Fill = image.properties.Fill + 0.25;}
-				else { image.properties.Fill = image.properties.Fill + 0.05; }
+				else { image.properties.Fill = image.properties.Fill + (0.01)*currentStep.actionMeasurement; }
 				
 			} else if(currentStep.action === "Stir" || currentStep.action === "Shake"){
 				
