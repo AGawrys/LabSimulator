@@ -2,6 +2,8 @@ import React from 'react';
 import { Row, Modal, Button } from 'react-bootstrap';
 import Tool from './Tool.jsx';
 import { copyImage } from '../Components/Tools.jsx';
+import {getColorMedian} from "../utils/CanvasUtils.js";
+
 
 class PumpModal extends React.Component {
 	constructor(props) {
@@ -23,6 +25,17 @@ class PumpModal extends React.Component {
         this.onFinish = this.onFinish.bind(this);
         this.onPump = this.onPump.bind(this);
         this.onPumpEnd = this.onPumpEnd.bind(this);
+
+        const {targetCopy, sourceCopy} = this.state;
+        this.sourceColor = sourceCopy.image.properties.Color;
+
+        this.newColor = targetCopy.amount !== 0 
+            ? getColorMedian(targetCopy.image.properties.Color, this.sourceColor)
+            : this.sourceColor;
+        if (targetCopy.amount == 0) {
+            targetCopy.color = this.sourceColor;
+            targetCopy.image.properties.Color = this.sourceColor;
+        }
     }
 
     render() {
@@ -110,6 +123,11 @@ class PumpModal extends React.Component {
 
     resetState() {
         const {source, target} = this.props;
+        const targetCopy = target.clone();
+        if (targetCopy.amount == 0) {
+            targetCopy.color = source;
+            targetCopy.image.properties.Color = this.sourceColor;
+        }
         this.setState({
             pumps: 0,
             started: false,
@@ -117,7 +135,7 @@ class PumpModal extends React.Component {
             earlyRelease: false,
             earlyPump: false,
             sourceCopy: source.clone(),
-            targetCopy: target.clone(),
+            targetCopy: targetCopy,
             animation: null
         });
     }
@@ -179,12 +197,7 @@ class PumpModal extends React.Component {
             })
         } else if (compressed >= 1 && !isMaxed) {
             if( pumps === 0) {
-                const srcColor = sourceCopy.image.properties.Color
-                if(defaultFill <= 0.04){
-                    targetCopy.image.properties.Color = srcColor;
-                } else {
-                    targetCopy.image.properties.Color = this.colorChange(targetCopy.image.properties.Color, srcColor)
-                }
+                targetCopy.image.properties.Color = this.newColor;
                 this.setState({
                     targetCopy
                 })
@@ -236,25 +249,6 @@ class PumpModal extends React.Component {
             sourceCopy
         });
     }
-    colorChange = ( colorSrc, oldColor ) => {
-		const srcColor = colorSrc.slice(1);
-		const tarColor = oldColor.slice(1);
-		const srcArray = srcColor.match(/.{1,2}/g);
-		const tarArray = tarColor.match(/.{1,2}/g);
-		var ans = '#';
-		for (var i = 0; i < srcArray.length; i++) {
-			const srcInt = parseInt(srcArray[i], 16);
-			const tarInt = parseInt(tarArray[i], 16);
-			srcArray[i] = srcInt;
-			tarArray[i] = tarInt;
-			var newColor = Math.floor((srcInt + tarInt) / 2).toString(16);
-			if (newColor.length == 1) {
-				newColor = '0' + newColor;
-			}
-			ans = ans + newColor;
-		}
-		return ans;
-	};
 }
 
 export default PumpModal;
