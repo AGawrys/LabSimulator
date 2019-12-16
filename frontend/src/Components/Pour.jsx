@@ -22,7 +22,7 @@ class Pour extends React.Component {
 			fill: target.image.properties.Fill,
 			fillSrc: this.setSourceFill(),
 			defaultFill: target.image.properties.Fill,
-			defaultFillSrc: source.image.properties.Fill,
+			defaultFillSrc: this.setSourceFill(),
 			color: target.image.properties.Color,
 			oldColor: target.image.properties.Color,
 			colorSrc: this.setSourceColor(),

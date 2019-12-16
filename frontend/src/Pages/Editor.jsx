@@ -131,10 +131,7 @@ class Editor extends Component {
 			const image = t.getImage();
 			image.draw = IMAGES[t.type].draw;
 			if(currentStep.action === 'Pour' && currentStep.source && currentStep.target && currentStep.actionMeasurement){
-				console.log("Pour fill target is " + image.properties.Fill)
-				console.log("Source image is " + currentStep.source.getImage().properties.Color)
 				let sourceColor = currentStep.source.getImage().properties.Color;
-				console.log(currentStep);
 				const statics = ["Milk", "Kettle", "CoffeePot"];
 				if(statics.indexOf(currentStep.source.type) !== '-1'){
 					sourceColor = currentStep.source.getImage().animation.Color;
@@ -148,7 +145,6 @@ class Editor extends Component {
 				const amt = currentStep.actionMeasurement / 100;
 				image.properties.Fill = image.properties.Fill + amt;
 			} else if(currentStep.action === "Blend"){
-				console.log(currentStep.source.getImage().animation.Color)
 				const sourceColor = currentStep.source.getImage().animation.Color;
 				if(image.properties.Fill === 0.00) {
 					image.properties.Color = sourceColor;
@@ -405,8 +401,10 @@ class Editor extends Component {
 					show={showAction.pour}
 					source={currentStep.source}
 					target={currentStep.target}
+					goal={currentStep.actionMeasurement}
 					instructor={true}
-					onHide={() => this.hideActionModal('pour')}
+					onHide={this.closePourModal}
+					//onHide={() => this.hideActionModal('pour')}
 				/> ) : null }
 				<Container fluid={true} className="instructorContainer">
 					<Col className="instructorEditorToolBar brownBorder">
