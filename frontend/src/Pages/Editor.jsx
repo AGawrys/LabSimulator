@@ -121,6 +121,7 @@ class Editor extends Component {
 
 		const {currentStep} = this.state;
 		if(currentStep && currentStep.isComplete()){
+			let tool;
 			let t = currentStep
 			if(currentStep.action === "Shake"){
 				t = currentStep.source.clone()
@@ -158,9 +159,13 @@ class Editor extends Component {
 			} else if(currentStep.action === "Stir" || currentStep.action === "Shake"){
 				
 			} else if(currentStep.action === "Grind"){
-
+				const image = IMAGES["CoffeeGround"];
+				return new Tool("CoffeeGround", image, t.position, 75, 75, undefined);
+			} else if(currentStep.action === "Brew"){
+				const image = IMAGES["CoffeePot"];
+				return new Tool("CoffeePot", image, t.position, 75, 75, undefined);
 			}
-			const tool = t.clone();
+			tool = t.clone();
 			tool.image = image;
 			return tool;
 		}
