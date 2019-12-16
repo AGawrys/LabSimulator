@@ -19,6 +19,7 @@ import StirModal from '../Components/StirModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import BlendModal from '../Components/BlendModal.jsx';
 import PumpModal from '../Components/PumpModal.jsx';
+import GrindModal from '../Components/GrindModal.jsx';
 import Pour from '../Components/Pour.jsx';
 import StudentDirectionModal from '../Components/StudentDirectionModal.jsx';
 import Step from '../Objects/Step.js';
