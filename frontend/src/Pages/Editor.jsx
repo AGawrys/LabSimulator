@@ -367,7 +367,7 @@ class Editor extends Component {
 				{showAction.grind ? (
 					<GrindModal
 						show={showAction.grind}
-						source={currentStep.source}
+						source={currentStep.source.cloneAsDefaultSize()}
 						onHide={() => this.hideActionModal('grind')}
 						onSuccess={() => this.hideActionModal('grind')}
 					/>
