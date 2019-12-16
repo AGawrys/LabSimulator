@@ -73,7 +73,7 @@ function SearchResult({result, email}) {
 	const {numAttempts, numCompleted} = statistic;
 	const parsedDate = new Date(datePublished);
 	const [downloads, setDownloads] = useState(lesson.downloads);
-	const percentComplete = (numCompleted/ numAttempts).toFixed(2) * 100;
+	const percentComplete = numAttempts != 0 ? (numCompleted/ numAttempts).toFixed(2) * 100 : 0;
 	let statisticStyle = "";
 	if (percentComplete > 70) {
 		statisticStyle = "good-lesson-statistic"
