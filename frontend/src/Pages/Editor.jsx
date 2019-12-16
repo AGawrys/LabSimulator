@@ -92,7 +92,22 @@ class Editor extends Component {
 			}
 		}
 	}
-
+	colorMedian(colorSrc, oldColor ) {
+		const srcColor = colorSrc.slice(1);
+		const tarColor = oldColor.slice(1);
+		const srcArray = srcColor.match(/.{1,2}/g);
+		const tarArray = tarColor.match(/.{1,2}/g);
+		var ans = '#';
+		for (var i = 0; i < srcArray.length; i++) {
+			const srcInt = parseInt(srcArray[i], 16);
+			const tarInt = parseInt(tarArray[i], 16);
+			srcArray[i] = srcInt;
+			tarArray[i] = tarInt;
+			const newColor = Math.floor((srcInt + tarInt) / 2).toString(16);
+			ans = ans + newColor;
+		}
+		return ans;
+	}
 	renderPreview = () => {
 
 		const {currentStep} = this.state;
@@ -109,6 +124,7 @@ class Editor extends Component {
 			if(currentStep.action === 'Pour' && currentStep.source && currentStep.target && currentStep.actionMeasurement){
 				const amt = currentStep.actionMeasurement / 100;
 				image.properties.Fill = image.properties.Fill + amt;
+				image.properties.Color = this.colorMedian(currentStep.source.getImage().properties.Color, image.properties.Color)
 			} else if(currentStep.action === "Blend"){
 				image.properties.Fill = image.properties.Fill + 0.1;
 			} else if(currentStep.action === "Stir" || currentStep.action === "Shake"){
