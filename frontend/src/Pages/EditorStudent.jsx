@@ -272,24 +272,26 @@ class EditorStudent extends Component {
 						this.setState({ directionModal: false });
 					}}
 				/>
-				<ShakeModal
-					progressNeeded={currentStep.actionMeasurement}
-					show={showAction.shake}
-					timer={currentStep.timer}
-					onHide={() => this.hideActionModal('shake')}
-					onSuccess={() => {
-						this.hideActionModal('shake');
-						this.handleClick();
-					}}
-					timer={currentStep.timer}
-					tool={currentStep.source}
-				/>
+				{showAction.shake ? (
+					<ShakeModal
+						progressNeeded={currentStep.actionMeasurement}
+						show={showAction.shake}
+						timer={currentStep.timer}
+						onHide={() => this.hideActionModal('shake')}
+						onSuccess={() => {
+							this.hideActionModal('shake');
+							this.handleClick();
+						}}
+						timer={currentStep.timer}
+						tool={currentStep.source.cloneAsDefaultSize()}
+					/>
+				) : null}
 				{showAction.blend ? (
 					<BlendModal
 						show={showAction.blend}
 						time={currentStep.timer}
-						source={currentStep.source}
-						target={currentStep.target}
+						source={currentStep.source.cloneAsDefaultSize()}
+						target={currentStep.target.cloneAsDefaultSize()}
 						onHide={() => this.hideActionModal('blend')}
 						onComplete={() => {
 							this.hideActionModal('blend');
@@ -300,8 +302,8 @@ class EditorStudent extends Component {
 				{showAction.pump ? (
 					<PumpModal
 						show={showAction.pump}
-						source={currentStep.source}
-						target={currentStep.target}
+						source={currentStep.source.cloneAsDefaultSize()}
+						target={currentStep.target.cloneAsDefaultSize()}
 						pumpsNeeded={currentStep.actionMeasurement}
 						onHide={() => this.hideActionModal('pump')}
 						onComplete={() => {
@@ -313,25 +315,27 @@ class EditorStudent extends Component {
 				{showAction.pour ? (
 					<Pour
 						show={showAction.pour}
-						source={currentStep.source.clone()}
-						target={currentStep.target.clone()}
+						source={currentStep.source.cloneAsDefaultSize()}
+						target={currentStep.target.cloneAsDefaultSize()}
 						goal={currentStep.actionMeasurement}
 						instructor={false}
 						onHide={() => this.hideActionModal('pour')}
 						onNextStep={this.handleClick}
 					/>
 				) : null}
-				<StirModal
-					progressNeeded={currentStep.actionMeasurement}
-					show={showAction.stir}
-					timer={currentStep.timer}
-					target={currentStep.target}
-					onHide={() => this.hideActionModal('stir')}
-					onSuccess={() => {
-						this.hideActionModal('stir');
-						this.handleClick();
-					}}
-				/>
+				{showAction.stir ? (
+					<StirModal
+						progressNeeded={currentStep.actionMeasurement}
+						show={showAction.stir}
+						timer={currentStep.source.cloneAsDefaultSize()}
+						target={currentStep.target}
+						onHide={() => this.hideActionModal('stir')}
+						onSuccess={() => {
+							this.hideActionModal('stir');
+							this.handleClick();
+						}}
+					/>
+				) : null}
 				<Container fluid>
 					<Row>
 						<Col sm={3}>

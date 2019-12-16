@@ -304,38 +304,43 @@ class Editor extends Component {
 					autohide
 					delay={1250}
 				/>
-				<ShakeModal
-					progressNeeded={currentStep.actionMeasurement}
-					show={showAction.shake}
-					onHide={() => this.hideActionModal('shake')}
-					onSuccess={() => this.hideActionModal('shake')}
-					timer={currentStep.timer}
-					tool={currentStep.source}
-				/>
-				<StirModal
-					progressNeeded={currentStep.actionMeasurement}
-					show={showAction.stir}
-					timer={currentStep.timer}
-					source={currentStep.source}
-					target={currentStep.target}
-					onHide={() => this.hideActionModal('stir')}
-					onSuccess={() => this.hideActionModal('stir')}
-				/>
+				{showAction.shake ? (
+					<ShakeModal
+						progressNeeded={currentStep.actionMeasurement}
+						show={showAction.shake}
+						onHide={() => this.hideActionModal('shake')}
+						onSuccess={() => this.hideActionModal('shake')}
+						timer={currentStep.timer}
+						tool={currentStep.source.cloneAsDefaultSize()}
+					/>
+				) : null}
+				{showAction.stir ? (
+					<StirModal
+						progressNeeded={currentStep.actionMeasurement}
+						show={showAction.stir}
+						timer={currentStep.timer}
+						source={currentStep.source.cloneAsDefaultSize()}
+						target={currentStep.target.cloneAsDefaultSize()}
+						onHide={() => this.hideActionModal('stir')}
+						onSuccess={() => this.hideActionModal('stir')}
+					/>
+				): null}
 				{showAction.brew ? (
 					<BrewModal
 						show={showAction.brew}
 						timer={currentStep.timer}
-						source={currentStep.source}
-						onHide={() => this.hideActionModal('stir')}
-						onSuccess={() => this.hideActionModal('stir')}
+						source={currentStep.source.cloneAsDefaultSize()}
+						target={currentStep.target.cloneAsDefaultSize()}
+						onHide={() => this.hideActionModal('brew')}
+						onSuccess={() => this.hideActionModal('brew')}
 					/>
 				) : null}
 				{showAction.blend ? (
 					<BlendModal
 						show={showAction.blend}
 						time={currentStep.timer}
-						source={currentStep.source}
-						target={currentStep.target}
+						source={currentStep.source.cloneAsDefaultSize()}
+						target={currentStep.target.cloneAsDefaultSize()}
 						onHide={() => this.hideActionModal('blend')}
 						onComplete={() => this.hideActionModal('blend')}
 					/>
@@ -343,8 +348,8 @@ class Editor extends Component {
 				{showAction.pump ? (
 					<PumpModal
 						show={showAction.pump}
-						source={currentStep.source}
-						target={currentStep.target}
+						source={currentStep.source.cloneAsDefaultSize()}
+						target={currentStep.target.cloneAsDefaultSize()}
 						pumpsNeeded={currentStep.actionMeasurement}
 						onHide={() => this.hideActionModal('pump')}
 						onComplete={() => this.hideActionModal('pump')}
@@ -353,8 +358,8 @@ class Editor extends Component {
 				{showAction.pour ? (
 					<Pour
 						show={showAction.pour}
-						source={currentStep.source.clone()}
-						target={currentStep.target.clone()}
+						source={currentStep.source.cloneAsDefaultSize()}
+						target={currentStep.target.cloneAsDefaultSize()}
 						goal={currentStep.actionMeasurement}
 						instructor={true}
 						onHide={() => this.hideActionModal('pour')}
@@ -1032,7 +1037,7 @@ class Editor extends Component {
 				const image = IMAGES['CoffeePot'];
 				return new Tool('CoffeePot', image, t.position, 75, 75, undefined);
 			}
-			tool = t.clone();
+			tool = t.cloneAsDefaultSize();
 			tool.image = image;
 			tool.amount = image.properties.Fill;
 			tool.color = image.properties.Color;
