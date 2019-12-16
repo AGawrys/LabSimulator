@@ -15,7 +15,7 @@ class Tool {
 		capacity = 2,
 		intervals = 4
 	) {
-		this.name = 'Tool ' + layer;
+		this.name = this.toSentenceCase(type) + ' ' + layer;
 		this.type = type;
 		this.image = image;
 		this.position = position;
@@ -108,6 +108,12 @@ class Tool {
 
 	stale() {
 		this.new = false;
+	}
+
+	toSentenceCase(name) {
+		const result = name.replace( /([A-Z])/g, " $1" );
+		const finalResult = result.charAt(0).toUpperCase() + result.slice(1);
+		return finalResult;
 	}
 
 	equals(tool) {
