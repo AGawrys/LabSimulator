@@ -60,4 +60,24 @@ function isCollisionDetected(tool1, tool2) {
 	);
 }
 
-export {determineToolPosition, determineToolSize, getCanvasSize, resizeTools, isCollisionDetected};
+function getColorMedian(colorSrc, oldColor) {
+	const srcColor = colorSrc.slice(1);
+	const tarColor = oldColor.slice(1);
+	const srcArray = srcColor.match(/.{1,2}/g);
+	const tarArray = tarColor.match(/.{1,2}/g);
+	var ans = '#';
+	for (var i = 0; i < srcArray.length; i++) {
+	    const srcInt = parseInt(srcArray[i], 16);
+	    const tarInt = parseInt(tarArray[i], 16);
+	    srcArray[i] = srcInt;
+	    tarArray[i] = tarInt;
+	    var newColor = Math.floor((srcInt + tarInt) / 2).toString(16);
+	    if (newColor.length == 1) {
+	        newColor = '0' + newColor;
+	    }
+	    ans = ans + newColor;
+	}
+	return ans;
+}
+
+export {determineToolPosition, determineToolSize, getCanvasSize, resizeTools, isCollisionDetected, getColorMedian};

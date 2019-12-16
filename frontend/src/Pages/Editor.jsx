@@ -18,8 +18,8 @@ import Catalog from '../Components/Catalog.jsx';
 import Canvas from '../Components/Canvas.jsx';
 import Routes from '../utils/RouteConstants.js';
 import GeneralConstants from '../utils/GeneralConstants.js';
-import { ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME } from '../utils/EditorConstants.js';
-import { determineToolPosition, determineToolSize, getCanvasSize, resizeTools } from '../utils/CanvasUtils.js';
+import { ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME, DEFAULT_LESSON_NAME } from '../utils/EditorConstants.js';
+import { determineToolPosition, determineToolSize, getCanvasSize, resizeTools, getColorMedian } from '../utils/CanvasUtils.js';
 import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
 import Tool from '../Objects/Tool.js';
@@ -42,10 +42,10 @@ import axios from 'axios';
 import plus from '../Styles/Images/icons8-plus.svg';
 import { HotKeys } from 'react-hotkeys';
 import Pour from '../Components/Pour.jsx';
-import { Prompt } from 'react-router-dom';
+import { Prompt} from 'react-router-dom';
 
 const links = {
-	Account: '/instructor/dashboard'
+	Dashboard: Routes.INSTRUCTOR_DASHBOARD
 };
 
 class Editor extends Component {
@@ -61,6 +61,8 @@ class Editor extends Component {
 			showSuccessfulDuplicate: false,
 			showIncompleteSteps: false,
 			showSuccessfulSave: false,
+			showPublishConfirmation: false,
+			showPublished: false,
 			showSaveBeforePublish: false,
 			showActionMenu: true,
 			showPourError: false,
@@ -71,16 +73,15 @@ class Editor extends Component {
 				pour: false,
 				shake: false,
 				blend: false,
+				pump: false,
 				stir: false,
-				drag: false
 			},
 			showPourModal: false,
 			copiedTool: null,
 			areToolsPlaced: false,
 			canvasSize: { height: 1000, width: 1000 },
 			history: { operations: [], pointer: 0 },
-			isDirty: false,
-			previous: null
+			isDirty: false
 		};
 		this.onDropTool = this.onDropTool.bind(this);
 		this.shortcutHandlers = {
@@ -100,88 +101,6 @@ class Editor extends Component {
 				this.setState({ showPourModal: true });
 			}
 		}
-	};
-	colorMedian(colorSrc, oldColor) {
-		const srcColor = colorSrc.slice(1);
-		const tarColor = oldColor.slice(1);
-		const srcArray = srcColor.match(/.{1,2}/g);
-		const tarArray = tarColor.match(/.{1,2}/g);
-		var ans = '#';
-		for (var i = 0; i < srcArray.length; i++) {
-			const srcInt = parseInt(srcArray[i], 16);
-			const tarInt = parseInt(tarArray[i], 16);
-			srcArray[i] = srcInt;
-			tarArray[i] = tarInt;
-			var newColor = Math.floor((srcInt + tarInt) / 2).toString(16);
-			if (newColor.length == 1) {
-				newColor = '0' + newColor;
-			}
-			ans = ans + newColor;
-		}
-		return ans;
-	}
-	renderPreview = () => {
-		const { currentStep } = this.state;
-		if (currentStep && currentStep.isComplete()) {
-			let tool;
-			let t = currentStep;
-			if (currentStep.action === 'Shake') {
-				t = currentStep.source.clone();
-			} else {
-				t = currentStep.target.clone();
-			}
-			const image = t.getImage();
-			image.draw = IMAGES[t.type].draw;
-			if (
-				currentStep.action === 'Pour' &&
-				currentStep.source &&
-				currentStep.target &&
-				currentStep.actionMeasurement
-			) {
-				let sourceColor = currentStep.source.getImage().properties.Color;
-				const statics = [ 'Milk', 'Kettle', 'CoffeePot' ];
-				if (statics.indexOf(currentStep.source.type) !== -1) {
-					sourceColor = currentStep.source.getImage().animation.Color;
-				}
-				if (image.properties.Fill === 0.0) {
-					image.properties.Color = sourceColor;
-				} else {
-					image.properties.Color = this.colorMedian(sourceColor, image.properties.Color);
-				}
-				const amt = currentStep.actionMeasurement / 100;
-				image.properties.Fill = image.properties.Fill + amt;
-			} else if (currentStep.action === 'Blend' || currentStep.action === 'Pump') {
-				const sourceColor =
-					currentStep.action === 'Blend'
-						? currentStep.source.getImage().animation.Color
-						: currentStep.source.getImage().properties.Color;
-				if (image.properties.Fill === 0.0) {
-					image.properties.Color = sourceColor;
-				} else {
-					image.properties.Color = this.colorMedian(sourceColor, image.properties.Color);
-				}
-				if (currentStep.action === 'Blend') {
-					image.properties.Fill = image.properties.Fill + 0.25;
-				} else {
-					image.properties.Fill = image.properties.Fill + 0.01 * currentStep.actionMeasurement;
-				}
-			} else if (currentStep.action === 'Stir' || currentStep.action === 'Shake') {
-			} else if (currentStep.action === 'Grind') {
-				const image = IMAGES['CoffeeGround'];
-				return new Tool('CoffeeGround', image, t.position, 75, 75, undefined);
-			} else if (currentStep.action === 'Brew') {
-				const image = IMAGES['CoffeePot'];
-				return new Tool('CoffeePot', image, t.position, 75, 75, undefined);
-			}
-			tool = t.clone();
-			tool.image = image;
-			return tool;
-		}
-	};
-
-	setPreviewToCopiedTool = () => {
-		const tool = this.renderPreview();
-		this.setCopiedTool(tool);
 	};
 
 	componentDidMount() {
@@ -207,12 +126,6 @@ class Editor extends Component {
 		window.removeEventListener('resize', this.onCanvasResize);
 	}
 
-	hideActionModal = (action) => {
-		const { showAction } = this.state;
-		showAction[action] = false;
-		this.setState(showAction);
-	};
-
 	fetchData = () => {
 		const lesson_id = this.props.computedMatch.params.lesson_id;
 		this.state.lesson.setId(lesson_id);
@@ -227,22 +140,18 @@ class Editor extends Component {
 
 	loadLesson = (response) => {
 		const { instructorEmail } = response.data.lesson;
+		const lesson_id = this.props.computedMatch.params.lesson_id;
 		if (instructorEmail !== this.props.email) {
-			this.props.history.push(Routes.NOT_FOUND);
+			this.props.history.replace(Routes.INSTRUCTOR_PREVIEW + lesson_id);
 		}
 		const loadedLesson = Lesson.load(response.data);
 		this.setState(loadedLesson);
+		this.setState({ showPublished: this.state.lesson.isPublished });
 	};
 
 	handleFieldChange = (e) => {
-		this.state.lesson.setName(e.target.value);
-	};
-
-	closePourModal = () => {
-		const { showAction } = this.state;
-		const newShowAction = showAction;
-		newShowAction.pour = false;
-		this.setState({ showAction: newShowAction });
+		this.state.lesson.name = e.target.value;
+		this.setState({ lesson: this.state.lesson });
 	};
 
 	render() {
@@ -275,7 +184,7 @@ class Editor extends Component {
 				tool.value.type === 'Milk' ||
 				tool.value.type === 'Kettle' ||
 				tool.value.type === 'CoffeePot' ||
-				tool.value.type === 'Pump'
+				tool.value.type === 'PumpBottle'
 		);
 		const pourTargetOptions = toolOptions.filter(
 			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Shaker' || tool.value.type === 'Blender'
@@ -286,19 +195,16 @@ class Editor extends Component {
 				tool.value.type === 'Banana' ||
 				tool.value.type === 'Mango' ||
 				tool.value.type === 'Blueberry' ||
-				tool.value.type === 'Strawberry'
+				tool.value.type === 'Strawberry' ||
+				tool.value.type === 'IceCube'
 		);
 		const blendTargetOptions = toolOptions.filter((tool) => tool.value.type === 'Blender');
-		const pumpSourceOptions = toolOptions.filter((tool) => tool.value.type === 'PumpBottle');
+		const pumpSourceOptions = toolOptions.filter((tool) => tool.value.type === "PumpBottle");
 		const pumpTargetOptions = toolOptions.filter(
-			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Shaker' || tool.value.type === 'Blender'
-		);
-		const stirSourceOptions = toolOptions.filter(
-			(tool) => tool.value.type === 'Spoon' || tool.value.type == 'TeaBag'
-		);
-		const stirTargetOptions = toolOptions.filter(
-			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender' || tool.value.type === 'Shaker'
-		);
+			(tool) => tool.value.type === "StraightCup" || tool.value.type === "Shaker" || tool.value.type === "Blender"
+		)
+		const stirSourceOptions = toolOptions.filter((tool) => tool.value.type === 'Spoon' || tool.value.type === 'TeaBag');
+		const stirTargetOptions = toolOptions.filter((tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender');
 		const brewSourceOptions = toolOptions;
 
 		const publishBtn = lesson.isPublished ? null : (
@@ -308,7 +214,10 @@ class Editor extends Component {
 		);
 		return (
 			<HotKeys handlers={this.shortcutHandlers}>
-				<Prompt when={isDirty} message={GeneralConstants.UNSAVED_EDITOR_MESSAGE} />
+				<Prompt
+				  when={isDirty}
+				  message={GeneralConstants.UNSAVED_EDITOR_MESSAGE}
+				/>
 				<HeaderBru {...this.props} home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
 				<ConfirmationModal
 					title={GeneralConstants.DELETE_LESSON_TITLE}
@@ -363,13 +272,6 @@ class Editor extends Component {
 					delay={1250}
 				/>
 				<EditorNotification
-					message={GeneralConstants.BLEND_OVER_FILL_MESSAGE}
-					onClose={() => this.setState({ showBlendError: false })}
-					show={showBlendError}
-					autohide
-					delay={1250}
-				/>
-				<EditorNotification
 					message={GeneralConstants.STIR_NO_FILL_MESSAGE}
 					onClose={() => this.setState({ showStirError: false })}
 					show={showStirError}
@@ -387,6 +289,18 @@ class Editor extends Component {
 					message={GeneralConstants.SAVE_BEFORE_PUBLISH_MESSAGE}
 					onClose={() => this.setState({ showSaveBeforePublish: false })}
 					show={showSaveBeforePublish}
+					autohide
+					delay={1250}
+				/>
+				<EditorNotification
+					message={GeneralConstants.SHOW_PUBLISHED}
+					onClose={() => this.setState({ showPublished: false })}
+					show={showPublished}
+				/>
+				<EditorNotification
+					message={GeneralConstants.BLEND_OVER_FILL_MESSAGE}
+					onClose={() => this.setState({ showBlendError: false })}
+					show={showBlendError}
 					autohide
 					delay={1250}
 				/>
@@ -439,8 +353,8 @@ class Editor extends Component {
 				{showAction.pour ? (
 					<Pour
 						show={showAction.pour}
-						source={currentStep.source}
-						target={currentStep.target}
+						source={currentStep.source.clone()}
+						target={currentStep.target.clone()}
 						goal={currentStep.actionMeasurement}
 						instructor={true}
 						onHide={() => this.hideActionModal('pour')}
@@ -453,10 +367,11 @@ class Editor extends Component {
 								<FormControl
 									onChange={(e) => this.handleFieldChange(e)}
 									className="editorControlName"
-									autoFocus
 									type="text"
-									defaultValue={lesson.name}
+									disabled={lesson.isPublished}
+									value={lesson.name}
 									required
+									onBlur={this.onLessonFieldBlur}
 								/>
 							</Col>
 						</Row>
@@ -465,7 +380,7 @@ class Editor extends Component {
 								{publishBtn}
 								<button
 									disabled={!currentStep.isComplete()}
-									type="button"
+									type="submit"
 									className="btn btn-secondary"
 									onClick={this.showActionModal}
 								>
@@ -491,7 +406,7 @@ class Editor extends Component {
 									<i className="fa fa-repeat" aria-hidden="true" />
 								</Button>
 								<Button
-									disabled={!isDirty}
+									disabled={!isDirty || lesson.isPublished}
 									type="button"
 									variant="success"
 									onClick={() =>
@@ -502,6 +417,7 @@ class Editor extends Component {
 									<i className="fas fa-save" />
 								</Button>
 								<Button
+									disabled={lesson.isPublished}
 									type="button"
 									variant="danger"
 									onClick={() => this.setState({ showDeleteLessonModal: true })}
@@ -517,7 +433,7 @@ class Editor extends Component {
 								<Card.Header>
 									<h6 className="m-0 font-weight-bold text-primary headings"> TOOLS </h6>{' '}
 								</Card.Header>
-								<Catalog />
+								<Catalog published={lesson.isPublished} />
 							</div>
 						</Col>
 
@@ -548,6 +464,7 @@ class Editor extends Component {
 											isSearchable={true}
 											name="actions"
 											options={ACTIONS}
+											isDisabled={lesson.isPublished}
 											onChange={(action) => this.updateCurrentAction(action)}
 											value={
 												currentStep.action ? (
@@ -563,7 +480,7 @@ class Editor extends Component {
 											classNamePrefix="editorSelect2"
 											placeholder="Source"
 											isSearchable={true}
-											isDisabled={currentStep.action === null}
+											isDisabled={currentStep.action === null || lesson.isPublished}
 											name="sources"
 											options={
 												currentStep.action === 'Shake' ? (
@@ -575,7 +492,7 @@ class Editor extends Component {
 												) : currentStep.action === 'Blend' ? (
 													blendSourceOptions
 												) : currentStep.action === 'Pump' ? (
-													pumpSourceOptions
+													pumpSourceOptions	
 												) : currentStep.action === 'Brew' ? (
 													brewSourceOptions
 												) : (
@@ -593,6 +510,7 @@ class Editor extends Component {
 											isSearchable={true}
 											name="targets"
 											isDisabled={
+												lesson.isPublished ||
 												currentStep.action === 'Shake' ||
 												currentStep.action === null ||
 												currentStep.action === 'Brew'
@@ -606,9 +524,7 @@ class Editor extends Component {
 													blendTargetOptions
 												) : currentStep.action === 'Pump' ? (
 													pumpTargetOptions
-												) : (
-													''
-												)
+												) : ''
 											}
 											onChange={(tool) => this.updateCurrentTarget(tool.value)}
 											value={currentStep.target ? currentStep.target.toSelectOption() : ''}
@@ -617,6 +533,7 @@ class Editor extends Component {
 											className="actionMeasurementControl"
 											type="number"
 											min="1"
+											disabled={lesson.isPublished}
 											placeholder="Action Measurement"
 											onChange={(e) => this.updateActionMeasurement(e)}
 											value={
@@ -628,19 +545,24 @@ class Editor extends Component {
 													''
 												)
 											}
-											hidden={currentStep.action === 'Blend' || currentStep.action === 'Brew'}
+											hidden={
+												currentStep.action === "Blend" ||
+												currentStep.action === "Brew"
+											}
 										/>
 										<input
 											className="actionMeasurementControl"
 											type="number"
 											min="1"
+											max="59"
 											placeholder="Timer (Seconds)"
-											hidden={currentStep.action === 'Pour' || currentStep.action === 'Pump'}
+											hidden={
+												currentStep.action === 'Pour' ||
+												currentStep.action === 'Pump'
+											}
 											disabled={lesson.isPublished}
 											onChange={(e) => this.updateTimer(e)}
-											value={
-												currentStep.timer ? currentStep.timer > 0 ? currentStep.timer : '' : ''
-											}
+											value={currentStep.timer && currentStep.timer > 0 ? currentStep.timer : ''}
 										/>
 										{currentStep.isComplete() ? (
 											<ToolComponent tool={this.renderPreview()} />
@@ -661,7 +583,12 @@ class Editor extends Component {
 									<Card.Header>
 										<Row style={{ justifyContent: 'space-evenly' }}>
 											<h6 className="m-0 font-weight-bold text-primary headings"> STEPS </h6>
-											<button title="Add Step" className="clearButton" onClick={this.addStep}>
+											<button
+												disabled={lesson.isPublished}
+												title="Add Step"
+												className="clearButton"
+												onClick={this.addStep}
+											>
 												<img src={plus} />
 											</button>
 										</Row>
@@ -703,7 +630,7 @@ class Editor extends Component {
 				onDeleteStep={this.onDeleteStep}
 				onFieldBlur={this.onFieldBlur}
 				value={step}
-				isDisabled={this.state.steps.length === 1}
+				isDisabled={this.state.lesson.isPublished}
 			/>
 		);
 	};
@@ -726,6 +653,9 @@ class Editor extends Component {
 	}
 
 	onDropStep = ({ oldIndex, newIndex }) => {
+		if (this.state.lesson.isPublished) {
+			return;
+		}
 		const { steps } = this.state;
 		const swappedSteps = swapElements(steps, oldIndex, newIndex);
 		this.setState({ steps: swappedSteps }, this.addOperation);
@@ -766,6 +696,15 @@ class Editor extends Component {
 		}
 	};
 
+	onLessonFieldBlur = (e) => {
+		if (StringUtils.isEmpty(e.target.value)) {
+			this.state.lesson.name = DEFAULT_LESSON_NAME;
+			this.setState({ lesson: this.state.lesson }, this.addOperation);
+		} else {
+			this.addOperation();
+		}
+	};
+
 	onDeleteStep = (e, step) => {
 		e.cancelBubble = true;
 		if (e.stopPropagation) {
@@ -775,9 +714,11 @@ class Editor extends Component {
 	};
 
 	deleteStep = (step) => {
+		if (this.state.lesson.isPublished || this.state.steps.length === 1) {
+			return;
+		}
 		const { steps } = this.state;
 		const index = steps.indexOf(step);
-		console.log(step);
 		const newIndex = index === steps.length - 1 ? index - 1 : index;
 		steps.splice(index, 1);
 		const currentStep = steps[newIndex];
@@ -793,6 +734,9 @@ class Editor extends Component {
 	};
 
 	cloneStep = (step) => {
+		if (this.state.lesson.isPublished) {
+			return;
+		}
 		const clonedStep = step.clone();
 		const { steps } = this.state;
 		const index = steps.indexOf(step);
@@ -884,18 +828,15 @@ class Editor extends Component {
 			this.setState({ showShakeError: true });
 			return;
 		}
-		if (currentStep.action === 'Blend' && currentStep.target.amount >= 0.75) {
-			this.setState({ showBlendError: true });
-			return;
-		}
 		if (incompleteSteps.length !== 0) {
 			this.setState({ showIncompleteSteps: true });
 			return;
 		}
 		if (isDirty) {
-			this.setState({ showSaveBeforePublish: true });
+			this.setState({ showSaveBeforePublish: true});
 			return;
-		} else {
+		}
+		else {
 			this.publishLesson();
 		}
 	};
@@ -969,7 +910,7 @@ class Editor extends Component {
 		const currentState = operations[pointer - 1];
 		this.state.history.pointer -= 1;
 		const clonedState = this.cloneState(currentState);
-		clonedState.dirty = true;
+		clonedState.isDirty = true;
 		this.setState(clonedState);
 	};
 
@@ -978,15 +919,16 @@ class Editor extends Component {
 		const currentState = operations[pointer + 1];
 		this.state.history.pointer += 1;
 		const clonedState = this.cloneState(currentState);
-		clonedState.dirty = true;
+		clonedState.isDirty = true;
 		this.setState(clonedState);
 	};
 
 	cloneState = (state) => {
-		const { steps, currentStep } = state;
+		const { steps, currentStep, lesson } = state;
 		const currentStepIndex = steps.indexOf(currentStep);
 		const clonedSteps = steps.map((step) => step.clone());
-		return { steps: clonedSteps, currentStep: clonedSteps[currentStepIndex] };
+		const clonedLesson = lesson.clone();
+		return { steps: clonedSteps, currentStep: clonedSteps[currentStepIndex], lesson: clonedLesson };
 	};
 
 	onShortcutUndo = () => {
@@ -1005,14 +947,16 @@ class Editor extends Component {
 		this.handleRedo();
 	};
 
+	hideActionModal = (action) => {
+		const { showAction } = this.state;
+		showAction[action] = false;
+		this.setState(showAction);
+	};
+
 	showActionModal = (e) => {
 		e.preventDefault();
 		const { showAction, currentStep } = this.state;
-		console.log(currentStep.target.amount);
-		if (
-			currentStep.action === 'Pour' &&
-			(currentStep.source.amount === 0 && !currentStep.source.image.animation.Fill)
-		) {
+		if (currentStep.action === 'Pour' && (currentStep.source.amount === 0 && !currentStep.source.image.animation.Fill)) {
 			this.setState({ showPourError: true });
 			return;
 		}
@@ -1030,6 +974,69 @@ class Editor extends Component {
 		}
 		showAction[currentStep.action.toLowerCase()] = true;
 		this.setState({ showAction });
+	};
+
+	renderPreview = () => {
+		const { currentStep } = this.state;
+		if (currentStep && currentStep.isComplete()) {
+			let tool;
+			let t = currentStep;
+			if (currentStep.action === 'Shake') {
+				t = currentStep.source.clone();
+			} else {
+				t = currentStep.target.clone();
+			}
+			const image = t.getImage();
+			image.draw = IMAGES[t.type].draw;
+			if (
+				currentStep.action === 'Pour' &&
+				currentStep.source &&
+				currentStep.target &&
+				currentStep.actionMeasurement
+			) {
+				let sourceColor = currentStep.source.getImage().properties.Color;
+				const statics = [ 'Milk', 'Kettle', 'CoffeePot' ];
+				if (statics.indexOf(currentStep.source.type) !== -1) {
+					sourceColor = currentStep.source.getImage().animation.Color;
+				}
+				if (image.properties.Fill === 0.0) {
+					image.properties.Color = sourceColor;
+				} else {
+					image.properties.Color = getColorMedian(sourceColor, image.properties.Color);
+				}
+				const amt = currentStep.actionMeasurement / 100;
+				image.properties.Fill = image.properties.Fill + amt;
+			} else if (currentStep.action === 'Blend' || currentStep.action === 'Pump') {
+				const sourceColor =
+					currentStep.action === 'Blend'
+						? currentStep.source.getImage().animation.Color
+						: currentStep.source.getImage().properties.Color;
+				if (image.properties.Fill === 0.0) {
+					image.properties.Color = sourceColor;
+				} else {
+					image.properties.Color = getColorMedian(sourceColor, image.properties.Color);
+				}
+				if (currentStep.action === 'Blend') {
+					image.properties.Fill = image.properties.Fill + 0.25;
+				} else {
+					image.properties.Fill = image.properties.Fill + 0.01 * currentStep.actionMeasurement;
+				}
+			} else if (currentStep.action === 'Stir' || currentStep.action === 'Shake') {
+			} else if (currentStep.action === 'Grind') {
+				const image = IMAGES['CoffeeGround'];
+				return new Tool('CoffeeGround', image, t.position, 75, 75, undefined);
+			} else if (currentStep.action === 'Brew') {
+				const image = IMAGES['CoffeePot'];
+				return new Tool('CoffeePot', image, t.position, 75, 75, undefined);
+			}
+			tool = t.clone();
+			tool.image = image;
+			return tool;
+		}
+	};
+	setPreviewToCopiedTool = () => {
+		const tool = this.renderPreview();
+		this.setCopiedTool(tool);
 	};
 }
 
