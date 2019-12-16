@@ -508,13 +508,13 @@ const IMAGES = {
 			}
 		},
 		properties: {
-            Width: 100,
-            Height: 100,
-            Color: "#e4f1f2"
-        },
-        animation: {
-            Fill: 100
-        },
+			Width: 100,
+			Height: 100,
+			Color: '#e4f1f2'
+		},
+		animation: {
+			Fill: 100
+		}
 	},
 	Mango: {
 		draw: (canvas, width, height) => {
@@ -585,7 +585,7 @@ const IMAGES = {
 				imageObj1.onload = function() {
 					ctx.drawImage(imageObj1, 0, 0, width, height);
 				};
-				imageObj1.src = 'http://getdrawings.com/free-icon/coffee-machine-icon-73.png';
+				imageObj1.src = 'http://www.kuppa.ph/img/location.png';
 			}
 		},
 		properties: {
