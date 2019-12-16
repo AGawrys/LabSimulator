@@ -10,6 +10,9 @@ import ClickNHold from 'react-click-n-hold';
 import { isArrayEqual } from '../LilacArray';
 import { connectMenu } from 'react-contextmenu';
 
+
+const statics = ["Milk", "Kettle", "CoffeePot"];
+
 class Pour extends React.Component {
 	constructor(props) {
 		super(props);
@@ -17,12 +20,12 @@ class Pour extends React.Component {
 		this.state = {
 			startFill: source.image.properties.Fill,
 			fill: target.image.properties.Fill,
-			fillSrc: source.image.properties.Fill,
+			fillSrc: this.setSourceFill(),
 			defaultFill: target.image.properties.Fill,
 			defaultFillSrc: source.image.properties.Fill,
 			color: target.image.properties.Color,
 			oldColor: target.image.properties.Color,
-			colorSrc: source.image.properties.Color,
+			colorSrc: this.setSourceColor(),
 			transform: 'translate3d(0, 0px, 0) scale(1) rotate(0deg)',
 			start: 100,
 			instruction: 'Add ' + goal + '% to the cup',
@@ -36,6 +39,26 @@ class Pour extends React.Component {
 	animateCupUp = () => {
 		this.setState({ transform: 'translate3d(0, -75px, 0) scale(1) rotate(90deg)' });
 	};
+	setSourceColor = () => {
+		const { source } = this.props;
+		let sourceColor = source;
+		if(statics.indexOf(source.type) !== '-1'){
+			sourceColor = source.getImage().animation.Color;
+		} else {
+			sourceColor = source.getImage().properties.Color;
+		}
+		return sourceColor;
+	}
+	setSourceFill = () => {
+		const { source } = this.props;
+		let srcFill = source;
+		if(statics.indexOf(source.type) !== '-1'){
+			srcFill = source.getImage().animation.Fill;
+		} else {
+			srcFill = source.getImage().properties.Fill;
+		}
+		return srcFill;
+	}
 	repeat = () => {
 		this.pour();
 		this.t = setTimeout(this.repeat, this.start);

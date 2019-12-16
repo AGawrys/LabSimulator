@@ -514,9 +514,11 @@ const IMAGES = {
 		properties: {
             Width: 100,
             Height: 100,
-            Color: "#e4f1f2"
+            Color: "#e4f1f2",
+            Fill: 100
         },
         animation: {
+            Color: "#e4f1f2",
             Fill: 100
         },
 	},
