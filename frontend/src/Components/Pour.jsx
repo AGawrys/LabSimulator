@@ -54,7 +54,10 @@ class Pour extends React.Component {
 			const tarInt = parseInt(tarArray[i], 16);
 			srcArray[i] = srcInt;
 			tarArray[i] = tarInt;
-			const newColor = Math.floor((srcInt + tarInt) / 2).toString(16);
+			var newColor = Math.floor((srcInt + tarInt) / 2).toString(16);
+			if(newColor.length == 1) { 
+				newColor = 0 + newColor;
+			}
 			ans = ans + newColor;
 		}
 		this.setState({ color: ans });

@@ -103,7 +103,10 @@ class Editor extends Component {
 			const tarInt = parseInt(tarArray[i], 16);
 			srcArray[i] = srcInt;
 			tarArray[i] = tarInt;
-			const newColor = Math.floor((srcInt + tarInt) / 2).toString(16);
+			var newColor = Math.floor((srcInt + tarInt) / 2).toString(16);
+			if(newColor.length == 1) { 
+				newColor = 0 + newColor;
+			}
 			ans = ans + newColor;
 		}
 		return ans;
@@ -122,6 +125,8 @@ class Editor extends Component {
 			const image = t.getImage();
 			image.draw = IMAGES[t.type].draw;
 			if(currentStep.action === 'Pour' && currentStep.source && currentStep.target && currentStep.actionMeasurement){
+				console.log("Pour fill target is " + image.properties.Fill)
+				console.log("Source image is " + currentStep.source.getImage().properties.Color)
 				if(image.properties.Fill === 0.00) {
 					image.properties.Color = currentStep.source.getImage().properties.Color;
 				}
