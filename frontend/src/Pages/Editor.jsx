@@ -66,6 +66,7 @@ class Editor extends Component {
 			showPourError: false,
 			showStirError: false,
 			showShakeError: false,
+			showBlendError: false,
 			showAction: {
 				pour: false,
 				shake: false,
@@ -245,7 +246,8 @@ class Editor extends Component {
 			showAction,
 			showPourError,
 			showStirError,
-			showShakeError
+			showShakeError,
+			showBlendError
 		} = this.state;
 		const { operations, pointer } = this.state.history;
 		if (steps == null) {
@@ -342,6 +344,13 @@ class Editor extends Component {
 					message={GeneralConstants.POUR_NO_FILL_MESSAGE}
 					onClose={() => this.setState({ showPourError: false })}
 					show={showPourError}
+					autohide
+					delay={1250}
+				/>
+				<EditorNotification
+					message={GeneralConstants.BLEND_OVER_FILL_MESSAGE}
+					onClose={() => this.setState({ showBlendError: false })}
+					show={showBlendError}
 					autohide
 					delay={1250}
 				/>
@@ -863,6 +872,10 @@ class Editor extends Component {
 			this.setState({ showShakeError: true });
 			return;
 		}
+		if (currentStep.action === 'Blend' && currentStep.target.amount === 90) {
+			this.setState({ showBlendError: true });
+			return;
+		}
 		if (incompleteSteps.length !== 0) {
 			this.setState({ showIncompleteSteps: true });
 			return;
@@ -996,6 +1009,10 @@ class Editor extends Component {
 		}
 		if (currentStep.action === 'Shake' && currentStep.source.amount === 0) {
 			this.setState({ showShakeError: true });
+			return;
+		}
+		if (currentStep.action === 'Blend' && currentStep.target.amount === 80) {
+			this.setState({ showBlendError: true });
 			return;
 		}
 		showAction[currentStep.action.toLowerCase()] = true;
