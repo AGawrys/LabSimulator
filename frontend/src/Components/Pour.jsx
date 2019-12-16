@@ -10,6 +10,8 @@ import ClickNHold from 'react-click-n-hold';
 import { isArrayEqual } from '../LilacArray';
 import { connectMenu } from 'react-contextmenu';
 
+const statics = [ 'Milk', 'Kettle', 'CoffeePot' ];
+
 class Pour extends React.Component {
 	constructor(props) {
 		super(props);
@@ -17,33 +19,53 @@ class Pour extends React.Component {
 		this.state = {
 			startFill: source.image.properties.Fill,
 			fill: target.image.properties.Fill,
-			fillSrc: source.image.properties.Fill,
+			fillSrc: this.setSourceFill(),
 			defaultFill: target.image.properties.Fill,
-			defaultFillSrc: source.image.properties.Fill,
+			defaultFillSrc: this.setSourceFill(),
 			color: target.image.properties.Color,
 			oldColor: target.image.properties.Color,
-			colorSrc: source.image.properties.Color,
+			colorSrc: this.setSourceColor(),
 			transform: 'translate3d(0, 0px, 0) scale(1) rotate(0deg)',
 			start: 100,
 			instruction: 'Add ' + goal + '% to the cup',
 			goalMin: goal / 100 - 0.05 + target.image.properties.Fill,
 			goalMax: goal / 100 + 0.05 + target.image.properties.Fill,
 			done: false,
-			overpoured: false,
+			overpoured: false
 		};
 		this.start = 100;
 	}
 	animateCupUp = () => {
 		this.setState({ transform: 'translate3d(0, -75px, 0) scale(1) rotate(90deg)' });
 	};
+	setSourceColor = () => {
+		const { source } = this.props;
+		let sourceColor = source;
+		if (statics.indexOf(source.type) !== -1) {
+			sourceColor = source.getImage().animation.Color;
+		} else {
+			sourceColor = source.getImage().properties.Color;
+		}
+		return sourceColor;
+	};
+	setSourceFill = () => {
+		const { source } = this.props;
+		let srcFill = source;
+		if (statics.indexOf(source.type) !== -1) {
+			srcFill = source.getImage().animation.Fill;
+		} else {
+			srcFill = source.getImage().properties.Fill;
+		}
+		return srcFill;
+	};
 	repeat = () => {
 		this.pour();
-		this.t = setTimeout(this.repeat,this.start);
+		this.t = setTimeout(this.repeat, this.start);
 		this.start /= 2;
 	};
 
 	colorChange = () => {
-		const { colorSrc, oldColor} = this.state;
+		const { colorSrc, oldColor } = this.state;
 		const srcColor = colorSrc.slice(1);
 		const tarColor = oldColor.slice(1);
 		const srcArray = srcColor.match(/.{1,2}/g);
@@ -54,7 +76,10 @@ class Pour extends React.Component {
 			const tarInt = parseInt(tarArray[i], 16);
 			srcArray[i] = srcInt;
 			tarArray[i] = tarInt;
-			const newColor = Math.floor((srcInt + tarInt) / 2).toString(16);
+			var newColor = Math.floor((srcInt + tarInt) / 2).toString(16);
+			if (newColor.length == 1) {
+				newColor = '0' + newColor;
+			}
 			ans = ans + newColor;
 		}
 		this.setState({ color: ans });
@@ -72,31 +97,33 @@ class Pour extends React.Component {
 		this.setState({ transform: 'translate3d(0, 0px, 0) scale(1) rotate(0deg)' });
 		if (fill <= goalMax && fill >= goalMin) {
 			this.setState({ done: true });
-		} 
+		}
 		if (fill > goalMax) {
-			this.setState({ overpoured: true});
+			this.setState({ overpoured: true });
 		}
 	};
 
 	pour = (e) => {
-		const { fill, fillSrc } = this.state;
+		const { fill, fillSrc, defaultFill } = this.state;
 		if (fillSrc > 0) {
 			const n = fill + 0.01;
 			const nSrc = Number((fillSrc - 0.01).toFixed(2));
 			this.setState({ fill: n, fillSrc: nSrc });
-			this.colorChange();
+			if (defaultFill != 0) {
+				this.colorChange();
+			}
 		}
 	};
 	reset = () => {
 		const { defaultFill, defaultFillSrc, color, oldColor } = this.state;
 		const defaultTarget = defaultFill;
 		const defaultSource = defaultFillSrc;
-		this.setState({ 
+		this.setState({
 			color: oldColor,
 			fill: defaultTarget,
 			fillSrc: defaultSource,
 			overpoured: false,
-			done: false,
+			done: false
 		});
 	};
 
@@ -115,7 +142,11 @@ class Pour extends React.Component {
 
 		target.amount = fill;
 		target.image.properties.Fill = fill;
-		target.image.properties.Color = color;
+		if (this.state.defaultFill === 0) {
+			target.image.properties.Color = colorSrc;
+		} else {
+			target.image.properties.Color = color;
+		}
 		source.amount = fillSrc;
 		source.image.properties.Fill = fillSrc;
 		source.image.properties.Color = colorSrc;
@@ -188,7 +219,7 @@ const style1 = {
 	alignSelf: 'center',
 	paddingLeft: '5vh',
 	paddingRight: '5vh',
-	paddingTop: '5vh',
+	paddingTop: '5vh'
 };
 
 const style2 = {
@@ -201,8 +232,8 @@ const style2 = {
 };
 
 const overpourStyle = {
-	color: "red",
-	textAlign: "center",
+	color: 'red',
+	textAlign: 'center'
 };
 
 export default Pour;

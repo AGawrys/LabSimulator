@@ -37,7 +37,8 @@ const GeneralConstants = {
 	FAILED_SELECTION_MESSAGE: 'Incorrect selection! Try again.',
 	POUR_NO_FILL_MESSAGE: 'Cannot pour from empty source tool.',
 	STIR_NO_FILL_MESSAGE: 'Cannot stir an empty target tool. ',
-	SHAKE_NO_FILL_MESSAGE: 'Cannot shake an empty source tool.'
+	SHAKE_NO_FILL_MESSAGE: 'Cannot shake an empty source tool.',
+	BLEND_OVER_FILL_MESSAGE: 'Cannot blend, blender is too full.'
 };
 
 export default GeneralConstants;

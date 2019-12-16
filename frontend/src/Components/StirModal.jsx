@@ -3,6 +3,7 @@ import { Button, Modal, ProgressBar } from 'react-bootstrap';
 import ArrowKeysReact from 'arrow-keys-react';
 import SuccessBody from './ActionCompletedBody.jsx';
 import Spoon from '../images/spoon.png';
+import Teabag from '../images/teabag.jpg';
 import Timer from 'react-compound-timer';
 import '../Styles/editor.css';
 
@@ -29,7 +30,7 @@ class StirModal extends React.Component {
 
 	render() {
 		const { progress, currentKey, smallerCircleStyle, largerCircleStyle, failed, completed } = this.state;
-		const { progressNeeded, show, onComplete, timer, target } = this.props;
+		const { progressNeeded, show, onComplete, timer, target, source } = this.props;
 		let percentComplete = (progress / progressNeeded * 100).toFixed(2);
 		percentComplete = percentComplete < 100 ? percentComplete : 100;
 		const modalBody =
@@ -41,6 +42,7 @@ class StirModal extends React.Component {
 					currentKey={currentKey}
 					smallerCircleStyle={smallerCircleStyle}
 					target={target}
+					source={source}
 				/>
 			);
 		return (
@@ -62,15 +64,15 @@ class StirModal extends React.Component {
 						<Modal
 							{...ArrowKeysReact.events}
 							onShow={() => {
-							  setTime(this.props.timer * 1000 + 999);
-							  stop();
-							  reset();
+								setTime(this.props.timer * 1000 + 999);
+								stop();
+								reset();
 							}}
 							show={show}
 							onHide={() => {
-							  pause();
-							  reset();
-							  this.resetProgress();
+								pause();
+								reset();
+								this.resetProgress();
 							}}
 							size="lg"
 							tabIndex={1}
@@ -108,11 +110,15 @@ class StirModal extends React.Component {
 								>
 									Retry
 								</Button>
-								<Button variant="primary" onClick={() => {
-									pause();
-									reset();
-									this.onSuccess();
-								}} disabled={percentComplete < 100}>
+								<Button
+									variant="primary"
+									onClick={() => {
+										pause();
+										reset();
+										this.onSuccess();
+									}}
+									disabled={percentComplete < 100}
+								>
 									Continue
 								</Button>
 							</Modal.Footer>
@@ -126,7 +132,7 @@ class StirModal extends React.Component {
 	onSuccess = () => {
 		this.resetState();
 		this.props.onSuccess();
-	}
+	};
 
 	resetState = () => {
 		this.setState({
@@ -185,6 +191,7 @@ const KEY_ORDER = {
 
 function StirBody(props) {
 	console.log(Object.entries(props.largerCircleStyle).length === 0 && props.largerCircleStyle.constructor === Object);
+	console.log(props.source);
 	return (
 		<React.Fragment>
 			<div className="centerCircle">
@@ -200,7 +207,7 @@ function StirBody(props) {
 					}
 				>
 					<div id="smallerCircle" style={props.smallerCircleStyle}>
-						<img src={Spoon} />
+						<img src={props.source.type === 'Spoon' ? Spoon : Teabag} />
 					</div>
 				</div>
 			</div>
