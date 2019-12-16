@@ -28,6 +28,8 @@ import Position from '../Objects/Position.js';
 import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import StirModal from '../Components/StirModal.jsx';
+import BlendModal from '../Components/BlendModal.jsx';
+import PumpModal from '../Components/PumpModal.jsx';
 import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
 import EditorNotification from '../Components/EditorNotification.jsx';
@@ -69,6 +71,7 @@ class Editor extends Component {
 				pour: false,
 				shake: false,
 				blend: false,
+				pump: false,
 				stir: false,
 				drag: false
 			},
@@ -215,9 +218,16 @@ class Editor extends Component {
 				tool.value.type === 'Banana' ||
 				tool.value.type === 'Mango' ||
 				tool.value.type === 'Blueberry' ||
-				tool.value.type === 'Strawberry'
+				tool.value.type === 'Strawberry' ||
+				tool.value.type === 'IceCube'
 		);
 		const blendTargetOptions = toolOptions.filter((tool) => tool.value.type === 'Blender');
+		const pumpSourceOptions = toolOptions.filter(
+			(tool) => tool.value.type === "PumpBottle"
+		);
+		const pumpTargetOptions = toolOptions.filter(
+			(tool) => tool.value.type === "StraightCup" || tool.value.type === "Shaker" || tool.value.type === "Blender"
+		)
 		const stirSourceOptions = toolOptions.filter((tool) => tool.value.type === 'Spoon');
 		const stirTargetOptions = toolOptions.filter(
 			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender'
@@ -336,6 +346,28 @@ class Editor extends Component {
 					onHide={() => this.hideActionModal('stir')}
 					onSuccess={() => this.hideActionModal('stir')}
 				/>
+				<BlendModal
+					show={showAction.blend}
+					time={currentStep.timer}
+					source={currentStep.source}
+					target={currentStep.target}
+					onComplete={() => {
+						showAction.blend = false;
+						this.setState({ showAction });
+					}}
+				/>
+				{showAction.pump ? (
+					<PumpModal
+						show={showAction.pump}
+						source={currentStep.source}
+						target={currentStep.target}
+						pumpsNeeded={currentStep.actionMeasurement}
+						onComplete={() => {
+							showAction.pump = false;
+							this.setState({ showAction});
+						}}
+					/>
+				) : null}
 				{showAction.pour ? (
 					<Pour
 						show={showAction.pour}
@@ -477,6 +509,8 @@ class Editor extends Component {
 													stirSourceOptions
 												) : currentStep.action === 'Blend' ? (
 													blendSourceOptions
+												) : currentStep.action === 'Pump' ? (
+													pumpSourceOptions	
 												) : currentStep.action === 'Drag' ? (
 													dragSourceOptions
 												) : (
@@ -506,6 +540,8 @@ class Editor extends Component {
 													stirTargetOptions
 												) : currentStep.action === 'Blend' ? (
 													blendTargetOptions
+												) : currentStep.action === 'Pump' ? (
+													pumpTargetOptions
 												) : currentStep.action === 'Drag' ? currentStep.source === null ? (
 													''
 												) : currentStep.source.type === 'IceCube' ? (
@@ -535,6 +571,9 @@ class Editor extends Component {
 													''
 												)
 											}
+											hidden={
+												currentStep.action === "Blend"
+											}
 										/>
 										<input
 											className="actionMeasurementControl"
@@ -542,7 +581,11 @@ class Editor extends Component {
 											min="1"
 											max="59"
 											placeholder="Timer (Seconds)"
-											disabled={currentStep.action === 'Pour' || lesson.isPublished}
+											hidden={
+												currentStep.action === 'Pour' ||
+												currentStep.action === 'Pump'
+											}
+											disabled={lesson.isPublished}
 											onChange={(e) => this.updateTimer(e)}
 											value={currentStep.timer && currentStep.timer > 0 ? currentStep.timer : ''}
 										/>

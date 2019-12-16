@@ -1,5 +1,5 @@
 import Position from './Position';
-import { createImage } from '../Components/Tools.jsx';
+import { createImage, copyImage } from '../Components/Tools.jsx';
 
 class Tool {
 	constructor(
@@ -122,9 +122,14 @@ class Tool {
 	}
 
 	imageEquals(tool) {
-		const { properties } = this.image;
-		for (const property in this.image.properties) {
+		const { properties, animation } = this.image;
+		for (const property in properties) {
 			if (properties[property] != tool.image.properties[property]) {
+				return false;
+			}
+		}
+		for (const animationProperty in animation) {
+			if (animation[animationProperty] != tool.image.animation[animationProperty]) {
 				return false;
 			}
 		}
@@ -154,9 +159,14 @@ class Tool {
 
 	cloneImage(type, image) {
 		const clonedImage = createImage(type);
-		const { properties } = image;
+		const { properties, animation } = image;
 		for (const property in properties) {
 			clonedImage.properties[property] = image.properties[property];
+		}
+		if (animation) {
+			for (const animation_property in animation) {
+				clonedImage.animation[animation_property] = image.animation[animation_property];
+			}
 		}
 		return clonedImage;
 	}

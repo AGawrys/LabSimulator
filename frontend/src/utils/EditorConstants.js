@@ -6,7 +6,8 @@ const ACTIONS = [
 	{ value: 'Shake', label: 'Shake' },
 	{ value: 'Pour', label: 'Pour' },
 	{ value: 'Stir', label: 'Stir' },
-	{ value: 'Blend', label: 'Blend' }
+	{ value: 'Blend', label: 'Blend' },
+	{ value: 'Pump', label: 'Pump' },
 ];
 
 export { DEFAULT_LESSON_NAME, DEFAULT_STEP_NAME, CONTEXT_MENU_ID, DEFAULT_TOOL_SIZE, ACTIONS };

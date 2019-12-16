@@ -54,7 +54,7 @@ class ShakeModal extends React.Component {
                   }}
                   show={show}
                   onHide={() => {
-                    pause();
+                    stop();
                     reset();
                     this.resetProgress();
                   }}

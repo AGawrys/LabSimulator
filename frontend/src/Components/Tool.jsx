@@ -47,14 +47,15 @@ class Tool extends React.Component {
         image.draw(this.canvas.current,
                    tool.getWidth(),
                    tool.getHeight(),
-                   image.properties)
+                   image.properties,
+                   image.animation)
     }
     
 	componentDidUpdate() {
 		const { tool, selected, } = this.props;
         const image = tool.getImage();
         if (tool.position && !tool.equals(this.tool)) {         // only update image of tool if it is on canvas && its properties has changed
-            image.draw(this.canvas.current, tool.getWidth(), tool.getHeight(), image.properties);
+            image.draw(this.canvas.current, tool.getWidth(), tool.getHeight(), image.properties, image.animation);
             this.tool = tool.clone();
         }
 	}
