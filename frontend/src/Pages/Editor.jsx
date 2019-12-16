@@ -486,7 +486,6 @@ class Editor extends Component {
 									<h6 className="m-0 font-weight-bold text-primary headings"> TOOLS </h6>{' '}
 								</Card.Header>
 								<Catalog />
-								<Catalog />
 							</div>
 						</Col>
 
