@@ -18,7 +18,7 @@ import Catalog from '../Components/Catalog.jsx';
 import Canvas from '../Components/Canvas.jsx';
 import Routes from '../utils/RouteConstants.js';
 import GeneralConstants from '../utils/GeneralConstants.js';
-import {ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME} from '../utils/EditorConstants.js';
+import { ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME } from '../utils/EditorConstants.js';
 import { determineToolPosition, determineToolSize, getCanvasSize, resizeTools } from '../utils/CanvasUtils.js';
 import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
@@ -58,7 +58,7 @@ class Editor extends Component {
 			showSuccessfullyPublished: false,
 			showSuccessfulDuplicate: false,
 			showIncompleteSteps: false,
-			showSuccessfulSave:false,
+			showSuccessfulSave: false,
 			showSaveBeforePublish: false,
 			showActionMenu: true,
 			showPourError: false,
@@ -69,21 +69,21 @@ class Editor extends Component {
 				shake: false,
 				blend: false,
 				stir: false,
-				drag: false,
+				drag: false
 			},
 			showPourModal: false,
 			copiedTool: null,
 			areToolsPlaced: false,
-			canvasSize: {height: 1000, width: 1000},
-			history: {operations: [], pointer: 0},
+			canvasSize: { height: 1000, width: 1000 },
+			history: { operations: [], pointer: 0 },
 			isDirty: false,
-			previous: null,
+			previous: null
 		};
 		this.onDropTool = this.onDropTool.bind(this);
 		this.shortcutHandlers = {
 			UNDO: this.onShortcutUndo,
-			REDO: this.onShortcutRedo,
-		}
+			REDO: this.onShortcutRedo
+		};
 	}
 
 	handleToolClick = () => {
@@ -91,14 +91,14 @@ class Editor extends Component {
 	};
 	handleSimulate = () => {
 		const { currentStep } = this.state;
-		if(currentStep && currentStep.action === 'Pour'){
-			if(currentStep.source && currentStep.target && currentStep.actionMeasurement){
-				console.log("changing show modal")
-				this.setState({ showPourModal: true});
+		if (currentStep && currentStep.action === 'Pour') {
+			if (currentStep.source && currentStep.target && currentStep.actionMeasurement) {
+				console.log('changing show modal');
+				this.setState({ showPourModal: true });
 			}
 		}
-	}
-	colorMedian(colorSrc, oldColor ) {
+	};
+	colorMedian(colorSrc, oldColor) {
 		const srcColor = colorSrc.slice(1);
 		const tarColor = oldColor.slice(1);
 		const srcArray = srcColor.match(/.{1,2}/g);
@@ -110,7 +110,7 @@ class Editor extends Component {
 			srcArray[i] = srcInt;
 			tarArray[i] = tarInt;
 			var newColor = Math.floor((srcInt + tarInt) / 2).toString(16);
-			if(newColor.length == 1) { 
+			if (newColor.length == 1) {
 				newColor = '0' + newColor;
 			}
 			ans = ans + newColor;
@@ -118,55 +118,55 @@ class Editor extends Component {
 		return ans;
 	}
 	renderPreview = () => {
-
-		const {currentStep} = this.state;
-		if(currentStep && currentStep.isComplete()){
-			let t = currentStep
-			if(currentStep.action === "Shake"){
-				t = currentStep.source.clone()
-			}
-			else{ 
-				t = currentStep.target.clone()
+		const { currentStep } = this.state;
+		if (currentStep && currentStep.isComplete()) {
+			let t = currentStep;
+			if (currentStep.action === 'Shake') {
+				t = currentStep.source.clone();
+			} else {
+				t = currentStep.target.clone();
 			}
 			const image = t.getImage();
 			image.draw = IMAGES[t.type].draw;
-			if(currentStep.action === 'Pour' && currentStep.source && currentStep.target && currentStep.actionMeasurement){
-				console.log("Pour fill target is " + image.properties.Fill)
-				console.log("Source image is " + currentStep.source.getImage().properties.Color)
-				if(image.properties.Fill === 0.00) {
+			if (
+				currentStep.action === 'Pour' &&
+				currentStep.source &&
+				currentStep.target &&
+				currentStep.actionMeasurement
+			) {
+				console.log('Pour fill target is ' + image.properties.Fill);
+				console.log('Source image is ' + currentStep.source.getImage().properties.Color);
+				if (image.properties.Fill === 0.0) {
 					image.properties.Color = currentStep.source.getImage().properties.Color;
-				}
-				else { 
-					image.properties.Color = this.colorMedian(currentStep.source.getImage().properties.Color, image.properties.Color)
+				} else {
+					image.properties.Color = this.colorMedian(
+						currentStep.source.getImage().properties.Color,
+						image.properties.Color
+					);
 				}
 				const amt = currentStep.actionMeasurement / 100;
 				image.properties.Fill = image.properties.Fill + amt;
-			} else if(currentStep.action === "Blend"){
+			} else if (currentStep.action === 'Blend') {
 				const sourceColor = currentStep.source.getImage().animation.color;
-				if(image.properties.Fill === 0.00) {
+				if (image.properties.Fill === 0.0) {
 					image.properties.Color = sourceColor;
-				}
-				else { 
-					image.properties.Color = this.colorMedian(sourceColor, image.properties.Color)
+				} else {
+					image.properties.Color = this.colorMedian(sourceColor, image.properties.Color);
 				}
 				image.properties.Fill = image.properties.Fill + 0.1;
-				
-			} else if(currentStep.action === "Stir" || currentStep.action === "Shake"){
-				
-			} else if(currentStep.action === "Grind"){
-
+			} else if (currentStep.action === 'Stir' || currentStep.action === 'Shake') {
+			} else if (currentStep.action === 'Grind') {
 			}
 			const tool = t.clone();
 			tool.image = image;
 			return tool;
 		}
-		
-	}
-	
+	};
+
 	setPreviewToCopiedTool = () => {
 		const tool = this.renderPreview();
 		this.setCopiedTool(tool);
-	}
+	};
 
 	componentDidMount() {
 		window.addEventListener('resize', this.onCanvasResize);
@@ -188,8 +188,14 @@ class Editor extends Component {
 	}
 
 	componentWillUnmount() {
-		window.removeEventListener("resize", this.onCanvasResize);
+		window.removeEventListener('resize', this.onCanvasResize);
 	}
+
+	hideActionModal = (action) => {
+		const { showAction } = this.state;
+		showAction[action] = false;
+		this.setState(showAction);
+	};
 
 	fetchData = () => {
 		const lesson_id = this.props.computedMatch.params.lesson_id;
@@ -217,11 +223,11 @@ class Editor extends Component {
 	};
 
 	closePourModal = () => {
-		const {showAction } = this.state;
+		const { showAction } = this.state;
 		const newShowAction = showAction;
 		newShowAction.pour = false;
-		this.setState({showAction : newShowAction });
-	}
+		this.setState({ showAction: newShowAction });
+	};
 
 	render() {
 		const { lesson, currentStep, steps, copiedTool, isDirty } = this.state;
@@ -264,12 +270,15 @@ class Editor extends Component {
 				tool.value.type === 'Strawberry'
 		);
 		const blendTargetOptions = toolOptions.filter((tool) => tool.value.type === 'Blender');
-		const stirSourceOptions = toolOptions.filter((tool) => tool.value.type === 'Spoon');
+		const stirSourceOptions = toolOptions.filter(
+			(tool) => tool.value.type === 'Spoon' || tool.value.type == 'TeaBag'
+		);
 		const stirTargetOptions = toolOptions.filter(
-			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender'
+			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender' || tool.value.type === 'Shaker'
 		);
 		const dragSourceOptions = toolOptions.filter(
-			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'CupSleeve' || tool.value.type === 'IceCube'
+			(tool) =>
+				tool.value.type === 'StraightCup' || tool.value.type === 'CupSleeve' || tool.value.type === 'IceCube'
 		);
 		const dragTargetOptions1 = toolOptions.filter(
 			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender' || tool.value.type === 'Shaker'
@@ -308,7 +317,7 @@ class Editor extends Component {
 				/>
 				<EditorNotification
 					message={GeneralConstants.SUCCESSFUL_DUPLICATE_MESSAGE}
-					onClose={() => this.setState({showSuccessfulDuplicate: false})}
+					onClose={() => this.setState({ showSuccessfulDuplicate: false })}
 					show={showSuccessfulDuplicate}
 					isSuccess
 					autohide
@@ -316,7 +325,7 @@ class Editor extends Component {
 				/>
 				<EditorNotification
 					message={GeneralConstants.SUCCESSFUL_SAVE_MESSAGE}
-					onClose={() => this.setState({showSuccessfulSave: false})}
+					onClose={() => this.setState({ showSuccessfulSave: false })}
 					show={showSuccessfulSave}
 					isSuccess
 					autohide
@@ -324,7 +333,7 @@ class Editor extends Component {
 				/>
 				<EditorNotification
 					message={GeneralConstants.CANNOT_PUBLISH_MESSAGE}
-					onClose={() => this.setState({showIncompleteSteps: false})}
+					onClose={() => this.setState({ showIncompleteSteps: false })}
 					show={showIncompleteSteps}
 					autohide
 					delay={1250}
@@ -352,7 +361,7 @@ class Editor extends Component {
 				/>
 				<EditorNotification
 					message={GeneralConstants.SAVE_BEFORE_PUBLISH_MESSAGE}
-					onClose={() => this.setState({showSaveBeforePublish: false})}
+					onClose={() => this.setState({ showSaveBeforePublish: false })}
 					show={showSaveBeforePublish}
 					autohide
 					delay={1250}
@@ -369,6 +378,7 @@ class Editor extends Component {
 					progressNeeded={currentStep.actionMeasurement}
 					show={showAction.stir}
 					timer={currentStep.timer}
+					source={currentStep.source}
 					target={currentStep.target}
 					onHide={() => this.hideActionModal('stir')}
 					onSuccess={() => this.hideActionModal('stir')}
@@ -393,14 +403,17 @@ class Editor extends Component {
 						goal={currentStep.actionMeasurement}
 						instructor={true}
 						onHide={this.closePourModal}
-					/>) : null}
-				{showAction.pour ? (<Pour
-					show={showAction.pour}
-					source={currentStep.source}
-					target={currentStep.target}
-					instructor={true}
-					onHide={() => this.hideActionModal('pour')}
-				/> ) : null }
+					/>
+				) : null}
+				{showAction.pour ? (
+					<Pour
+						show={showAction.pour}
+						source={currentStep.source}
+						target={currentStep.target}
+						instructor={true}
+						onHide={() => this.hideActionModal('pour')}
+					/>
+				) : null}
 				<Container fluid={true} className="instructorContainer">
 					<Col className="instructorEditorToolBar brownBorder">
 						<Row>
@@ -419,10 +432,11 @@ class Editor extends Component {
 							<Col className="editorToolBarButton alignLeft" lg={7}>
 								{publishBtn}
 								<button
-									disabled={!currentStep.isComplete()} 
-									type="button" 
-									className="btn btn-secondary" 
-									onClick={this.showActionModal}>
+									disabled={!currentStep.isComplete()}
+									type="button"
+									className="btn btn-secondary"
+									onClick={this.showActionModal}
+								>
 									Simulate
 								</button>
 								<button type="button" className="btn btn-info" onClick={this.cloneLesson}>
@@ -437,13 +451,22 @@ class Editor extends Component {
 								>
 									<i className="fa fa-undo" aria-hidden="true" />
 								</Button>
-								<Button disabled={operations.length === 0 || pointer === operations.length - 1} variant="dark" onClick={this.handleRedo}>
-									<i className="fa fa-repeat" aria-hidden="true"></i>
+								<Button
+									disabled={operations.length === 0 || pointer === operations.length - 1}
+									variant="dark"
+									onClick={this.handleRedo}
+								>
+									<i className="fa fa-repeat" aria-hidden="true" />
 								</Button>
-								<Button disabled={!isDirty} type="button" variant="success" onClick={
-									() => this.saveLesson(
-										() => this.setState({showSuccessfulSave: true, isDirty: false})
-									)}>
+								<Button
+									disabled={!isDirty}
+									type="button"
+									variant="success"
+									onClick={() =>
+										this.saveLesson(() =>
+											this.setState({ showSuccessfulSave: true, isDirty: false })
+										)}
+								>
 									<i className="fas fa-save" />
 								</Button>
 								<Button
@@ -588,16 +611,18 @@ class Editor extends Component {
 												currentStep.timer ? currentStep.timer > 0 ? currentStep.timer : '' : ''
 											}
 										/>
-										{currentStep.isComplete() ? (<ToolComponent tool={this.renderPreview()} /> ): null}
+										{currentStep.isComplete() ? (
+											<ToolComponent tool={this.renderPreview()} />
+										) : null}
 										<button
 											show={!currentStep.isComplete()}
-											disabled={!currentStep.isComplete()} 
-											type="button" 
-											className="btn btn-secondary" 
-											onClick={this.setPreviewToCopiedTool}>
+											disabled={!currentStep.isComplete()}
+											type="button"
+											className="btn btn-secondary"
+											onClick={this.setPreviewToCopiedTool}
+										>
 											COPY
 										</button>
-										
 									</div>
 								</Card>
 
@@ -625,12 +650,11 @@ class Editor extends Component {
 	}
 
 	saveLesson = (callback) => {
-		const {lesson, steps} = this.state;
+		const { lesson, steps } = this.state;
 		const savedLesson = lesson.save(steps);
-		axios.post(Routes.SERVER + 'updateLessonName', savedLesson).then(
-			(response) => callback(),
-			(error) => console.log(error),
-		);
+		axios
+			.post(Routes.SERVER + 'updateLessonName', savedLesson)
+			.then((response) => callback(), (error) => console.log(error));
 	};
 
 	renderStep = (step, index) => {
@@ -654,17 +678,20 @@ class Editor extends Component {
 	};
 
 	onDropTool(data) {
-		const {width, height} = determineToolSize(data.tool,this.state.currentStep.tools);
+		const { width, height } = determineToolSize(data.tool, this.state.currentStep.tools);
 		const image = createImage(data.tool);
-		const {x,y} = determineToolPosition(width, height);
+		const { x, y } = determineToolPosition(width, height);
 		const position = new Position(x, y);
 		const layer = this.state.currentStep.getTools().length;
-		const tool = new Tool(data.tool, image, position,width,height,layer);
+		const tool = new Tool(data.tool, image, position, width, height, layer);
 		let currentStep = this.state.currentStep;
 		currentStep.addTool(tool);
-		this.setState({
-			currentStep: currentStep
-		}, this.addOperation);
+		this.setState(
+			{
+				currentStep: currentStep
+			},
+			this.addOperation
+		);
 	}
 
 	onDropStep = ({ oldIndex, newIndex }) => {
@@ -678,10 +705,13 @@ class Editor extends Component {
 		const index = steps.indexOf(currentStep);
 		const newStep = new Step();
 		steps.splice(index + 1, 0, newStep);
-		this.setState({
-			currentStep: newStep, 
-			steps:steps 
-		}, this.addOperation);
+		this.setState(
+			{
+				currentStep: newStep,
+				steps: steps
+			},
+			this.addOperation
+		);
 	};
 
 	onStepClick = (e) => {
@@ -700,8 +730,7 @@ class Editor extends Component {
 		if (StringUtils.isEmpty(e.target.value)) {
 			step.name = DEFAULT_STEP_NAME;
 			this.setState({ steps: this.state.steps }, this.addOperation);
-		}
-		else {
+		} else {
 			this.addOperation();
 		}
 	};
@@ -754,14 +783,14 @@ class Editor extends Component {
 		const { currentStep } = this.state;
 		currentStep.source = tool;
 		currentStep.target = currentStep.source === currentStep.target ? null : currentStep.target;
-		this.setState({ currentStep },this.addOperation);
+		this.setState({ currentStep }, this.addOperation);
 	};
 
 	updateCurrentTarget = (tool) => {
 		const { currentStep } = this.state;
 		currentStep.target = tool;
 		currentStep.source = currentStep.source === currentStep.target ? null : currentStep.source;
-		this.setState({ currentStep },this.addOperation);
+		this.setState({ currentStep }, this.addOperation);
 	};
 
 	updateActionMeasurement = (e) => {
@@ -771,7 +800,7 @@ class Editor extends Component {
 			this.setState({ currentStep });
 		} else {
 			currentStep.actionMeasurement = null;
-			this.setState({ currentStep },this.addOperation);
+			this.setState({ currentStep }, this.addOperation);
 		}
 	};
 
@@ -826,12 +855,11 @@ class Editor extends Component {
 			return;
 		}
 		if (incompleteSteps.length !== 0) {
-			this.setState({showIncompleteSteps: true});
-		}
-		else {
+			this.setState({ showIncompleteSteps: true });
+		} else {
 			this.publishLesson();
 		}
-	}
+	};
 
 	publishLesson = () => {
 		const { lesson_id } = this.props.computedMatch.params;
@@ -844,7 +872,7 @@ class Editor extends Component {
 				this.state.lesson.isPublished = true;
 				this.setState({ showSuccessfullyPublished: true });
 			},
-			(error) => this.setState({"showSaveBeforePublish": true})
+			(error) => this.setState({ showSaveBeforePublish: true })
 		);
 	};
 
@@ -873,8 +901,8 @@ class Editor extends Component {
 		}
 
 		currentStep.tools = tools;
-		this.setState({currentStep}, this.addOperation);
-	}
+		this.setState({ currentStep }, this.addOperation);
+	};
 
 	onCanvasResize = () => {
 		const { canvasSize, steps } = this.state;
@@ -884,61 +912,67 @@ class Editor extends Component {
 			steps: steps,
 			canvasSize: { width, height }
 		});
-	}
+	};
 
 	addOperation = () => {
-		const {operations, pointer} = this.state.history;
-		operations.splice(pointer + 1);						// remove all operations after the current one
+		const { operations, pointer } = this.state.history;
+		operations.splice(pointer + 1); // remove all operations after the current one
 		const stepState = this.cloneState(this.state);
 		operations.push(stepState);
-		this.setState({history: {operations: operations, pointer: operations.length - 1}, isDirty: operations.length > 1});
-	}
+		this.setState({
+			history: { operations: operations, pointer: operations.length - 1 },
+			isDirty: operations.length > 1
+		});
+	};
 
 	handleUndo = () => {
-		const {operations, pointer} = this.state.history;
+		const { operations, pointer } = this.state.history;
 		const currentState = operations[pointer - 1];
 		this.state.history.pointer -= 1;
 		const clonedState = this.cloneState(currentState);
 		clonedState.dirty = true;
 		this.setState(clonedState);
-	}
+	};
 
 	handleRedo = () => {
-		const {operations, pointer} = this.state.history;
+		const { operations, pointer } = this.state.history;
 		const currentState = operations[pointer + 1];
 		this.state.history.pointer += 1;
 		const clonedState = this.cloneState(currentState);
 		clonedState.dirty = true;
 		this.setState(clonedState);
-	}
+	};
 
 	cloneState = (state) => {
-		const {steps, currentStep} = state;
+		const { steps, currentStep } = state;
 		const currentStepIndex = steps.indexOf(currentStep);
 		const clonedSteps = steps.map((step) => step.clone());
-		return {steps: clonedSteps, currentStep: clonedSteps[currentStepIndex]};
-	}
+		return { steps: clonedSteps, currentStep: clonedSteps[currentStepIndex] };
+	};
 
 	onShortcutUndo = () => {
-		const {operations, pointer} = this.state.history;
+		const { operations, pointer } = this.state.history;
 		if (pointer === 0) {
 			return;
 		}
 		this.handleUndo();
-	}
+	};
 
 	onShortcutRedo = () => {
-		const {operations, pointer} = this.state.history;
+		const { operations, pointer } = this.state.history;
 		if (operations.length === 0 || pointer === operations.length - 1) {
 			return;
 		}
 		this.handleRedo();
-	}
+	};
 
 	showActionModal = (e) => {
 		e.preventDefault();
 		const { showAction, currentStep } = this.state;
-		if (currentStep.action === 'Pour' && (currentStep.source.amount === 0 && !currentStep.source.image.animation.Fill)) {
+		if (
+			currentStep.action === 'Pour' &&
+			(currentStep.source.amount === 0 && !currentStep.source.image.animation.Fill)
+		) {
 			this.setState({ showPourError: true });
 			return;
 		}
