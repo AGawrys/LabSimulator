@@ -158,7 +158,7 @@ class EditorStudent extends Component {
 					blend: false,
 					pump: false,
 					stir: false,
-					drag: false
+					brew: false,
 				}
 			});
 		}
@@ -290,9 +290,10 @@ class EditorStudent extends Component {
 						time={currentStep.timer}
 						source={currentStep.source}
 						target={currentStep.target}
+						onHide={() => this.hideActionModal('blend')}
 						onComplete={() => {
-							showAction.blend = false;
-							this.setState({ showAction });
+							this.hideActionModal('blend');
+							this.handleClick();
 						}}
 					/>
 				) : null}
@@ -302,9 +303,10 @@ class EditorStudent extends Component {
 						source={currentStep.source}
 						target={currentStep.target}
 						pumpsNeeded={currentStep.actionMeasurement}
+						onHide={() => this.hideActionModal('pump')}
 						onComplete={() => {
-							showAction.pump = false;
-							this.setState({ showAction});
+							this.hideActionModal('pump');
+							this.handleClick();
 						}}
 					/>
 				) : null}

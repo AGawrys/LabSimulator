@@ -123,7 +123,7 @@ class Step {
 	}
 
 	static requiresTarget(action) {
-		return action === "Stir" || action === "Pour" || action === "Blender";
+		return action === "Stir" || action === "Pour" || action === "Blender" || action === "Pump" || action === "Blend";
 	}
 
 	static load(stepData) {
