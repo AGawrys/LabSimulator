@@ -80,7 +80,7 @@ class Step {
 
 
 	isComplete() {
-		if ((!this.actionMeasurement && !(this.action === 'Blend' || this.action === 'Brew')) || this.tools.length === 0) {
+		if ((!this.actionMeasurement && this.action !== 'Blend') || this.tools.length === 0) {
 			return false;
 		} else if (
 			!this.timer &&
@@ -95,7 +95,7 @@ class Step {
 		if (!this.action) {
 			return false;
 		}
-		if (this.action == 'Pour' || this.action == 'Drag' || this.action == "Stir" || this.action == 'Blend' || this.action == 'Pump') {
+		if (this.action == 'Pour' || this.action == 'Drag' || this.action == "Stir") {
 			return this.source && this.target;
 		}
 		return this.source;
@@ -123,7 +123,7 @@ class Step {
 	}
 
 	static requiresTarget(action) {
-		return action === "Stir" || action === "Pour" || action === "Blender" || action === "Pump" || action === "Blend";
+		return action === "Stir" || action === "Pour" || action === "Blender";
 	}
 
 	static load(stepData) {

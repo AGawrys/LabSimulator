@@ -17,8 +17,6 @@ import GeneralConstants from '../utils/GeneralConstants.js';
 import { Redirect, Prompt } from 'react-router-dom';
 import StirModal from '../Components/StirModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
-import BlendModal from '../Components/BlendModal.jsx';
-import PumpModal from '../Components/PumpModal.jsx';
 import Pour from '../Components/Pour.jsx';
 import StudentDirectionModal from '../Components/StudentDirectionModal.jsx';
 import Step from '../Objects/Step.js';
@@ -53,7 +51,6 @@ class EditorStudent extends Component {
 				pour: false,
 				shake: false,
 				blend: false,
-				pump: false,
 				stir: false,
 				drag: false
 			},
@@ -156,9 +153,8 @@ class EditorStudent extends Component {
 					pour: false,
 					shake: false,
 					blend: false,
-					pump: false,
 					stir: false,
-					brew: false,
+					drag: false
 				}
 			});
 		}
@@ -284,32 +280,6 @@ class EditorStudent extends Component {
 					timer={currentStep.timer}
 					tool={currentStep.source}
 				/>
-				{showAction.blend ? (
-					<BlendModal
-						show={showAction.blend}
-						time={currentStep.timer}
-						source={currentStep.source}
-						target={currentStep.target}
-						onHide={() => this.hideActionModal('blend')}
-						onComplete={() => {
-							this.hideActionModal('blend');
-							this.handleClick();
-						}}
-					/>
-				) : null}
-				{showAction.pump ? (
-					<PumpModal
-						show={showAction.pump}
-						source={currentStep.source}
-						target={currentStep.target}
-						pumpsNeeded={currentStep.actionMeasurement}
-						onHide={() => this.hideActionModal('pump')}
-						onComplete={() => {
-							this.hideActionModal('pump');
-							this.handleClick();
-						}}
-					/>
-				) : null}
 				{showAction.pour ? (
 					<Pour
 						show={showAction.pour}

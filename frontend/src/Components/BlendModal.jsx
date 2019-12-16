@@ -28,7 +28,7 @@ class BlendModal extends React.Component {
                 startImmediately={false}
                 onStop={this.onStop}
 				checkpoints={[{
-					time: ((this.props.time - 1) * 1000),
+					time: (this.props.time - 1) * 1000,
 					callback: () => this.setState({time: this.props.time - 1})
 				}, {
                     time: (this.props.time + 2)  * 1000,

@@ -145,6 +145,7 @@ class PumpModal extends React.Component {
     
     onHide = () => {
         this.resetState();
+        this.props.onComplete();
     }
 
     onPump() {

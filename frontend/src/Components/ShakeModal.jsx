@@ -85,7 +85,6 @@ class ShakeModal extends React.Component {
                     <Tool
                         draggable
                         actionTool
-                        boundId="#shake-body"
                         tool={tool}
                         onDrag={this.handleDrag}
                     />                  

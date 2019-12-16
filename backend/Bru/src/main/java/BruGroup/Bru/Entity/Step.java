@@ -94,6 +94,36 @@ public class Step {
                 this.getTimer());
     }
 
+    public boolean isComplete() {
+        if (actionType == null || actionMeasurement == 0) {
+            return false;
+        }
+        if (timer == 0 && !actionType.equals("Pour")) {
+            return false;
+        }
+        return isActionSet();
+    }
+
+    public boolean isActionSet() {
+
+        if(actionType == null) {
+            return false;
+        }
+
+        if (actionType.equals("Pour") || actionType.equals("Drag") || actionType.equals("Stir")) {
+            return source != -1 && target != -1;
+        }
+        return source != -1;
+    }
+
+    public boolean isPourComplete() {
+        return this.source != -1 && this.target != -1;
+    }
+
+    public boolean isStirComplete() {
+        return this.timer != 0 && (this.source != -1 && this.target != -1);
+    }
+
     @Override
     public String toString() {
         return "Step {" +
