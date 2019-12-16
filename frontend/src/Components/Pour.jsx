@@ -10,7 +10,7 @@ import ClickNHold from 'react-click-n-hold';
 import { isArrayEqual } from '../LilacArray';
 import { connectMenu } from 'react-contextmenu';
 
-const statics = [ 'Milk', 'Kettle', 'CoffeePot' ];
+const statics = [ 'Milk', 'Kettle', 'CoffeePot', 'CoffeeBean'];
 
 class Pour extends React.Component {
 	constructor(props) {

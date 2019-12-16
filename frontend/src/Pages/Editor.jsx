@@ -198,7 +198,7 @@ class Editor extends Component {
 				tool.value.type === 'Milk' ||
 				tool.value.type === 'Kettle' ||
 				tool.value.type === 'CoffeePot' ||
-				tool.value.type === 'CoffeeBeans'
+				tool.value.type === 'CoffeeBean'
 		);
 		const pourTargetOptions = toolOptions.filter(
 			(tool) =>
@@ -881,7 +881,7 @@ class Editor extends Component {
 	onPublishLesson = () => {
 		const incompleteSteps = this.state.steps.filter((step) => !step.isComplete());
 		const { currentStep, isDirty } = this.state;
-		const statics = [ 'Milk', 'Kettle', 'CoffeePot' ];
+		const statics = [ 'Milk', 'Kettle', 'CoffeePot', 'CoffeeBean' ];
 		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === "Pour") {
 			if (currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
 				this.setState({ showOverflowError: true });
@@ -1048,7 +1048,7 @@ class Editor extends Component {
 
 	shouldRenderPreview = () => {
 		const { showAction, currentStep } = this.state;
-		const statics = [ 'Milk', 'Kettle', 'CoffeePot' ];
+		const statics = [ 'Milk', 'Kettle', 'CoffeePot', 'CoffeeBean' ];
 		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === "Pour") {
 			if (currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
 				return false;
@@ -1086,7 +1086,7 @@ class Editor extends Component {
 	showActionModal = (e) => {
 		e.preventDefault();
 		const { showAction, currentStep } = this.state;
-		const statics = [ 'Milk', 'Kettle', 'CoffeePot' ];
+		const statics = [ 'Milk', 'Kettle', 'CoffeePot', 'CoffeeBean' ];
 		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === "Pour") {
 			if (currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
 				this.setState({ showOverflowError: true });
@@ -1151,8 +1151,9 @@ class Editor extends Component {
 				currentStep.target &&
 				currentStep.actionMeasurement
 			) {
+				console.log("in pour with : " + currentStep.source.type)
 				let sourceColor = currentStep.source.getImage().properties.Color;
-				const statics = [ 'Milk', 'Kettle', 'CoffeePot' ];
+				const statics = [ 'Milk', 'Kettle', 'CoffeePot', 'CoffeeBean' ];
 				if (statics.indexOf(currentStep.source.type) !== -1) {
 					sourceColor = currentStep.source.getImage().animation.Color;
 				}
