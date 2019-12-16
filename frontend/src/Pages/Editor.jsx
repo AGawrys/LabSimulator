@@ -30,6 +30,7 @@ import ShakeModal from '../Components/ShakeModal.jsx';
 import StirModal from '../Components/StirModal.jsx';
 import BlendModal from '../Components/BlendModal.jsx';
 import PumpModal from '../Components/PumpModal.jsx';
+import GrindModal from '../Components/GrindModal.jsx';
 import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
 import EditorNotification from '../Components/EditorNotification.jsx';
@@ -72,6 +73,7 @@ class Editor extends Component {
 				shake: false,
 				blend: false,
 				pump: false,
+				grind: false,
 				stir: false,
 				drag: false
 			},
@@ -207,10 +209,15 @@ class Editor extends Component {
 				tool.value.type === 'Shaker' ||
 				tool.value.type === 'Blender' ||
 				tool.value.type === 'Milk' ||
-				tool.value.type === 'PumpBottle'
+				tool.value.type === 'PumpBottle' ||
+				tool.value.type === 'CoffeeBeans'
 		);
 		const pourTargetOptions = toolOptions.filter(
-			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Shaker' || tool.value.type === 'Blender'
+			(tool) => 
+				tool.value.type === 'StraightCup' || 
+				tool.value.type === 'Shaker' || 
+				tool.value.type === 'Blender' ||
+				tool.value.type === 'CoffeeBeanGrinder'
 		);
 		const shakeOptions = toolOptions.filter((tool) => tool.value.type === 'Shaker');
 		const blendSourceOptions = toolOptions.filter(
@@ -228,6 +235,7 @@ class Editor extends Component {
 		const pumpTargetOptions = toolOptions.filter(
 			(tool) => tool.value.type === "StraightCup" || tool.value.type === "Shaker" || tool.value.type === "Blender"
 		)
+		const grindOptions = toolOptions.filter((tool) => tool.value.type === "CoffeeBeanGrinder");
 		const stirSourceOptions = toolOptions.filter((tool) => tool.value.type === 'Spoon');
 		const stirTargetOptions = toolOptions.filter(
 			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender'
@@ -368,6 +376,14 @@ class Editor extends Component {
 							showAction.pump = false;
 							this.setState({ showAction});
 						}}
+					/>
+				) : null}
+				{showAction.grind ? (
+					<GrindModal
+						show={showAction.grind}
+						source={currentStep.source}
+						onHide={() => this.hideActionModal('grind')}
+						onSuccess={() => this.hideActionModal('grind')}
 					/>
 				) : null}
 				{showAction.pour ? (
@@ -513,6 +529,8 @@ class Editor extends Component {
 													blendSourceOptions
 												) : currentStep.action === 'Pump' ? (
 													pumpSourceOptions	
+												) : currentStep.action === 'Grind' ? (
+													grindOptions	
 												) : currentStep.action === 'Drag' ? (
 													dragSourceOptions
 												) : (
@@ -532,6 +550,7 @@ class Editor extends Component {
 											isDisabled={
 												lesson.isPublished ||
 												currentStep.action === 'Shake' ||
+												currentStep.action === 'Grind' ||
 												currentStep.action === null ||
 												(currentStep.action === 'Drag' && currentStep.source === null)
 											}
@@ -574,7 +593,8 @@ class Editor extends Component {
 												)
 											}
 											hidden={
-												currentStep.action === "Blend"
+												currentStep.action === "Blend" ||
+												currentStep.action === "Grind"
 											}
 										/>
 										<input
@@ -585,7 +605,8 @@ class Editor extends Component {
 											placeholder="Timer (Seconds)"
 											hidden={
 												currentStep.action === 'Pour' ||
-												currentStep.action === 'Pump'
+												currentStep.action === 'Pump' ||
+												currentStep.action === 'Grind'
 											}
 											disabled={lesson.isPublished}
 											onChange={(e) => this.updateTimer(e)}

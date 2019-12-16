@@ -80,12 +80,15 @@ class Step {
 
 
 	isComplete() {
-		if ((!this.actionMeasurement && this.action !== 'Blend') || this.tools.length === 0) {
+		if ( this.tools.length === 0 || (!this.actionMeasurement &&
+			this.action !== 'Blend' &&
+			this.action !== 'Grind')) {
 			return false;
 		} else if (
 			!this.timer &&
 			this.action !== 'Pour' &&
-			this.action !== 'Pump') {
+			this.action !== 'Pump' &&
+			this.action !== 'Grind') {
 			return false;
 		}
 		return this.isActionSet();
@@ -95,7 +98,7 @@ class Step {
 		if (!this.action) {
 			return false;
 		}
-		if (this.action == 'Pour' || this.action == 'Drag' || this.action == "Stir") {
+		if (this.action == 'Pour' || this.action == 'Drag' || this.action == "Stir" || this.action == 'Blend' || this.action == 'Pump') {
 			return this.source && this.target;
 		}
 		return this.source;

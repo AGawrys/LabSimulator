@@ -155,7 +155,7 @@ class BlendModal extends React.Component {
 
     onBlendEnd() {
         const {target} = this.props
-        const {ramp, rock, increasing, shake}  = target.image.animation
+        const {rock}  = target.image.animation
 
         target.image.animation.shake = false;
         target.image.animation.resetX = 0;

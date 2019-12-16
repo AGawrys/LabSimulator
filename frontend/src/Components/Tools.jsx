@@ -208,6 +208,7 @@ const IMAGES = {
                     context.stroke();
                 }
                 if (animation.shake) {
+                    context.save();
                     if (!animation.reset) {
                         const x = Math.random() * 1.1, y = Math.random() * 1.1;
                         context.translate(x, y);
@@ -217,6 +218,7 @@ const IMAGES = {
                         context.translate(animation.resetX, animation.resetY);
                     }
                 } else {
+                    context.restore();
                     context.setTransform(1,0,0,1,0,0);
                 }
             }
@@ -294,7 +296,9 @@ const IMAGES = {
                 const leftLine = LineCalculator(beansLeftOut, beansTop, beansLeftIn, beansBot);
                 const rightLine = LineCalculator(beansRightIn, beansBot, beansRightOut, beansTop);
                 const beansFillHeight = beansBot - (beansBot - beansTop) * (properties.Fill) * (1 - animation.grindProgress);
-                const groundsFillHeight = groundsBot - (groundsBot - groundsTop) * (1 - properties.Fill) * (animation.grindProgress);
+                const groundsFillHeight = groundsBot - (groundsBot - groundsTop) * (properties.Fill) * (animation.grindProgress * .9);
+                console.log(beansFillHeight);
+                console.log(groundsFillHeight);
 
                 context.fillStyle = "#4a2c2a";
                 context.moveTo(leftLine.x(beansFillHeight), beansFillHeight);
@@ -325,6 +329,21 @@ const IMAGES = {
                 context.strokeRect(width * .24, height * .50, width * .52, height * .04);
                 context.strokeRect(width * .15, height * .45, width * .70, height *.50);
                 context.stroke();
+
+                if (animation.shake) {
+                    context.save();
+                    if (!animation.reset) {
+                        const x = Math.random() * 1.1, y = Math.random() * 1.1;
+                        context.translate(x, y);
+                        animation.resetX = -x;
+                        animation.resetY = -y;
+                    } else {
+                        context.translate(animation.resetX, animation.resetY);
+                    }
+                } else {
+                    context.restore();
+                    context.setTransform(1,0,0,1,0,0);
+                }
         },
         properties: {
             Width: 175,
@@ -332,7 +351,12 @@ const IMAGES = {
             Fill: 0
         },
         animation: {
-            grindProgress: 0
+            grindProgress: 0,
+            isEmpty: false,
+            shake: false,
+            reset: false,
+            resetX: 0,
+            resetY: 0,
         }
     },
     CupLid: {
