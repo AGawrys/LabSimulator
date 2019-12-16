@@ -19,7 +19,13 @@ import Canvas from '../Components/Canvas.jsx';
 import Routes from '../utils/RouteConstants.js';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import { ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME, DEFAULT_LESSON_NAME } from '../utils/EditorConstants.js';
-import { determineToolPosition, determineToolSize, getCanvasSize, resizeTools, getColorMedian } from '../utils/CanvasUtils.js';
+import {
+	determineToolPosition,
+	determineToolSize,
+	getCanvasSize,
+	resizeTools,
+	getColorMedian
+} from '../utils/CanvasUtils.js';
 import Lesson from '../Objects/Lesson.js';
 import Step from '../Objects/Step.js';
 import Tool from '../Objects/Tool.js';
@@ -43,7 +49,7 @@ import axios from 'axios';
 import plus from '../Styles/Images/icons8-plus.svg';
 import { HotKeys } from 'react-hotkeys';
 import Pour from '../Components/Pour.jsx';
-import { Prompt} from 'react-router-dom';
+import { Prompt } from 'react-router-dom';
 
 const links = {
 	Dashboard: Routes.INSTRUCTOR_DASHBOARD
@@ -70,13 +76,14 @@ class Editor extends Component {
 			showStirError: false,
 			showShakeError: false,
 			showBlendError: false,
+			showGrindError: false,
 			showAction: {
 				pour: false,
 				shake: false,
 				blend: false,
 				pump: false,
 				grind: false,
-				stir: false,
+				stir: false
 			},
 			showPourModal: false,
 			copiedTool: null,
@@ -171,7 +178,8 @@ class Editor extends Component {
 			showPourError,
 			showStirError,
 			showShakeError,
-			showBlendError
+			showBlendError,
+			showGrindError
 		} = this.state;
 		const { operations, pointer } = this.state.history;
 		if (steps == null) {
@@ -189,9 +197,9 @@ class Editor extends Component {
 				tool.value.type === 'CoffeeBeans'
 		);
 		const pourTargetOptions = toolOptions.filter(
-			(tool) => 
-				tool.value.type === 'StraightCup' || 
-				tool.value.type === 'Shaker' || 
+			(tool) =>
+				tool.value.type === 'StraightCup' ||
+				tool.value.type === 'Shaker' ||
 				tool.value.type === 'Blender' ||
 				tool.value.type === 'CoffeeBeanGrinder'
 		);
@@ -205,16 +213,19 @@ class Editor extends Component {
 				tool.value.type === 'IceCube'
 		);
 		const blendTargetOptions = toolOptions.filter((tool) => tool.value.type === 'Blender');
-		const pumpSourceOptions = toolOptions.filter((tool) => tool.value.type === "PumpBottle");
+		const pumpSourceOptions = toolOptions.filter((tool) => tool.value.type === 'PumpBottle');
 		const pumpTargetOptions = toolOptions.filter(
-			(tool) => tool.value.type === "StraightCup" || tool.value.type === "Shaker" || tool.value.type === "Blender"
-		)
-		const stirSourceOptions = toolOptions.filter((tool) => tool.value.type === 'Spoon' || tool.value.type === 'TeaBag');
-		const stirTargetOptions = toolOptions.filter((tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender');
+			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Shaker' || tool.value.type === 'Blender'
+		);
+		const stirSourceOptions = toolOptions.filter(
+			(tool) => tool.value.type === 'Spoon' || tool.value.type === 'TeaBag'
+		);
+		const stirTargetOptions = toolOptions.filter(
+			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender'
+		);
 		const brewSourceOptions = toolOptions.filter((tool) => tool.value.type === 'CoffeeGround');
 		const brewTargetOptions = toolOptions.filter((tool) => tool.value.type === 'CoffeeMachine');
-		const grindOptions = toolOptions.filter((tool) => tool.value.type === "CoffeeBeanGrinder");
-
+		const grindOptions = toolOptions.filter((tool) => tool.value.type === 'CoffeeBeanGrinder');
 
 		const publishBtn = lesson.isPublished ? null : (
 			<Button variant="primary" onClick={() => this.setState({ showPublishConfirmation: true })}>
@@ -223,10 +234,7 @@ class Editor extends Component {
 		);
 		return (
 			<HotKeys handlers={this.shortcutHandlers}>
-				<Prompt
-				  when={isDirty}
-				  message={GeneralConstants.UNSAVED_EDITOR_MESSAGE}
-				/>
+				<Prompt when={isDirty} message={GeneralConstants.UNSAVED_EDITOR_MESSAGE} />
 				<HeaderBru {...this.props} home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
 				<ConfirmationModal
 					title={GeneralConstants.DELETE_LESSON_TITLE}
@@ -288,6 +296,13 @@ class Editor extends Component {
 					delay={1250}
 				/>
 				<EditorNotification
+					message={GeneralConstants.GRIND_NO_FILL_MESSAGE}
+					onClose={() => this.setState({ showGrindError: false })}
+					show={showGrindError}
+					autohide
+					delay={1250}
+				/>
+				<EditorNotification
 					message={GeneralConstants.SHAKE_NO_FILL_MESSAGE}
 					onClose={() => this.setState({ showShakeError: false })}
 					show={showShakeError}
@@ -335,7 +350,7 @@ class Editor extends Component {
 						onHide={() => this.hideActionModal('stir')}
 						onSuccess={() => this.hideActionModal('stir')}
 					/>
-				): null}
+				) : null}
 				{showAction.brew ? (
 					<BrewModal
 						show={showAction.brew}
@@ -516,7 +531,7 @@ class Editor extends Component {
 												) : currentStep.action === 'Blend' ? (
 													blendSourceOptions
 												) : currentStep.action === 'Pump' ? (
-													pumpSourceOptions	
+													pumpSourceOptions
 												) : currentStep.action === 'Brew' ? (
 													brewSourceOptions
 												) : currentStep.action === 'Grind' ? (
@@ -576,9 +591,9 @@ class Editor extends Component {
 												)
 											}
 											hidden={
-												currentStep.action === "Blend" ||
-												currentStep.action === "Brew" || 
-												currentStep.action === "Grind"
+												currentStep.action === 'Blend' ||
+												currentStep.action === 'Brew' ||
+												currentStep.action === 'Grind'
 											}
 										/>
 										<input
@@ -856,6 +871,10 @@ class Editor extends Component {
 			this.setState({ showStirError: true });
 			return;
 		}
+		if (currentStep.action === 'Grind' && currentStep.source.amount === 0) {
+			this.setState({ showGrindError: true });
+			return;
+		}
 		if (currentStep.action === 'Shake' && currentStep.source.amount === 0) {
 			this.setState({ showShakeError: true });
 			return;
@@ -865,10 +884,9 @@ class Editor extends Component {
 			return;
 		}
 		if (isDirty) {
-			this.setState({ showSaveBeforePublish: true});
+			this.setState({ showSaveBeforePublish: true });
 			return;
-		}
-		else {
+		} else {
 			this.publishLesson();
 		}
 	};
@@ -988,7 +1006,10 @@ class Editor extends Component {
 	showActionModal = (e) => {
 		e.preventDefault();
 		const { showAction, currentStep } = this.state;
-		if (currentStep.action === 'Pour' && (currentStep.source.amount === 0 && !currentStep.source.image.animation.Fill)) {
+		if (
+			currentStep.action === 'Pour' &&
+			(currentStep.source.amount === 0 && !currentStep.source.image.animation.Fill)
+		) {
 			this.setState({ showPourError: true });
 			return;
 		}
@@ -1002,6 +1023,10 @@ class Editor extends Component {
 		}
 		if (currentStep.action === 'Blend' && currentStep.target.amount >= 0.75) {
 			this.setState({ showBlendError: true });
+			return;
+		}
+		if (currentStep.action === 'Grind' && currentStep.source.amount === 0) {
+			this.setState({ showGrindError: true });
 			return;
 		}
 		showAction[currentStep.action.toLowerCase()] = true;

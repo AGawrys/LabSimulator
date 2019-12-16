@@ -38,7 +38,8 @@ const GeneralConstants = {
 	POUR_NO_FILL_MESSAGE: 'Cannot pour from empty source tool.',
 	STIR_NO_FILL_MESSAGE: 'Cannot stir an empty target tool. ',
 	SHAKE_NO_FILL_MESSAGE: 'Cannot shake an empty source tool.',
-	BLEND_OVER_FILL_MESSAGE: 'Cannot blend, blender is too full.'
+	BLEND_OVER_FILL_MESSAGE: 'Cannot blend, blender is too full.',
+	GRIND_NO_FILL_MESSAGE: 'Cannot grind empty source.'
 };
 
 export default GeneralConstants;
