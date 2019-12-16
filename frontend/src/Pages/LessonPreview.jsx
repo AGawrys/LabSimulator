@@ -258,7 +258,10 @@ class LessonPreview extends Component {
 						show={showAction.grind}
 						source={currentStep.source}
 						onHide={() => this.hideActionModal('grind')}
-						onSuccess={() => this.hideActionModal('grind')}
+						onSuccess={() => {
+							this.hideActionModal('grind')
+							this.onNextStep();
+						}}
 					/>
 				) : null}
 				{showAction.pour ? (

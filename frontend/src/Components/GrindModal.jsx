@@ -70,6 +70,7 @@ class GrindModal extends React.Component {
                         disabled={!started || !finished || (finished && grindProgress !== 1)}
                         onClick={() => {
                             this.resetState();
+                            this.props.onHide();
                             this.props.onSuccess();
                         }
                     }>
@@ -91,7 +92,7 @@ class GrindModal extends React.Component {
     
     onHide = () => {
         this.resetState();
-        this.props.onSuccess();
+        this.props.onHide();
     }
 
     onGrind() {

@@ -247,6 +247,20 @@ class Canvas extends React.Component {
 						>
 							Pump {currentTool ? currentTool.getName() : null}
 						</MenuItem>
+						<MenuItem
+							onClick={() => {
+								this.props.setSource(currentTool, () => this.props.setCurrentAction('Grind'));
+							}}
+						>
+							Grind {currentTool ? currentTool.getName() : null}
+						</MenuItem>
+						<MenuItem
+							onClick={() => {
+								this.props.setSource(currentTool, () => this.props.setCurrentAction('Brew'));
+							}}
+						>
+							Brew {currentTool ? currentTool.getName() : null}
+						</MenuItem>
 					</ContextMenu>
 				) : null}
 				{instructor ? (

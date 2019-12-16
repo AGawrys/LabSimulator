@@ -305,6 +305,8 @@ class Editor extends Component {
 					message={GeneralConstants.SHOW_PUBLISHED}
 					onClose={() => this.setState({ showPublished: false })}
 					show={showPublished}
+					autohide
+					delay={3000}
 				/>
 				<EditorNotification
 					message={GeneralConstants.BLEND_OVER_FILL_MESSAGE}

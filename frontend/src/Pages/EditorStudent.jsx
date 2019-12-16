@@ -321,9 +321,12 @@ class EditorStudent extends Component {
 						show={showAction.grind}
 						source={currentStep.source}
 						onHide={() => this.hideActionModal('grind')}
-						onSuccess={() => this.hideActionModal('grind')}
+						onSuccess={() => {
+							this.hideActionModal('grind');
+							this.handleClick();
+						}}
 					/>
-				) : null}
+				) : null}				
 				{showAction.pour ? (
 					<Pour
 						show={showAction.pour}
@@ -357,7 +360,7 @@ class EditorStudent extends Component {
 						onHide={() => this.hideActionModal('brew')}
 						onSuccess={() => {
 							this.hideActionModal('brew');
-							this.onNextStep();
+							this.handleClick();
 						}}
 					/>
 				) : null}
