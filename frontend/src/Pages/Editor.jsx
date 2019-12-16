@@ -1019,7 +1019,7 @@ class Editor extends Component {
 				if (currentStep.action === 'Blend') {
 					image.properties.Fill = image.properties.Fill + 0.25;
 				} else {
-					image.properties.Fill = image.properties.Fill + 0.01 * currentStep.actionMeasurement;
+					image.properties.Fill = image.properties.Fill + 0.05 * currentStep.actionMeasurement;
 				}
 			} else if (currentStep.action === 'Stir' || currentStep.action === 'Shake') {
 			} else if (currentStep.action === 'Grind') {
@@ -1031,6 +1031,8 @@ class Editor extends Component {
 			}
 			tool = t.clone();
 			tool.image = image;
+			tool.amount = image.properties.Fill;
+			tool.color = image.properties.Color;
 			return tool;
 		}
 	};
