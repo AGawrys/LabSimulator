@@ -346,16 +346,18 @@ class Editor extends Component {
 					onHide={() => this.hideActionModal('stir')}
 					onSuccess={() => this.hideActionModal('stir')}
 				/>
-				<BlendModal
-					show={showAction.blend}
-					time={currentStep.timer}
-					source={currentStep.source}
-					target={currentStep.target}
-					onComplete={() => {
-						showAction.blend = false;
-						this.setState({ showAction });
-					}}
-				/>
+				{showAction.blend ? (
+					<BlendModal
+						show={showAction.blend}
+						time={currentStep.timer}
+						source={currentStep.source}
+						target={currentStep.target}
+						onComplete={() => {
+							showAction.blend = false;
+							this.setState({ showAction });
+						}}
+					/>
+				) : null}
 				{showAction.pump ? (
 					<PumpModal
 						show={showAction.pump}
@@ -796,7 +798,7 @@ class Editor extends Component {
 	updateTimer = (e) => {
 		const { currentStep } = this.state;
 		if (e.target.value > 0 && e.target.value < 60) {
-			currentStep.timer = e.target.value;
+			currentStep.timer = Number(e.target.value);
 			this.setState({ currentStep }, this.addOperation);
 		} else {
 			currentStep.timer = null;
