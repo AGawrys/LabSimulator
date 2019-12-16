@@ -43,6 +43,7 @@ class LessonPreview extends Component {
 				shake: false,
 				blend: false,
 				pump: false,
+				grind: false,
 				stir: false,
 				drag: false
 			},
@@ -98,6 +99,7 @@ class LessonPreview extends Component {
 				shake: false,
 				blend: false,
 				pump: false,
+				grind: false,
 				stir: false,
 				drag: false
 			}
@@ -119,6 +121,7 @@ class LessonPreview extends Component {
 				shake: false,
 				blend: false,
 				pump: false,
+				grind: false,
 				stir: false,
 				drag: false
 			}
@@ -233,6 +236,14 @@ class LessonPreview extends Component {
 							showAction.pump = false;
 							this.setState({ showAction});
 						}}
+					/>
+				) : null}
+				{showAction.grind ? (
+					<GrindModal
+						show={showAction.grind}
+						source={currentStep.source}
+						onHide={() => this.hideActionModal('grind')}
+						onSuccess={() => this.hideActionModal('grind')}
 					/>
 				) : null}
 				{showAction.pour ? (
