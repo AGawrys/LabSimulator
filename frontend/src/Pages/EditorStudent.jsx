@@ -21,6 +21,7 @@ import Pour from '../Components/Pour.jsx';
 import StudentDirectionModal from '../Components/StudentDirectionModal.jsx';
 import Step from '../Objects/Step.js';
 import EditorNotification from '../Components/EditorNotification.jsx';
+import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 
 import { isAbsolute } from 'path';
 
@@ -54,7 +55,8 @@ class EditorStudent extends Component {
 				drag: false
 			},
 			directionModal: true,
-			showError: false
+			showError: false,
+			showRestartLessonModal: false
 		};
 	}
 
@@ -98,9 +100,9 @@ class EditorStudent extends Component {
 		};
 
 		axios.post(Routes.SERVER + 'canStudentComplete', body).then(
-			(response) =>  {
+			(response) => {
 				const isAlreadyCompleted = response.data;
-				this.setState({isAlreadyCompleted});
+				this.setState({ isAlreadyCompleted });
 				this.getLesson(lesson_id);
 				if (!isAlreadyCompleted) {
 					this.attemptLesson();
@@ -216,7 +218,8 @@ class EditorStudent extends Component {
 			showSuccesfullyComplete,
 			isLessonComplete,
 			showError,
-			isAlreadyCompleted,
+			showRestartLessonModal,
+			isAlreadyCompleted
 		} = this.state;
 		const { source, target, showAction, currentAction, directionModal } = this.state;
 		const { isPreview } = this.props;
@@ -230,10 +233,7 @@ class EditorStudent extends Component {
 
 		return (
 			<div>
-				<Prompt
-				  when={!isAlreadyCompleted}
-				  message={GeneralConstants.LEAVE_STUDENT_LESSON_MESSAGE}
-				/>
+				<Prompt when={!isAlreadyCompleted} message={GeneralConstants.LEAVE_STUDENT_LESSON_MESSAGE} />
 				<HeaderBru
 					{...this.props}
 					home={Routes.STUDENT_DASHBOARD}
@@ -241,6 +241,13 @@ class EditorStudent extends Component {
 					isLoggedIn
 					btn="Exit"
 					color="#01AFD8"
+				/>
+				<ConfirmationModal
+					title={GeneralConstants.RESTART_LESSON_TITLE}
+					message={GeneralConstants.RESTART_LESSON_MESSAGE}
+					onHide={() => this.setState({ showRestartLessonModal: false })}
+					show={showRestartLessonModal}
+					onDelete={this.restartLesson}
 				/>
 				<EditorNotification
 					message={GeneralConstants.FAILED_SELECTION_MESSAGE}
@@ -349,11 +356,7 @@ class EditorStudent extends Component {
 							<div className="divider" />
 							<div className="divider" />
 							<div className="divider" />
-							<Button variant="dark" onClick={this.resetStep}>
-								RESET STEP
-							</Button>
-							<div className="divider" />
-							<Button variant="dark" onClick={this.restartLesson}>
+							<Button variant="dark" onClick={() => this.setState({ showRestartLessonModal: true })}>
 								RESTART LESSON
 							</Button>
 						</Col>

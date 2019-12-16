@@ -467,10 +467,10 @@ const IMAGES = {
 		properties: {
             Width: 100,
             Height: 100,
-            Fill: 100,
             Color: "#e4f1f2"
         },
         animation: {
+            Fill: 100
         },
 	},
 	Mango: {

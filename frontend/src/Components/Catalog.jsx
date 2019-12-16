@@ -48,6 +48,7 @@ class Catalog extends React.Component {
 				<div key={index} style={{ overflowY: 'auto', borderBottom: '1px solid black' }}>
 					<Col style={{ margin: 0, padding: '10px' }}>
 						<Collapsible
+							open={!this.props.published}
 							triggerDisabled={this.props.published}
 							trigger={<CollapsibleTrigger text={category} image={down} alt="expand" />}
 							triggerWhenOpen={<CollapsibleTrigger text={category} image={up} alt="collapse" />}

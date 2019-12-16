@@ -27,6 +27,9 @@ import { Tool as ToolComponent } from '../Components/Tool.jsx';
 import Position from '../Objects/Position.js';
 import FormModal from '../Components/FormModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
+import StirModal from '../Components/StirModal.jsx';
+import BlendModal from '../Components/BlendModal.jsx';
+import PumpModal from '../Components/PumpModal.jsx';
 import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 import InformationModal from '../Components/InformationModal.jsx';
 import EditorNotification from '../Components/EditorNotification.jsx';
@@ -58,6 +61,9 @@ class Editor extends Component {
 			showSuccessfulSave:false,
 			showSaveBeforePublish: false,
 			showActionMenu: true,
+			showPourError: false,
+			showStirError: false,
+			showShakeError: false,
 			showAction: {
 				pour: false,
 				shake: false,
@@ -218,9 +224,22 @@ class Editor extends Component {
 	}
 
 	render() {
-		const { lesson, currentStep, steps, copiedTool, isDirty, showPourModal, } = this.state;
-		const {showSuccessfulDuplicate, showDeleteLessonModal, showSuccessfullyPublished, showSuccessfulSave, showIncompleteSteps, showSaveBeforePublish, showAction} = this.state;
-		const { operations, pointer} = this.state.history;
+		const { lesson, currentStep, steps, copiedTool, isDirty } = this.state;
+		const {
+			showSuccessfulDuplicate,
+			showDeleteLessonModal,
+			showSuccessfullyPublished,
+			showSuccessfulSave,
+			showIncompleteSteps,
+			showSaveBeforePublish,
+			showPublished,
+			showPublishConfirmation,
+			showAction,
+			showPourError,
+			showStirError,
+			showShakeError
+		} = this.state;
+		const { operations, pointer } = this.state.history;
 		if (steps == null) {
 			return null;
 		}
@@ -258,7 +277,7 @@ class Editor extends Component {
 		const dragTargetOptions2 = toolOptions.filter((tool) => tool.value.type === 'StraightCup');
 
 		const publishBtn = lesson.isPublished ? null : (
-			<Button variant="primary" onClick={this.onPublishLesson}>
+			<Button variant="primary" onClick={() => this.setState({ showPublishConfirmation: true })}>
 				Publish
 			</Button>
 		);
@@ -271,6 +290,13 @@ class Editor extends Component {
 					onHide={() => this.setState({ showDeleteLessonModal: false })}
 					show={showDeleteLessonModal}
 					onDelete={this.deleteLesson}
+				/>
+				<ConfirmationModal
+					title={GeneralConstants.PUBLISH_CONFIRMATION_TITLE}
+					message={GeneralConstants.PUBLISH_CONFIRMATION_MESSAGE}
+					onHide={() => this.setState({ showPublishConfirmation: false })}
+					show={showPublishConfirmation}
+					onDelete={this.onPublishLesson}
 				/>
 				<EditorNotification
 					message={GeneralConstants.SUCCESSFUL_PUBLISH_LESSON_MESSAGE}
@@ -304,6 +330,27 @@ class Editor extends Component {
 					delay={1250}
 				/>
 				<EditorNotification
+					message={GeneralConstants.POUR_NO_FILL_MESSAGE}
+					onClose={() => this.setState({ showPourError: false })}
+					show={showPourError}
+					autohide
+					delay={1250}
+				/>
+				<EditorNotification
+					message={GeneralConstants.STIR_NO_FILL_MESSAGE}
+					onClose={() => this.setState({ showStirError: false })}
+					show={showStirError}
+					autohide
+					delay={1250}
+				/>
+				<EditorNotification
+					message={GeneralConstants.SHAKE_NO_FILL_MESSAGE}
+					onClose={() => this.setState({ showShakeError: false })}
+					show={showShakeError}
+					autohide
+					delay={1250}
+				/>
+				<EditorNotification
 					message={GeneralConstants.SAVE_BEFORE_PUBLISH_MESSAGE}
 					onClose={() => this.setState({showSaveBeforePublish: false})}
 					show={showSaveBeforePublish}
@@ -313,20 +360,47 @@ class Editor extends Component {
 				<ShakeModal
 					progressNeeded={currentStep.actionMeasurement}
 					show={showAction.shake}
-					onComplete={() => {
-						showAction.shake = false;
-						this.setState({showAction})
-					}}
+					onHide={() => this.hideActionModal('shake')}
+					onSuccess={() => this.hideActionModal('shake')}
+					timer={currentStep.timer}
 					tool={currentStep.source}
 				/>
-					{showAction.pour ? (<Pour
-						show={showAction.pour}
+				<StirModal
+					progressNeeded={currentStep.actionMeasurement}
+					show={showAction.stir}
+					timer={currentStep.timer}
+					target={currentStep.target}
+					onHide={() => this.hideActionModal('stir')}
+					onSuccess={() => this.hideActionModal('stir')}
+				/>
+				{showAction.blend ? (
+					<BlendModal
+						show={showAction.blend}
+						time={currentStep.timer}
+						source={currentStep.source}
+						target={currentStep.target}
+						onComplete={() => {
+							showAction.blend = false;
+							this.setState({ showAction });
+						}}
+					/>
+				) : null}
+				{showAction.pump ? (
+					<PumpModal
+						show={showAction.pump}
 						source={currentStep.source}
 						target={currentStep.target}
 						goal={currentStep.actionMeasurement}
 						instructor={true}
 						onHide={this.closePourModal}
 					/>) : null}
+				{showAction.pour ? (<Pour
+					show={showAction.pour}
+					source={currentStep.source}
+					target={currentStep.target}
+					instructor={true}
+					onHide={() => this.hideActionModal('pour')}
+				/> ) : null }
 				<Container fluid={true} className="instructorContainer">
 					<Col className="instructorEditorToolBar brownBorder">
 						<Row>
@@ -356,8 +430,12 @@ class Editor extends Component {
 								</button>
 							</Col>
 							<Col className="editorToolBarButton alignRight" lg={5}>
-								<Button disabled={pointer === 0} variant="dark" onClick={this.handleUndo}>
-									<i className="fa fa-undo" aria-hidden="true"></i>
+								<Button
+									disabled={pointer === 0 || lesson.isPublished}
+									variant="dark"
+									onClick={this.handleUndo}
+								>
+									<i className="fa fa-undo" aria-hidden="true" />
 								</Button>
 								<Button disabled={operations.length === 0 || pointer === operations.length - 1} variant="dark" onClick={this.handleRedo}>
 									<i className="fa fa-repeat" aria-hidden="true"></i>
@@ -699,8 +777,8 @@ class Editor extends Component {
 
 	updateTimer = (e) => {
 		const { currentStep } = this.state;
-		if (e.target.value > 0) {
-			currentStep.timer = e.target.value;
+		if (e.target.value > 0 && e.target.value < 60) {
+			currentStep.timer = Number(e.target.value);
 			this.setState({ currentStep }, this.addOperation);
 		} else {
 			currentStep.timer = null;
@@ -733,7 +811,20 @@ class Editor extends Component {
 	};
 
 	onPublishLesson = () => {
-		const incompleteSteps = this.state.steps.filter(step => !step.isComplete());
+		const incompleteSteps = this.state.steps.filter((step) => !step.isComplete());
+		const { currentStep } = this.state;
+		if (currentStep.action === 'Pour' && currentStep.source.amount === 0) {
+			this.setState({ showPourError: true });
+			return;
+		}
+		if (currentStep.action === 'Stir' && currentStep.target.amount === 0) {
+			this.setState({ showStirError: true });
+			return;
+		}
+		if (currentStep.action === 'Shake' && currentStep.source.amount === 0) {
+			this.setState({ showShakeError: true });
+			return;
+		}
 		if (incompleteSteps.length !== 0) {
 			this.setState({showIncompleteSteps: true});
 		}
@@ -844,27 +935,24 @@ class Editor extends Component {
 		this.handleRedo();
 	}
 
-	showActionModal = () => {
-		const {showAction} = this.state;
-		switch (this.state.currentStep.action) {
-			case 'Shake':
-				showAction.shake = true;
-				break;
-			case 'Pour':
-				showAction.pour = true;
-				break;
-			case 'Stir':
-				showAction.stir = true;
-				break;
-			case 'Blend':
-				showAction.blend = true;
-				break;
-			case 'Drag':
-				showAction.drag = true;
-				break;
+	showActionModal = (e) => {
+		e.preventDefault();
+		const { showAction, currentStep } = this.state;
+		if (currentStep.action === 'Pour' && (currentStep.source.amount === 0 && !currentStep.source.image.animation.Fill)) {
+			this.setState({ showPourError: true });
+			return;
 		}
-		this.setState({showAction});
-	}
+		if (currentStep.action === 'Stir' && currentStep.target.amount === 0) {
+			this.setState({ showStirError: true });
+			return;
+		}
+		if (currentStep.action === 'Shake' && currentStep.source.amount === 0) {
+			this.setState({ showShakeError: true });
+			return;
+		}
+		showAction[currentStep.action.toLowerCase()] = true;
+		this.setState({ showAction });
+	};
 }
 
 export default Editor;
