@@ -19,6 +19,7 @@ import StirModal from '../Components/StirModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import BlendModal from '../Components/BlendModal.jsx';
 import PumpModal from '../Components/PumpModal.jsx';
+import GrindModal from '../Components/GrindModal.jsx';
 import Pour from '../Components/Pour.jsx';
 import StudentDirectionModal from '../Components/StudentDirectionModal.jsx';
 import Step from '../Objects/Step.js';
@@ -55,6 +56,7 @@ class EditorStudent extends Component {
 				shake: false,
 				blend: false,
 				pump: false,
+				grind: false,
 				stir: false,
 				brew: false,
 			},
@@ -158,6 +160,7 @@ class EditorStudent extends Component {
 					shake: false,
 					blend: false,
 					pump: false,
+					grind: false,
 					stir: false,
 					brew: false
 				}
@@ -311,6 +314,14 @@ class EditorStudent extends Component {
 							this.hideActionModal('pump');
 							this.handleClick();
 						}}
+					/>
+				) : null}
+				{showAction.grind ? (
+					<GrindModal
+						show={showAction.grind}
+						source={currentStep.source}
+						onHide={() => this.hideActionModal('grind')}
+						onSuccess={() => this.hideActionModal('grind')}
 					/>
 				) : null}
 				{showAction.pour ? (

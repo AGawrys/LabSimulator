@@ -19,6 +19,7 @@ import StirModal from '../Components/StirModal.jsx';
 import ShakeModal from '../Components/ShakeModal.jsx';
 import BlendModal from '../Components/BlendModal.jsx';
 import PumpModal from '../Components/PumpModal.jsx';
+import GrindModal from '../Components/GrindModal.jsx';
 import Pour from '../Components/Pour.jsx';
 import Step from '../Objects/Step.js';
 import BrewModal from '../Components/BrewModal.jsx';
@@ -45,6 +46,7 @@ class LessonPreview extends Component {
 				shake: false,
 				blend: false,
 				pump: false,
+				grind: false,
 				stir: false,
 				brew: false,
 			},
@@ -101,6 +103,7 @@ class LessonPreview extends Component {
 				shake: false,
 				blend: false,
 				pump: false,
+				grind: false,
 				stir: false,
 				brew: false,
 			}
@@ -122,6 +125,7 @@ class LessonPreview extends Component {
 				shake: false,
 				blend: false,
 				pump: false,
+				grind: false,
 				stir: false,
 				brew: false,
 			}
@@ -247,6 +251,14 @@ class LessonPreview extends Component {
 							this.hideActionModal('pump');
 							this.onNextStep();
 						}}
+					/>
+				) : null}
+				{showAction.grind ? (
+					<GrindModal
+						show={showAction.grind}
+						source={currentStep.source}
+						onHide={() => this.hideActionModal('grind')}
+						onSuccess={() => this.hideActionModal('grind')}
 					/>
 				) : null}
 				{showAction.pour ? (
