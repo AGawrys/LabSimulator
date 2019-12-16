@@ -2,6 +2,7 @@ import React from "react"
 import {Modal, Button} from 'react-bootstrap';
 import Timer from "react-compound-timer";
 import Tool from './Tool.jsx';
+import {getColorMedian} from "../utils/CanvasUtils.js";
 
 class BlendModal extends React.Component {
     constructor(props) {
@@ -18,6 +19,8 @@ class BlendModal extends React.Component {
         this.onBlend = this.onBlend.bind(this);
         this.onStop = this.onStop.bind(this);
         this.onBlendEnd = this.onBlendEnd.bind(this);
+        this.oldColor = props.target.color;
+        this.newColor = getColorMedian(props.source.image.animation.Color, props.target.image.properties.Color);
     }
     
     render() {
@@ -36,9 +39,6 @@ class BlendModal extends React.Component {
                 }]}
             >
                 {({ start, resume, pause, stop, reset, getTimerState, getTime, setTime }) =>  {
-                    if (started) {
-                        start();
-                    }
                     return (
                         <Modal
                             show={show}
@@ -102,6 +102,8 @@ class BlendModal extends React.Component {
     }
 
     resetState() {
+        this.props.target.color = this.oldColor;
+        this.props.target.image.properties.Color = this.oldColor;
         this.setState({
             started: false,
             completed: false,
@@ -112,7 +114,6 @@ class BlendModal extends React.Component {
 
     onStop() {
         if (this.state.time >= this.props.time - 1 && this.state.time <= this.props.time + 1) {
-            console.log(this.state.time, this.props.time)
             this.setState({
                 completed: true
             })
@@ -136,7 +137,14 @@ class BlendModal extends React.Component {
 
     onBlend() {
         const {target} = this.props
+        const {started} = this.state;
         const {ramp, rock, increasing, reset}  = target.image.animation
+
+        if (!started) {
+            target.color = this.newColor;
+            target.image.properties.Color = this.newColor;
+            this.setState({started: true});
+        }
 
         target.image.animation.shake = true;
         target.image.animation.reset = !reset;
@@ -187,26 +195,6 @@ class BlendModal extends React.Component {
             else {target.image.animation.rock = .5}
         }
     }
-
-    colorChange = ( colorSrc, oldColor ) => {
-        const srcColor = colorSrc.slice(1);
-        const tarColor = oldColor.slice(1);
-        const srcArray = srcColor.match(/.{1,2}/g);
-        const tarArray = tarColor.match(/.{1,2}/g);
-        var ans = '#';
-        for (var i = 0; i < srcArray.length; i++) {
-            const srcInt = parseInt(srcArray[i], 16);
-            const tarInt = parseInt(tarArray[i], 16);
-            srcArray[i] = srcInt;
-            tarArray[i] = tarInt;
-            var newColor = Math.floor((srcInt + tarInt) / 2).toString(16);
-            if (newColor.length == 1) {
-                newColor = '0' + newColor;
-            }
-            ans = ans + newColor;
-        }
-        return ans;
-    };
 }
 
 export default BlendModal;
