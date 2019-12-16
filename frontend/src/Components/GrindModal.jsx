@@ -32,9 +32,7 @@ class GrindModal extends React.Component {
             >
                 <Modal.Header closeButton>
                     <div style={{ width: 400 }}>
-                        <div className={ finished && grindProgress === 1 ? 'displayNone' : ''}>
-                            Grind the coffee beans!
-                        </div>
+                        <h3>Grind the coffee beans!</h3>
                         <h4 className="failedText" hidden={!started || !finished || (finished && grindProgress === 1)}>
                             You have failed! Try again!
                         </h4>

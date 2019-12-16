@@ -37,6 +37,7 @@ class PumpModal extends React.Component {
             >
                 <Modal.Header closeButton>
                     <div style={{ width: 400 }}>
+                        <h3>Pump the bottle {this.props.pumpsNeeded} times.</h3>
                         <div className={ finished && pumps === pumpsNeeded ? 'displayNone' : ''}>
                             {pumps} Successful {pumps === 1? "Pump" : "Pumps"}
                         </div>
