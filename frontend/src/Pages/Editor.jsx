@@ -122,12 +122,17 @@ class Editor extends Component {
 			const image = t.getImage();
 			image.draw = IMAGES[t.type].draw;
 			if(currentStep.action === 'Pour' && currentStep.source && currentStep.target && currentStep.actionMeasurement){
+				if(image.properties.Fill === 0.00) {
+					image.properties.Color = currentStep.source.getImage().properties.Color;
+				}
+				else { 
+					image.properties.Color = this.colorMedian(currentStep.source.getImage().properties.Color, image.properties.Color)
+				}
 				const amt = currentStep.actionMeasurement / 100;
 				image.properties.Fill = image.properties.Fill + amt;
-				image.properties.Color = this.colorMedian(currentStep.source.getImage().properties.Color, image.properties.Color)
 			} else if(currentStep.action === "Blend"){
 				const sourceColor = currentStep.source.getImage().animation.color;
-				if(image.properties.Fill === 0) {
+				if(image.properties.Fill === 0.00) {
 					image.properties.Color = sourceColor;
 				}
 				else { 
@@ -315,7 +320,7 @@ class Editor extends Component {
 						target={currentStep.target}
 						goal={currentStep.actionMeasurement}
 						instructor={true}
-						closeModal={this.closePourModal}
+						onHide={this.closePourModal}
 					/>) : null}
 				<Container fluid={true} className="instructorContainer">
 					<Col className="instructorEditorToolBar brownBorder">
