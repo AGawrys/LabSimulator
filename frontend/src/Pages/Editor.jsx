@@ -133,11 +133,17 @@ class Editor extends Component {
 			if(currentStep.action === 'Pour' && currentStep.source && currentStep.target && currentStep.actionMeasurement){
 				console.log("Pour fill target is " + image.properties.Fill)
 				console.log("Source image is " + currentStep.source.getImage().properties.Color)
+				let sourceColor = currentStep.source.getImage().properties.Color;
+				console.log(currentStep);
+				const statics = ["Milk", "Kettle", "CoffeePot"];
+				if(statics.indexOf(currentStep.source.type) !== '-1'){
+					sourceColor = currentStep.source.getImage().animation.Color;
+				}
 				if(image.properties.Fill === 0.00) {
-					image.properties.Color = currentStep.source.getImage().properties.Color;
+					image.properties.Color = sourceColor;
 				}
 				else { 
-					image.properties.Color = this.colorMedian(currentStep.source.getImage().properties.Color, image.properties.Color)
+					image.properties.Color = this.colorMedian(sourceColor, image.properties.Color)
 				}
 				const amt = currentStep.actionMeasurement / 100;
 				image.properties.Fill = image.properties.Fill + amt;
