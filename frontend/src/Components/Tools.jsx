@@ -56,8 +56,6 @@ const IMAGES = {
             Fill: 0,
             Color: "#03a9f4",
         },
-        animation: {
-        },
     },
     Shaker: {
         draw: (canvas, width, height, properties) => {
@@ -135,9 +133,7 @@ const IMAGES = {
             Color: "#03a9f4",
             Capacity: 2,
             Intervals: 4
-        },
-        animation: {
-        },
+        }
     },
     Blender: {
         draw: (canvas, width, height, properties, animation) => {
@@ -280,7 +276,7 @@ const IMAGES = {
             isMaxed: false,
             isMined: true,
             isReleasing: false,
-        },
+        }
     },
     CoffeeBeanGrinder: {
         draw: (canvas, width, height, properties, animation) => {
@@ -301,7 +297,6 @@ const IMAGES = {
                 const groundsFillHeight = groundsBot - (groundsBot - groundsTop) * (1 - properties.Fill) * (animation.grindProgress);
 
                 context.fillStyle = "#4a2c2a";
-                context.beginPath();
                 context.moveTo(leftLine.x(beansFillHeight), beansFillHeight);
                 context.lineTo(beansLeftIn, beansBot);
                 context.lineTo(beansRightIn, beansBot);
@@ -338,7 +333,7 @@ const IMAGES = {
         },
         animation: {
             grindProgress: 0
-        },
+        }
     },
     CupLid: {
         draw: (canvas, width, height, properties) => {
@@ -368,9 +363,7 @@ const IMAGES = {
             Width: 105,
             Height: 15,
             Color: "#F0F0F0"
-        },
-        animation: {
-        },
+        }
     },
     CupSleeve: {
         draw: (canvas, width, height, properties) => {
@@ -405,9 +398,7 @@ const IMAGES = {
             Height: 35,
             Taper: .10,
             Color: "#AD8762"
-        },
-        animation: {
-        },
+        }
     },
 	IceCube: {
 		draw: (canvas, width, height) => {
@@ -426,9 +417,7 @@ const IMAGES = {
             Width: 100,
             Height: 100,
             Color: "#0000FF"
-        },
-        animation: {
-        },
+        }
 	},
 	Banana: {
 		draw: (canvas, width, height) => {
@@ -447,9 +436,7 @@ const IMAGES = {
             Width: 100,
             Height: 100,
             Color: "#FFFF00"
-        },
-        animation: {
-        },
+        }
 	},
 	Milk: {
 		draw: (canvas, width, height) => {
@@ -468,9 +455,7 @@ const IMAGES = {
             Width: 100,
             Height: 100,
             Color: "#DCD9CD"
-        },
-        animation: {
-        },
+        }
 	},
 	Mango: {
 		draw: (canvas, width, height) => {
@@ -489,9 +474,7 @@ const IMAGES = {
             Width: 100,
             Height: 100,
             Color: "#FFAE42"
-        },
-        animation: {
-        },
+        }
 	},
 	Blueberry: {
 		draw: (canvas, width, height) => {
@@ -511,9 +494,7 @@ const IMAGES = {
             Width: 100,
             Height: 100,
             Color: "#0000FF"
-        },
-        animation: {
-        },
+        }
 	},
 	Strawberry: {
 		draw: (canvas, width, height) => {
@@ -532,9 +513,7 @@ const IMAGES = {
             Width: 100,
             Height: 100,
             Color: "#FF0000"
-        },
-        animation: {
-        },
+        }
 	},
 	Spoon: {
 		draw: (canvas, width, height) => {
@@ -553,9 +532,7 @@ const IMAGES = {
 		properties: {
 			Width: 100,
 			Height: 100
-		},
-        animation: {
-        },
+		}
 	}
 };
 

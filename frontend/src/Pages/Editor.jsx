@@ -754,7 +754,7 @@ class Editor extends Component {
 	updateActionMeasurement = (e) => {
 		const { currentStep } = this.state;
 		if (e.target.value > 0) {
-			currentStep.actionMeasurement = e.target.value;
+			currentStep.actionMeasurement = parseInt(e.target.value, 10);
 			this.setState({ currentStep });
 		} else {
 			currentStep.actionMeasurement = null;
@@ -765,7 +765,7 @@ class Editor extends Component {
 	updateTimer = (e) => {
 		const { currentStep } = this.state;
 		if (e.target.value > 0 && e.target.value < 60) {
-			currentStep.timer = e.target.value;
+			currentStep.timer = parseInt(e.target.value, 10);
 			this.setState({ currentStep }, this.addOperation);
 		} else {
 			currentStep.timer = null;
