@@ -1,8 +1,8 @@
-import React from "react"
-import {Modal, Button} from 'react-bootstrap';
-import Timer from "react-compound-timer";
+import React from 'react';
+import { Modal, Button } from 'react-bootstrap';
+import Timer from 'react-compound-timer';
 import Tool from './Tool.jsx';
-import {getColorMedian} from "../utils/CanvasUtils.js";
+import { getColorMedian } from '../utils/CanvasUtils.js';
 
 class BlendModal extends React.Component {
     constructor(props) {
