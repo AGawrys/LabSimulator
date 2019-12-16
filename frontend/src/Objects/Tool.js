@@ -1,5 +1,5 @@
 import Position from './Position';
-import { createImage, copyImage } from '../Components/Tools.jsx';
+import { createImage, copyImage, IMAGES } from '../Components/Tools.jsx';
 
 class Tool {
 	constructor(
@@ -96,6 +96,27 @@ class Tool {
 
 	setHeight(height) {
 		this.height = height;
+	}
+
+	cloneAsDefaultSize() {
+		const tool = this.clone();
+		tool.setAsDefaultSize();
+		return tool;
+	}
+
+	setAsDefaultSize() {
+		this.setAsDefaultWidth();
+		this.setAsDefaultHeight();
+	}
+
+	setAsDefaultWidth() {
+		this.width = IMAGES[this.type].properties.Width;
+		this.image.properties.Width = IMAGES[this.type].properties.Width;
+	}
+
+	setAsDefaultHeight() {
+		this.height = IMAGES[this.type].properties.Height;
+		this.image.properties.Height = IMAGES[this.type].properties.Height;
 	}
 
 	setLayer(layer) {
