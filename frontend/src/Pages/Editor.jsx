@@ -787,7 +787,7 @@ class Editor extends Component {
 	updateActionMeasurement = (e) => {
 		const { currentStep } = this.state;
 		if (e.target.value > 0) {
-			currentStep.actionMeasurement = e.target.value;
+			currentStep.actionMeasurement = Number(e.target.value);
 			this.setState({ currentStep });
 		} else {
 			currentStep.actionMeasurement = null;
