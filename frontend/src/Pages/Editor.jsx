@@ -881,6 +881,15 @@ class Editor extends Component {
 	onPublishLesson = () => {
 		const incompleteSteps = this.state.steps.filter((step) => !step.isComplete());
 		const { currentStep, isDirty } = this.state;
+		const statics = [ 'Milk', 'Kettle', 'CoffeePot' ];
+		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === "Pour") {
+			if (currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
+				this.setState({ showOverflowError: true });
+				return;
+			}
+			this.publishLesson();
+			return;
+		}
 		if (currentStep.action === 'Pour' && currentStep.source.amount === 0) {
 			this.setState({ showPourError: true });
 			return;
@@ -1039,10 +1048,15 @@ class Editor extends Component {
 
 	shouldRenderPreview = () => {
 		const { showAction, currentStep } = this.state;
+		const statics = [ 'Milk', 'Kettle', 'CoffeePot' ];
+		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === "Pour") {
+			if (currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
+				return false;
+			}
+			return true;
+		}
 		if (
-			currentStep.action === 'Pour' &&
-			(currentStep.source.amount === 0 && !currentStep.source.image.animation.Fill)
-		) {
+			currentStep.action === 'Pour' && currentStep.source.amount === 0 ) {
 			return false;
 		}
 		if (currentStep.action === 'Stir' && currentStep.target.amount === 0) {
@@ -1072,10 +1086,18 @@ class Editor extends Component {
 	showActionModal = (e) => {
 		e.preventDefault();
 		const { showAction, currentStep } = this.state;
+		const statics = [ 'Milk', 'Kettle', 'CoffeePot' ];
+		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === "Pour") {
+			if (currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
+				this.setState({ showOverflowError: true });
+				return;
+			}
+			showAction[currentStep.action.toLowerCase()] = true;
+			this.setState({ showAction });
+			return;
+		}
 		if (
-			currentStep.action === 'Pour' &&
-			(currentStep.source.amount === 0 && !currentStep.source.image.animation.Fill)
-		) {
+			currentStep.action === 'Pour' && currentStep.source.amount === 0) {
 			this.setState({ showPourError: true });
 			return;
 		}
