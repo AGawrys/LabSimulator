@@ -24,6 +24,7 @@ import StudentDirectionModal from '../Components/StudentDirectionModal.jsx';
 import Step from '../Objects/Step.js';
 import EditorNotification from '../Components/EditorNotification.jsx';
 import ConfirmationModal from '../Components/ConfirmationModal.jsx';
+import BrewModal from '../Components/BrewModal.jsx';
 
 import { isAbsolute } from 'path';
 

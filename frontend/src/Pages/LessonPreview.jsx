@@ -21,6 +21,7 @@ import BlendModal from '../Components/BlendModal.jsx';
 import PumpModal from '../Components/PumpModal.jsx';
 import Pour from '../Components/Pour.jsx';
 import Step from '../Objects/Step.js';
+import BrewModal from '../Components/BrewModal.jsx';
 import EditorNotification from '../Components/EditorNotification.jsx';
 
 
