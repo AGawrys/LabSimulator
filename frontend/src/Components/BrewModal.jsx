@@ -80,7 +80,7 @@ class BrewModal extends React.Component {
                             </div>
                       </Modal.Header>
                       <Modal.Body id="brew-body" style={{height: '500px', width: '750px'}}>
-                            <h5> Drag the grounds to the top of the coffee machine </h5>
+                            <h5 hidden={isActionComplete}> Drag the grounds to the top of the coffee machine </h5>
                             {!isActionComplete ? (
                                 <React.Fragment>
                                     <Tool
@@ -118,7 +118,7 @@ class BrewModal extends React.Component {
                                 reset();
                                 pause();
                                 this.onSuccess();
-                            }} disabled={!isActionComplete && !isActionComplete}>
+                            }} disabled={!isActionComplete || !isAnimationComplete}>
                                 Continue
                             </Button>
                         </Modal.Footer>
