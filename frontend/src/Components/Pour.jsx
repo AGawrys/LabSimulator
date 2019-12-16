@@ -171,7 +171,7 @@ class Pour extends React.Component {
 						>
 							{(props) => (
 								//pass in a tool after clicking pour
-								<div style={{ alignSelf: 'center', justifyContent: 'center' }}>
+								<div style={{ paddingTop: '50px', alignSelf: 'center', justifyContent: 'center' }}>
 									<Row>
 										<div style={props}>
 											<ToolComponent tool={source} />

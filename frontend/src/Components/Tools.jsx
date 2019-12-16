@@ -439,8 +439,6 @@ const IMAGES = {
 		},
 		properties: {
 			Width: 100,
-			Height: 100,
-			Color: '#0000FF'
 		},
 		animation: {
 			Color: '#0000FF'
@@ -462,7 +460,6 @@ const IMAGES = {
 		properties: {
 			Width: 100,
 			Height: 100,
-			Color: '#FFFF00'
 		},
 		animation: {
 			Color: '#FFFF00'
@@ -484,7 +481,6 @@ const IMAGES = {
 		properties: {
 			Width: 100,
 			Height: 100,
-			Color: '#e4f1f2'
 		},
 		animation: {
 			Color: '#e4f1f2',
@@ -507,7 +503,6 @@ const IMAGES = {
 		properties: {
 			Width: 100,
 			Height: 100,
-			Color: '#FFAE42'
 		},
 		animation: {
 			Color: '#FFAE42'
@@ -530,7 +525,6 @@ const IMAGES = {
 		properties: {
 			Width: 100,
 			Height: 100,
-			Color: '#0000FF'
 		},
 		animation: {
 			Color: '#0000FF'
@@ -552,7 +546,6 @@ const IMAGES = {
 		properties: {
 			Width: 100,
 			Height: 100,
-			Color: '#FF0000'
 		},
 		animation: {
 			Color: '#FF0000'
@@ -579,7 +572,7 @@ const IMAGES = {
 		draw: (canvas, width, height) => {
 			if (canvas.getContext) {
 				var ctx = canvas.getContext('2d');
-				var imageObj1 = new Image();
+                var imageObj1 = new Image();
 				imageObj1.onload = function() {
 					ctx.drawImage(imageObj1, 0, 0, width, height);
 				};
@@ -589,10 +582,10 @@ const IMAGES = {
 		properties: {
 			Width: 100,
 			Height: 100,
-			Color: '#654321'
 		},
 		animation: {
-			Fill: 100
+            Fill: 100,
+            Color: '#654321'
 		}
 	},
 	CoffeeGround: {
