@@ -439,6 +439,7 @@ const IMAGES = {
 		},
 		properties: {
 			Width: 100,
+            Height: 100,
 		},
 		animation: {
 			Color: '#0000FF'
