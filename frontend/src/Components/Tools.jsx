@@ -600,8 +600,8 @@ const IMAGES = {
 			}
 		},
 		properties: {
-			Width: 100,
-			Height: 100
+			Width: 150,
+			Height: 150
 		},
 		animation: {}
 	},
@@ -678,116 +678,8 @@ const IMAGES = {
 			Height: 100
 		},
 		animation: {
-			Fill: 100
-		}
-	},
-	TeaBag: {
-		draw: (canvas, width, height) => {
-			if (canvas.getContext) {
-				var ctx = canvas.getContext('2d');
-				var imageObj1 = new Image();
-				imageObj1.onload = function() {
-					ctx.drawImage(imageObj1, 0, 0, width, height);
-				};
-				imageObj1.src = 'https://icon-library.net/images/tea-bag-icon/tea-bag-icon-20.jpg';
-			}
-		},
-		properties: {
-			Width: 100,
-			Height: 100
-		},
-		animation: {}
-	},
-	CoffeeMachine: {
-		draw: (canvas, width, height) => {
-			if (canvas.getContext) {
-				var ctx = canvas.getContext('2d');
-				var imageObj1 = new Image();
-				imageObj1.onload = function() {
-					ctx.drawImage(imageObj1, 0, 0, width, height);
-				};
-				imageObj1.src = 'http://www.kuppa.ph/img/location.png';
-			}
-		},
-		properties: {
-			Width: 100,
-			Height: 100
-		},
-		animation: {}
-	},
-	CoffeePot: {
-		draw: (canvas, width, height) => {
-			if (canvas.getContext) {
-				var ctx = canvas.getContext('2d');
-				var imageObj1 = new Image();
-				imageObj1.onload = function() {
-					ctx.drawImage(imageObj1, 0, 0, width, height);
-				};
-				imageObj1.src = 'https://d29fhpw069ctt2.cloudfront.net/icon/image/85150/preview.svg';
-			}
-		},
-		properties: {
-			Width: 100,
-			Height: 100
-		},
-		animation: {
 			Fill: 100,
-			Color: '#654321'
-		}
-	},
-	CoffeeGround: {
-		draw: (canvas, width, height) => {
-			if (canvas.getContext) {
-				var ctx = canvas.getContext('2d');
-				var imageObj1 = new Image();
-				imageObj1.onload = function() {
-					ctx.drawImage(imageObj1, 0, 0, width, height);
-				};
-				imageObj1.src = 'https://plantinstructions.com/wp-content/uploads/2017/05/coffee-grounds.gif';
-			}
-		},
-		properties: {
-			Width: 100,
-			Height: 100
-		},
-		animation: {}
-	},
-	CoffeeBean: {
-		draw: (canvas, width, height) => {
-			if (canvas.getContext) {
-				var ctx = canvas.getContext('2d');
-				var imageObj1 = new Image();
-				imageObj1.onload = function() {
-					ctx.drawImage(imageObj1, 0, 0, width, height);
-				};
-				imageObj1.src = 'https://myrealdomain.com/images/coffee-grounds-clipart-4.png';
-			}
-		},
-		properties: {
-			Width: 100,
-			Height: 100
-		},
-		animation: {}
-	},
-	Kettle: {
-		draw: (canvas, width, height) => {
-			if (canvas.getContext) {
-				var ctx = canvas.getContext('2d');
-				var imageObj1 = new Image();
-				imageObj1.onload = function() {
-					ctx.drawImage(imageObj1, 0, 0, width, height);
-				};
-				imageObj1.src =
-					'https://cdn0.iconfinder.com/data/icons/household-filled-color/300/13524567Untitled-3-512.png';
-			}
-		},
-		properties: {
-			Width: 100,
-			Height: 100
-		},
-		animation: {
-			Fill: 100,
-			Color: '#bfebf2'
+			Color: '#d0f0c0',
 		}
 	},
 	TeaBag: {

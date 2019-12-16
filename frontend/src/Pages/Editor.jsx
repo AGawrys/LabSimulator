@@ -183,8 +183,7 @@ class Editor extends Component {
 				tool.value.type === 'Blender' ||
 				tool.value.type === 'Milk' ||
 				tool.value.type === 'Kettle' ||
-				tool.value.type === 'CoffeePot' ||
-				tool.value.type === 'PumpBottle'
+				tool.value.type === 'CoffeePot'
 		);
 		const pourTargetOptions = toolOptions.filter(
 			(tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Shaker' || tool.value.type === 'Blender'
@@ -205,7 +204,8 @@ class Editor extends Component {
 		)
 		const stirSourceOptions = toolOptions.filter((tool) => tool.value.type === 'Spoon' || tool.value.type === 'TeaBag');
 		const stirTargetOptions = toolOptions.filter((tool) => tool.value.type === 'StraightCup' || tool.value.type === 'Blender');
-		const brewSourceOptions = toolOptions;
+		const brewSourceOptions = toolOptions.filter((tool) => tool.value.type === 'CoffeeGround');
+		const brewTargetOptions = toolOptions.filter((tool) => tool.value.type === 'CoffeeMachine');
 
 		const publishBtn = lesson.isPublished ? null : (
 			<Button variant="primary" onClick={() => this.setState({ showPublishConfirmation: true })}>
@@ -512,8 +512,7 @@ class Editor extends Component {
 											isDisabled={
 												lesson.isPublished ||
 												currentStep.action === 'Shake' ||
-												currentStep.action === null ||
-												currentStep.action === 'Brew'
+												currentStep.action === null
 											}
 											options={
 												currentStep.action === 'Pour' ? (
@@ -524,7 +523,11 @@ class Editor extends Component {
 													blendTargetOptions
 												) : currentStep.action === 'Pump' ? (
 													pumpTargetOptions
-												) : ''
+												) : currentStep.action === 'Brew' ? (
+													brewTargetOptions
+												) : (
+													''
+												)
 											}
 											onChange={(tool) => this.updateCurrentTarget(tool.value)}
 											value={currentStep.target ? currentStep.target.toSelectOption() : ''}
@@ -981,10 +984,10 @@ class Editor extends Component {
 		if (currentStep && currentStep.isComplete()) {
 			let tool;
 			let t = currentStep;
-			if (currentStep.action === 'Shake') {
-				t = currentStep.source.clone();
-			} else {
+			if (Step.requiresTarget(currentStep.action)) {
 				t = currentStep.target.clone();
+			} else {
+				t = currentStep.source.clone();
 			}
 			const image = t.getImage();
 			image.draw = IMAGES[t.type].draw;
