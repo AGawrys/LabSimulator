@@ -254,6 +254,8 @@ class Editor extends Component {
 				tool.value.type === 'Shaker' ||
 				tool.value.type === 'Blender' ||
 				tool.value.type === 'Milk' ||
+				tool.value.type === 'Kettle' ||
+				tool.value.type === 'CoffeePot' ||
 				tool.value.type === 'Pump'
 		);
 		const pourTargetOptions = toolOptions.filter(
