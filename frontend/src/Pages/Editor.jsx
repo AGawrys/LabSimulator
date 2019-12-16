@@ -142,14 +142,15 @@ class Editor extends Component {
 				const amt = currentStep.actionMeasurement / 100;
 				image.properties.Fill = image.properties.Fill + amt;
 			} else if(currentStep.action === "Blend"){
-				const sourceColor = currentStep.source.getImage().animation.color;
+				console.log(currentStep.source.getImage().animation.Color)
+				const sourceColor = currentStep.source.getImage().animation.Color;
 				if(image.properties.Fill === 0.00) {
 					image.properties.Color = sourceColor;
 				}
 				else { 
 					image.properties.Color = this.colorMedian(sourceColor, image.properties.Color)
 				}
-				image.properties.Fill = image.properties.Fill + 0.1;
+				image.properties.Fill = image.properties.Fill + 0.25;
 				
 			} else if(currentStep.action === "Stir" || currentStep.action === "Shake"){
 				

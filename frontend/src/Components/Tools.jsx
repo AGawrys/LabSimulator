@@ -472,7 +472,9 @@ const IMAGES = {
 			Height: 100,
 			Color: '#0000FF'
 		},
-		animation: {}
+		animation: {
+            Color: '#0000FF'
+        }
 	},
 	Banana: {
 		draw: (canvas, width, height) => {
@@ -492,7 +494,9 @@ const IMAGES = {
 			Height: 100,
 			Color: '#FFFF00'
 		},
-		animation: {}
+		animation: {
+            Color: '#FFFF00'
+        }
 	},
 	Milk: {
 		draw: (canvas, width, height) => {
@@ -534,7 +538,9 @@ const IMAGES = {
 			Height: 100,
 			Color: '#FFAE42'
 		},
-		animation: {}
+		animation: {
+            Color: '#FFAE42'
+        }
 	},
 	Blueberry: {
 		draw: (canvas, width, height) => {
@@ -555,7 +561,9 @@ const IMAGES = {
 			Height: 100,
 			Color: '#0000FF'
 		},
-		animation: {}
+		animation: {
+            Color: '#0000FF'
+        }
 	},
 	Strawberry: {
 		draw: (canvas, width, height) => {
@@ -575,7 +583,9 @@ const IMAGES = {
 			Height: 100,
 			Color: '#FF0000'
 		},
-		animation: {}
+		animation: {
+            Color: '#FF0000'
+        }
 	},
 	CoffeeMachine: {
 		draw: (canvas, width, height) => {
