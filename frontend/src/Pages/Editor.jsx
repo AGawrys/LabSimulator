@@ -144,7 +144,7 @@ class Editor extends Component {
 				}
 				const amt = currentStep.actionMeasurement / 100;
 				image.properties.Fill = image.properties.Fill + amt;
-			} else if(currentStep.action === "Blend"){
+			} else if(currentStep.action === "Blend" || currentStep.action === "Pump" ){
 				const sourceColor = currentStep.source.getImage().animation.Color;
 				if(image.properties.Fill === 0.00) {
 					image.properties.Color = sourceColor;
@@ -152,7 +152,8 @@ class Editor extends Component {
 				else { 
 					image.properties.Color = this.colorMedian(sourceColor, image.properties.Color)
 				}
-				image.properties.Fill = image.properties.Fill + 0.25;
+				if(currentStep.action === "Blend") {image.properties.Fill = image.properties.Fill + 0.25;}
+				else { image.properties.Fill = image.properties.Fill + 0.05; }
 				
 			} else if(currentStep.action === "Stir" || currentStep.action === "Shake"){
 				
@@ -393,9 +394,11 @@ class Editor extends Component {
 						show={showAction.pump}
 						source={currentStep.source}
 						target={currentStep.target}
-						goal={currentStep.actionMeasurement}
-						instructor={true}
-						onHide={this.closePourModal}
+						pumpsNeeded={currentStep.actionMeasurement}
+						onComplete={() => {
+							showAction.pump = false;
+							this.setState({ showAction });
+						}}
 					/>) : null}
 				{showAction.pour ? (<Pour
 					show={showAction.pour}
