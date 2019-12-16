@@ -95,10 +95,10 @@ public class Step {
     }
 
     public boolean isComplete() {
-        if (actionType == null || actionMeasurement == 0) {
+        if (actionType == null || (actionMeasurement == 0 && !(actionType.equals("Blend") || actionType.equals("Brew")))) {
             return false;
         }
-        if (timer == 0 && !actionType.equals("Pour")) {
+        if (timer == 0 && !(actionType.equals("Pour") || actionType.equals("Pump"))) {
             return false;
         }
         return isActionSet();
@@ -110,7 +110,7 @@ public class Step {
             return false;
         }
 
-        if (actionType.equals("Pour") || actionType.equals("Drag") || actionType.equals("Stir")) {
+        if (actionType.equals("Pour") || actionType.equals("Drag") || actionType.equals("Stir") || actionType.equals("Blend") || actionType.equals("Pump")) {
             return source != -1 && target != -1;
         }
         return source != -1;
