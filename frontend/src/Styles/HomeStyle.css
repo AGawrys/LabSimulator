@@ -1,72 +1,72 @@
 .App {
-    text-align: center;
-  }
-  
-  .App-logo {
-    height: 35%;
-    width: 35%;
-    padding-right: 10%;
-  }
-  .Home-page {
-    background: "white";
-    color: #200d00;
-    height: 300vh;
-  }
-  .Home-header {
-    background-color: #DCCCBA;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-  }
-  .Home-about {
-    background-color: 'white';
-    min-height: 100vh;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: #200d00;
-  }
-  .Home-navbar {
-    flex: 1;
-    display: flex;
-    justify-content: flex-start;
-    padding-left: 30px;
-    justify-items: flex-end;
-    flex-direction: row;
-    padding-right: 10px;
-    padding-top: 5px;
-    background-color: brown;
-    color: white;
-    padding-bottom: 5px;
-  }
+	text-align: center;
+}
+
+.App-logo {
+	height: 35%;
+	width: 35%;
+	padding-right: 10%;
+}
+.Home-page {
+	background: "white";
+	color: #200d00;
+	height: 200vh;
+}
+.Home-header {
+	background-color: #dcccba;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	font-size: calc(10px + 2vmin);
+	color: white;
+}
+.Home-about {
+	background-color: 'white';
+	min-height: 100vh;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: center;
+	font-size: calc(10px + 2vmin);
+	color: #200d00;
+}
+.Home-navbar {
+	flex: 1;
+	display: flex;
+	justify-content: flex-start;
+	padding-left: 30px;
+	justify-items: flex-end;
+	flex-direction: row;
+	padding-right: 10px;
+	padding-top: 5px;
+	background-color: brown;
+	color: white;
+	padding-bottom: 5px;
+}
 
 .Home-btn {
-  background-color: 'black';
-  color: white;
+	background-color: 'black';
+	color: white;
 }
 .Home-main-txt {
-  flex: 1;
-  flex-direction: column;
-  align-items: flex-start;
-  padding-left: 5%;
+	flex: 1;
+	flex-direction: column;
+	align-items: flex-start;
+	padding-left: 5%;
 }
 .Home-main-items {
-  align-self: flex-start;
-  text-align: start;
-  color: #200d00;
+	align-self: flex-start;
+	text-align: start;
+	color: #200d00;
 }
 .Home-header-logo {
-  padding-right: 60%;
-  height: 5%;
+	padding-right: 60%;
+	height: 5%;
 }
 
-.Home-header-txt{
-  padding-right: 25px;
-  padding-top: 5px;
+.Home-header-txt {
+	padding-right: 25px;
+	padding-top: 5px;
 }
