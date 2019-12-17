@@ -669,6 +669,7 @@ class Editor extends Component {
 										{currentStep.isComplete() && this.shouldRenderPreview() ? (
 											<ToolComponent tool={this.renderPreview()} />
 										) : null}
+										{currentStep.isComplete() && this.shouldRenderPreview() ? (
 										<button
 											show={!currentStep.isComplete()}
 											disabled={!currentStep.isComplete()}
@@ -678,6 +679,7 @@ class Editor extends Component {
 										>
 											COPY
 										</button>
+										) : null}
 									</div>
 								</Card>
 
