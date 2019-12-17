@@ -12,6 +12,8 @@ import { Button, Modal, Form, Row, ListGroup } from 'react-bootstrap';
 import GeneralConstants from '../utils/GeneralConstants.js';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import plus from '../Styles/Images/icons8-plus.svg';
+import '../Styles/InstructorDashboard.css';
 
 const links = {
 	Dashboard: Routes.INSTRUCTOR_DASHBOARD,
@@ -52,7 +54,7 @@ class CoursePage extends Component {
 		const {selectedStudent, selectedInstructor, selectedLesson} = this.state;
 		const {title, accessCode, courseStudents, courseInstructors, lessons, potentialStudents, potentialInstructors} = courseInfo;
 		return (
-			<div className="background">
+			<div className="background-container" style={{ height:'300vh'}}>
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} links={links} />
 				<ConfirmationModal
 					title={GeneralConstants.REMOVE_INSTRUCTOR_TITLE}
@@ -106,28 +108,30 @@ class CoursePage extends Component {
 					onHide={() => this.setState({showAddInstructorsModal: false})}
 					onSuccessfulAdd={this.getCourse}
 				/>
+				
 				<div className="studentDashboard">
 					<div className="welcomeStudentDiv">
-						<h3> {title}  </h3>
-						<Button variant="danger" onClick={() => this.setState({showDeleteCourse:true})}>
+					<h1 className="m-0 font-weight-light text-secondary headings" style={{ justifySelf:'center' }}> Course: {title}</h1>
+					<Button variant="danger" onClick={() => this.setState({showDeleteCourse:true})}>
 							Delete Course
-						</Button>
+					</Button>
 					</div>
 				</div>
 				<div className="studentDashboardContents">
-					<div className="studentRecentLesson">
+					<div className="studentRecentLesson cardBorder">
 						<div className="recentDrinkTop containerHeaderDiv">
-							<h4> Lessons </h4>
+						<h5 className="m-0 font-weight-bold text-secondary headings">LESSSONS</h5>
+						
 							<button
-								className="buttonRound btn-primary instructorAddLessonButton"
+								className="clearButton"
 								onClick={() => {
 									this.setState({ showAddLessonsModal: true });
 								}}
 							>
-								+
+								<img src={plus} />
 							</button>
 						</div>
-						<div className="studentAllLesson">
+						<div className="studentAllLesson cardBorder">
 							<ListGroup>
 								{lessons.map((lesson, index) => 
 									<LessonRow {...this.props} key={index} lesson={lesson} canDelete={true} 
@@ -140,13 +144,13 @@ class CoursePage extends Component {
 					</div>
 				</div>
 				<div className="teacherDashboardContents">
-					<div className="recentDrinksDiv">
+					<div className="recentDrinksDiv cardBorder">
 						<div className="recentDrinkTop">
-							<h4>Instructors</h4>
+						<h5 className="m-0 font-weight-bold text-secondary headings">INSTRUCTORS</h5>
 							<button 
-								className="buttonRound btn-primary"
+								className="clearButton"
 								onClick={() => this.setState({showAddInstructorsModal: true})}
-							>+</button>
+							> <img src={plus} /> </button>
 						</div>
 						<div className="recentDrinkBottom">
 							<ListGroup>
@@ -160,13 +164,14 @@ class CoursePage extends Component {
 							</ListGroup>
 						</div>
 					</div>
-					<div className="recentLessonsDiv">
-						<div className="recentLessonsTop">
-							<h4>Students</h4>
+					<div className="recentLessonsDiv cardBorder">
+						<div className="recentLessonsTop cardBorder">
+							<h5 className="m-0 font-weight-bold text-secondary headings">STUDENTS</h5>
+						
 							<button 
-								className="buttonRound btn-primary" 
+								className="clearButton" 
 								onClick={()=> this.setState({showAddStudentsModal: true})}>
-								+
+								<img src={plus} />
 							</button>
 						</div>
 						<div className="recentDrinkBottom">
