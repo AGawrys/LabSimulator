@@ -28,7 +28,7 @@ const GeneralConstants = {
 	LEAVE_STUDENT_LESSON_MESSAGE: 'Are you sure you want to leave? This will count as a lesson attempt.',
 	ADD_STUDENT_TITLE: 'Add Student to Course',
 	ADD_INSTRUCTOR_TITLE: 'Add Instructor',
-	ADD_LESSON_TITLE: 'Add Lesson to Course',
+	ADD_LESSON_TITLE: 'Add Published Lesson to Course',
 	STUDENT: 'STUDENT',
 	INSTRUCTOR: 'INSTRUCTOR',
 	ORGANIZATION: 'ORGANIZATION',
