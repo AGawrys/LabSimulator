@@ -42,13 +42,16 @@ export class OrganizationDashboard extends React.Component {
 
 	render() {
 		const {showDeleteLesson, selectedLesson, showDeleteInstructor, selectedInstructor, organizationInfo} = this.state;
+		const {email } = this.props;
+		let name = email.split("@");
+		name = name[0];
 		if(organizationInfo === null) {
 			return null;
 		}
 		const {instructors, lessons} = organizationInfo;
 
 		return (
-			<div className="background">
+			<div className="background-container">
 				<HeaderBru home={Routes.ORGANIZATION_DASHBOARD} isLoggedIn={true} links={links} />
 				<ConfirmationModal
 					title={GeneralConstants.REMOVE_INSTRUCTOR_TITLE}
@@ -63,9 +66,11 @@ export class OrganizationDashboard extends React.Component {
 					show={showDeleteLesson}
 					onDelete={this.deleteLesson}/>
 				<div className="organizationDashboard">
+				<h1 className="m-0 font-weight-light text-secondary headings" style={{ paddingBottom: '25px'}}>Welcome to your Dashboard, {name}</h1>
+					
 					<div className="organizationDashboardContents">
-						<div className="organizationInstructorDiv">
-							<h4>All Instructors</h4>
+						<div className="organizationInstructorDiv cardBorder">
+						<h5 className="m-0 font-weight-bold text-secondary headings" style={{padding: '15px'}}>ALL INSTRUCTORS</h5>
 							<div className="scrollInstructorList">
 								<ListGroup>
 									{instructors.map((instructor,index) => 
@@ -74,8 +79,9 @@ export class OrganizationDashboard extends React.Component {
 								</ListGroup>
 							</div>
 						</div>
-						<div className="organizationLabDiv">
-							<h4>All Lessons</h4>
+						<div className="organizationLabDiv cardBorder">
+						<h5 className="m-0 font-weight-bold text-secondary headings" style={{padding: '15px'}}>ALL LESSONS</h5>
+						
 							<ListGroup>
 								{lessons.map((lesson, index) => 
 									<LessonRow 
