@@ -42,6 +42,7 @@ const GeneralConstants = {
 	OVERFLOW_MESSAGE: 'Target source will overflow.',
 	LACK_FILL_MESSAGE: 'Not enough fill to complete step.',
 	GRIND_NO_FILL_MESSAGE: 'Cannot grind empty source.',
+	COFFEE_ERROR_MESSAGE: 'Coffee beans can be poured into a Grinder.'
 };
 
 export default GeneralConstants;

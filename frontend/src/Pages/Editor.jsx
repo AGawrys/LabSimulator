@@ -79,6 +79,7 @@ class Editor extends Component {
 			showOverflowError: false,
 			showLackFillError: false,
 			showGrindError: false,
+			showCoffeeError: false,
 			showAction: {
 				pour: false,
 				shake: false,
@@ -183,7 +184,8 @@ class Editor extends Component {
 			showBlendError,
 			showOverflowError,
 			showLackFillError,
-			showGrindError
+			showGrindError,
+			showCoffeeError,
 		} = this.state;
 		const { operations, pointer } = this.state.history;
 		if (steps == null) {
@@ -345,6 +347,13 @@ class Editor extends Component {
 					message={GeneralConstants.LACK_FILL_MESSAGE}
 					onClose={() => this.setState({ showLackFillError: false })}
 					show={showLackFillError}
+					autohide
+					delay={1250}
+				/>
+					<EditorNotification
+					message={GeneralConstants.COFFEE_ERROR_MESSAGE}
+					onClose={() => this.setState({ showCoffeeError: false })}
+					show={showCoffeeError}
 					autohide
 					delay={1250}
 				/>
@@ -882,6 +891,10 @@ class Editor extends Component {
 		const incompleteSteps = this.state.steps.filter((step) => !step.isComplete());
 		const { currentStep, isDirty } = this.state;
 		const statics = [ 'Milk', 'Kettle', 'CoffeePot', 'CoffeeBean' ];
+		if((currentStep.source.type === 'CoffeeBean' && currentStep.target.type !== 'CoffeeBeanGrinder') || (currentStep.source.type !== 'CoffeeBean' && currentStep.target.type === 'CoffeeBeanGrinder')){
+			this.setState({ showCoffeeError: true });
+			return;
+		}
 		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === "Pour") {
 			if (currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
 				this.setState({ showOverflowError: true });
@@ -1049,6 +1062,9 @@ class Editor extends Component {
 	shouldRenderPreview = () => {
 		const { showAction, currentStep } = this.state;
 		const statics = [ 'Milk', 'Kettle', 'CoffeePot', 'CoffeeBean' ];
+		if((currentStep.source.type === 'CoffeeBean' && currentStep.target.type !== 'CoffeeBeanGrinder')  || (currentStep.source.type !== 'CoffeeBean' && currentStep.target.type === 'CoffeeBeanGrinder')){
+			return false;
+		}
 		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === "Pour") {
 			if (currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
 				return false;
@@ -1087,6 +1103,10 @@ class Editor extends Component {
 		e.preventDefault();
 		const { showAction, currentStep } = this.state;
 		const statics = [ 'Milk', 'Kettle', 'CoffeePot', 'CoffeeBean' ];
+		if((currentStep.source.type === 'CoffeeBean' && currentStep.target.type !== 'CoffeeBeanGrinder')|| (currentStep.source.type !== 'CoffeeBean' && currentStep.target.type === 'CoffeeBeanGrinder')){
+			this.setState({ showCoffeeError: true });
+			return;
+		}
 		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === "Pour") {
 			if (currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
 				this.setState({ showOverflowError: true });
