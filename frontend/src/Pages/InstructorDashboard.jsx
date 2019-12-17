@@ -42,16 +42,19 @@ export class InstructorDashboard extends Component {
 
 	render() {
 		const { instructorInfo, loaded } = this.state;
+		const {email} = this.props
+		let name = email.split("@");
+		name = name[0];
 		if (!loaded) {
 			return null;
 		}
 		const { courses, lessons } = instructorInfo;
 		return (
-			<div className="background-container">
+			<div className="background-container" style={{ height: '300vh'}}>
 				<HeaderBru home={Routes.INSTRUCTOR_DASHBOARD} isLoggedIn={true} />
 				<div className="teacherDashboard">
 					<div className="searchBarDiv">
-					<h1 className="m-0 font-weight-light text-secondary headings">Welcome to your Dashboard</h1>
+					<h1 className="m-0 font-weight-light text-secondary headings">Welcome to your Dashboard, {name} </h1>
 						<Form onSubmit={(value) => this.props.history.push(Routes.Search + value)}>
 							<SearchBar placeHolderText={'Search for Lesson'} onSearchButtonClick={(value) => this.props.history.push(Routes.SEARCH + value)} />
 						</Form>

@@ -31,19 +31,24 @@ export class StudentDashboard extends Component {
 
 	render() {
 		const { courseProgresses } = this.state;
+		const {email} = this.props
+		let name = email.split("@");
+		name = name[0];
 		if (courseProgresses === null) {
 			return null;
 		}
 
 		return (
-			<div className="background">
+			<div className="background-container">
 				<HeaderBru home={Routes.STUDENT_DASHBOARD} isLoggedIn={true} links={links} />
+				<h1 className="m-0 font-weight-light text-secondary headings" style={{ padding: '15px'}}>Welcome to your Dashboard, {name} </h1>
 				<div className="studentDashboard">
 					<div className="studentDashboardContents">
 						<Card>
-							<div className="studentRecentLesson">
+							<div className="studentRecentLesson cardBorder">
 								<Row className="headingRow">
-									<h4>My Courses</h4>
+								<h5 className="m-0 font-weight-bold text-secondary headings" style={{ padding: '20px'}}>MY COURSES</h5>
+							
 								</Row>
 								<div className="studentAllLesson">
 									<ListGroup>
