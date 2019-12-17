@@ -18,7 +18,13 @@ import Catalog from '../Components/Catalog.jsx';
 import Canvas from '../Components/Canvas.jsx';
 import Routes from '../utils/RouteConstants.js';
 import GeneralConstants from '../utils/GeneralConstants.js';
-import { ACTIONS, DEFAULT_TOOL_SIZE, DEFAULT_STEP_NAME, DEFAULT_LESSON_NAME } from '../utils/EditorConstants.js';
+import {
+	ACTIONS,
+	DEFAULT_TOOL_SIZE,
+	DEFAULT_STEP_NAME,
+	DEFAULT_LESSON_NAME,
+	ACTIONS_LABEL
+} from '../utils/EditorConstants.js';
 import {
 	determineToolPosition,
 	determineToolSize,
@@ -50,6 +56,7 @@ import plus from '../Styles/Images/icons8-plus.svg';
 import { HotKeys } from 'react-hotkeys';
 import Pour from '../Components/Pour.jsx';
 import { Prompt } from 'react-router-dom';
+import InstructorDirectionModal from '../Components/InstructorDirectionModal.jsx';
 
 const links = {
 	Dashboard: Routes.INSTRUCTOR_DASHBOARD
@@ -80,6 +87,7 @@ class Editor extends Component {
 			showLackFillError: false,
 			showGrindError: false,
 			showCoffeeError: false,
+			showHelpModal: false,
 			showAction: {
 				pour: false,
 				shake: false,
@@ -186,6 +194,7 @@ class Editor extends Component {
 			showLackFillError,
 			showGrindError,
 			showCoffeeError,
+			showHelpModal
 		} = this.state;
 		const { operations, pointer } = this.state.history;
 		if (steps == null) {
@@ -248,6 +257,12 @@ class Editor extends Component {
 					onHide={() => this.setState({ showDeleteLessonModal: false })}
 					show={showDeleteLessonModal}
 					onDelete={this.deleteLesson}
+				/>
+				<InstructorDirectionModal
+					show={showHelpModal}
+					closeDirection={() => {
+						this.setState({ showHelpModal: false });
+					}}
 				/>
 				<ConfirmationModal
 					title={GeneralConstants.PUBLISH_CONFIRMATION_TITLE}
@@ -350,7 +365,7 @@ class Editor extends Component {
 					autohide
 					delay={1250}
 				/>
-					<EditorNotification
+				<EditorNotification
 					message={GeneralConstants.COFFEE_ERROR_MESSAGE}
 					onClose={() => this.setState({ showCoffeeError: false })}
 					show={showCoffeeError}
@@ -490,6 +505,13 @@ class Editor extends Component {
 								>
 									<i className="fas fa-trash-alt" />
 								</Button>
+								<Button
+									type="button"
+									variant="warning"
+									onClick={() => this.setState({ showHelpModal: true })}
+								>
+									<i className="fa fa-question-circle" aria-hidden="true" />
+								</Button>
 							</Col>
 						</Row>
 					</Col>
@@ -606,7 +628,13 @@ class Editor extends Component {
 											type="number"
 											min="1"
 											disabled={lesson.isPublished}
-											placeholder="Action Measurement"
+											placeholder={
+												currentStep.action ? (
+													ACTIONS_LABEL[currentStep.action]
+												) : (
+													'Action Measurement'
+												)
+											}
 											onChange={(e) => this.updateActionMeasurement(e)}
 											value={
 												currentStep.actionMeasurement ? currentStep.actionMeasurement > 0 ? (
@@ -891,11 +919,14 @@ class Editor extends Component {
 		const incompleteSteps = this.state.steps.filter((step) => !step.isComplete());
 		const { currentStep, isDirty } = this.state;
 		const statics = [ 'Milk', 'Kettle', 'CoffeePot', 'CoffeeBean' ];
-		if((currentStep.source.type === 'CoffeeBean' && currentStep.target.type !== 'CoffeeBeanGrinder') || (currentStep.source.type !== 'CoffeeBean' && currentStep.target.type === 'CoffeeBeanGrinder')){
+		if (
+			(currentStep.source.type === 'CoffeeBean' && currentStep.target.type !== 'CoffeeBeanGrinder') ||
+			(currentStep.source.type !== 'CoffeeBean' && currentStep.target.type === 'CoffeeBeanGrinder')
+		) {
 			this.setState({ showCoffeeError: true });
 			return;
 		}
-		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === "Pour") {
+		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === 'Pour') {
 			if (currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
 				this.setState({ showOverflowError: true });
 				return;
@@ -1062,17 +1093,19 @@ class Editor extends Component {
 	shouldRenderPreview = () => {
 		const { showAction, currentStep } = this.state;
 		const statics = [ 'Milk', 'Kettle', 'CoffeePot', 'CoffeeBean' ];
-		if((currentStep.source.type === 'CoffeeBean' && currentStep.target.type !== 'CoffeeBeanGrinder')  || (currentStep.source.type !== 'CoffeeBean' && currentStep.target.type === 'CoffeeBeanGrinder')){
+		if (
+			(currentStep.source.type === 'CoffeeBean' && currentStep.target.type !== 'CoffeeBeanGrinder') ||
+			(currentStep.source.type !== 'CoffeeBean' && currentStep.target.type === 'CoffeeBeanGrinder')
+		) {
 			return false;
 		}
-		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === "Pour") {
+		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === 'Pour') {
 			if (currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
 				return false;
 			}
 			return true;
 		}
-		if (
-			currentStep.action === 'Pour' && currentStep.source.amount === 0 ) {
+		if (currentStep.action === 'Pour' && currentStep.source.amount === 0) {
 			return false;
 		}
 		if (currentStep.action === 'Stir' && currentStep.target.amount === 0) {
@@ -1103,11 +1136,14 @@ class Editor extends Component {
 		e.preventDefault();
 		const { showAction, currentStep } = this.state;
 		const statics = [ 'Milk', 'Kettle', 'CoffeePot', 'CoffeeBean' ];
-		if((currentStep.source.type === 'CoffeeBean' && currentStep.target.type !== 'CoffeeBeanGrinder')|| (currentStep.source.type !== 'CoffeeBean' && currentStep.target.type === 'CoffeeBeanGrinder')){
+		if (
+			(currentStep.source.type === 'CoffeeBean' && currentStep.target.type !== 'CoffeeBeanGrinder') ||
+			(currentStep.source.type !== 'CoffeeBean' && currentStep.target.type === 'CoffeeBeanGrinder')
+		) {
 			this.setState({ showCoffeeError: true });
 			return;
 		}
-		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === "Pour") {
+		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === 'Pour') {
 			if (currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
 				this.setState({ showOverflowError: true });
 				return;
@@ -1116,8 +1152,7 @@ class Editor extends Component {
 			this.setState({ showAction });
 			return;
 		}
-		if (
-			currentStep.action === 'Pour' && currentStep.source.amount === 0) {
+		if (currentStep.action === 'Pour' && currentStep.source.amount === 0) {
 			this.setState({ showPourError: true });
 			return;
 		}
@@ -1171,7 +1206,7 @@ class Editor extends Component {
 				currentStep.target &&
 				currentStep.actionMeasurement
 			) {
-				console.log("in pour with : " + currentStep.source.type)
+				console.log('in pour with : ' + currentStep.source.type);
 				let sourceColor = currentStep.source.getImage().properties.Color;
 				const statics = [ 'Milk', 'Kettle', 'CoffeePot', 'CoffeeBean' ];
 				if (statics.indexOf(currentStep.source.type) !== -1) {

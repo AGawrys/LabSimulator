@@ -8,8 +8,16 @@ const ACTIONS = [
 	{ value: 'Stir', label: 'Stir' },
 	{ value: 'Blend', label: 'Blend' },
 	{ value: 'Pump', label: 'Pump' },
-	{ value: 'Brew', label: 'Brew'},
-	{ value: 'Grind', label: 'Grind'}
+	{ value: 'Brew', label: 'Brew' },
+	{ value: 'Grind', label: 'Grind' }
 ];
-
-export { DEFAULT_LESSON_NAME, DEFAULT_STEP_NAME, CONTEXT_MENU_ID, DEFAULT_TOOL_SIZE, ACTIONS };
+const ACTIONS_LABEL = {
+	Shake: 'Shake Intensity',
+	Pour: 'Pour Percent',
+	Stir: 'Rotations',
+	Blend: 'Action Measurement',
+	Pump: 'Number of Pump',
+	Brew: 'Action Measurement',
+	Grind: 'Action Measurement'
+};
+export { DEFAULT_LESSON_NAME, DEFAULT_STEP_NAME, CONTEXT_MENU_ID, DEFAULT_TOOL_SIZE, ACTIONS, ACTIONS_LABEL };
