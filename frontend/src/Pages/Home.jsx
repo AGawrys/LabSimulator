@@ -47,22 +47,25 @@ class Home extends Component {
 						<div className="App">
 							<header className="Home-header">
 								<div className="Home-main-txt">
-									<h2 className="Home-main-items">Bru, Barista Labratory</h2>
-									<h1 className="Home-main-items">Your next orientation, online</h1>
-									<p className="Home-main-items">
-										Coffee is a brewed drink prepared from roasted coffee beans, the seeds of
-										berries from certain Coffea species. The genus Coffea is native to tropical
-										Africa (specifically having its origin in Ethiopia and Sudan) and Madagascar,
-										the Comoros, Mauritius, and Réunion in the Indian Ocean. Coffee plants are
-										now cultivated in over 70 countries, primarily in the equatorial regions of the
-										Americas, Southeast Asia, Indian subcontinent, and Africa. The two most commonly
-										grown are C. arabica and C. robusta. 
-									</p>
-									<Link to="/Signup" className="link">
+								<Link to="/Signup" className="link">
 										<div className="Home-main-items">
 											Don't have an account? <code> Sign up!</code>
 										</div>
 									</Link>
+									<h1 className="Home-main-items">Become a Barista through Bru</h1>
+									<h1 className="Home-main-items"></h1>
+									<p className="Home-main-items">
+									Whether you're starting your journey with the basics or you're a master with secrets to share,
+Bru is the place for you! Our learning environment is highly customizable and interactive, yet
+simple and clean so instructors can create and share effective lessons. When it's time, send your
+lessons to your students and they'll be ready to start learning new recipes instantly. It doesn't
+matter if your cafe is big or small; escape the hectic rush hour and learn how to make drinks
+properply with Bru.
+									</p>
+									
+									<div className="Home-main-items">
+											Scroll down to learn about the team!
+										</div>
 								</div>
 								<img src={coffeeProcess} className="App-logo" alt="logo" />
 							</header>
