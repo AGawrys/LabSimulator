@@ -81,7 +81,6 @@ export class OrganizationDashboard extends React.Component {
 						</div>
 						<div className="organizationLabDiv cardBorder">
 						<h5 className="m-0 font-weight-bold text-secondary headings" style={{padding: '15px'}}>ALL LESSONS</h5>
-						
 							<ListGroup>
 								{lessons.map((lesson, index) => 
 									<LessonRow 
