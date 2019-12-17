@@ -670,15 +670,15 @@ class Editor extends Component {
 											<ToolComponent tool={this.renderPreview()} />
 										) : null}
 										{currentStep.isComplete() && this.shouldRenderPreview() ? (
-										<button
-											show={!currentStep.isComplete()}
-											disabled={!currentStep.isComplete()}
-											type="button"
-											className="btn btn-secondary"
-											onClick={this.setPreviewToCopiedTool}
-										>
-											COPY
-										</button>
+											<button
+												show={!currentStep.isComplete()}
+												disabled={!currentStep.isComplete()}
+												type="button"
+												className="btn btn-secondary"
+												onClick={this.setPreviewToCopiedTool}
+											>
+												COPY
+											</button>
 										) : null}
 									</div>
 								</Card>
@@ -921,22 +921,26 @@ class Editor extends Component {
 		const incompleteSteps = this.state.steps.filter((step) => !step.isComplete());
 		const { currentStep, isDirty } = this.state;
 		const statics = [ 'Milk', 'Kettle', 'CoffeePot', 'CoffeeBean' ];
-		if (
-			(currentStep.source.type === 'CoffeeBean' && currentStep.target.type !== 'CoffeeBeanGrinder') ||
-			(currentStep.source.type !== 'CoffeeBean' && currentStep.target.type === 'CoffeeBeanGrinder')
-		) {
-			this.setState({ showCoffeeError: true });
-			return;
+		if (currentStep.action === 'Pour') {
+			if (
+				(currentStep.source.type === 'CoffeeBean' && currentStep.target.type !== 'CoffeeBeanGrinder') ||
+				(currentStep.source.type !== 'CoffeeBean' && currentStep.target.type === 'CoffeeBeanGrinder')
+			) {
+				this.setState({ showCoffeeError: true });
+				return false;
+			}
 		}
 		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === 'Pour') {
 			if (currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
 				this.setState({ showOverflowError: true });
 				return;
 			}
-			this.publishLesson();
-			return;
 		}
-		if (currentStep.action === 'Pour' && currentStep.source.amount === 0) {
+		if (
+			currentStep.action === 'Pour' &&
+			currentStep.source.amount === 0 &&
+			statics.indexOf(currentStep.source.type) === -1
+		) {
 			this.setState({ showPourError: true });
 			return;
 		}
@@ -960,7 +964,11 @@ class Editor extends Component {
 			this.setState({ showOverflowError: true });
 			return;
 		}
-		if (currentStep.action === 'Pour' && currentStep.source.amount < currentStep.actionMeasurement) {
+		if (
+			currentStep.action === 'Pour' &&
+			currentStep.source.amount < currentStep.actionMeasurement * 0.01 &&
+			statics.indexOf(currentStep.source.type) === -1
+		) {
 			this.setState({ showLackFillError: true });
 			return;
 		}
@@ -1095,19 +1103,24 @@ class Editor extends Component {
 	shouldRenderPreview = () => {
 		const { showAction, currentStep } = this.state;
 		const statics = [ 'Milk', 'Kettle', 'CoffeePot', 'CoffeeBean' ];
-		if (
-			(currentStep.source.type === 'CoffeeBean' && currentStep.target.type !== 'CoffeeBeanGrinder') ||
-			(currentStep.source.type !== 'CoffeeBean' && currentStep.target.type === 'CoffeeBeanGrinder')
-		) {
-			return false;
+		if (currentStep.action === 'Pour') {
+			if (
+				(currentStep.source.type === 'CoffeeBean' && currentStep.target.type !== 'CoffeeBeanGrinder') ||
+				(currentStep.source.type !== 'CoffeeBean' && currentStep.target.type === 'CoffeeBeanGrinder')
+			) {
+				return false;
+			}
 		}
 		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === 'Pour') {
 			if (currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
 				return false;
 			}
-			return true;
 		}
-		if (currentStep.action === 'Pour' && currentStep.source.amount === 0) {
+		if (
+			currentStep.action === 'Pour' &&
+			currentStep.source.amount === 0 &&
+			statics.indexOf(currentStep.source.type) === -1
+		) {
 			return false;
 		}
 		if (currentStep.action === 'Stir' && currentStep.target.amount === 0) {
@@ -1122,7 +1135,11 @@ class Editor extends Component {
 		if (currentStep.action === 'Pour' && currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
 			return false;
 		}
-		if (currentStep.action === 'Pour' && currentStep.source.amount < currentStep.actionMeasurement * 0.01) {
+		if (
+			currentStep.action === 'Pour' &&
+			currentStep.source.amount < currentStep.actionMeasurement * 0.01 &&
+			statics.indexOf(currentStep.source.type) === -1
+		) {
 			return false;
 		}
 		if (currentStep.action === 'Pump' && currentStep.target.amount + currentStep.actionMeasurement * 0.05 > 1) {
@@ -1138,23 +1155,26 @@ class Editor extends Component {
 		e.preventDefault();
 		const { showAction, currentStep } = this.state;
 		const statics = [ 'Milk', 'Kettle', 'CoffeePot', 'CoffeeBean' ];
-		if (
-			(currentStep.source.type === 'CoffeeBean' && currentStep.target.type !== 'CoffeeBeanGrinder') ||
-			(currentStep.source.type !== 'CoffeeBean' && currentStep.target.type === 'CoffeeBeanGrinder')
-		) {
-			this.setState({ showCoffeeError: true });
-			return;
+		if (currentStep.action === 'Pour') {
+			if (
+				(currentStep.source.type === 'CoffeeBean' && currentStep.target.type !== 'CoffeeBeanGrinder') ||
+				(currentStep.source.type !== 'CoffeeBean' && currentStep.target.type === 'CoffeeBeanGrinder')
+			) {
+				this.setState({ showCoffeeError: true });
+				return;
+			}
 		}
 		if (statics.indexOf(currentStep.source.type) !== -1 && currentStep.action === 'Pour') {
 			if (currentStep.target.amount + currentStep.actionMeasurement * 0.01 > 1) {
 				this.setState({ showOverflowError: true });
 				return;
 			}
-			showAction[currentStep.action.toLowerCase()] = true;
-			this.setState({ showAction });
-			return;
 		}
-		if (currentStep.action === 'Pour' && currentStep.source.amount === 0) {
+		if (
+			currentStep.action === 'Pour' &&
+			currentStep.source.amount === 0 &&
+			statics.indexOf(currentStep.source.type) === -1
+		) {
 			this.setState({ showPourError: true });
 			return;
 		}
@@ -1174,7 +1194,11 @@ class Editor extends Component {
 			this.setState({ showOverflowError: true });
 			return;
 		}
-		if (currentStep.action === 'Pour' && currentStep.source.amount < currentStep.actionMeasurement * 0.01) {
+		if (
+			currentStep.action === 'Pour' &&
+			currentStep.source.amount < currentStep.actionMeasurement * 0.01 &&
+			statics.indexOf(currentStep.source.type) === -1
+		) {
 			this.setState({ showLackFillError: true });
 			return;
 		}
