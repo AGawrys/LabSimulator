@@ -57,8 +57,11 @@ class StirModal extends React.Component {
 				]}
 			>
 				{({ start, resume, pause, stop, reset, getTimerState, getTime, setTime }) => {
-					if (this.state.started) {
+					if (this.state.started && getTimerState() != 'PLAYING') {
 						start();
+					}
+					if (percentComplete === 100) {
+						pause();
 					}
 					return (
 						<Modal
@@ -94,9 +97,22 @@ class StirModal extends React.Component {
 									<h4 className="failedText" hidden={!failed}>
 										You have failed! Try again!
 									</h4>
+									<h4 className="successText" hidden={percentComplete !== 100}>
+									    <i className="fa fa-check" aria-hidden="true"></i> &nbsp;
+									    Successfully stirred!
+									</h4>
 								</div>
 							</Modal.Header>
-							<Modal.Body>{modalBody}</Modal.Body>
+							<Modal.Body>
+								<h3> Press the {ICONS[KEY_ORDER[currentKey]]} Arrow Key </h3>
+								<StirBody
+									largerCircleStyle={largerCircleStyle}
+									currentKey={currentKey}
+									smallerCircleStyle={smallerCircleStyle}
+									target={target}
+									source={source}
+								/>
+							</Modal.Body>
 							<Modal.Footer>
 								<Button
 									variant="warning"
@@ -127,6 +143,10 @@ class StirModal extends React.Component {
 				}}
 			</Timer>
 		);
+	}
+
+	onStart = () => {
+		this.setState({started: true});
 	}
 
 	onSuccess = () => {
@@ -189,6 +209,13 @@ const KEY_ORDER = {
 	UP: 'RIGHT'
 };
 
+const ICONS = {
+	RIGHT:  <i class="fa fa-arrow-right" aria-hidden="true"></i>,
+	LEFT: <i class="fa fa-arrow-left" aria-hidden="true"></i>,
+	DOWN: <i class="fa fa-arrow-down" aria-hidden="true"></i>,
+	UP: <i class="fa fa-arrow-up" aria-hidden="true"></i>,
+}
+
 function StirBody(props) {
 	console.log(Object.entries(props.largerCircleStyle).length === 0 && props.largerCircleStyle.constructor === Object);
 	console.log(props.source);
@@ -211,8 +238,6 @@ function StirBody(props) {
 					</div>
 				</div>
 			</div>
-
-			<p> NEXT Key: {KEY_ORDER[props.currentKey]}</p>
 		</React.Fragment>
 	);
 }
